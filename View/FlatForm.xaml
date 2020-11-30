@@ -1,0 +1,493 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:v="clr-namespace:RealtorObjects.View"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Class="RealtorObjects.View.FlatForm"
+        mc:Ignorable="d"
+        Title="FlatForm" Height="582" Width="744"
+        Background="#f1f1f1"
+        WindowStyle="none"
+        BorderBrush="#81b922"
+        BorderThickness="1"
+        MouseDown="Window_MouseDown"
+        ResizeMode="NoResize">
+    <Window.Resources>
+        <Color x:Key="MainGray">#e8e8e8</Color>
+        <Color x:Key="MainGreen">#78B01C</Color>
+        <Color x:Key="BorderGray">#e0e0e0</Color>
+        <Color x:Key="GreenFont">#005000</Color>
+        <SolidColorBrush 
+            x:Key="MainGrayBrush" 
+            Color="{StaticResource MainGray}"/>
+        <SolidColorBrush 
+            x:Key="MainGreenBrush" 
+            Color="{StaticResource MainGreen}"/>
+        <SolidColorBrush 
+            x:Key="BorderGrayBrush" 
+            Color="{StaticResource BorderGray}" />
+        <SolidColorBrush
+            x:Key="GreenFontBrush"
+            Color="{StaticResource GreenFont}"/>
+
+        <Style x:Key="GreenComboBox" TargetType="{x:Type ComboBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ComboBox}">
+                        <Border 
+                            BorderBrush="LightGray"
+                            Height="23"
+                            BorderThickness="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="17"/>
+                                </Grid.ColumnDefinitions>
+                                <ToggleButton 
+                                    Grid.Column="1" 
+                                    ClickMode="Release" 
+                                    IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}">
+                                    <ToggleButton.Template>
+                                        <ControlTemplate 
+                                            TargetType="{x:Type ToggleButton}">
+                                            <Border v:FrameworkElementExtension.AttachIsPressed="True">
+                                                <Border.Style>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="Background" Value="{StaticResource MainGreenBrush}"/>
+                                                        <Setter Property="Width" Value="15"/>
+                                                        <Setter Property="Height" Value="19"/>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#A0BF3E"/>
+                                                            </Trigger>
+                                                            <Trigger Property="v:FrameworkElementExtension.IsPressed" Value="True">
+                                                                <Setter Property="Background" Value="{StaticResource MainGreenBrush}"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <Polygon 
+                                                    Stroke="White" 
+                                                    VerticalAlignment="Center" 
+                                                    HorizontalAlignment="Center" 
+                                                    Width="6" 
+                                                    Height="4" 
+                                                    Fill="white" 
+                                                    Points="1.2,1 4.8,1 3,3"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </ToggleButton.Template>
+                                </ToggleButton>
+                                <ContentPresenter 
+                                    Margin="5, 3, 0, 3"
+                                    IsHitTestVisible="false"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"                              
+                                    Content="{TemplateBinding SelectionBoxItem}" 
+                                    ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                    ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"/>
+                                <Popup IsOpen="{TemplateBinding IsDropDownOpen}">
+                                    <Grid 
+                                        MinWidth="{TemplateBinding ActualWidth}" 
+                                        MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                        <Border 
+                                            Background="white" 
+                                            BorderBrush="LightGray" BorderThickness="1"/>
+                                        <ScrollViewer>
+                                            <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
+                                        </ScrollViewer>
+                                    </Grid>
+                                </Popup>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ShadowBorder" TargetType="{x:Type Border}">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="5,3"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="#333"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="Cursor" Value="IBeam"/>
+            <Setter Property="Foreground" Value="#333"/>
+            <Setter Property="Width" Value="500"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        <Style TargetType="{x:Type Border}">
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="LightGray"/>
+        </Style>
+        <Style TargetType="{x:Type TextBlock}" x:Key="Header">
+            <Setter Property="Foreground" Value="{StaticResource GreenFontBrush}"/>
+            <Setter Property="Margin" Value="3,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" StrokeDashArray="1 2" SnapsToDevicePixels="true" StrokeThickness="1" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="TextBox.Static.Background" Color="#FFFFFFFF"/>
+        <Style x:Key="ComboBoxEditableTextBox" TargetType="{x:Type TextBox}">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="AllowDrop" Value="true"/>
+            <Setter Property="MinWidth" Value="0"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <ScrollViewer x:Name="PART_ContentHost" Background="Transparent" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <LinearGradientBrush x:Key="ComboBox.Static.Background" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFF0F0F0" Offset="0.0"/>
+            <GradientStop Color="#FFE5E5E5" Offset="1.0"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="ComboBox.Static.Editable.Background" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="ComboBox.Static.Editable.Border" Color="#FFABADB3"/>
+        <Style x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="ClickMode" Value="Press"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Grid>
+                            <Border x:Name="templateRoot" Background="white" BorderThickness="1" BorderBrush="#FFACACAC" SnapsToDevicePixels="true">
+                            </Border>
+                            <Border x:Name="splitBorder"  Margin="2" HorizontalAlignment="Right" Width="16">
+                                <Path x:Name="arrow" Data="F1 M 0,0 L 2.667,2.66665 L 5.3334,0 L 5.3334,-1.78168 L 2.6667,0.88501 L0,-1.78168 L0,0 Z" Fill="White" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center"/>
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="#78b01c"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#A0BF3E"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <ControlTemplate x:Key="ComboBoxEditableTemplate" TargetType="{x:Type ComboBox}">
+            <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0"/>
+                </Grid.ColumnDefinitions>
+                <Popup x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Bottom" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+                    <Themes:SystemDropShadowChrome x:Name="shadow" Color="Transparent" MinWidth="{Binding ActualWidth, ElementName=templateRoot}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                        <Border x:Name="dropDownBorder" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}">
+                            <ScrollViewer x:Name="DropDownScrollViewer">
+                                <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
+                                    <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
+                                        <Rectangle x:Name="opaqueRect" Fill="{Binding Background, ElementName=dropDownBorder}" Height="{Binding ActualHeight, ElementName=dropDownBorder}" Width="{Binding ActualWidth, ElementName=dropDownBorder}"/>
+                                    </Canvas>
+                                    <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                </Grid>
+                            </ScrollViewer>
+                        </Border>
+                    </Themes:SystemDropShadowChrome>
+                </Popup>
+                <ToggleButton x:Name="toggleButton" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Grid.ColumnSpan="2" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ComboBoxToggleButton}"/>
+                <Border x:Name="border" Background="{StaticResource TextBox.Static.Background}" Margin="{TemplateBinding BorderThickness}">
+                    <TextBox x:Name="PART_EditableTextBox" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}" Margin="{TemplateBinding Padding}" Style="{StaticResource ComboBoxEditableTextBox}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                </Border>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Opacity" TargetName="border" Value="0.56"/>
+                </Trigger>
+                <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+                <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="true">
+                    <Setter Property="Margin" TargetName="shadow" Value="0,0,5,5"/>
+                    <Setter Property="Color" TargetName="shadow" Value="#71000000"/>
+                </Trigger>
+                <Trigger Property="HasItems" Value="false">
+                    <Setter Property="Height" TargetName="dropDownBorder" Value="95"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsGrouping" Value="true"/>
+                        <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                </MultiTrigger>
+                <Trigger Property="ScrollViewer.CanContentScroll" SourceName="DropDownScrollViewer" Value="false">
+                    <Setter Property="Canvas.Top" TargetName="opaqueRect" Value="{Binding VerticalOffset, ElementName=DropDownScrollViewer}"/>
+                    <Setter Property="Canvas.Left" TargetName="opaqueRect" Value="{Binding HorizontalOffset, ElementName=DropDownScrollViewer}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Style x:Key="ComboBoxStyle1" TargetType="{x:Type ComboBox}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="{StaticResource ComboBox.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="#FFACACAC"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="Padding" Value="6,3,5,3"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
+            <Setter Property="ScrollViewer.PanningMode" Value="Both"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Padding" Value="2"/>
+            <Setter Property="Template" Value="{StaticResource ComboBoxEditableTemplate}"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <!--<Border 
+            Background="{StaticResource MainGreenBrush}"
+            BorderThickness="0">
+            <TextBlock 
+                HorizontalAlignment="Center" 
+                Text="[Каталог: Продажа квартир] — Новая запись"
+                Foreground="White"
+                FontSize="15"/>
+        </Border>-->
+        <Border 
+            BorderBrush="#acacac"  
+            Grid.Row="1" 
+            BorderThickness="1">
+            <Grid Margin="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="106"/>
+                    <RowDefinition Height="7"/>
+                    <RowDefinition Height="120"/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Border Style="{StaticResource ShadowBorder}">
+                    <Border.Effect>
+                        <DropShadowEffect Opacity=".4" ShadowDepth="0"/>
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="8"/>
+                            <RowDefinition Height="46"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock 
+                            Style="{StaticResource Header}"
+                            Text="Агенство недвижимости:"/>
+                        <TextBlock 
+                            Style="{StaticResource Header}"
+                            Text="Регистрирующий:"
+                            Grid.Column="2"/>
+                        <TextBlock
+                            Style="{StaticResource Header}"
+                            Text="Ответственный:"
+                            Grid.Column="4"/>
+                        <Border 
+                            Grid.Row="1"
+                            Grid.Column="4"
+                            Padding="3,2">
+                            <TextBlock Text="Человекова Человек Человековна"/>
+                        </Border>
+                        <Border 
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Padding="3,2">
+                            <TextBlock Text="Человекова Человек Человековна"/>
+                        </Border>
+                        <Border 
+                            Grid.Row="1"
+                            Padding="3,2">
+                            <TextBlock Text="А.Н. Проспект"/>
+                        </Border>
+                        <Grid Grid.Row="5" Grid.ColumnSpan="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="57"/>
+                                <ColumnDefinition Width="4"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="4"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="23"/>
+                                <RowDefinition Height="23"/>
+                            </Grid.RowDefinitions>
+                            <CheckBox 
+                                x:Name="Exclusive"
+                                Content="Экскл." 
+                                Foreground="{StaticResource GreenFontBrush}"
+                                VerticalAlignment="Center"/>
+                            <TextBlock
+                                Style="{StaticResource Header}"
+                                Text="Заказчик:"
+                                Grid.Column="2"/>
+                            <Border Grid.Row="1">
+                                <TextBox 
+                                    IsEnabled="True"
+                                    Text="24834АН." 
+                                    Width="55"
+                                    BorderThickness="0"/>
+                            </Border>
+                            <Border 
+                                Grid.Row="1" 
+                                Padding="3,2"
+                                Grid.Column="2" >
+                                <TextBox
+                                    Width="195"
+                                    BorderThickness="0" 
+                                    Text="Бубарехов Антон Робертович"/>
+                            </Border>
+                            <TextBlock
+                                Style="{StaticResource Header}"
+                                Grid.Column="4"
+                                Text="Телефоны через &lt;;&gt; или &lt;,&gt;"/>
+                            <Border
+                                 Grid.Row="1"
+                                 Padding="3,2"
+                                 Grid.Column="4">
+                                <TextBox 
+                                    Width="450"
+                                    Text="88005553535, 89525048618"/>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Border>
+                <Border 
+                    Grid.Row="2"
+                    Style="{StaticResource ShadowBorder}">
+                    <Border.Effect>
+                        <DropShadowEffect 
+                            Opacity="0.4"
+                            ShadowDepth="0"/>
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="52"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="47"/>
+                                <ColumnDefinition Width="240"/>
+                                <ColumnDefinition Width="15"/>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock 
+                                Style="{StaticResource Header}"
+                                Text="Город:"/>
+                            <TextBlock
+                                Style="{StaticResource Header}"
+                                Text="Район:"
+                                Grid.Row="1"/>
+                            <ComboBox
+                                Style="{StaticResource GreenComboBox}"
+                                Grid.Column="1"/>
+                            <ComboBox
+                                Style="{StaticResource GreenComboBox}"
+                                Grid.Column="1"
+                                Grid.Row="1"/>
+                            <TextBlock 
+                                Style="{StaticResource Header}"
+                                Grid.Column="3"
+                                Text="Квартира №:"/>
+                            <TextBlock 
+                                Style="{StaticResource Header}"
+                                Text="Улица:"
+                                Grid.Row="1"
+                                Grid.Column="3"/>
+                            <ComboBox
+                                Style="{StaticResource GreenComboBox}"
+                                Grid.Row="1"
+                                Grid.Column="4"
+                                Grid.ColumnSpan="3"/>
+                            <Border 
+                                Grid.Column="4"
+                                Height="23">
+                                <TextBox Text="123" />
+                            </Border>
+                            <TextBlock
+                                Style="{StaticResource Header}"
+                                Text="Дом №:"
+                                Margin="0,0,5,0"
+                                HorizontalAlignment="Right"
+                                Grid.Column="5"/>
+                            <Border 
+                                Grid.Column="6"
+                                Height="23">
+                                <TextBox Text="123" />
+                            </Border>
+                            <CheckBox 
+                                Foreground="{StaticResource GreenFontBrush}"
+                                Grid.Column="7"
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"
+                                Grid.Row="1"
+                                Content="Растяжка"/>
+                            <CheckBox 
+                                Foreground="{StaticResource GreenFontBrush}"
+                                Grid.Column="7"
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"
+                                Content="Обмен"/>
+                        </Grid>
+                        <Grid Grid.Row="1">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Teest}"/>
+                                <ComboBox Style="{StaticResource ComboBoxStyle1}" Width="200" Height="23"/>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
