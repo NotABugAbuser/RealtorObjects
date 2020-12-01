@@ -26,18 +26,26 @@ namespace RealtorObjects.View
             InitializeComponent();
             DataContext = this;
         }
+        int testInt = 0;
         double teest = 21.66123;
         CustomCommand increase;
         public CustomCommand Increase {
             get {
                 return increase ??
                     (increase = new CustomCommand(obj => {
-                        var test = Convert.ToDouble(obj);
-                        test += 1;
+                        this.GetType().GetProperty((string)obj).SetValue(this, (double)this.GetType().GetProperty((string)obj).GetValue(this, null) + 0.05);
                     }));
             }
         }
-
+        CustomCommand decrease;
+        public CustomCommand Decrease {
+            get {
+                return decrease ??
+                    (decrease = new CustomCommand(obj => {
+                        this.GetType().GetProperty((string)obj).SetValue(this, (double)this.GetType().GetProperty((string)obj).GetValue(this, null) - 0.05);
+                    }));
+            }
+        }
 
         public double Teest {
             get => teest;
@@ -47,6 +55,13 @@ namespace RealtorObjects.View
             }
         }
 
+        public int TestInt {
+            get => testInt;
+            set {
+                testInt = value;
+                OnPropertyChanged();
+            } 
+        }
 
         public void OnPropertyChanged([CallerMemberName] string property = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
@@ -57,8 +72,6 @@ namespace RealtorObjects.View
             this.DragMove();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e) {
-            Teest = 23;
-        }
+
     }
 }
