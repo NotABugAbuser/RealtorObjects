@@ -4,7 +4,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 
-namespace RealtorObjects.View
+namespace RealtorObjects
 {
     public class FrameworkElementExtension
     {
@@ -17,30 +17,30 @@ namespace RealtorObjects.View
             FrameworkElement element = (FrameworkElement)depObj;
             if (element != null) {
                 if ((bool)args.NewValue) {
-                    element.MouseDown += new MouseButtonEventHandler(element_MouseDown);
-                    element.MouseUp += new MouseButtonEventHandler(element_MouseUp);
-                    element.MouseLeave += new MouseEventHandler(element_MouseLeave);
+                    element.MouseDown += new MouseButtonEventHandler(Element_MouseDown);
+                    element.MouseUp += new MouseButtonEventHandler(Element_MouseUp);
+                    element.MouseLeave += new MouseEventHandler(Element_MouseLeave);
                 } else {
-                    element.MouseDown -= new MouseButtonEventHandler(element_MouseDown);
-                    element.MouseUp -= new MouseButtonEventHandler(element_MouseUp);
-                    element.MouseLeave -= new MouseEventHandler(element_MouseLeave);
+                    element.MouseDown -= new MouseButtonEventHandler(Element_MouseDown);
+                    element.MouseUp -= new MouseButtonEventHandler(Element_MouseUp);
+                    element.MouseLeave -= new MouseEventHandler(Element_MouseLeave);
                 }
             }
         }
 
-        static void element_MouseLeave(object sender, MouseEventArgs e) {
+        static void Element_MouseLeave(object sender, MouseEventArgs e) {
             FrameworkElement element = (FrameworkElement)sender;
             if (element != null) {
                 element.SetValue(IsPressedProperty, false);
             }
         }
-        static void element_MouseUp(object sender, MouseButtonEventArgs e) {
+        static void Element_MouseUp(object sender, MouseButtonEventArgs e) {
             FrameworkElement element = (FrameworkElement)sender;
             if (element != null) {
                 element.SetValue(IsPressedProperty, false);
             }
         }
-        static void element_MouseDown(object sender, MouseButtonEventArgs e) {
+        static void Element_MouseDown(object sender, MouseButtonEventArgs e) {
             FrameworkElement element = (FrameworkElement)sender;
             if (element != null) {
                 element.SetValue(IsPressedProperty, true);

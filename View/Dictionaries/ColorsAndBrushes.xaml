@@ -1,0 +1,25 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:RealtorObjects">
+
+    <Color x:Key="MainGrayColor">#e8e8e8</Color>
+    <Color x:Key="MainGreenColor">#78B01C</Color>
+    <Color x:Key="BorderGrayColor">#FFABADB3</Color>
+    <Color x:Key="GreenFontColor">#005000</Color>
+    <Color x:Key="LightMainGreenColor">#A0BF3E</Color>
+    <SolidColorBrush 
+            x:Key="MainGray" 
+            Color="{StaticResource MainGrayColor}"/>
+    <SolidColorBrush 
+            x:Key="MainGreen" 
+            Color="{StaticResource MainGreenColor}"/>
+    <SolidColorBrush 
+            x:Key="BorderGray" 
+            Color="{StaticResource BorderGrayColor}" />
+    <SolidColorBrush
+            x:Key="GreenFont"
+            Color="{StaticResource GreenFontColor}"/>
+    <SolidColorBrush 
+            x:Key="LightMainGreen"
+            Color="{StaticResource LightMainGreenColor}"/>
+</ResourceDictionary>

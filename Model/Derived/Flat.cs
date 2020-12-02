@@ -9,7 +9,7 @@ namespace RealtorObjects.Model.DerivedClasses
     class Flat : BaseRealtorObject
     {
         FlatInfo info = new FlatInfo();
-
+            
         public FlatInfo Info {
             get => info;
             set {

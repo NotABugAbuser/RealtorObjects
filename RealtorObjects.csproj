@@ -59,17 +59,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\BaseClasses\BaseRealtorObject.cs" />
-    <Compile Include="Model\DerivedClasses\Flat.cs" />
-    <Compile Include="Model\DerivedClasses\FlatInfo.cs" />
-    <Compile Include="Model\DerivedClasses\House.cs" />
-    <Compile Include="Model\DerivedClasses\HouseInfo.cs" />
-    <Compile Include="Model\Cost.cs" />
-    <Compile Include="Model\Worker.cs" />
+    <Compile Include="ViewModel\FlatFormViewModel.cs" />
+    <Compile Include="Interfaces\IDoubleNumericUpDown.cs" />
+    <Compile Include="Model\Base\BaseRealtorObject.cs" />
+    <Compile Include="Model\Derived\Flat.cs" />
+    <Compile Include="Model\Derived\FlatInfo.cs" />
+    <Compile Include="Model\Derived\House.cs" />
+    <Compile Include="Model\Derived\HouseInfo.cs" />
+    <Compile Include="Model\Independent\Cost.cs" />
+    <Compile Include="Interfaces\IIntegerNumericUpDown.cs" />
+    <Compile Include="Model\Independent\Worker.cs" />
     <Compile Include="View\FlatForm.xaml.cs">
       <DependentUpon>FlatForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\FrameWorkElementExtension.cs" />
+    <Compile Include="NonModel\FrameWorkElementExtension.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -77,6 +80,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\Dictionaries\ColorsAndBrushes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Dictionaries\ControlStylesAndTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\FlatForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -87,9 +98,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\CustomCommand.cs" />
-    <Compile Include="Model\BaseClasses\BaseInfo.cs" />
-    <Compile Include="Model\Location.cs" />
+    <Compile Include="NonModel\CustomCommand.cs" />
+    <Compile Include="Model\Base\BaseInfo.cs" />
+    <Compile Include="Model\Independent\Location.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -117,7 +128,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ViewModel\" />
+    <Folder Include="View\Converters\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
