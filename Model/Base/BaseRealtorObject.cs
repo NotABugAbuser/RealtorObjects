@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace RealtorObjects.Model
 {
-    class BaseRealtorObject : INotifyPropertyChanged
+    public class BaseRealtorObject : INotifyPropertyChanged
     {
-        Worker worker = new Worker();
+        PersonInfo personInfo = new PersonInfo();
         Location location = new Location();
         Cost cost = new Cost();
-        public Worker Worker {
-            get => worker;
+        public PersonInfo PersonInfo {
+            get => personInfo;
             set {
-                worker = value;
+                personInfo = value;
                 OnPropertyChanged();
             }
         }

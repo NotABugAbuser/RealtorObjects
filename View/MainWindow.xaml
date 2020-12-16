@@ -6,23 +6,27 @@
         xmlns:local="clr-namespace:RealtorObjects"
         xmlns:v="clr-namespace:RealtorObjects.View"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="1366">
+        Title="MainWindow" Height="750" Width="1300">
     <Window.Resources>
-        <Color x:Key="MainGreen">#78B01C</Color>
-        <SolidColorBrush Color="{StaticResource MainGreen}" x:Key="MainGreenBrush"/>
     </Window.Resources>
     <Grid Name="TestGrid">
         <TabControl>
             <TabItem>
                 <TabItem.Header>
-                    <TextBlock Text="Ololo12313213">
-                    </TextBlock>
+                    <TextBlock Text="Тестовая"/>
                 </TabItem.Header>
-            </TabItem>
-            <TabItem>
-                <TabItem.Header>
-                    <TextBlock Text="Ololo"/>
-                </TabItem.Header>
+                <TabItem.Content>
+                    <StackPanel>
+                        <Button
+                        Command="{Binding TestCommand}"
+                        Width="50"
+                        Height="50"/>
+                        <Button
+                        Command="{Binding SecondTestCommand}"
+                        Width="50"
+                        Height="50"/>
+                    </StackPanel>
+                </TabItem.Content>
             </TabItem>
         </TabControl>
     </Grid>

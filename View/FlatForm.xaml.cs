@@ -28,14 +28,23 @@ namespace RealtorObjects.View
         public FlatForm() {
             InitializeComponent();
             DataContext = new FlatFormViewModel();
-            District.ItemsSource = new ObservableCollection<string> { "Лунный","Луначарский","Лунивский","Лунковский","Луновый","Лужевый"};
+        }
+        public FlatForm(FlatFormViewModel dataContext) {
+            InitializeComponent();
+            DataContext = dataContext;
         }
         private void Window_MouseDown(object sender, MouseButtonEventArgs e) {
             this.DragMove();
         }
+        private void AlphabeticalOnly(object sender, TextCompositionEventArgs e) {
+            e.Handled = new Regex("[^а-яА-Яa-zA-z]").IsMatch(e.Text);
+        }
+        private void NumericOnly(object sender, TextCompositionEventArgs e) {
+            e.Handled = new Regex("[^0-9]").IsMatch(e.Text);
+        }
 
-        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e) {
-            Regex regex = new Regex("[0-9]");
+        private void PhoneNumbers(object sender, TextCompositionEventArgs e) {
+            e.Handled = new Regex("[^0-9;,]").IsMatch(e.Text);
         }
     }
 }

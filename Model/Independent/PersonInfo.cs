@@ -8,13 +8,18 @@ using System.Threading.Tasks;
 
 namespace RealtorObjects.Model
 {
-    class Worker : INotifyPropertyChanged
+    public class PersonInfo : INotifyPropertyChanged
     {
         string agency = "";
         string registrant = "";
         DateTime regDate = new DateTime();
         string responsible = "";
         DateTime respDate = new DateTime();
+        bool hasExclusive = false;
+        string exclusiveNumber = "";
+        string phoneNumbers = "";
+        string customer = "";
+
 
         public string Agency {
             get => agency;
@@ -52,6 +57,34 @@ namespace RealtorObjects.Model
             }
         }
 
+        public bool HasExclusive {
+            get => hasExclusive;
+            set {
+                hasExclusive = value;
+                OnPropertyChanged();
+            }
+        }
+        public string ExclusiveNumber {
+            get => exclusiveNumber;
+            set {
+                exclusiveNumber = value;
+                OnPropertyChanged();
+            }
+        }
+        public string PhoneNumbers {
+            get => phoneNumbers;
+            set {
+                phoneNumbers = value;
+                OnPropertyChanged();
+            }
+        }
+        public string Customer {
+            get => customer;
+            set {
+                customer = value;
+                OnPropertyChanged();
+            }
+        }
         public void OnPropertyChanged([CallerMemberName] string property = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }

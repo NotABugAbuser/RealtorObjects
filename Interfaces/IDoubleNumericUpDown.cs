@@ -8,6 +8,6 @@
         CustomCommand DecreaseDouble {
             get;
         }
-        void ChangeProperty(string name, double value);
+        void ChangeProperty<T>(object obj, T gain);
     }
 }

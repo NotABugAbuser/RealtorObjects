@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RealtorObjects.Model
 {
-    class FlatInfo : BaseInfo
+    public class FlatInfo : BaseInfo
     {
         string material = "";
         string fund = "";
@@ -14,10 +14,11 @@ namespace RealtorObjects.Model
         string windows = "";
         int kvl = 0;
         bool isPrivatised = false;
+        bool isSeparated = true;
         bool hasImprovedLayout = false;
-        bool hasRenovation = false; 
-        bool hasChute = false; //мусоропровод
-        string typeOfRooms = "";
+        bool hasRenovation = false;
+        bool hasChute = false;
+        string typeOfRooms = "Раздельные";
         string rooms = "";
         bool hasGarage = false;
         bool hasElevator = false;
@@ -26,8 +27,7 @@ namespace RealtorObjects.Model
         string loggia = "";
         string bath = "";
         string bathroom = "";
-        string floor = ""; 
-        
+        string floor = "";
 
         public string Balcony {
             get => balcony;
@@ -96,7 +96,8 @@ namespace RealtorObjects.Model
         public int Kvl {
             get => kvl;
             set {
-                kvl = value;
+                if (value >= 0)
+                    kvl = value;
                 OnPropertyChanged();
             }
         }
@@ -130,10 +131,6 @@ namespace RealtorObjects.Model
         }
         public string TypeOfRooms {
             get => typeOfRooms;
-            set {
-                typeOfRooms = value;
-                OnPropertyChanged();
-            }
         }
         public string Rooms {
             get => rooms;
@@ -160,6 +157,17 @@ namespace RealtorObjects.Model
             get => isCorner;
             set {
                 isCorner = value;
+                OnPropertyChanged();
+            }
+        }
+        public bool IsSeparated {
+            get => isSeparated;
+            set {
+                isSeparated = value;
+                if (isSeparated)
+                    typeOfRooms = "Раздельные";
+                else
+                    typeOfRooms = "Смежные";
                 OnPropertyChanged();
             }
         }

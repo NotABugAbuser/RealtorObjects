@@ -8,6 +8,6 @@
         CustomCommand DecreaseInteger {
             get;
         }
-        void ChangeProperty(string name, sbyte value);
+        void ChangeProperty<T>(object obj, T gain);
     }
 }

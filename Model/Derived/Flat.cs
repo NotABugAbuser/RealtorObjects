@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RealtorObjects.Model.DerivedClasses
+namespace RealtorObjects.Model
 {
-    class Flat : BaseRealtorObject
+    public class Flat : BaseRealtorObject
     {
         FlatInfo info = new FlatInfo();
             

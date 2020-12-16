@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RealtorObjects.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,8 +23,9 @@ namespace RealtorObjects.View
     {
         public MainWindow() {
             InitializeComponent();
-            var form = new FlatForm();
-            form.Show();
+            this.DataContext = new MainWindowViewModel();
+            //var form = new FlatForm();
+            //form.Show();
         }
     }
 }

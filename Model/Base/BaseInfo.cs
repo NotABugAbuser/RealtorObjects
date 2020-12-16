@@ -6,16 +6,16 @@ using System.Text;
 
 namespace RealtorObjects.Model
 {
-    class BaseInfo : INotifyPropertyChanged
+    public class BaseInfo : INotifyPropertyChanged
     {
-        int year = 0;
+        int year = 2000;
         int roomCount = 0;
         double general = 0;
         double living = 0;
         double kitchen = 0;
         string description = "";
         string water = "";
-        Double ceiling = 0;
+        Double ceiling = 2;
         string convenience = "";
         string heating = "";
         string condition = "";
@@ -59,35 +59,40 @@ namespace RealtorObjects.Model
         public int Year {
             get => year;
             set {
-                year = value;
+                if (value >= 1900 && value <= 2100)
+                    year = value;
                 OnPropertyChanged();
             }
         }
         public int RoomCount {
             get => roomCount;
             set {
-                roomCount = value;
+                if (value >= 0 && value <= 100)
+                    roomCount = value;
                 OnPropertyChanged();
             }
         }
         public double General {
             get => general;
             set {
-                general = value;
+                if (value >= 0 && value <= 100)
+                    general = value;
                 OnPropertyChanged();
             }
         }
         public double Living {
             get => living;
             set {
-                living = value;
+                if (value >= 0 && value <= 100)
+                    living = value;
                 OnPropertyChanged();
             }
         }
         public double Kitchen {
             get => kitchen;
             set {
-                kitchen = value;
+                if (value >= 0 && value <= 100)
+                    kitchen = value;
                 OnPropertyChanged();
             }
         }

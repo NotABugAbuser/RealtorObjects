@@ -8,54 +8,79 @@ using System.Threading.Tasks;
 
 namespace RealtorObjects.Model
 {
-    class Cost : INotifyPropertyChanged
+    public class Cost : INotifyPropertyChanged
     {
         double area = 0;
-        double multiplier = 0;
+        double multiplier = 1000;
         double pseudoPrice = 0;
-        double realprice = 0;
-        bool vAT = false; // НДС
-        bool mortgage = false; //Ипотека
+        double realPrice = 0;
+        bool hasPercents = true;
+        double percents = 0;
+        bool hasVAT = true; // НДС
+        bool hasMortgage = false; //Ипотека
 
         public double Area {
             get => area;
             set {
-                area = value;
+                if (value >= 0 && value <= 1000)
+                    area = value;
                 OnPropertyChanged();
             }
         }
         public double Multiplier {
             get => multiplier;
             set {
-                multiplier = value;
+                if (value >= 0 && value <= 1000000)
+                    multiplier = value;
+                    RealPrice = PseudoPrice * Multiplier;
                 OnPropertyChanged();
             }
         }
         public double PseudoPrice {
             get => pseudoPrice;
             set {
-                pseudoPrice = value;
+                if (value >= 0 && value < 1000) {
+                    pseudoPrice = value;
+                    RealPrice = PseudoPrice * Multiplier;
+                }
                 OnPropertyChanged();
             }
         }
-        public double Realprice {
-            get => realprice;
-            set {
-                realprice = value;
+        public double RealPrice {
+            get => realPrice;
+            private set {
+                if (value >= 0 && value <= 1000000000)
+                    realPrice = value;
                 OnPropertyChanged();
             }
         }
-        public bool VAT {
-            get => vAT;
+        public bool HasVAT {
+            get => hasVAT;
             set {
-                vAT = value;
+                hasVAT = value;
                 OnPropertyChanged();
             }
         }
-        public bool Mortgage {
-            get => mortgage;
+        public bool HasMortgage {
+            get => hasMortgage;
             set {
-                mortgage = value;
+                hasMortgage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool HasPercents {
+            get => hasPercents;
+            set {
+                hasPercents = value;
+                OnPropertyChanged();
+            }
+        }
+        public double Percents {
+            get => percents;
+            set {
+                if (value >= 0 && value <= 100)
+                    percents = value;
                 OnPropertyChanged();
             }
         }

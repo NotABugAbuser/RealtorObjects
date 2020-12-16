@@ -2,21 +2,23 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                    xmlns:glob="clr-namespace:System.Globalization;assembly=mscorlib"
-    
+        xmlns:glob="clr-namespace:System.Globalization;assembly=mscorlib"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:v="clr-namespace:RealtorObjects.View"
         xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
+        xmlns:c="clr-namespace:RealtorObjects.View.Converters"
         x:Class="RealtorObjects.View.FlatForm"
         mc:Ignorable="d"
-        Title="FlatForm" Height="582" Width="744"
+        Title="FlatForm" Height="648" Width="744"
         Background="#f1f1f1"
         WindowStyle="none"
         BorderBrush="#81b922"
         BorderThickness="1"
-        d:DataContext="{d:DesignInstance Type=vm:FlatFormViewModel, IsDesignTimeCreatable=True}"
         MouseDown="Window_MouseDown"
         ResizeMode="NoResize">
+    <!--<Window.DataContext>
+        <vm:FlatFormViewModel/>
+    </Window.DataContext>-->
     <Window.Resources>
         <Style x:Key="ShadowBorder" TargetType="{x:Type Border}">
             <Setter Property="BorderThickness" Value="0"/>
@@ -39,61 +41,9 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="BorderBrush" Value="{StaticResource BorderGray}"/>
         </Style>
-
-        <Style TargetType="TextBox" x:Key="IntegerNumericUpDown">
-            <Setter Property="Height" Value="23"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TextBox}">
-                        <Border 
-                        BorderThickness="1" 
-                        BorderBrush="{StaticResource BorderGray}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="18"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <TextBox
-                                Grid.RowSpan="2"
-                                HorizontalAlignment="Right"
-                                TextAlignment="Right"
-                                Text="{Binding Path=Text, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}, UpdateSourceTrigger=PropertyChanged}"
-                                x:Name="PART_NumericTextBox"
-                                Padding="2"/>
-                                <RepeatButton 
-                                Command="{Binding IncreaseInteger}"
-                                CommandParameter="{TemplateBinding Tag}"
-                                Grid.Column="1"
-                                Margin="1,1,1,0.5">
-                                    <Polygon
-                                    Style="{StaticResource WhiteArrowStyle}"
-                                    Points="0,3,3,0,6,3"/>
-                                </RepeatButton>
-                                <RepeatButton 
-                                Style="{StaticResource PART_RepeatButtonStyle}"
-                                Grid.Column="1"
-                                Grid.Row="1"
-                                Command="{Binding DecreaseInteger}"
-                                CommandParameter="{TemplateBinding Tag}"
-                                Margin="1,0.5,1,1">
-                                    <Polygon
-                                    Margin="0,1,0,0"
-                                    Style="{StaticResource WhiteArrowStyle}"
-                                    Points="0,0 3,3 6,0"/>
-                                </RepeatButton>
-                            </Grid>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
+        <c:StringMultiplierToNumericMultiplierConverter x:Key="StringMultiplierToNumericMultiplier"/>
     </Window.Resources>
-    <Grid>
+    <Grid DataContext="{Binding Flat}">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition/>
@@ -113,22 +63,23 @@
             BorderThickness="1">
             <Grid Margin="4,0,4,4">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="106"/>
-                    <RowDefinition Height="7"/>
-                    <RowDefinition Height="61"/>
+                    <RowDefinition Height="105"/>
                     <RowDefinition Height="7"/>
                     <RowDefinition Height="65"/>
                     <RowDefinition Height="7"/>
-                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="65"/>
                     <RowDefinition Height="7"/>
-                    <RowDefinition/>
-                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="207"/>
+                    <RowDefinition Height="7"/>
+                    <RowDefinition Height="130"/>
                 </Grid.RowDefinitions>
-                <Border Style="{StaticResource ShadowBorder}">
+                <Border 
+                    DataContext="{Binding PersonInfo}"
+                    Style="{StaticResource ShadowBorder}">
                     <Border.Effect>
                         <DropShadowEffect Opacity=".4" ShadowDepth="0"/>
                     </Border.Effect>
-                    <Grid>
+                    <Grid VerticalAlignment="Center">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
                             <ColumnDefinition Width="4"/>
@@ -139,17 +90,20 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="23"/>
                             <RowDefinition Height="23"/>
-                            <RowDefinition Height="8"/>
-                            <RowDefinition Height="46"/>
+                            <RowDefinition Height="4"/>
+                            <RowDefinition Height="47"/>
                         </Grid.RowDefinitions>
                         <TextBlock 
+                            HorizontalAlignment="Left"
                             Style="{StaticResource Header}"
                             Text="Агенство недвижимости:"/>
                         <TextBlock 
+                            HorizontalAlignment="Left"
                             Style="{StaticResource Header}"
                             Text="Регистрирующий:"
                             Grid.Column="2"/>
                         <TextBlock
+                            HorizontalAlignment="Left"
                             Style="{StaticResource Header}"
                             Text="Ответственный:"
                             Grid.Column="4"/>
@@ -157,18 +111,18 @@
                             Grid.Row="1"
                             Grid.Column="4"
                             Padding="3,2">
-                            <TextBlock Text="Человекова Человек Человековна"/>
+                            <TextBlock Text="{Binding Responsible}"/>
                         </Border>
                         <Border 
                             Grid.Row="1"
                             Grid.Column="2"
                             Padding="3,2">
-                            <TextBlock Text="Человекова Человек Человековна"/>
+                            <TextBlock Text="{Binding Registrant}"/>
                         </Border>
                         <Border 
                             Grid.Row="1"
                             Padding="3,2">
-                            <TextBlock Text="А.Н. Проспект"/>
+                            <TextBlock Text="{Binding Agency}"/>
                         </Border>
                         <Grid Grid.Row="5" Grid.ColumnSpan="5">
                             <Grid.ColumnDefinitions>
@@ -185,16 +139,19 @@
                             <CheckBox 
                                 x:Name="Exclusive"
                                 Content="Экскл." 
+                                IsChecked="{Binding HasExclusive}"
                                 Foreground="{StaticResource GreenFont}"
                                 VerticalAlignment="Center"/>
                             <TextBlock
+                                HorizontalAlignment="Left"
                                 Style="{StaticResource Header}"
                                 Text="Заказчик:"
                                 Grid.Column="2"/>
                             <Border Grid.Row="1">
                                 <TextBox 
-                                    IsEnabled="True"
-                                    Text="24834АН." 
+                                    MaxLength="7"
+                                    IsEnabled="{Binding HasExclusive}"
+                                    Text="{Binding ExclusiveNumber, UpdateSourceTrigger=LostFocus}" 
                                     Width="55"
                                     BorderThickness="0"/>
                             </Border>
@@ -205,9 +162,10 @@
                                 <TextBox
                                     Width="195"
                                     BorderThickness="0" 
-                                    Text="Бубарехов Антон Робертович"/>
+                                    Text="{Binding Customer, UpdateSourceTrigger=LostFocus}"/>
                             </Border>
                             <TextBlock
+                                HorizontalAlignment="Left"
                                 Style="{StaticResource Header}"
                                 Grid.Column="4"
                                 Text="Телефоны через &lt;;&gt; или &lt;,&gt;"/>
@@ -217,12 +175,14 @@
                                  Grid.Column="4">
                                 <TextBox 
                                     Width="450"
-                                    Text="88005553535, 89525048618"/>
+                                    PreviewTextInput="PhoneNumbers"
+                                    Text="{Binding PhoneNumbers, UpdateSourceTrigger=LostFocus}"/>
                             </Border>
                         </Grid>
                     </Grid>
                 </Border>
                 <Border 
+                    DataContext="{Binding Location}"    
                     Grid.Row="2"
                     Style="{StaticResource ShadowBorder}">
                     <Border.Effect>
@@ -230,7 +190,9 @@
                             Opacity="0.4"
                             ShadowDepth="0"/>
                     </Border.Effect>
-                    <Grid Height="55">
+                    <Grid 
+                        Height="55" 
+                        VerticalAlignment="Center">
                         <Grid.RowDefinitions>
                             <RowDefinition/>
                             <RowDefinition/>
@@ -253,13 +215,14 @@
                             Text="Район:"
                             Grid.Row="1"/>
                         <ComboBox
+                            Text="{Binding City, UpdateSourceTrigger=LostFocus}"
+                            SelectedItem="{Binding City, UpdateSourceTrigger=PropertyChanged}"
                             Style="{StaticResource GreenComboBox}"
                             Grid.Column="1"/>
                         <ComboBox
                             Name="District"
-                            IsEditable="True"
-                            SelectedItem="{Binding TestString, UpdateSourceTrigger=PropertyChanged}"
-                            Text="{Binding TestString, UpdateSourceTrigger=PropertyChanged}"
+                            SelectedItem="{Binding District, UpdateSourceTrigger=PropertyChanged}"
+                            Text="{Binding District, UpdateSourceTrigger=LostFocus}"
                             Style="{StaticResource GreenComboBox}"
                             Grid.Column="1"
                             Grid.Row="1"/>
@@ -274,15 +237,18 @@
                             Grid.Column="3"/>
                         <ComboBox
                             Style="{StaticResource GreenComboBox}"
+                            Text="{Binding Street,UpdateSourceTrigger=PropertyChanged}"
+                            SelectedItem="{Binding Street, UpdateSourceTrigger=LostFocus}"
                             Grid.Row="1"
                             Grid.Column="4"
                             Grid.ColumnSpan="3"/>
                         <Border 
                             Grid.Column="4"
                             Height="23">
-                        <TextBox 
-                            Text="123" 
-                            Width="90"/>
+                            <TextBox 
+                                Text="{Binding FlatNumber, UpdateSourceTrigger=PropertyChanged}"
+                                PreviewTextInput="NumericOnly"
+                                Width="90"/>
                         </Border>
                         <TextBlock
                             Style="{StaticResource Header}"
@@ -294,7 +260,8 @@
                             Grid.Column="6"
                             Height="23">
                             <TextBox 
-                                Text="13" 
+                                Text="{Binding HouseNumber}"
+                                PreviewTextInput="NumericOnly"
                                 Width="90"/>
                         </Border>
                         <CheckBox 
@@ -303,34 +270,507 @@
                                 Margin="10,0,0,0"
                                 VerticalAlignment="Center"
                                 Grid.Row="1"
+                                IsChecked="{Binding HasBanner, UpdateSourceTrigger=PropertyChanged}"
                                 Content="Растяжка"/>
                         <CheckBox 
                                 Foreground="{StaticResource GreenFont}"
                                 Grid.Column="7"
                                 Margin="10,0,0,0"
+                                IsChecked="{Binding HasExchange, UpdateSourceTrigger=PropertyChanged}"
                                 VerticalAlignment="Center"
                                 Content="Обмен"/>
                     </Grid>
                 </Border>
-                <Border Grid.Row="4" Style="{StaticResource ShadowBorder}">
+                <Border 
+                    DataContext="{Binding Info}"
+                    Background="#fcfcfc"
+                    Grid.Row="4" 
+                    Style="{StaticResource ShadowBorder}">
                     <Border.Effect>
                         <DropShadowEffect Opacity=".4" ShadowDepth="0"/>
                     </Border.Effect>
-                    <StackPanel>
-                        <TextBox Tag="TestInt" Width="100" Style="{StaticResource IntegerNumericUpDown}" Text="{Binding TestInt, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"/>
-                        <TextBlock Text="{Binding TestDouble}" Height="23" Width="100"/>
-                    </StackPanel>
+                    <Grid VerticalAlignment="Center" Margin="0,5,0,3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="4"/>
+                            <RowDefinition Height="23"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="67"/>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="70"/>
+                            <ColumnDefinition Width="55"/>
+                            <ColumnDefinition Width="70"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="70"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Style="{StaticResource Header}"
+                            Text="Материал:"/>
+                        <Grid Grid.Column="2" Grid.ColumnSpan="2">
+                            <TextBlock 
+                                Style="{StaticResource Header}"
+                                Margin="0,0,77,0"
+                                Text="Кол. комнат:"/>
+                            <TextBox 
+                                Width="70"
+                                Text="{Binding RoomCount, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                                Tag="RoomCount"
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource IntegerNumericUpDown}"/>
+                        </Grid>
+                        <TextBlock 
+                            Style="{StaticResource Header}"
+                            Text="Кв-л:"
+                            Grid.Column="4"/>
+                        <TextBlock 
+                            Text="Год:"
+                            Style="{StaticResource Header}"
+                            Grid.Column="6"/>
+                        <TextBlock 
+                            Text="Фонд:"
+                            Style="{StaticResource Header}"
+                            Grid.Row="2"/>
+                        <TextBlock
+                            Style="{StaticResource Header}"
+                            Text="Тип:"
+                            Grid.Row="2"
+                            Grid.Column="2"/>
+                        <TextBlock
+                            Text="Общая:"
+                            Style="{StaticResource Header}"
+                            Grid.Row="2"
+                            Grid.Column="4"/>
+                        <TextBlock 
+                            Text="Жилая:"
+                            Style="{StaticResource Header}"
+                            Grid.Row="2"
+                            Grid.Column="6"/>
+                        <TextBlock 
+                            Text="Кухня:"
+                            Style="{StaticResource Header}"
+                            Grid.Row="2"
+                            Grid.Column="8"/>
+                        <ComboBox
+                            Style="{StaticResource GreenComboBox}"
+                            Text="{Binding Material, UpdateSourceTrigger=LostFocus}"
+                            ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.FlatOptions.Materials}"
+                            Grid.Column="1"/>
+                        <ComboBox
+                            Text="{Binding Fund, UpdateSourceTrigger=LostFocus}"
+                            SelectedItem="{Binding Fund}"
+                            Style="{StaticResource GreenComboBox}"
+                            ItemsSource="{Binding Path=DataContext.FlatOptions.Funds, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                            Grid.Row="2"
+                            Grid.Column="1"/>
+                        <ComboBox
+                            Text="{Binding Type, UpdateSourceTrigger=LostFocus}"
+                            Style="{StaticResource GreenComboBox}"
+                            ItemsSource="{Binding Path=DataContext.FlatOptions.Types, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                            Grid.Row="2"
+                            Grid.Column="3"/>
+                        <TextBox
+                            Style="{StaticResource IntegerNumericUpDown}"
+                            Grid.Column="5"
+                            Text="{Binding Kvl, UpdateSourceTrigger=PropertyChanged, StringFormat=0}" 
+                            Tag="Kvl"/>
+                        <TextBox
+                            Text="{Binding Year, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                            Tag="Year"
+                            Style="{StaticResource IntegerNumericUpDown}"
+                            Grid.Column="7"/>
+                        <TextBox
+                            Style="{StaticResource DoubleNumericUpDown}"
+                            Grid.Row="2"
+                            Text="{Binding General, UpdateSourceTrigger=PropertyChanged, StringFormat=0.00}" 
+                            Tag="General"
+                            Grid.Column="5"/>
+                        <TextBox
+                            Style="{StaticResource DoubleNumericUpDown}"
+                            Grid.Row="2"
+                            Tag="Living"
+                            Text="{Binding Living,StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                            Grid.Column="7"/>
+                        <TextBox
+                            Style="{StaticResource DoubleNumericUpDown}"
+                            Grid.Row="2"
+                            Text="{Binding Kitchen, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                            Tag="Kitchen"
+                            Grid.Column="9"/>
+                        <CheckBox 
+                            Foreground="{StaticResource GreenFont}"
+                            Content="Приватизация"
+                            Grid.Column="8"
+                            IsChecked="{Binding IsPrivatised, UpdateSourceTrigger=PropertyChanged}"
+                            VerticalAlignment="Center"
+                            Margin="13,0,0,0"
+                            Grid.ColumnSpan="2"/>
+                    </Grid>
                 </Border>
-                <Border Grid.Row="6" Style="{StaticResource ShadowBorder}">
+                <Border 
+                    DataContext="{Binding Info}"
+                    Grid.Row="6" 
+                    Style="{StaticResource ShadowBorder}">
                     <Border.Effect>
                         <DropShadowEffect Opacity=".4" ShadowDepth="0"/>
                     </Border.Effect>
+                    <Grid VerticalAlignment="Center" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="67"/>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width='130'/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="4"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="4"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="4"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="4"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="15"/>
+                            <RowDefinition Height="45"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock 
+                            Style="{StaticResource Header}"
+                            Text="Состояние:"/>
+                        <TextBlock
+                            Style="{StaticResource Header}"
+                            Text="Полы:"
+                            Grid.Row="2"/>
+                        <TextBlock
+                            Style="{StaticResource Header}"
+                            Text="Потолок:"
+                            Grid.Row="4"/>
+                        <TextBlock
+                            Style="{StaticResource Header}"
+                            Text="Балкон:"
+                            Grid.Row="6"/>
+                        <TextBlock
+                            Style="{StaticResource Header}"
+                            Text="Лоджия:"
+                            Grid.Row="8"/>
+                        <TextBlock
+                            Style="{StaticResource Header}"
+                            Text="Описание:"
+                            VerticalAlignment="Top"
+                            Grid.Row="10"/>
+                        <ComboBox
+                            PreviewTextInput="AlphabeticalOnly"
+                            SelectedItem="{Binding Condition}"
+                            Text="{Binding Condition, UpdateSourceTrigger=LostFocus}"
+                            ItemsSource="{Binding Path=DataContext.FlatOptions.Conditions, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                            Style="{StaticResource GreenComboBox}"
+                            Grid.Column="1"/>
+                        <ComboBox
+                            SelectedItem="{Binding Floor}"
+                            ItemsSource="{Binding Path=DataContext.FlatOptions.Floors, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                            Style="{StaticResource GreenComboBox}"
+                            Text="{Binding Floor, UpdateSourceTrigger=LostFocus}"
+                            Grid.Row="2"
+                            Grid.Column="1"/>
+                        <TextBox
+                            Text="{Binding Ceiling, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource DoubleNumericUpDown}"
+                            Tag="Ceiling"
+                            Grid.Row="4"
+                            Grid.Column="1"/>
+                        <ComboBox
+                            SelectedItem="{Binding Balcony}"
+                            ItemsSource="{Binding Path=DataContext.FlatOptions.Balconies, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                            Text="{Binding Balcony, UpdateSourceTrigger=LostFocus}"
+                            Style="{StaticResource GreenComboBox}"
+                            Grid.Row="6"
+                            Grid.Column="1"/>
+                        <ComboBox
+                            SelectedItem="{Binding Loggia}"
+                            ItemsSource="{Binding Path=DataContext.FlatOptions.Loggias, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                            Style="{StaticResource GreenComboBox}"
+                            Text="{Binding Loggia, UpdateSourceTrigger=LostFocus}"
+                            Grid.Row="8"
+                            Grid.Column="1"/>
+                        <TextBlock
+                            Grid.Column="2"
+                            Style="{StaticResource Header}"
+                            Text="Сан. узел:"/>
+                        <TextBlock
+                            Grid.Column="2"
+                            Style="{StaticResource Header}"
+                            Text="Удобства:"
+                            Grid.Row="2"/>
+                        <TextBlock
+                            Grid.Column="2"
+                            Style="{StaticResource Header}"
+                            Text="Отопление:"
+                            Grid.Row="4"/>
+                        <TextBlock
+                            Grid.Column="2"
+                            Style="{StaticResource Header}"
+                            Text="Г/вода:"
+                            Grid.Row="6"/>
+                        <TextBlock
+                            Grid.Column="2"
+                            Style="{StaticResource Header}"
+                            Text="Ванна:"
+                            Grid.Row="8"/>
+                        <ComboBox
+                            ItemsSource="{Binding Path=DataContext.FlatOptions.Bathrooms, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                            Style="{StaticResource GreenComboBox}"
+                            SelectedItem="{Binding Bathroom}"
+                            Text="{Binding Bathroom, UpdateSourceTrigger=LostFocus}"
+                            Grid.Column="3"/>
+                        <ComboBox
+                            ItemsSource="{Binding Path=DataContext.FlatOptions.Conveniences, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                            Style="{StaticResource GreenComboBox}"
+                            SelectedItem="{Binding Convenience}"
+                            Text="{Binding Convenience, UpdateSourceTrigger=LostFocus}"
+                            Grid.Row="2"
+                            Grid.Column="3"/>
+                        <ComboBox
+                            ItemsSource="{Binding Path=DataContext.FlatOptions.Heatings, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                            Style="{StaticResource GreenComboBox}"
+                            Text="{Binding Heating, UpdateSourceTrigger=LostFocus}"
+                            SelectedItem="{Binding Heating}"
+                            Grid.Row="4"
+                            Grid.Column="3"/>
+                        <ComboBox
+                            ItemsSource="{Binding Path=DataContext.FlatOptions.Waters, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                            Style="{StaticResource GreenComboBox}"
+                            Text="{Binding Water, UpdateSourceTrigger=LostFocus}"
+                            SelectedItem="{Binding Water}"
+                            Grid.Row="6"
+                            Grid.Column="3"/>
+                        <ComboBox
+                            ItemsSource="{Binding Path=DataContext.FlatOptions.Baths, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                            Style="{StaticResource GreenComboBox}"
+                            Grid.Row="8"
+                            Text="{Binding Bath, UpdateSourceTrigger=LostFocus}"
+                            SelectedItem="{Binding Bath}"
+                            Grid.Column="3"/>
+                        <Border 
+                            Grid.Row="10"
+                            Grid.Column="1"
+                            BorderBrush="{StaticResource BorderGray}"
+                            BorderThickness="1"
+                            Grid.ColumnSpan="5">
+                            <RichTextBox
+                                BorderThickness="0"/>
+                        </Border>
+                        <Border
+                            BorderBrush="LightGray"
+                            Margin="10,0"
+                            Grid.RowSpan="5"
+                            Grid.Column="4">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="4"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock
+                                    Text="Комнаты:"
+                                    Margin="5,0,0,0"
+                                    Foreground="{StaticResource GreenFont}"/>
+                                <RadioButton 
+                                    GroupName="Room"
+                                    Margin="5,0,0,0"
+                                    Grid.Row="1"
+                                    Padding="0,-1"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding IsSeparated}"
+                                    Content="Раздельные"/>
+                                <RadioButton 
+                                    GroupName="Room"
+                                    Grid.Column="4"
+                                    HorizontalAlignment="Right"
+                                    Margin="0,0,5,0"
+                                    Grid.Row="1"
+                                    Padding="0,-1"
+                                    VerticalAlignment="Center"
+                                    Content="Смежные"/>
+                                <Border
+                                    Grid.Row="2"
+                                    Grid.Column="4"
+                                    BorderThickness="1"
+                                    Margin="5,0"
+                                    BorderBrush="{StaticResource BorderGray}">
+                                    <TextBox
+                                        Text="{Binding Rooms, UpdateSourceTrigger=LostFocus}"
+                                        Padding="3,0"
+                                        Width="170"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <TextBlock
+                            Text="Окна:"
+                            Grid.Row="6"
+                            HorizontalAlignment="Left"
+                            Margin="10,0,0,0"
+                            Grid.Column="4"
+                            Style="{StaticResource Header}"/>
+                        <Border
+                            Grid.Row="8"
+                            Grid.Column="4"
+                            BorderThickness="1"
+                            Margin="10,0"
+                            BorderBrush="{StaticResource BorderGray}">
+                            <TextBox 
+                                Text="{Binding Windows, UpdateSourceTrigger=LostFocus}"
+                                Padding="3,0"
+                                Width="183"/>
+                        </Border>
+                        <Grid 
+                            Grid.Column="5"
+                            Grid.RowSpan="9">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <CheckBox
+                                Style="{StaticResource OptionCheckBox}"
+                                Content="Перепланировка"
+                                IsChecked="{Binding HasRenovation}"/>
+                            <CheckBox
+                                Style="{StaticResource OptionCheckBox}"
+                                Grid.Row="1"
+                                IsChecked="{Binding HasImprovedLayout}"
+                                Content="Улуч. планировка"/>
+                            <CheckBox
+                                Style="{StaticResource OptionCheckBox}"
+                                Grid.Row="2"
+                                IsChecked="{Binding HasChute}"
+                                Content="Мусоропровод"/>
+                            <CheckBox
+                                Style="{StaticResource OptionCheckBox}"
+                                Grid.Row="3"
+                                IsChecked="{Binding IsCorner}"
+                                Content="Угловая"/>
+                            <CheckBox
+                                Style="{StaticResource OptionCheckBox}"
+                                Grid.Row="4"
+                                IsChecked="{Binding HasGarage}"
+                                Content="Гараж"/>
+                            <CheckBox
+                                Style="{StaticResource OptionCheckBox}"
+                                Grid.Row="5"
+                                IsChecked="{Binding HasElevator}"
+                                Content="Лифт"/>
+                        </Grid>
+                    </Grid>
                 </Border>
-                <Border Grid.Row="8" Style="{StaticResource ShadowBorder}">
+                <Border 
+                    DataContext="{Binding Cost}"
+                    Grid.Row="7" 
+                    Style="{StaticResource ShadowBorder}" Margin="0,5,0,3" Grid.RowSpan="2">
                     <Border.Effect>
                         <DropShadowEffect Opacity=".4" ShadowDepth="0"/>
                     </Border.Effect>
-
+                    <Grid VerticalAlignment="Center" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="70"/>
+                            <ColumnDefinition Width="144"/>
+                            <ColumnDefinition Width="74"/>
+                            <ColumnDefinition Width="84"/>
+                            <ColumnDefinition Width="84"/>
+                            <ColumnDefinition Width="70"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="81"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock 
+                            Style="{StaticResource Header}"
+                            Text="Кв.М:"/>
+                        <TextBox
+                            Style="{StaticResource DoubleNumericUpDown}"
+                            Text="{Binding Area, StringFormat=0.00}"
+                            Tag="Area"
+                            Grid.Column="1"/>
+                        <TextBlock
+                            Style="{StaticResource Header}"
+                            Text="Цена:"
+                            Grid.Column="2"/>
+                        <TextBox 
+                            Text="{Binding PseudoPrice, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                            Tag="PseudoPrice"
+                            Style="{StaticResource DoubleNumericUpDown}"
+                            Grid.Column="3"/>
+                        <ComboBox
+                            SelectedItem="{Binding Multiplier, Converter={StaticResource StringMultiplierToNumericMultiplier}}"
+                            Margin="4,0,0,0"
+                            Text="Тыс. руб"
+                            IsEditable="False"
+                            ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.FlatOptions.Multipliers}"
+                            Style="{StaticResource GreenComboBox}"
+                            Grid.Column="4"/>
+                        <TextBlock
+                            Width="55"
+                            Margin="9,0,0,0"
+                            Text="{Binding Multiplier, Converter={StaticResource StringMultiplierToNumericMultiplier}}"
+                            Grid.Column="4"/>
+                        <TextBox
+                            IsEnabled="{Binding HasPercents}"
+                            Margin="4,0,0,0"
+                            Text="{Binding Percents, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                            Tag="Percents"
+                            Style="{StaticResource DoubleNumericUpDown}"
+                            Grid.Column="5"/>
+                        <CheckBox
+                            Content="С %-ми"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding HasPercents}"
+                            Foreground="{StaticResource GreenFont}"
+                            Grid.Column="6"/>
+                        <CheckBox
+                            Content="НДС"
+                            Grid.Column="7"
+                            IsChecked="{Binding HasVAT}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Foreground="{StaticResource GreenFont}"/>
+                        <CheckBox
+                            Content="Ипотека"
+                            Grid.Column="8"
+                            IsChecked="{Binding HasMortgage}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Foreground="{StaticResource GreenFont}"/>
+                        <Button 
+                            Command="{Binding Path=DataContext.TestCommand, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                            HorizontalAlignment="Right" 
+                            VerticalAlignment="Bottom" 
+                            Grid.Row="2"
+                            Width="50"
+                            Height="50"
+                            Grid.Column="1" 
+                            Background="red"/>
+                        <!--<ListBox 
+                            Margin="0"
+                            Padding="0"
+                            Background="#fcfcfc"
+                            Name="TestListBox"
+                            Grid.Row="2"
+                            Grid.ColumnSpan="9">
+                        <ListBox/>-->
+                    </Grid>
                 </Border>
             </Grid>
         </Border>

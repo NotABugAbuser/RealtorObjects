@@ -6,15 +6,15 @@ using System.Text;
 
 namespace RealtorObjects.Model
 {
-    class Location : INotifyPropertyChanged
+    public class Location : INotifyPropertyChanged
     {
         String city = "";
         String district = "";
         String street = "";
         Int16 houseNumber = 0;
         Int16 flatNumber = 0;
-        bool banner = false;
-        bool exchange = false;
+        bool hasBanner = false;
+        bool hasEchange = false;
         public string City {
             get => city;
             set {
@@ -51,17 +51,17 @@ namespace RealtorObjects.Model
             }
         }
 
-        public bool Exchange {
-            get => exchange;
+        public bool HasExchange {
+            get => hasEchange;
             set {
-                exchange = value;
+                hasEchange = value;
                 OnPropertyChanged();
             }
         }
-        public bool Banner {
-            get => banner;
+        public bool HasBanner {
+            get => hasBanner;
             set {
-                banner = value;
+                hasBanner = value;
                 OnPropertyChanged();
             }
         }

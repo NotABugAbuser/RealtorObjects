@@ -14,8 +14,8 @@ namespace RealtorObjects.Model
         bool hasDemarcation = false; //межевание
         string earthCategory = "";
         bool hasSlope = false;
-        float hundreds = 0f;
-        float hectar = 0f;
+        double hundreds = 0f;
+        double hectar = 0f;
         bool hasElectricity = false;
         string walls = "";
         string yard = "";
@@ -102,14 +102,14 @@ namespace RealtorObjects.Model
                 OnPropertyChanged();
             }
         }
-        public float Hundreds {
+        public double Hundreds {
             get => hundreds;
             set {
                 hundreds = value;
                 OnPropertyChanged();
             }
         }
-        public float Hectar {
+        public double Hectar {
             get => hectar;
             set {
                 hectar = value;
