@@ -7,7 +7,7 @@
     <Style x:Key="ShadowBorder" TargetType="{x:Type Border}">
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="5,3"/>
-        <Setter Property="Background" Value="#fcfcfc"/>
+        <Setter Property="Background" Value="white"/>
     </Style>
     <Style TargetType="CheckBox" x:Key="OptionCheckBox">
         <Setter Property="Foreground" Value="{StaticResource GreenFont}"/>

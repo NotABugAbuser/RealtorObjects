@@ -23,7 +23,7 @@ namespace RealtorObjects.View
     {
         public MainWindow() {
             InitializeComponent();
-            this.DataContext = new MainWindowViewModel();
+            //this.DataContext = new MainWindowViewModel();
             //var form = new FlatForm();
             //form.Show();
         }

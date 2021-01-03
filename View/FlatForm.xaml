@@ -10,7 +10,7 @@
         x:Class="RealtorObjects.View.FlatForm"
         mc:Ignorable="d"
         Title="FlatForm" Height="648" Width="744"
-        Background="#f1f1f1"
+        Background="#F6F6F6"
         WindowStyle="none"
         BorderBrush="#81b922"
         BorderThickness="1"
@@ -23,6 +23,7 @@
         <Style x:Key="ShadowBorder" TargetType="{x:Type Border}">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="5,3"/>
+            <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Background" Value="White"/>
         </Style>
         <Style TargetType="{x:Type TextBlock}">

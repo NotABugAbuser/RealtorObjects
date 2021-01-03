@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
+      <HintPath>packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -90,7 +93,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewModel\BaseViewModel.cs" />
+    <Compile Include="ViewModel\CustomersViewModel.cs" />
+    <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="ViewModel\PhoneNumbersViewModel.cs" />
+    <Compile Include="ViewModel\RealtorObjectsViewModel.cs" />
+    <Compile Include="ViewModel\StatisticsViewModel.cs" />
     <Compile Include="View\Converters\StringMultiplierToNumericMultiplierConverter.cs" />
     <Compile Include="Model\Independent\FlatOptions.cs" />
     <Compile Include="ViewModel\FlatFormViewModel.cs" />
@@ -104,10 +113,16 @@
     <Compile Include="Interfaces\IIntegerNumericUpDown.cs" />
     <Compile Include="Model\Independent\PersonInfo.cs" />
     <Compile Include="View\Converters\ObjectAndPropertyMultiValueConverter.cs" />
+    <Compile Include="View\Customers.xaml.cs">
+      <DependentUpon>Customers.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\FlatForm.xaml.cs">
       <DependentUpon>FlatForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="NonModel\FrameWorkElementExtension.cs" />
+    <Compile Include="View\Home.xaml.cs">
+      <DependentUpon>Home.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -115,6 +130,19 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="View\PhoneNumbers.xaml.cs">
+      <DependentUpon>PhoneNumbers.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\RealtorObjectsView.xaml.cs">
+      <DependentUpon>RealtorObjectsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Statistics.xaml.cs">
+      <DependentUpon>Statistics.xaml</DependentUpon>
+    </Compile>
+    <Page Include="View\Customers.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Dictionaries\ColorsAndBrushes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -127,9 +155,25 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Home.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\PhoneNumbers.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\RealtorObjectsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Statistics.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -163,5 +207,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Resource Include="View\Image\TestImage.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

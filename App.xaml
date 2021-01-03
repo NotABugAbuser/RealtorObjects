@@ -2,9 +2,26 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:RealtorObjects"
+             xmlns:v="clr-namespace:RealtorObjects.View"
+             xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
              StartupUri="View/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
+            <DataTemplate DataType="{x:Type vm:HomeViewModel}">
+                <v:Home/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:PhoneNumbersViewModel}">
+                <v:PhoneNumbers/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:StatisticsViewModel}">
+                <v:Statistics/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:CustomersViewModel}">
+                <v:Customers/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:RealtorObjectsViewModel}">
+                <v:RealtorObjectsView/>
+            </DataTemplate>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="View/Dictionaries/ColorsAndBrushes.xaml"/>
                 <ResourceDictionary Source="View/Dictionaries/ControlStylesAndTemplates.xaml"/>

@@ -15,7 +15,7 @@ using RealtorObjects.Model;
 
 namespace RealtorObjects.ViewModel
 {
-    public class FlatFormViewModel : INotifyPropertyChanged, IDoubleNumericUpDown, IIntegerNumericUpDown
+    public class FlatFormViewModel : BaseViewModel, IDoubleNumericUpDown, IIntegerNumericUpDown
     {
         string testString = "руддщ";
         int testInt = 20;
@@ -94,9 +94,6 @@ namespace RealtorObjects.ViewModel
             T value = (T)property.GetValue(instance, null);
             property.SetValue(instance, Operator.Add(step, value));
         }
-        public void OnPropertyChanged([CallerMemberName] string property = null) {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
+        
     }
 }
