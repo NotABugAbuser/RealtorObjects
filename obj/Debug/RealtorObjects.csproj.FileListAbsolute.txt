@@ -138,3 +138,5 @@ C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\obj\Debug\View\Customers.bam
 C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\obj\Debug\View\PhoneNumbers.baml
 C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\obj\Debug\View\RealtorObjectsView.g.cs
 C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\obj\Debug\View\RealtorObjectsView.baml
+C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\bin\Debug\RealtyModel.dll
+C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\bin\Debug\RealtyModel.pdb

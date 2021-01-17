@@ -1,5 +1,4 @@
 ﻿using FontAwesome.WPF;
-using RealtorObjects.Model;
 using RealtorObjects.View;
 using System;
 using System.Collections.Generic;
@@ -13,6 +12,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Windows;
+using RealtyModel.Service;
 
 namespace RealtorObjects.ViewModel
 {

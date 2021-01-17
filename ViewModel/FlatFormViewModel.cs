@@ -1,4 +1,8 @@
 ﻿using MiscUtil;
+using RealtyModel.Interface;
+using RealtyModel.Model;
+using RealtyModel.Model.Derived;
+using RealtyModel.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,7 +15,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using RealtorObjects.Model;
 
 namespace RealtorObjects.ViewModel
 {
