@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RealtyModel.Model;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -65,6 +66,12 @@ namespace RealtorObjects.ViewModel
 
         public ObservableCollection<bool> ToggledButtons {
             get => toggledButtons; set => toggledButtons = value;
+        }
+
+        public RealtorObjectsViewModel() { }
+        public RealtorObjectsViewModel(ObservableCollection<LogMessage> log) : base(log)
+        {
+            this.Log = log;
         }
     }
 }

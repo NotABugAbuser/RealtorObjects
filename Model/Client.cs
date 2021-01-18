@@ -12,13 +12,19 @@ using RealtyModel.Model;
 
 namespace RealtorObjects.Model
 {
+    /// <summary>
+    /// Класс клиента в локальной сети.
+    /// </summary>
     public class Client : INotifyPropertyChanged
     {
         Socket socket;
         Boolean isConnected;
         Dispatcher uiDispatcher;
 
-        internal Boolean IsConnected
+        /// <summary>
+        /// Свойство, которое равно true если клиент подключен к серверу, false если нет.
+        /// </summary>
+        public Boolean IsConnected
         {
             get => isConnected;
             private set
@@ -27,7 +33,13 @@ namespace RealtorObjects.Model
                 OnPropertyChanged();
             }
         }
+        /// <summary>
+        /// Коллекция сообщений лога событий данной клиента.
+        /// </summary>
         public ObservableCollection<LogMessage> Log { get; private set; }
+        /// <summary>
+        /// Коллекция приходящих от сервера операций.
+        /// </summary>
         public ObservableCollection<Operation> IncomingOperations { get; private set; }
 
         public Client(Dispatcher dispatcher)
@@ -37,6 +49,12 @@ namespace RealtorObjects.Model
             IncomingOperations = new ObservableCollection<Operation>();
         }
 
+        /// <summary>
+        /// Асинхронный метод подключения к серверу.
+        /// Пока клиент подключен выполняется цикловый метод приёма операций.
+        /// </summary>
+        /// <param name="ipAddress">ipAddress - ip адрес сервера.</param>
+        /// <returns></returns>
         public async Task ConnectAsync(IPAddress ipAddress)
         {
             await Task.Run(() =>
@@ -68,6 +86,10 @@ namespace RealtorObjects.Model
                 }
             });
         }
+        /// <summary>
+        /// Метод отправки операций серверу. Операция передаётся в виде последовательности байт закодированной в UTF-8 json-строки.
+        /// </summary>
+        /// <param name="operation">operation - операция, которую необходимо отправить серверу.</param>
         public void SendMessage(Operation operation)
         {
             try
@@ -81,6 +103,9 @@ namespace RealtorObjects.Model
                 UpdateLog(ex.Message);
             }
         }
+        /// <summary>
+        /// Метод отключения от сервера.
+        /// </summary>
         internal void Disconnect()
         {
             uiDispatcher.BeginInvoke(new Action(() =>
@@ -88,6 +113,9 @@ namespace RealtorObjects.Model
                 IsConnected = false;
             }));
         }
+        /// <summary>
+        /// Метод приём операции.
+        /// </summary>
         private void ReceiveMessage()
         {
             Int32 byteCount = 0;
@@ -110,6 +138,10 @@ namespace RealtorObjects.Model
                 }));
             }
         }
+        /// <summary>
+        /// Метод для добавления сообщений в лог событий (Log) при помощи диспетчера основного (UI) потока.
+        /// </summary>
+        /// <param name="message">message - текст сообщения. При вызове метода желательно указывать место вызова.</param>
         private void UpdateLog(String message)
         {
             uiDispatcher.BeginInvoke(new Action(() =>

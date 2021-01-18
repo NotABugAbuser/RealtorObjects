@@ -16,101 +16,27 @@ namespace RealtorObjects.ViewModel
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
-        //Нужен ли для MainWindow доступ в сеть?
-        //Необходимо временно добавить лог событий
-        //Как можно скорее добавить индикатор подключения, хотябы на период тестирования
+        /// <summary>
+        /// Коллекция сообщений лога событий данной ViewModel.
+        /// </summary>
+        protected ObservableCollection<LogMessage> Log { get; set; }
 
-        Boolean isLoggedIn = false;
-        
-        public Client Client { get; }
-        public Boolean IsLoggedIn
+        public BaseViewModel() { }
+        public BaseViewModel(ObservableCollection<LogMessage> log)
         {
-            get => isLoggedIn;
-            private set
-            {
-                isLoggedIn = value;
-                OnPropertyChanged();
-            }
-        }
-        public ObservableCollection<LogMessage> Log { get; private set; }
-
-        public BaseViewModel()
-        {
-            Log = new ObservableCollection<LogMessage>();
-            
-            Client = new Client(Dispatcher.CurrentDispatcher);
-            Client.Log.CollectionChanged += (sender, e) => UpdateLog(e.NewItems);
-            Client.IncomingOperations.CollectionChanged += (sender, e) => HandleOperation(e.NewItems);
-
-            ConnectAsync();
+            this.Log = log;
         }
 
-        public async void ConnectAsync()
-        {
-            Task connection = Client.ConnectAsync(IPAddress.Loopback);
-            try
-            {
-                await connection;
-            }                    
-            catch(Exception ex)
-            {
-                UpdateLog("connection is failed. " + ex.Message);
-            }
-        }
+        /// <summary>
+        /// Метод для добавления сообщений в лог событий (Log) при помощи диспетчера основного (UI) потока.
+        /// </summary>
+        /// <param name="message">message - текст сообщения. При вызове метода желательно указывать место вызова.</param>
         protected void UpdateLog(String message)
         {
-            
             Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() =>
             {
-                Log.Add(new LogMessage(DateTime.Now.ToString("dd:MM:yy hh:mm"), message));
+                this.Log.Add(new LogMessage(DateTime.Now.ToString("dd:MM:yy hh:mm"), message));
             }));
-        }
-        protected void UpdateLog(IList messages)
-        {
-            Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() =>
-            {
-                foreach (LogMessage message in messages)
-                {
-                    try
-                    {
-                        Log.Add(message);
-                    }
-                    catch (Exception ex)
-                    {
-                        UpdateLog(ex.Message);
-                    }
-                }
-            }));
-        }
-        protected void HandleOperation(IList messages)
-        {
-            foreach (Operation operation in messages)
-            {
-                try
-                {
-                    if (operation.OperationType == OperationType.Register)
-                    {
-                        if (operation.IsSuccessfully)
-                        {
-                            UpdateLog("Registration is successfull");
-                        }
-                        else UpdateLog("Registration is not successfull");
-                    }
-                    else if (operation.OperationType == OperationType.Login)
-                    {
-                        if (operation.IsSuccessfully)
-                        {
-                            IsLoggedIn = true;
-                            UpdateLog("Log in is successfull");
-                        }
-                        else UpdateLog("Log in is not successfull");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    UpdateLog(ex.Message);
-                }
-            }
         }
 
         public void OnPropertyChanged([CallerMemberName] string property = null)

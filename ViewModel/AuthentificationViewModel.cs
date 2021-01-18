@@ -18,7 +18,11 @@ namespace RealtorObjects.ViewModel
         String name = "";
         String password = "";
         String repeatedPassword = "";
+        Client client;
 
+        /// <summary>
+        /// Свойство имени(логина) пользователя. 
+        /// </summary>
         public String Name
         {
             get => name;
@@ -28,6 +32,9 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
+        /// <summary>
+        /// Свойство пароля пользователя.
+        /// </summary>
         public String Password
         {
             get => password;
@@ -37,6 +44,9 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
+        /// <summary>
+        /// Свойство повторного пароля пользователя, используемое при регистрации.
+        /// </summary>
         public String RepeatedPassword
         {
             get => repeatedPassword;
@@ -46,11 +56,19 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
+        /// <summary>
+        /// Команда отправки запроса на авторизацию.
+        /// </summary>
         public ICommand LoginCommand { get; private set; }
+        /// <summary>
+        /// Команда отправки запроса на регистрацию.
+        /// </summary>
         public ICommand RegisterCommand { get; private set; }
 
-        public AuthentificationViewModel()
+        public AuthentificationViewModel(Client client, ObservableCollection<LogMessage> log) : base(log)
         {
+            this.Log = log;
+            this.client = client;
             LoginCommand = new CustomCommand((obj) =>
             {
                 Operation login = new Operation()
@@ -63,7 +81,7 @@ namespace RealtorObjects.ViewModel
                         new Credential() { Name = this.Name, Password = this.Password }
                     )
                 };
-                Client.SendMessage(login);
+                client.SendMessage(login);
             });
             RegisterCommand = new CustomCommand((obj) =>
             {
@@ -79,7 +97,7 @@ namespace RealtorObjects.ViewModel
                            new Credential() { Name = this.Name, Password = this.Password }
                        )
                     };
-                    Client.SendMessage(register);
+                    client.SendMessage(register);
                 }
                 else UpdateLog("Passwords doesn't match");
             });

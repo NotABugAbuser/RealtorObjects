@@ -1,10 +1,12 @@
 ﻿using MiscUtil;
+using RealtorObjects.Model;
 using RealtyModel.Interface;
 using RealtyModel.Model;
 using RealtyModel.Model.Derived;
 using RealtyModel.Service;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -29,68 +31,94 @@ namespace RealtorObjects.ViewModel
         CustomCommand increaseInteger;
         CustomCommand decreaseInteger;
         Flat flat = new Flat();
-        
+        Client client;
+
         readonly FlatOptions flatOptions = new FlatOptions();
         public CustomCommand TestCommand => testCommand ??
-            (testCommand = new CustomCommand(obj => {
+            (testCommand = new CustomCommand(obj =>
+            {
                 MessageBox.Show(JsonSerializer.Serialize(Flat).Replace(',', '\n'));
             }));
-        public FlatFormViewModel() {
-            
+
+        public FlatFormViewModel()
+        {
+
         }
-        public FlatFormViewModel(Flat flat) {
+        public FlatFormViewModel(Client client, ObservableCollection<LogMessage> log) : base(log)
+        {
+            this.client = client;
+            this.Log = log;
+        }
+        public FlatFormViewModel(Flat flat, Client client, ObservableCollection<LogMessage> log) : base(log)
+        {
             this.Flat = flat;
+            this.client = client;
+            this.Log = log;
         }
+
         public CustomCommand IncreaseDouble => increaseDouble ??
-            (increaseDouble = new CustomCommand(obj => {
+            (increaseDouble = new CustomCommand(obj =>
+            {
                 ChangeProperty<double>(obj, 0.05);
-                
             }));
         public CustomCommand IncreaseInteger => increaseInteger ??
-            (increaseInteger = new CustomCommand(obj => {
+            (increaseInteger = new CustomCommand(obj =>
+            {
                 ChangeProperty<int>(obj, 1);
             }));
         public CustomCommand DecreaseDouble => decreaseDouble ??
-            (decreaseDouble = new CustomCommand(obj => {
+            (decreaseDouble = new CustomCommand(obj =>
+            {
                 ChangeProperty<double>(obj, -0.05);
             }));
         public CustomCommand DecreaseInteger => decreaseInteger ??
-            (decreaseInteger = new CustomCommand(obj => {
+            (decreaseInteger = new CustomCommand(obj =>
+            {
                 ChangeProperty<int>(obj, -1);
             }));
-        public double TestDouble {
+        public double TestDouble
+        {
             get => testDouble;
-            set {
+            set
+            {
                 testDouble = value;
                 OnPropertyChanged();
             }
         }
-        public int TestInt {
+        public int TestInt
+        {
             get => testInt;
-            set {
+            set
+            {
                 testInt = value;
                 OnPropertyChanged();
             }
         }
-        public string TestString {
+        public string TestString
+        {
             get => testString;
-            set {
+            set
+            {
                 testString = value;
                 OnPropertyChanged();
             }
         }
 
-        public Flat Flat {
+        public Flat Flat
+        {
             get => flat;
-            set {
+            set
+            {
                 flat = value;
                 OnPropertyChanged();
             }
         }
-        public FlatOptions FlatOptions {
+        public FlatOptions FlatOptions
+        {
             get => flatOptions;
         }
-        public void ChangeProperty<T>(object obj, T step) {
+        public void ChangeProperty<T>(object obj, T step)
+        {
             var objects = obj as object[];
             string name = objects[1].ToString();
             object instance = objects[0];
