@@ -1,0 +1,147 @@
+﻿<Window x:Class="RealtorObjects.View.LoginForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RealtorObjects.View"
+        xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
+        xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
+        xmlns:c="clr-namespace:RealtorObjects.View.Converters"
+        mc:Ignorable="d"
+        MouseDown="Window_MouseDown"
+        Title="LoginForm" 
+        Height="295" 
+        Width="350" 
+        Background="White"
+        WindowStyle="none"
+        ResizeMode="NoResize">
+    <Window.DataContext>
+        <vm:LoginFormViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <c:SymbolToStarConverter x:Key="SymbolToStar"/>
+        <Style x:Key="BaseCloseButton" TargetType="Button">
+            <Setter Property="Width" Value="45"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Background="{TemplateBinding Background}">
+                            <Line Width="45" Height="32" Margin="0" X1="18" Y1="12" X2="27" Y2="21" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/>
+                            <Line Width="45" Height="32" Margin="0" X1="27" Y1="12" X2="18" Y2="21" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Red"/>
+                    <Setter Property="BorderBrush" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button" x:Key="GrayCloseButton" BasedOn="{StaticResource BaseCloseButton}">
+            <Setter Property="Background" Value="{StaticResource BackgroundGray}"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+            <Style.Triggers>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightBackgroundGray}"/>
+                    <Setter Property="BorderBrush" Value="Gray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button" x:Key="WhiteCloseButton" BasedOn="{StaticResource BaseCloseButton}">
+            <Setter Property="Background" Value="white"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+            <Style.Triggers>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource BackgroundGray}"/>
+                    <Setter Property="BorderBrush" Value="gray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button" x:Key="GreenCloseButton" BasedOn="{StaticResource BaseCloseButton}">
+            <Setter Property="Background" Value="{StaticResource MainGreen}"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightMainGreen}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Button
+            Style="{StaticResource WhiteCloseButton}"
+            Command="{Binding CloseApp}">
+        </Button>
+        <Grid Margin="45,35,45,45">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition/>
+                <RowDefinition Height="40"/>
+                <RowDefinition/>
+                <RowDefinition Height="40"/>
+                <RowDefinition/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <TextBlock
+                Foreground="{StaticResource GreenFont}"
+                FontSize="24"
+                VerticalAlignment="bottom"
+                Text="Войдите в систему"/>
+            <Border
+                Grid.Row="2"
+                BorderBrush="{StaticResource BorderGray}"
+                BorderThickness="1">
+                <TextBox
+                    MaxLength="20"
+                    PreviewTextInput="LoginValidation"
+                    BorderThickness="0"
+                    Text="ГриньДВ"
+                    Foreground="#444"
+                    VerticalAlignment="Center"
+                    Margin="10"
+                    FontSize="17"
+                    FontFamily="Courier New"/>
+            </Border>
+            <Border
+                Grid.Row="4"
+                BorderBrush="{StaticResource BorderGray}"
+                BorderThickness="1">
+                <Grid>
+                    <TextBox
+                        BorderThickness="0"
+                        MaxLength="20"
+                        PreviewTextInput="PasswordValidation"
+                        Text="{Binding CurrentPassword, UpdateSourceTrigger=PropertyChanged}"
+                        Foreground="Transparent"
+                        VerticalAlignment="Center"
+                        Margin="10"
+                        FontSize="17"
+                        FontFamily="Courier New"/>
+                    <TextBox
+                        BorderThickness="0"
+                        MaxLength="20"
+                        Text="{Binding CurrentPassword, Converter={StaticResource SymbolToStar}}"
+                        Foreground="#444"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        IsHitTestVisible="False"
+                        Margin="10"
+                        FontSize="17"
+                        FontFamily="Courier New"/>
+                </Grid>
+            </Border>
+            <Button
+                Grid.Row="6"
+                Background="{StaticResource MainGreen}"
+                Content="Войти"
+                FontSize="17"
+                Command="{Binding Submit}"
+                Foreground="White"/>
+        </Grid>
+    </Grid>
+</Window>

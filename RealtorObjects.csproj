@@ -46,8 +46,12 @@
       <HintPath>packages\JonSkeet.MiscUtil.0.2.0\lib\net35\MiscUtil.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero2" />
-    <Reference Include="RealtyModel">
-      <HintPath>..\RealtyModel\bin\Debug\RealtyModel.dll</HintPath>
+    <Reference Include="RandomFlatGenerator">
+      <HintPath>..\..\..\source\repos\RandomFlatGenerator\RandomFlatGenerator\bin\Debug\RandomFlatGenerator.dll</HintPath>
+    </Reference>
+    <Reference Include="RealtyModel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\RealtyModel\bin\Debug\RealtyModel.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -100,6 +104,7 @@
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\CustomersViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
+    <Compile Include="ViewModel\LoginFormViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\PhoneNumbersViewModel.cs" />
     <Compile Include="ViewModel\RealtorObjectsViewModel.cs" />
@@ -107,6 +112,7 @@
     <Compile Include="View\Converters\StringMultiplierToNumericMultiplierConverter.cs" />
     <Compile Include="ViewModel\FlatFormViewModel.cs" />
     <Compile Include="View\Converters\ObjectAndPropertyMultiValueConverter.cs" />
+    <Compile Include="View\Converters\SymbolToStarConverter.cs" />
     <Compile Include="View\Customers.xaml.cs">
       <DependentUpon>Customers.xaml</DependentUpon>
     </Compile>
@@ -115,6 +121,9 @@
     </Compile>
     <Compile Include="View\Home.xaml.cs">
       <DependentUpon>Home.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\LoginForm.xaml.cs">
+      <DependentUpon>LoginForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -149,6 +158,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Home.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\LoginForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -23,6 +23,8 @@ namespace RealtorObjects.View
     {
         public MainWindow() {
             InitializeComponent();
+            var login = new LoginForm();
+            login.Show();
             //this.DataContext = new MainWindowViewModel();
             //var form = new FlatForm();
             //form.Show();

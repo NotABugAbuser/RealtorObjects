@@ -3,25 +3,23 @@
                     xmlns:local="clr-namespace:RealtorObjects">
 
     <Color x:Key="MainGrayColor">#e8e8e8</Color>
-    <Color x:Key="MainGreenColor">#78B01C</Color>
+    <!--<Color x:Key="MainGreenColor">#78B01C</Color>
+    <Color x:Key="LightMainGreenColor">#A0BF3E</Color>-->
+    <Color x:Key="LightBackgroundGrayColor">#F3F3F3</Color>
+    <Color x:Key="BackgroundGrayColor">#E6E6E6</Color>
     <Color x:Key="BorderGrayColor">#FFABADB3</Color>
     <Color x:Key="GreenFontColor">#005000</Color>
-    <Color x:Key="LightMainGreenColor">#A0BF3E</Color>
-    <SolidColorBrush 
-            x:Key="MainGray" 
-            Color="{StaticResource MainGrayColor}"/>
-    <SolidColorBrush 
-            x:Key="MainGreen" 
-            Color="{StaticResource MainGreenColor}"/>
-    <SolidColorBrush 
-            x:Key="BorderGray" 
-            Color="{StaticResource BorderGrayColor}" />
-    <SolidColorBrush
-            x:Key="GreenFont"
-            Color="{StaticResource GreenFontColor}"/>
-    <SolidColorBrush 
-            x:Key="LightMainGreen"
-            Color="{StaticResource LightMainGreenColor}"/>
+    <Color x:Key="MainGreenColor">#217345</Color>
+    <Color x:Key="LightMainGreenColor">#0E5C2F</Color>
+    
+    <SolidColorBrush x:Key="MainGray" Color="{StaticResource MainGrayColor}"/>
+    <SolidColorBrush x:Key="MainGreen" Color="{StaticResource MainGreenColor}"/>
+    <SolidColorBrush x:Key="BorderGray" Color="{StaticResource BorderGrayColor}" />
+    <SolidColorBrush x:Key="LightBackgroundGray" Color="{StaticResource LightBackgroundGrayColor}"/>
+    <SolidColorBrush x:Key="GreenFont" Color="{StaticResource GreenFontColor}"/>
+    <SolidColorBrush x:Key="BackgroundGray" Color="{StaticResource BackgroundGrayColor}"/>
+    <SolidColorBrush x:Key="LightMainGreen" Color="{StaticResource LightMainGreenColor}"/>
+    
     <SolidColorBrush x:Key="ScrollBar.Static.Background" Color="#F0F0F0"/>
     <SolidColorBrush x:Key="ScrollBar.Static.Border" Color="#F0F0F0"/>
     <SolidColorBrush x:Key="ScrollBar.Pressed.Glyph" Color="#FFFFFF"/>
@@ -34,5 +32,5 @@
     <SolidColorBrush x:Key="ScrollBar.Pressed.Border" Color="#606060"/>
     <SolidColorBrush x:Key="ScrollBar.Disabled.Background" Color="#F0F0F0"/>
     <SolidColorBrush x:Key="ScrollBar.Disabled.Border" Color="#F0F0F0"/>
-    
+
 </ResourceDictionary>

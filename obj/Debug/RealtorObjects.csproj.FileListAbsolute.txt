@@ -140,3 +140,7 @@ C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\obj\Debug\View\RealtorObject
 C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\obj\Debug\View\RealtorObjectsView.baml
 C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\bin\Debug\RealtyModel.dll
 C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\bin\Debug\RealtyModel.pdb
+C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\bin\Debug\RandomFlatGenerator.dll
+C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\bin\Debug\RandomFlatGenerator.pdb
+C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\obj\Debug\View\LoginForm.g.cs
+C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\obj\Debug\View\LoginForm.baml

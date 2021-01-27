@@ -378,7 +378,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type RepeatButton}">
-                    <Border x:Name="border" Background="white" CornerRadius="7.5,7.5,0,0" SnapsToDevicePixels="true">
+                    <Border x:Name="border" Background="white" SnapsToDevicePixels="true">
                         <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -408,7 +408,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type RepeatButton}">
-                    <Border x:Name="border" Background="white" CornerRadius="0,0,7.5,7.5" SnapsToDevicePixels="true">
+                    <Border x:Name="border" Background="white"  SnapsToDevicePixels="true">
                         <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -447,13 +447,13 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Thumb}">
-                    <Border CornerRadius="8"  x:Name="rectangle" Background="{StaticResource MainGreen}" Height="{TemplateBinding Height}" SnapsToDevicePixels="True" Width="{TemplateBinding Width}"/>
+                    <Border x:Name="rectangle" Background="{StaticResource MainGreen}" Height="{TemplateBinding Height}" SnapsToDevicePixels="True" Width="{TemplateBinding Width}"/>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter Property="Background" TargetName="rectangle" Value="#A0BF3E"/>
+                            <Setter Property="Background" TargetName="rectangle" Value="#217345"/>
                         </Trigger>
                         <Trigger Property="IsDragging" Value="true">
-                            <Setter Property="Background" TargetName="rectangle" Value="#A0BF3E"/>
+                            <Setter Property="Background" TargetName="rectangle" Value="#217345"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -474,9 +474,9 @@
                 <ControlTemplate TargetType="{x:Type ScrollBar}">
                     <Grid x:Name="Bg" SnapsToDevicePixels="true">
                         <Grid.RowDefinitions>
-                            <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
+                            <RowDefinition MaxHeight="10"/>
                             <RowDefinition Height="0.00001*"/>
-                            <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
+                            <RowDefinition MaxHeight="10"/>
                         </Grid.RowDefinitions>
                         <Border BorderBrush="white" BorderThickness="{TemplateBinding BorderThickness}" Background="white" Grid.Row="1"/>
                         <RepeatButton x:Name="PART_LineUpButton" Command="{x:Static ScrollBar.LineUpCommand}" IsEnabled="{TemplateBinding IsMouseOver}" Style="{StaticResource UpperScrollBarButton}">
@@ -503,28 +503,28 @@
                                 <Condition Binding="{Binding IsMouseOver, ElementName=PART_LineDownButton}" Value="true"/>
                                 <Condition Binding="{Binding IsPressed, ElementName=PART_LineDownButton}" Value="true"/>
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="Fill" TargetName="ArrowBottom" Value="#A0BF3E"/>
+                            <Setter Property="Fill" TargetName="ArrowBottom" Value="#217345"/>
                         </MultiDataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding IsMouseOver, ElementName=PART_LineUpButton}" Value="true"/>
                                 <Condition Binding="{Binding IsPressed, ElementName=PART_LineUpButton}" Value="true"/>
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="Fill" TargetName="ArrowTop" Value="#A0BF3E"/>
+                            <Setter Property="Fill" TargetName="ArrowTop" Value="#217345"/>
                         </MultiDataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding IsMouseOver, ElementName=PART_LineDownButton}" Value="true"/>
                                 <Condition Binding="{Binding IsPressed, ElementName=PART_LineDownButton}" Value="false"/>
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="Fill" TargetName="ArrowBottom" Value="#A0BF3E"/>
+                            <Setter Property="Fill" TargetName="ArrowBottom" Value="#217345"/>
                         </MultiDataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding IsMouseOver, ElementName=PART_LineUpButton}" Value="true"/>
                                 <Condition Binding="{Binding IsPressed, ElementName=PART_LineUpButton}" Value="false"/>
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="Fill" TargetName="ArrowTop" Value="#A0BF3E"/>
+                            <Setter Property="Fill" TargetName="ArrowTop" Value="#217345"/>
                         </MultiDataTrigger>
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Fill" TargetName="ArrowTop" Value="#005000"/>
@@ -563,9 +563,10 @@
     </ControlTemplate>
     <ControlTemplate x:Key="ListBoxWithGreenScrollBar" TargetType="{x:Type ListBox}">
         <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="1" SnapsToDevicePixels="True">
-            <ScrollViewer Focusable="False" Template="{StaticResource GreenScrollViewer}" Padding="{TemplateBinding Padding}">
+            <!--<ScrollViewer Focusable="False" Template="{StaticResource GreenScrollViewer}" Padding="{TemplateBinding Padding}">
                 <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-            </ScrollViewer>
+            </ScrollViewer>-->
+            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
         </Border>
         <ControlTemplate.Triggers>
             <Trigger Property="IsEnabled" Value="False">
