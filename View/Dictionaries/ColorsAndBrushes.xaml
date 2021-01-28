@@ -7,11 +7,13 @@
     <Color x:Key="LightMainGreenColor">#A0BF3E</Color>-->
     <Color x:Key="LightBackgroundGrayColor">#F3F3F3</Color>
     <Color x:Key="BackgroundGrayColor">#E6E6E6</Color>
-    <Color x:Key="BorderGrayColor">#FFABADB3</Color>
+    <Color x:Key="BorderGrayColor">#969696</Color>
     <Color x:Key="GreenFontColor">#005000</Color>
     <Color x:Key="MainGreenColor">#217345</Color>
     <Color x:Key="LightMainGreenColor">#0E5C2F</Color>
-    
+    <Color x:Key="SplitterGrayColor">#B1B1B1</Color>
+
+    <SolidColorBrush x:Key="SplitterGray" Color="{StaticResource SplitterGrayColor}"/>
     <SolidColorBrush x:Key="MainGray" Color="{StaticResource MainGrayColor}"/>
     <SolidColorBrush x:Key="MainGreen" Color="{StaticResource MainGreenColor}"/>
     <SolidColorBrush x:Key="BorderGray" Color="{StaticResource BorderGrayColor}" />

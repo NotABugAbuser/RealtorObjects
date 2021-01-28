@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:RealtorObjects.View"
              xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
              mc:Ignorable="d" 
-             d:DesignHeight="667" d:DesignWidth="1298" Background="#ebebeb">
+             d:DesignHeight="667" d:DesignWidth="1298" Background="{StaticResource BackgroundGray}">
     <UserControl.DataContext>
         <vm:RealtorObjectsViewModel/>
     </UserControl.DataContext>
@@ -134,12 +134,12 @@
                                             Margin="0,5,0,2"
                                             Orientation="Horizontal">
                                             <TextBlock
-                                                FontFamily="verdana"
+                                                FontFamily="Courier new"
                                                 HorizontalAlignment="Left"
                                                 Text="Квартира №:"/>
                                             <TextBlock
                                                 Margin="5,0"
-                                                FontFamily="verdana"
+                                                FontFamily="courier new"
                                                 HorizontalAlignment="Left"
                                                 Text="23"/>
                                         </StackPanel>
@@ -166,7 +166,7 @@
                                         Margin="8"
                                         TextAlignment="Justify"
                                         Grid.Column="4"
-                                        FontFamily="verdana"
+                                        FontFamily="Courier New"
                                         TextWrapping="WrapWithOverflow"
                                         Text="Просторный коридор, имеется чердачное помещение. Окна со ставнями. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor inci"/>
                                     <StackPanel 

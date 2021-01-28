@@ -16,7 +16,8 @@
         <Setter Property="Margin" Value="5,0,0,0"/>
     </Style>
     <Style TargetType="{x:Type TextBlock}" x:Key="Header">
-        <Setter Property="Foreground" Value="{StaticResource GreenFont}"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Foreground" Value="#262626"/>
         <Setter Property="Margin" Value="3,0"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
@@ -582,4 +583,113 @@
             </MultiTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
+    <Style x:Key="BaseCloseButton" TargetType="Button">
+        <Setter Property="Width" Value="45"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid Background="{TemplateBinding Background}">
+                        <Line Width="45" Height="32" Margin="0" X1="18" Y1="12" X2="27" Y2="21" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/>
+                        <Line Width="45" Height="32" Margin="0" X1="27" Y1="12" X2="18" Y2="21" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="Red"/>
+                <Setter Property="BorderBrush" Value="White"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" x:Key="WhiteCloseButton" BasedOn="{StaticResource BaseCloseButton}">
+        <Setter Property="Background" Value="white"/>
+        <Setter Property="BorderBrush" Value="Gray"/>
+        <Style.Triggers>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource BackgroundGray}"/>
+                <Setter Property="BorderBrush" Value="gray"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" x:Key="GrayCloseButton" BasedOn="{StaticResource BaseCloseButton}">
+        <Setter Property="Background" Value="{StaticResource BackgroundGray}"/>
+        <Setter Property="BorderBrush" Value="Gray"/>
+        <Style.Triggers>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource LightBackgroundGray}"/>
+                <Setter Property="BorderBrush" Value="Gray"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" x:Key="GreenCloseButton" BasedOn="{StaticResource BaseCloseButton}">
+        <Setter Property="Background" Value="{StaticResource MainGreen}"/>
+        <Setter Property="BorderBrush" Value="White"/>
+        <Style.Triggers>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource LightMainGreen}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="BaseMinimizeButton" TargetType="Button">
+        <Setter Property="Width" Value="45"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid Background="{TemplateBinding Background}">
+                        <Line Width="45" Height="32" Margin="0" X1="16" Y1="16" X2="28" Y2="16" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource LightBackgroundGray}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" x:Key="WhiteMinimizeButton" BasedOn="{StaticResource BaseMinimizeButton}">
+        <Setter Property="Background" Value="white"/>
+        <Setter Property="BorderBrush" Value="Gray"/>
+        <Style.Triggers>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource BackgroundGray}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="BaseWindowedButton" TargetType="Button">
+        <Setter Property="Width" Value="45"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid Background="{TemplateBinding Background}" Width="45" Height="32">
+                        <Rectangle Stroke="Gray" Width="8" Height="8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="19,11,1,0"/>
+                        <Rectangle Stroke="Gray" Width="8" Height="8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="17,13,0,2" Fill="{TemplateBinding Background}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource LightBackgroundGray}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" x:Key="WhiteWindowedButton" BasedOn="{StaticResource BaseWindowedButton}">
+        <Setter Property="Background" Value="white"/>
+        <Style.Triggers>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource BackgroundGray}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

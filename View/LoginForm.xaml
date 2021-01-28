@@ -20,53 +20,29 @@
     </Window.DataContext>
     <Window.Resources>
         <c:SymbolToStarConverter x:Key="SymbolToStar"/>
-        <Style x:Key="BaseCloseButton" TargetType="Button">
-            <Setter Property="Width" Value="45"/>
-            <Setter Property="Height" Value="32"/>
-            <Setter Property="HorizontalAlignment" Value="Right"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
+        <Style TargetType="Button" x:Key="SubmitButton">
+            <Setter Property="Command" Value="{Binding Submit}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="{StaticResource MainGreen}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Grid Background="{TemplateBinding Background}">
-                            <Line Width="45" Height="32" Margin="0" X1="18" Y1="12" X2="27" Y2="21" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/>
-                            <Line Width="45" Height="32" Margin="0" X1="27" Y1="12" X2="18" Y2="21" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/>
-                        </Grid>
+                        <Border
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="Войти"
+                                FontSize="17"
+                                Foreground="White"
+                                FontFamily="Verdana"/>
+                        </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="Red"/>
-                    <Setter Property="BorderBrush" Value="White"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="Button" x:Key="GrayCloseButton" BasedOn="{StaticResource BaseCloseButton}">
-            <Setter Property="Background" Value="{StaticResource BackgroundGray}"/>
-            <Setter Property="BorderBrush" Value="Gray"/>
-            <Style.Triggers>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="{StaticResource LightBackgroundGray}"/>
-                    <Setter Property="BorderBrush" Value="Gray"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="Button" x:Key="WhiteCloseButton" BasedOn="{StaticResource BaseCloseButton}">
-            <Setter Property="Background" Value="white"/>
-            <Setter Property="BorderBrush" Value="Gray"/>
-            <Style.Triggers>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="{StaticResource BackgroundGray}"/>
-                    <Setter Property="BorderBrush" Value="gray"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="Button" x:Key="GreenCloseButton" BasedOn="{StaticResource BaseCloseButton}">
-            <Setter Property="Background" Value="{StaticResource MainGreen}"/>
-            <Setter Property="BorderBrush" Value="White"/>
-            <Style.Triggers>
-                <Trigger Property="IsPressed" Value="True">
                     <Setter Property="Background" Value="{StaticResource LightMainGreen}"/>
                 </Trigger>
             </Style.Triggers>
@@ -137,11 +113,7 @@
             </Border>
             <Button
                 Grid.Row="6"
-                Background="{StaticResource MainGreen}"
-                Content="Войти"
-                FontSize="17"
-                Command="{Binding Submit}"
-                Foreground="White"/>
+                Style="{StaticResource SubmitButton}"/>
         </Grid>
     </Grid>
 </Window>

@@ -8,7 +8,13 @@
         xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
         xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="768" Width="1366" MinHeight="597" Background="#f6f6f6">
+        Title="MainWindow" 
+        Height="768" 
+        Width="1366" 
+        MouseDown="Window_MouseDown"
+        WindowStyle="none"
+        MinHeight="597" 
+        Background="white">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
@@ -46,6 +52,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -53,28 +60,34 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="33"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        
-        <ContentControl Content="{Binding WorkAreaViewModel}" Grid.Column="1" Grid.Row="1"/>
+        <ContentControl 
+            Content="{Binding WorkAreaViewModel}" 
+            Grid.Column="1" 
+            Grid.Row="1"
+            Grid.ColumnSpan="2"/>
         <Border
-            Background="White"
-            Padding="5,3"
-            BorderThickness="0"
+            BorderBrush="#d2d2d2"
+            BorderThickness="0,0,0,1"
+            Background="white"
             Grid.Column="1">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="60"/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="45"/>
+                    <ColumnDefinition Width="45"/>
+                    <ColumnDefinition Width="45"/>
                 </Grid.ColumnDefinitions>
                 <fa:ImageAwesome 
                     Icon="{Binding CurrentIcon}" 
                     Foreground="{StaticResource MainGreen}" 
                     HorizontalAlignment="Center" 
-                    Width="35"/>
+                    Width="25"/>
                 <TextBlock 
                     Text="{Binding Header}" 
                     Foreground="#444" 
@@ -88,10 +101,19 @@
                     VerticalAlignment="Center"
                     Grid.Column="3"
                     TextAlignment="Center"/>
+                <Button
+                    Grid.Column="4"
+                    Click="MinimizeApplcation_Click"
+                    Style="{StaticResource WhiteMinimizeButton}"/>
+                <Button
+                    Grid.Column="5"
+                    Click="WindowApplication_Click"
+                    Style="{StaticResource WhiteWindowedButton}"/>
+                <Button
+                    Grid.Column="6"
+                    Click="CloseApplication_Click"
+                    Style="{StaticResource WhiteCloseButton}"/>
             </Grid>
-            <Border.Effect>
-                <DropShadowEffect Opacity=".4" ShadowDepth="0" Direction="10" BlurRadius="10" />
-            </Border.Effect>
         </Border>
         <Grid
             Background="{StaticResource MainGreen}"

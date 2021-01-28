@@ -177,7 +177,7 @@
                                 <TextBox 
                                     Width="450"
                                     PreviewTextInput="PhoneNumbers"
-                                    Text="{Binding PhoneNumbers, UpdateSourceTrigger=LostFocus}"/>
+                                    Text="88005553535 88005553535 8 8005553535"/>
                             </Border>
                         </Grid>
                     </Grid>

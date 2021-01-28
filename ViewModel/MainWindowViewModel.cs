@@ -22,7 +22,9 @@ namespace RealtorObjects.ViewModel
         private BaseViewModel workAreaViewModel = new RealtorObjectsViewModel();
         private CustomCommand secondTestCommand;
         private CustomCommand updateWorkAreaViewModel;
+        private CustomCommand closeApp;
         private string header = "Главная";
+        private string currentTime;
         private FontAwesomeIcon currentIcon = FontAwesomeIcon.Home;
         private BaseViewModel[] viewModels = new BaseViewModel[] {
             new HomeViewModel(),
@@ -38,21 +40,20 @@ namespace RealtorObjects.ViewModel
             FontAwesomeIcon.List,
             FontAwesomeIcon.AddressBook,
         };
-        ObservableCollection<bool> toggledButtons = new ObservableCollection<bool> {
+        readonly ObservableCollection<bool> toggledButtons = new ObservableCollection<bool> {
             true,
             false,
             false,
             false,
             false
         };
-        private string[] headers = new string[5]{
+        private readonly string[] headers = new string[5]{
             "Главная",
             "Номера телефонов",
             "Статистика",
             "Объекты",
             "Клиенты",
         };
-        private string currentTime;
         public MainWindowViewModel() {
             string dayOfWeek = new CultureInfo("ru-RU").DateTimeFormat.GetShortestDayName(DateTime.Now.DayOfWeek);
             CurrentTime = $"{DateTime.Now:HH : mm} {dayOfWeek}";
@@ -63,6 +64,9 @@ namespace RealtorObjects.ViewModel
                 }
             });
         }
+        public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
+            Application.Current.Shutdown();
+        }));
         public CustomCommand UpdateWorkAreaViewModel => updateWorkAreaViewModel ?? (updateWorkAreaViewModel = new CustomCommand(obj => {
             byte index = Convert.ToByte(obj);
             WorkAreaViewModel = viewModels[index];
@@ -74,7 +78,7 @@ namespace RealtorObjects.ViewModel
             ToggledButtons[index] = true;
         }));
         public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj => {
-            var flatWindow = new FlatForm();
+            var flatWindow = new FlatFormV2();
             flatWindow.Show();
         }));
         public CustomCommand SecondTestCommand => secondTestCommand ?? (secondTestCommand = new CustomCommand(obj => {

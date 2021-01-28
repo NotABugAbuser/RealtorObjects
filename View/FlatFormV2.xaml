@@ -1,0 +1,196 @@
+﻿<Window x:Class="RealtorObjects.View.FlatFormV2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RealtorObjects.View"
+        mc:Ignorable="d"
+        MouseDown="Window_MouseDown"
+        xmlns:v="clr-namespace:RealtorObjects.View"
+        xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
+        xmlns:c="clr-namespace:RealtorObjects.View.Converters"
+        WindowStyle="none"
+        Title="FlatFormV2" 
+        Background="White"
+        Height="650" Width="750">
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#444"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontFamily" Value="Verdana"/>
+        </Style>
+        <Style TargetType="Border" x:Key="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Height" Value="23"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderGray}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock 
+            HorizontalAlignment="Center"
+            FontSize="15"
+            Text="[Каталог: Продажа квартир] — Новая запись"
+            Grid.ColumnSpan="5"/>
+        <Grid
+            Grid.Row="1"
+            Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="16"/>
+                <RowDefinition/>
+                <RowDefinition Height="16"/>
+                <RowDefinition/>
+                <RowDefinition Height="16"/>
+                <RowDefinition Height="187"/>
+                <RowDefinition Height="16"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid
+                Name="First"
+                Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="4"/>
+                    <RowDefinition Height="23"/>
+                </Grid.RowDefinitions>
+                
+            </Grid>
+            <Grid 
+                Name="Fourth"
+                Grid.Row="6">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="4"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="4"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="4"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="4"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="46"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="67"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="75"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Style="{StaticResource Header}"
+                    Text="Состояние:"
+                    Grid.Row="0"/>
+                <TextBlock
+                    Style="{StaticResource Header}"
+                    Text="Полы:"
+                    Grid.Row="2"/>
+                <TextBlock
+                    Style="{StaticResource Header}"
+                    Text="Потолок:"
+                    Grid.Row="4"/>
+                <TextBlock
+                    Style="{StaticResource Header}"
+                    Text="Балкон:"
+                    Grid.Row="6"/>
+                <TextBlock
+                    Style="{StaticResource Header}"
+                    Text="Лоджия:"
+                    Grid.Row="8"/>
+                <ComboBox 
+                    Style="{StaticResource GreenComboBox}"
+                    Grid.Column="1"
+                    Grid.Row="0"/>
+                <ComboBox 
+                    Style="{StaticResource GreenComboBox}"
+                    Grid.Column="1"
+                    Grid.Row="2"/>
+                <ComboBox 
+                    Style="{StaticResource GreenComboBox}"
+                    Grid.Column="1"
+                    Grid.Row="4"/>
+                <ComboBox 
+                    Style="{StaticResource GreenComboBox}"
+                    Grid.Column="1"
+                    Grid.Row="6"/>
+                <ComboBox 
+                    Style="{StaticResource GreenComboBox}"
+                    Grid.Column="1"
+                    Grid.Row="8"/>
+                <TextBlock
+                    Style="{StaticResource Header}"
+                    Text="Сан. узел:"
+                    Grid.Row="0"
+                    Grid.Column="2"/>
+                <TextBlock
+                    Style="{StaticResource Header}"
+                    Text="Удобства:"
+                    Grid.Row="2"
+                    Grid.Column="2"/>
+                <TextBlock
+                    Style="{StaticResource Header}"
+                    Text="Отопление:"
+                    Grid.Row="4"
+                    Grid.Column="2"/>
+                <TextBlock
+                    Style="{StaticResource Header}"
+                    Text="Г. вода:"
+                    Grid.Row="6"
+                    Grid.Column="2"/>
+                <TextBlock
+                    Style="{StaticResource Header}"
+                    Text="Ванна:"
+                    Grid.Row="8"
+                    Grid.Column="2"/>
+                <ComboBox 
+                    Style="{StaticResource GreenComboBox}"
+                    Grid.Column="3"
+                    Grid.Row="0"/>
+                <ComboBox 
+                    Style="{StaticResource GreenComboBox}"
+                    Grid.Column="3"
+                    Grid.Row="2"/>
+                <ComboBox 
+                    Style="{StaticResource GreenComboBox}"
+                    Grid.Column="3"
+                    Grid.Row="4"/>
+                <ComboBox 
+                    Style="{StaticResource GreenComboBox}"
+                    Grid.Column="3"
+                    Grid.Row="6"/>
+                <ComboBox 
+                    Style="{StaticResource GreenComboBox}"
+                    Grid.Column="3"
+                    Grid.Row="8"/>
+                <Grid
+                    Grid.Row="0"
+                    Grid.RowSpan="5"
+                    Grid.Column="5">
+                    
+                </Grid>
+                <TextBlock
+                    Text="Окна:"
+                    Style="{StaticResource Header}"
+                    HorizontalAlignment="Left"
+                    Grid.Row="6"
+                    Grid.Column="5"/>
+                <Border
+                    Style="{StaticResource Border}"
+                    Grid.Row="8"
+                    Grid.Column="5">
+                    
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
