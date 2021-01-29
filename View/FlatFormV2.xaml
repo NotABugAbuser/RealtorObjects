@@ -26,6 +26,28 @@
             <Setter Property="BorderBrush" Value="{StaticResource BorderGray}"/>
             <Setter Property="BorderThickness" Value="1"/>
         </Style>
+        <Style TargetType="CheckBox" x:Key="HeaderCheckBox">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="#262626"/>
+        </Style>
+        <Style TargetType="TextBox" x:Key="inputTextBox">
+            <Setter Property="Cursor" Value="IBeam"/>
+            <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource AncestorType=Border, Mode=FindAncestor},Path=ActualWidth}"/>
+            <Setter Property="Foreground" Value="#262626"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Height" Value="23"/>
+            <Setter Property="Padding" Value="2,4,2,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontFamily" Value="Courier New"/>
+        </Style>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource Header}" x:Key="LeftHeader">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -41,28 +63,230 @@
             Grid.Row="1"
             Margin="10">
             <Grid.RowDefinitions>
+                <RowDefinition Height="46"/>
+                <RowDefinition Height="16"/>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="16"/>
-                <RowDefinition/>
-                <RowDefinition Height="16"/>
-                <RowDefinition/>
+                <RowDefinition Height="50"/>
                 <RowDefinition Height="16"/>
                 <RowDefinition Height="187"/>
                 <RowDefinition Height="16"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Grid
-                Name="First"
+            <Grid Name="First"
                 Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="53"/>
+                    <ColumnDefinition Width="4"/>
+                    <ColumnDefinition Width="242"/>
+                    <ColumnDefinition Width="4"/>
+                    <ColumnDefinition Width="290"/>
+                    <ColumnDefinition Width="4"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <CheckBox
+                    Margin="0,2,0,0"
+                    Style="{StaticResource HeaderCheckBox}"
+                    Content="Экскл"
+                    HorizontalAlignment="Left"/>
+                <Border
+                    Grid.Column="0"
+                    Grid.Row="2"
+                    Style="{StaticResource Border}">
+                    <TextBox
+                        MaxLength="6"
+                        Style="{StaticResource inputTextBox}"
+                        Text="AH2906"/>
+                </Border>
+                <TextBlock
+                    Text="Заказчик:"
+                    Grid.Column="2"
+                    Style="{StaticResource LeftHeader}"/>
+                <Border
+                    Grid.Column="2"
+                    Grid.Row="2"
+                    Style="{StaticResource Border}">
+                    <TextBox
+                        MaxLength="32"
+                        Style="{StaticResource inputTextBox}"
+                        Text="Бубарехов Владимир Лупапупинпеко"/>
+                </Border>
+                <TextBlock
+                    Text="Телефоны через &lt;;&gt; или &lt;,&gt;"
+                    Grid.Column="4"
+                    Style="{StaticResource LeftHeader}"/>
+                <Border
+                    Grid.Column="4"
+                    Grid.Row="2"
+                    Style="{StaticResource Border}">
+                    <TextBox
+                        MaxLength="39"
+                        Style="{StaticResource inputTextBox}"
+                        Text="88005553535 ; 88005553535 ; 88005553535"/>
+                </Border>
+                <TextBlock
+                    Text="Дата:"
+                    Grid.Column="6"
+                    Style="{StaticResource LeftHeader}"/>
+                <Border
+                    Grid.Column="6"
+                    Grid.Row="2"
+                    Style="{StaticResource Border}">
+                    <TextBox
+                        MaxLength="16"
+                        Style="{StaticResource inputTextBox}"
+                        Text="22 сентября 2021"/>
+                </Border>
+            </Grid>
+            <Grid Name="Second"
+                Grid.Row="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="23"/>
                     <RowDefinition Height="4"/>
                     <RowDefinition Height="23"/>
                 </Grid.RowDefinitions>
-                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="42"/>
+                    <ColumnDefinition Width="240"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="86"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Style="{StaticResource Header}"
+                    Text="Город:"/>
+                <ComboBox
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Style="{StaticResource GreenComboBox}"/>
+                <TextBlock
+                    Grid.Column="0"
+                    Grid.Row="2"
+                    Style="{StaticResource Header}"
+                    Text="Район:"/>
+                <ComboBox
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Style="{StaticResource GreenComboBox}"/>
+                <TextBlock
+                    Grid.Column="2"
+                    Grid.Row="0"
+                    Style="{StaticResource Header}"
+                    Text="Квартира №:"/>
+                <Border
+                    Grid.Column="5"
+                    Grid.Row="0"
+                    Style="{StaticResource Border}">
+                    <TextBox
+                        MaxLength="10"
+                        Style="{StaticResource inputTextBox}"
+                        Text="3323232333"/>
+                </Border>
+                <TextBlock
+                    Grid.Column="4"
+                    Grid.Row="0"
+                    Style="{StaticResource Header}"
+                    Text="Дом №:"/>
+                <Border
+                    Grid.Column="3"
+                    Grid.Row="0"
+                    Style="{StaticResource Border}">
+                    <TextBox
+                        MaxLength="10"
+                        Style="{StaticResource inputTextBox}"
+                        Text="0123456789"/>
+                </Border>
+                <TextBlock
+                    Grid.Column="2"
+                    Grid.Row="2"
+                    Style="{StaticResource Header}"
+                    Text="Улица:"/>
+                <ComboBox
+                    Grid.Row="2"
+                    Grid.Column="3"
+                    Grid.ColumnSpan="3"
+                    Style="{StaticResource GreenComboBox}"/>
+                <CheckBox
+                    Style="{StaticResource OptionCheckBox}"
+                    Margin="15,0,0,0"
+                    Grid.Column="6"
+                    Grid.Row="0"
+                    Content="Растяжка"/>
+                <CheckBox
+                    Style="{StaticResource OptionCheckBox}"
+                    Margin="15,0,0,0"
+                    Grid.Column="6"
+                    Grid.Row="2"
+                    Content="Обмен"/>
             </Grid>
-            <Grid 
-                Name="Fourth"
+            <Grid Name="Third"
+                Grid.Row="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="4"/>
+                    <RowDefinition Height="23"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="67"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="55"/>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Style="{StaticResource Header}"
+                    Text="Материал:"/>
+                <ComboBox
+                    Style="{StaticResource GreenComboBox}"
+                    Grid.Column="1"
+                    Grid.Row="0"/>
+                <TextBlock
+                    Grid.Column="0"
+                    Grid.Row="2"
+                    Style="{StaticResource Header}"
+                    Text="Фонд:"/>
+                <ComboBox
+                    Style="{StaticResource GreenComboBox}"
+                    Grid.Column="1"
+                    Grid.Row="2"/>
+                <Grid Grid.Column="2" Grid.ColumnSpan="2">
+                    <TextBlock 
+                        Style="{StaticResource Header}"
+                        Margin="0,0,77,0"
+                        Text="Кол. комнат:"/>
+                    <TextBox 
+                        Width="70"
+                        Text="{Binding EmptyBinding, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                        Tag="EmptyBinding"
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource IntegerNumericUpDown}"/>
+                </Grid>
+                <TextBlock
+                    Grid.Column="2"
+                    Grid.Row="2"
+                    Style="{StaticResource Header}"
+                    Text="Тип:"/>
+                <ComboBox
+                    Style="{StaticResource GreenComboBox}"
+                    Grid.Column="3"
+                    Grid.Row="2"/>
+            </Grid>
+            <Grid Name="Fourth"
                 Grid.Row="6">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="23"/>
@@ -191,6 +415,28 @@
                     
                 </Border>
             </Grid>
+            <Grid Name="Fifth"
+                Grid.Row="8">
+
+            </Grid>
+        </Grid>
+        <Grid
+            Margin="3,10"
+            Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="54"/>
+                <RowDefinition Height="66"/>
+                <RowDefinition Height="16"/>
+                <RowDefinition/>
+                <RowDefinition Height="16"/>
+                <RowDefinition Height="187"/>
+                <RowDefinition Height="16"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Border
+                BorderBrush="{StaticResource SplitterGray}"
+                BorderThickness="0,1,0,1"
+                Grid.Row="1"/>
         </Grid>
     </Grid>
 </Window>
