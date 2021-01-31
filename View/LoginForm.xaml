@@ -7,14 +7,18 @@
         xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
         xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
         xmlns:c="clr-namespace:RealtorObjects.View.Converters"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         MouseDown="Window_MouseDown"
         Title="LoginForm" 
-        Height="295" 
+        Height="325"
         Width="350" 
+        SizeToContent="Height"
         Background="White"
-        WindowStyle="none"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        BorderBrush="{StaticResource MainGreen}"
+        BorderThickness="1"
+        WindowStyle="none">
     <Window.DataContext>
         <vm:LoginFormViewModel/>
     </Window.DataContext>
@@ -23,6 +27,7 @@
         <Style TargetType="Button" x:Key="SubmitButton">
             <Setter Property="Command" Value="{Binding Submit}"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Foreground" Value="White"/>
             <Setter Property="Background" Value="{StaticResource MainGreen}"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -33,9 +38,9 @@
                             <TextBlock
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="Войти"
+                                Text="{TemplateBinding Content}"
                                 FontSize="17"
-                                Foreground="White"
+                                Foreground="{TemplateBinding Foreground}"
                                 FontFamily="Verdana"/>
                         </Border>
                     </ControlTemplate>
@@ -47,8 +52,77 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource SubmitButton}" x:Key="ConfirmButton">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="{StaticResource LightMainGreen}"/>
+                    <Setter Property="Foreground" Value="{StaticResource LightBackgroundGray}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="LinkButton">
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Foreground" Value="#333"/>
+            <Setter Property="Foreground" Value="{StaticResource GreenFont}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Cursor" Value="Hand"/>
+                    <Setter Property="TextDecorations" Value="UnderLine"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="TextBox" x:Key="fieldTextBox">
+            <Setter Property="MaxLength" Value="20"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="FontSize" Value="17"/>
+            <Setter Property="FontFamily" Value="Courier New"/>
+            <Setter Property="Foreground" Value="#444"/>
+        </Style>
+        <Style x:Key="WhiteReturnButton" TargetType="Button">
+            <Setter Property="Width" Value="45"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Background" Value="white"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Background="{TemplateBinding Background}">
+                            <Line Width="45" Height="32" Margin="0" X1="15" Y1="15" X2="28" Y2="16" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/>
+                            <Line Width="45" Height="32" Margin="0" X1="15" Y1="15" X2="20" Y2="11" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/>
+                            <Line Width="45" Height="32" Margin="0" X1="15" Y1="15" X2="20" Y2="20" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightBackgroundGray}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource BackgroundGray}"/>
+                    <Setter Property="BorderBrush" Value="gray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="header">
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+            <Setter Property="Foreground" Value="#666"/>
+        </Style>
     </Window.Resources>
     <Grid>
+        <Button
+            Style="{StaticResource WhiteReturnButton}"
+            HorizontalAlignment="Left"
+            Visibility="{Binding RegistrationVisibility}"
+            Command="{Binding ChangeRegistrationVisibility}">
+        </Button>
         <Button
             Style="{StaticResource WhiteCloseButton}"
             Command="{Binding CloseApp}">
@@ -56,11 +130,11 @@
         <Grid Margin="45,35,45,45">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
-                <RowDefinition/>
+                <RowDefinition Height="18"/>
                 <RowDefinition Height="40"/>
-                <RowDefinition/>
+                <RowDefinition Height="18"/>
                 <RowDefinition Height="40"/>
-                <RowDefinition/>
+                <RowDefinition Height="40"/>
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             <TextBlock
@@ -73,15 +147,9 @@
                 BorderBrush="{StaticResource BorderGray}"
                 BorderThickness="1">
                 <TextBox
-                    MaxLength="20"
                     PreviewTextInput="LoginValidation"
-                    BorderThickness="0"
-                    Text="ГриньДВ"
-                    Foreground="#444"
-                    VerticalAlignment="Center"
-                    Margin="10"
-                    FontSize="17"
-                    FontFamily="Courier New"/>
+                    Text="{Binding CurrentLogin}"
+                    Style="{StaticResource fieldTextBox}"/>
             </Border>
             <Border
                 Grid.Row="4"
@@ -89,30 +157,169 @@
                 BorderThickness="1">
                 <Grid>
                     <TextBox
-                        BorderThickness="0"
-                        MaxLength="20"
                         PreviewTextInput="PasswordValidation"
                         Text="{Binding CurrentPassword, UpdateSourceTrigger=PropertyChanged}"
                         Foreground="Transparent"
-                        VerticalAlignment="Center"
-                        Margin="10"
-                        FontSize="17"
-                        FontFamily="Courier New"/>
+                        Style="{StaticResource fieldTextBox}"/>
                     <TextBox
-                        BorderThickness="0"
-                        MaxLength="20"
                         Text="{Binding CurrentPassword, Converter={StaticResource SymbolToStar}}"
-                        Foreground="#444"
-                        VerticalAlignment="Center"
                         Background="Transparent"
                         IsHitTestVisible="False"
-                        Margin="10"
-                        FontSize="17"
-                        FontFamily="Courier New"/>
+                        Style="{StaticResource fieldTextBox}"/>
+                </Grid>
+            </Border>
+            <TextBlock
+                Grid.Row="5"
+                Text="Забыли?"
+                Style="{StaticResource LinkButton}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonDown">
+                        <i:InvokeCommandAction Command="{Binding SendPassword}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>-
+            </TextBlock>
+            <TextBlock
+                Grid.Row="5"
+                HorizontalAlignment="Right"
+                Text="Новый пользователь"
+                Style="{StaticResource LinkButton}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonDown">
+                        <i:InvokeCommandAction Command="{Binding ChangeRegistrationVisibility}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBlock>
+            <Button
+                Grid.Row="6"
+                Content="Войти"
+                Command="{Binding Login}"
+                Style="{StaticResource ConfirmButton}"/>
+        </Grid>
+        <Grid
+            Visibility="{Binding RegistrationVisibility}"
+            Background="white"
+            Margin="45,35,45,45">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <TextBlock
+                Foreground="{StaticResource GreenFont}"
+                FontSize="24"
+                VerticalAlignment="bottom"
+                Text="Зарегистрируйтесь"/>
+            <TextBlock
+                Text="имя:"
+                Style="{StaticResource header}"
+                Grid.Row="1"/>
+            <Border
+                Grid.Row="2"
+                BorderBrush="{StaticResource BorderGray}"
+                BorderThickness="1">
+                <TextBox
+                    PreviewTextInput="LoginValidation"
+                    Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource fieldTextBox}"/>
+            </Border>
+            <TextBlock
+                Text="фамилия:"
+                Style="{StaticResource header}"
+                Grid.Row="3"/>
+            <Border
+                Grid.Row="4"
+                BorderBrush="{StaticResource BorderGray}"
+                BorderThickness="1">
+                <TextBox
+                    PreviewTextInput="LoginValidation"
+                    Text="{Binding Surname, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource fieldTextBox}"/>
+            </Border>
+            <TextBlock
+                Text="отчество:"
+                Style="{StaticResource header}"
+                Grid.Row="5"/>
+            <Border
+                Grid.Row="6"
+                BorderBrush="{StaticResource BorderGray}"
+                BorderThickness="1">
+                <TextBox
+                    PreviewTextInput="LoginValidation"
+                    Text="{Binding Patronymic, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource fieldTextBox}"/>
+            </Border>
+            <TextBlock
+                Text="эл. почта:"
+                Style="{StaticResource header}"
+                Grid.Row="7"/>
+            <Border
+                Grid.Row="8"
+                BorderBrush="{StaticResource BorderGray}"
+                BorderThickness="1">
+                <TextBox
+                    MaxLength="40"
+                    PreviewTextInput="EmailValidation"
+                    Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource fieldTextBox}"/>
+            </Border>
+            <TextBlock
+                Text="пароль:"
+                Style="{StaticResource header}"
+                Grid.Row="9"/>
+            <Border
+                Grid.Row="10"
+                BorderBrush="{StaticResource BorderGray}"
+                BorderThickness="1">
+                <Grid>
+                    <TextBox
+                        PreviewTextInput="PasswordValidation"
+                        Text="{Binding FirstPassword, UpdateSourceTrigger=PropertyChanged}"
+                        Foreground="Transparent"
+                        Style="{StaticResource fieldTextBox}"/>
+                    <TextBox
+                        Text="{Binding FirstPassword, Converter={StaticResource SymbolToStar}}"
+                        Background="Transparent"
+                        IsHitTestVisible="False"
+                        Style="{StaticResource fieldTextBox}"/>
+                </Grid>
+            </Border>
+            <TextBlock
+                Text="повторите пароль:"
+                Style="{StaticResource header}"
+                Grid.Row="11"/>
+            <Border
+                Grid.Row="12"
+                BorderBrush="{StaticResource BorderGray}"
+                BorderThickness="1">
+                <Grid>
+                    <TextBox
+                        PreviewTextInput="PasswordValidation"
+                        Text="{Binding SecondPassword, UpdateSourceTrigger=PropertyChanged}"
+                        Foreground="Transparent"
+                        Style="{StaticResource fieldTextBox}"/>
+                    <TextBox
+                        Text="{Binding SecondPassword, Converter={StaticResource SymbolToStar}}"
+                        Background="Transparent"
+                        IsHitTestVisible="False"
+                        Style="{StaticResource fieldTextBox}"/>
                 </Grid>
             </Border>
             <Button
-                Grid.Row="6"
+                Content="Подтвердить"
+                Grid.Row="14"
+                Command="{Binding CreateNewUser}"
                 Style="{StaticResource SubmitButton}"/>
         </Grid>
     </Grid>

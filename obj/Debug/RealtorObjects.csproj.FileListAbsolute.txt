@@ -146,3 +146,6 @@ C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\obj\Debug\View\LoginForm.g.c
 C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\obj\Debug\View\LoginForm.baml
 C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\obj\Debug\View\FlatFormV2.g.cs
 C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\obj\Debug\View\FlatFormV2.baml
+C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\bin\Debug\Microsoft.Expression.Interactions.dll
+C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\bin\Debug\Microsoft.Expression.Interactions.xml
+C:\Users\Gvozd\Desktop\RealtorObject\REaltorObjects\bin\Debug\System.Windows.Interactivity.xml
