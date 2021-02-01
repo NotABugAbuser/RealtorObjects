@@ -12,7 +12,7 @@
         WindowStyle="none"
         Title="FlatFormV2" 
         Background="White"
-        Height="650" Width="750">
+        Height="650" Width="755">
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="#444"/>
@@ -64,13 +64,13 @@
             Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="46"/>
-                <RowDefinition Height="16"/>
+                <RowDefinition Height="25"/>
                 <RowDefinition Height="50"/>
-                <RowDefinition Height="16"/>
+                <RowDefinition Height="25"/>
                 <RowDefinition Height="50"/>
-                <RowDefinition Height="16"/>
+                <RowDefinition Height="25"/>
                 <RowDefinition Height="187"/>
-                <RowDefinition Height="16"/>
+                <RowDefinition Height="25"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid Name="First"
@@ -285,6 +285,69 @@
                     Style="{StaticResource GreenComboBox}"
                     Grid.Column="3"
                     Grid.Row="2"/>
+                <TextBlock
+                    Grid.Column="4"
+                    Grid.Row="0"
+                    Style="{StaticResource Header}"
+                    Text="Кв-л:"/>
+                <TextBox 
+                    Grid.Column="5"
+                    Grid.Row="0"
+                    Text="{Binding EmptyBinding, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                    Tag="EmptyBinding"
+                    Style="{StaticResource IntegerNumericUpDown}"/>
+                <TextBlock
+                    Grid.Column="6"
+                    Grid.Row="0"
+                    Style="{StaticResource Header}"
+                    Text="Год:"/>
+                <TextBox 
+                    Grid.Column="7"
+                    Grid.Row="0"
+                    Text="{Binding EmptyBinding, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                    Tag="EmptyBinding"
+                    Style="{StaticResource IntegerNumericUpDown}"/>
+                <TextBlock
+                    Grid.Column="4"
+                    Grid.Row="2"
+                    Style="{StaticResource Header}"
+                    Text="Общая:"/>
+                <TextBox 
+                    Grid.Column="5"
+                    Grid.Row="2"
+                    Text="{Binding EmptyBinding, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                    Tag="EmptyBinding"
+                    Style="{StaticResource DoubleNumericUpDown}"/>
+                <TextBlock
+                    Grid.Column="6"
+                    Grid.Row="2"
+                    Style="{StaticResource Header}"
+                    Text="Жилая:"/>
+                <TextBox 
+                    Grid.Column="7"
+                    Grid.Row="2"
+                    Text="{Binding EmptyBinding, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                    Tag="EmptyBinding"
+                    Style="{StaticResource DoubleNumericUpDown}"/>
+                <TextBlock
+                    Grid.Column="8"
+                    Grid.Row="2"
+                    Style="{StaticResource Header}"
+                    Text="Кухня:"/>
+                <TextBox 
+                    Grid.Column="9"
+                    Grid.Row="2"
+                    Text="{Binding EmptyBinding, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                    Tag="EmptyBinding"
+                    Style="{StaticResource DoubleNumericUpDown}"/>
+                <CheckBox 
+                    HorizontalAlignment="Right"
+                    Foreground="#262626"
+                    Content="Приватизация"
+                    Grid.Column="8"
+                    VerticalAlignment="Center"
+                    Margin="13,0,1,0"
+                    Grid.ColumnSpan="2"/>
             </Grid>
             <Grid Name="Fourth"
                 Grid.Row="6">
@@ -309,7 +372,7 @@
                     <ColumnDefinition Width="8"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="8"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="122"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock
                     Style="{StaticResource Header}"
@@ -396,12 +459,42 @@
                     Style="{StaticResource GreenComboBox}"
                     Grid.Column="3"
                     Grid.Row="8"/>
-                <Grid
+                <Border
+                    BorderBrush="LightGray"
+                    BorderThickness="1"
                     Grid.Row="0"
                     Grid.RowSpan="5"
                     Grid.Column="5">
-                    
-                </Grid>
+                    <Grid Margin="5,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition Height="4"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock
+                            Text="Комнаты:"
+                            HorizontalAlignment="Left"
+                            Style="{StaticResource Header}"/>
+                        <RadioButton
+                            VerticalAlignment="Center"
+                            Content="Раздельные"
+                            Grid.Row="1"/>
+                        <RadioButton
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Content="Смежные"
+                            Grid.Row="1"/>
+                        <Border
+                            Grid.Row="2"
+                            Style="{StaticResource Border}">
+                            <TextBox
+                        MaxLength="24"
+                        Style="{StaticResource inputTextBox}"
+                        Text="Есть заметка"/>
+                        </Border>
+                    </Grid>
+                </Border>
                 <TextBlock
                     Text="Окна:"
                     Style="{StaticResource Header}"
@@ -412,8 +505,52 @@
                     Style="{StaticResource Border}"
                     Grid.Row="8"
                     Grid.Column="5">
-                    
+                    <TextBox
+                        MaxLength="25"
+                        Style="{StaticResource inputTextBox}"
+                        Text="Есть заметка"/>
                 </Border>
+                <Grid
+                    Grid.Column="7"
+                    Grid.RowSpan="9">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox
+                        Style="{StaticResource OptionCheckBox}"
+                        Content="Перепланировка"
+                        IsChecked="{Binding HasRenovation}"/>
+                    <CheckBox
+                        Style="{StaticResource OptionCheckBox}"
+                        Grid.Row="5"
+                        IsChecked="{Binding HasImprovedLayout}"
+                        Content="Улуч. планировка"/>
+                    <CheckBox
+                        Style="{StaticResource OptionCheckBox}"
+                        Grid.Row="4"
+                        IsChecked="{Binding HasChute}"
+                        Content="Мусоропровод"/>
+                    <CheckBox
+                        Style="{StaticResource OptionCheckBox}"
+                        Grid.Row="1"
+                        IsChecked="{Binding IsCorner}"
+                        Content="Угловая"/>
+                    <CheckBox
+                        Style="{StaticResource OptionCheckBox}"
+                        Grid.Row="2"
+                        IsChecked="{Binding HasGarage}"
+                        Content="Гараж"/>
+                    <CheckBox
+                        Style="{StaticResource OptionCheckBox}"
+                        Grid.Row="3"
+                        IsChecked="{Binding HasElevator}"
+                        Content="Лифт"/>
+                </Grid>
             </Grid>
             <Grid Name="Fifth"
                 Grid.Row="8">
@@ -424,10 +561,10 @@
             Margin="3,10"
             Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="54"/>
-                <RowDefinition Height="66"/>
-                <RowDefinition Height="16"/>
-                <RowDefinition/>
+                <RowDefinition Height="58"/>
+                <RowDefinition Height="75"/>
+                <RowDefinition Height="75"/>
+                <RowDefinition Height="166"/>
                 <RowDefinition Height="16"/>
                 <RowDefinition Height="187"/>
                 <RowDefinition Height="16"/>
@@ -437,6 +574,10 @@
                 BorderBrush="{StaticResource SplitterGray}"
                 BorderThickness="0,1,0,1"
                 Grid.Row="1"/>
+            <Border
+                BorderBrush="{StaticResource SplitterGray}"
+                BorderThickness="0,1,0,1"
+                Grid.Row="3"/>
         </Grid>
     </Grid>
 </Window>

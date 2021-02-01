@@ -10,7 +10,7 @@
         <Setter Property="Background" Value="white"/>
     </Style>
     <Style TargetType="CheckBox" x:Key="OptionCheckBox">
-        <Setter Property="Foreground" Value="{StaticResource GreenFont}"/>
+        <Setter Property="Foreground" Value="#262626"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="Margin" Value="5,0,0,0"/>

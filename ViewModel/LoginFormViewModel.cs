@@ -23,14 +23,14 @@ namespace RealtorObjects.ViewModel
         private CustomCommand createNewUser;
         private CustomCommand login;
 
-        private string currentLogin = "";    // для входа
-        private string currentPassword = ""; // для входа
-        private string name = "";            //----------------------------
-        private string surname = "";         // для регистрации
+        private string currentLogin = "";    
+        private string currentPassword = ""; 
+        private string name = "";            
+        private string surname = "";        
         private string patronymic = "";
         private string email = "";
         private string firstPassword = "";
-        private string secondPassword = "";  //----------------------------
+        private string secondPassword = ""; 
         private Visibility registrationVisibility = Visibility.Collapsed;
 
         private Boolean isLoggedIn = false;
@@ -47,7 +47,7 @@ namespace RealtorObjects.ViewModel
             Application.Current.Shutdown();
         }));
         public CustomCommand SendPassword => sendPassword ?? (sendPassword = new CustomCommand(obj =>
-        { // создает запрос на отправку пароля на почту
+        { 
 
         }));
         public CustomCommand ChangeRegistrationVisibility => changeRegistrationVisibility ?? (changeRegistrationVisibility = new CustomCommand(obj =>
@@ -85,7 +85,7 @@ namespace RealtorObjects.ViewModel
             && String.IsNullOrEmpty(SecondPassword));
         }));
         public CustomCommand Login => login ?? (login = new CustomCommand(obj =>
-        { // логинит
+        { 
 
         }));
 
