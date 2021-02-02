@@ -17,7 +17,7 @@
     </Style>
     <Style TargetType="{x:Type TextBlock}" x:Key="Header">
         <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <Setter Property="Foreground" Value="#262626"/>
+        <Setter Property="Foreground" Value="#202020"/>
         <Setter Property="Margin" Value="3,0"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
@@ -41,6 +41,7 @@
         <Setter Property="AllowDrop" Value="true"/>
         <Setter Property="MinWidth" Value="0"/>
         <Setter Property="MaxLength" Value="30"/>
+        <Setter Property="FontFamily" Value="Courier New"/>
         <Setter Property="MinHeight" Value="0"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
@@ -170,7 +171,7 @@
                     Margin="{TemplateBinding Padding}" 
                     Style="{StaticResource ComboBoxEditableTextBox}" 
                     IsHitTestVisible="{TemplateBinding IsEditable}"
-                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    VerticalContentAlignment="Bottom"/>
             </Border>
         </Grid>
         <ControlTemplate.Triggers>
@@ -222,7 +223,21 @@
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Cursor" Value="Arrow"/>
         <Setter Property="Background" Value="{StaticResource MainGreen}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RepeatButton">
+                    <Border
+                        BorderThickness="0"
+                        Background="{TemplateBinding Background}">
+                        <ContentPresenter/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
         <Style.Triggers>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource LightMainGreen}"/>
+            </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{StaticResource LightMainGreen}"/>
             </Trigger>
@@ -359,11 +374,6 @@
                             </RepeatButton>
                         </Grid>
                     </Border>
-                    <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=PART_IncreaseValue, Path=IsMouseDirectlyOver}" Value="true">
-                            <Setter Property="Background" TargetName="PART_IncreaseValue" Value="red"/>
-                        </DataTrigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

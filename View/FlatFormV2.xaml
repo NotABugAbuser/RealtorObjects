@@ -13,6 +13,9 @@
         Title="FlatFormV2" 
         Background="White"
         Height="650" Width="755">
+    <Window.DataContext>
+        <vm:FlatFormViewModel/>
+    </Window.DataContext>
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="#444"/>
@@ -48,15 +51,19 @@
         <Style TargetType="TextBlock" BasedOn="{StaticResource Header}" x:Key="LeftHeader">
             <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
+        <c:StringMultiplierToNumericMultiplierConverter x:Key="StringMultiplierToNumericMultiplier"/>
     </Window.Resources>
-    <Grid>
+    <Grid DataContext="{Binding Flat}">
         <Grid.RowDefinitions>
             <RowDefinition Height="32"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        <Border Background="{StaticResource MainGreen}"/>
         <TextBlock 
             HorizontalAlignment="Center"
             FontSize="15"
+            SnapsToDevicePixels="True"
+            Foreground="white"
             Text="[Каталог: Продажа квартир] — Новая запись"
             Grid.ColumnSpan="5"/>
         <Grid
@@ -227,7 +234,9 @@
                     Grid.Row="2"
                     Content="Обмен"/>
             </Grid>
-            <Grid Name="Third"
+            <Grid 
+                DataContext="{Binding Info}"
+                Name="Third"
                 Grid.Row="4">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="23"/>
@@ -271,8 +280,8 @@
                         Text="Кол. комнат:"/>
                     <TextBox 
                         Width="70"
-                        Text="{Binding EmptyBinding, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
-                        Tag="EmptyBinding"
+                        Text="{Binding RoomCount, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                        Tag="RoomCount"
                         HorizontalAlignment="Right"
                         Style="{StaticResource IntegerNumericUpDown}"/>
                 </Grid>
@@ -551,10 +560,107 @@
                         IsChecked="{Binding HasElevator}"
                         Content="Лифт"/>
                 </Grid>
+                <TextBlock
+                    Grid.Row="10"
+                    VerticalAlignment="Top"
+                    Style="{StaticResource Header}"
+                    Text="Описание"/>
+                <Border
+                    Style="{StaticResource Border}"
+                    Grid.Column="1"
+                    Grid.Row="10"
+                    Height="46"
+                    Grid.ColumnSpan="7">
+                    <TextBox
+                        Style="{StaticResource inputTextBox}"
+                        Height="46"
+                        VerticalContentAlignment="Top"
+                        MaxLines="2"
+                        Width="653"
+                        TextWrapping="Wrap"
+                        MaxLength="120"
+                        Text=""/>
+                </Border>
             </Grid>
-            <Grid Name="Fifth"
+            <Grid
+                DataContext="{Binding Cost}"
+                Name="Fifth"
                 Grid.Row="8">
-
+                <Grid.Resources>
+                    <Style TargetType="Button" x:Key="ValueButton">
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Background" Value="{StaticResource MainGreen}"/>
+                        <Setter Property="Foreground" Value="White"/>
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="4"/>
+                    <ColumnDefinition Width="90"/>
+                    <ColumnDefinition Width="4"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="87"/>
+                    <ColumnDefinition Width="55"/>
+                    <ColumnDefinition Width="73"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock
+                    Style="{StaticResource Header}"
+                    Text="Кв.М:"/>
+                <TextBox
+                    Style="{StaticResource DoubleNumericUpDown}"
+                    Text="{Binding Area, StringFormat=0.00}"
+                    Tag="Area"
+                    Grid.Column="1"/>
+                <TextBlock
+                    Style="{StaticResource Header}"
+                    Grid.Column="2"
+                    Text="Цена, руб:"/>
+                <TextBox 
+                    Text="{Binding PseudoPrice, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                    Tag="PseudoPrice"
+                    Style="{StaticResource DoubleNumericUpDown}"
+                    Grid.Column="3"/>
+                <ComboBox
+                    SelectedItem="{Binding Multiplier, Converter={StaticResource StringMultiplierToNumericMultiplier}}"
+                    IsEditable="False"
+                    ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.FlatOptions.Multipliers}"
+                    Style="{StaticResource GreenComboBox}"
+                    Grid.Column="5"/>
+                <TextBlock
+                    Width="65"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="5,3,0,0"
+                    Text="{Binding Multiplier, Converter={StaticResource StringMultiplierToNumericMultiplier}}"
+                    FontSize="12"
+                    FontFamily="Courier new"
+                    Grid.Column="5"/>
+                <TextBox
+                    IsEnabled="{Binding HasPercents}"
+                    Margin="4,0,0,0"
+                    Text="{Binding Percents, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                    Tag="Percents"
+                    Style="{StaticResource DoubleNumericUpDown}"
+                    Grid.Column="7"/>
+                <CheckBox
+                    Style="{StaticResource OptionCheckBox}"
+                    Grid.Column="8"
+                    Content="Проценты"/>
+                <CheckBox
+                    Style="{StaticResource OptionCheckBox}"
+                    Grid.Column="9"
+                    Content="НДС"/>
+                <CheckBox
+                    Style="{StaticResource OptionCheckBox}"
+                    Grid.Column="10"
+                    Content="Ипотека"/>
             </Grid>
         </Grid>
         <Grid
@@ -562,9 +668,9 @@
             Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="58"/>
-                <RowDefinition Height="75"/>
-                <RowDefinition Height="75"/>
-                <RowDefinition Height="166"/>
+                <RowDefinition Height="76"/>
+                <RowDefinition Height="74"/>
+                <RowDefinition Height="213"/>
                 <RowDefinition Height="16"/>
                 <RowDefinition Height="187"/>
                 <RowDefinition Height="16"/>
@@ -572,11 +678,11 @@
             </Grid.RowDefinitions>
             <Border
                 BorderBrush="{StaticResource SplitterGray}"
-                BorderThickness="0,1,0,1"
+                BorderThickness="0,2,0,2"
                 Grid.Row="1"/>
             <Border
                 BorderBrush="{StaticResource SplitterGray}"
-                BorderThickness="0,1,0,1"
+                BorderThickness="0,2,0,2"
                 Grid.Row="3"/>
         </Grid>
     </Grid>
