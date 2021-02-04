@@ -41,14 +41,5 @@ namespace RealtorObjects.View
         private void Window_MouseDown(object sender, MouseButtonEventArgs e) {
             this.DragMove();
         }
-
-        private void WindowApplication_Click(object sender, RoutedEventArgs e) {
-            if (this.WindowState == WindowState.Normal) {
-                this.WindowState = WindowState.Maximized;
-            } else {
-                this.WindowState = WindowState.Normal;
-
-            }
-        }
     }
 }

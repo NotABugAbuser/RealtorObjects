@@ -20,26 +20,20 @@ namespace RealtorObjects.ViewModel
 {
     public class FlatFormViewModel : BaseViewModel, IDoubleNumericUpDown, IIntegerNumericUpDown
     {
-        string testString = "руддщ";
-        int testInt = 20;
-        double testDouble = 21.66123;
-        CustomCommand testCommand;
-        CustomCommand increaseDouble;
-        CustomCommand decreaseDouble;
-        CustomCommand increaseInteger;
-        CustomCommand decreaseInteger;
-        Flat flat = new Flat();
+        private string testString = "руддщ";
+        private int testInt = 20;
+        private double testDouble = 21.66123;
+        private CustomCommand testCommand;
+        private CustomCommand increaseDouble;
+        private CustomCommand decreaseDouble;
+        private CustomCommand increaseInteger;
+        private CustomCommand decreaseInteger;
+        private CustomCommand cancel;
+        private CustomCommand confirm;
+        private CustomCommand changePrice;
+        private Flat flat = new Flat();
         readonly FlatOptions flatOptions = new FlatOptions();
-        public CustomCommand TestCommand => testCommand ??
-            (testCommand = new CustomCommand(obj => {
-                MessageBox.Show(JsonSerializer.Serialize(Flat).Replace(',', '\n'));
-            }));
-        public FlatFormViewModel() {
-
-        }
-        public FlatFormViewModel(Flat flat) {
-            this.Flat = flat;
-        }
+        #region UpDownOperations
         public CustomCommand IncreaseDouble => increaseDouble ??
             (increaseDouble = new CustomCommand(obj => {
                 ChangeProperty<double>(obj, 0.05);
@@ -56,6 +50,8 @@ namespace RealtorObjects.ViewModel
             (decreaseInteger = new CustomCommand(obj => {
                 ChangeProperty<int>(obj, -1);
             }));
+        #endregion
+        #region TestMethods
         public double TestDouble {
             get => testDouble;
             set {
@@ -77,7 +73,27 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
+        public CustomCommand TestCommand => testCommand ??
+            (testCommand = new CustomCommand(obj => {
+                MessageBox.Show(JsonSerializer.Serialize(Flat).Replace(',', '\n'));
+            }));
+        #endregion
 
+        public FlatFormViewModel() {
+
+        }
+        public FlatFormViewModel(Flat flat) {
+            this.Flat = flat;
+        }
+        public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj => {
+            var value = Convert.ToInt32(obj);
+            Flat.Cost.Price += value;
+        }));
+        public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
+        public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj => { 
+        
+        }));
+        
         public Flat Flat {
             get => flat;
             set {

@@ -11,8 +11,10 @@
         Title="MainWindow" 
         Height="768" 
         Width="1366" 
-        MouseDown="Window_MouseDown"
+        WindowState="Maximized"
         WindowStyle="none"
+        BorderBrush="{StaticResource MainGreen}"
+        ResizeMode="NoResize"
         MinHeight="597" 
         Background="white">
     <Window.DataContext>
@@ -63,6 +65,7 @@
             <RowDefinition Height="33"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        
         <ContentControl 
             Content="{Binding WorkAreaViewModel}" 
             Grid.Column="1" 
@@ -102,13 +105,9 @@
                     Grid.Column="3"
                     TextAlignment="Center"/>
                 <Button
-                    Grid.Column="4"
+                    Grid.Column="5"
                     Click="MinimizeApplcation_Click"
                     Style="{StaticResource WhiteMinimizeButton}"/>
-                <Button
-                    Grid.Column="5"
-                    Click="WindowApplication_Click"
-                    Style="{StaticResource WhiteWindowedButton}"/>
                 <Button
                     Grid.Column="6"
                     Click="CloseApplication_Click"
