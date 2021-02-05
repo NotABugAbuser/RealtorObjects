@@ -5,12 +5,15 @@ using RealtyModel.Model.Derived;
 using RealtyModel.Service;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,23 +23,20 @@ namespace RealtorObjects.ViewModel
 {
     public class FlatFormViewModel : BaseViewModel, IDoubleNumericUpDown, IIntegerNumericUpDown
     {
-        private string testString = "руддщ";
-        private int testInt = 20;
-        private double testDouble = 21.66123;
-        private CustomCommand testCommand;
+        private CustomCommand cancel;
+        private CustomCommand confirm;
+        private CustomCommand changePrice;
+        private LocationOptions locationOptions = new LocationOptions();
+        private Flat flat = new Flat(true);
+        private readonly FlatOptions flatOptions = new FlatOptions();
+        #region UpDownOperations
         private CustomCommand increaseDouble;
         private CustomCommand decreaseDouble;
         private CustomCommand increaseInteger;
         private CustomCommand decreaseInteger;
-        private CustomCommand cancel;
-        private CustomCommand confirm;
-        private CustomCommand changePrice;
-        private Flat flat = new Flat();
-        readonly FlatOptions flatOptions = new FlatOptions();
-        #region UpDownOperations
         public CustomCommand IncreaseDouble => increaseDouble ??
             (increaseDouble = new CustomCommand(obj => {
-                ChangeProperty<double>(obj, 0.05);
+                ChangeProperty<Single>(obj, 0.05f);
             }));
         public CustomCommand IncreaseInteger => increaseInteger ??
             (increaseInteger = new CustomCommand(obj => {
@@ -44,14 +44,18 @@ namespace RealtorObjects.ViewModel
             }));
         public CustomCommand DecreaseDouble => decreaseDouble ??
             (decreaseDouble = new CustomCommand(obj => {
-                ChangeProperty<double>(obj, -0.05);
+                ChangeProperty<Single>(obj, -0.05f);
             }));
         public CustomCommand DecreaseInteger => decreaseInteger ??
             (decreaseInteger = new CustomCommand(obj => {
                 ChangeProperty<int>(obj, -1);
             }));
         #endregion
-        #region TestMethods
+        #region TestProperties
+        private CustomCommand testCommand;
+        private string testString = "руддщ";
+        private int testInt = 20;
+        private double testDouble = 21.66123;
         public double TestDouble {
             get => testDouble;
             set {
@@ -82,18 +86,26 @@ namespace RealtorObjects.ViewModel
         public FlatFormViewModel() {
 
         }
-        public FlatFormViewModel(Flat flat) {
+        public FlatFormViewModel(Flat flat, LocationOptions locationOptions) {
             this.Flat = flat;
+            this.LocationOptions = locationOptions;
         }
         public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj => {
             var value = Convert.ToInt32(obj);
             Flat.Cost.Price += value;
         }));
         public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
-        public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj => { 
-        
+        public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj => {
+            var options = new JsonSerializerOptions { Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) };
+            MessageBox.Show(JsonSerializer.Serialize(Flat, options).Replace(',', '\n'));
         }));
-        
+        public LocationOptions LocationOptions {
+            get => locationOptions;
+            set {
+                locationOptions = value;
+                OnPropertyChanged();
+            }
+        }
         public Flat Flat {
             get => flat;
             set {
@@ -113,6 +125,5 @@ namespace RealtorObjects.ViewModel
             T value = (T)property.GetValue(instance, null);
             property.SetValue(instance, Operator.Add(step, value));
         }
-        
     }
 }

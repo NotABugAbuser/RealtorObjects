@@ -12,6 +12,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Windows;
+using RealtyModel.Model;
 using RealtyModel.Service;
 
 namespace RealtorObjects.ViewModel
@@ -26,6 +27,7 @@ namespace RealtorObjects.ViewModel
         private string header = "Главная";
         private string currentTime;
         private FontAwesomeIcon currentIcon = FontAwesomeIcon.Home;
+        private LocationOptions locationOptions = new LocationOptions();
         private BaseViewModel[] viewModels = new BaseViewModel[] {
             new HomeViewModel(),
             new PhoneNumbersViewModel(),
@@ -56,7 +58,7 @@ namespace RealtorObjects.ViewModel
         };
         public MainWindowViewModel() {
             string dayOfWeek = new CultureInfo("ru-RU").DateTimeFormat.GetShortestDayName(DateTime.Now.DayOfWeek);
-            CurrentTime = $"{DateTime.Now:HH : mm} {dayOfWeek}";
+            CurrentTime = $"{DateTime.Now:HH:mm} {dayOfWeek}";
             Task.Factory.StartNew(() => {
                 while (true) {
                     Thread.Sleep(5000);
@@ -113,6 +115,14 @@ namespace RealtorObjects.ViewModel
             get => header;
             set {
                 header = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public LocationOptions LocationOptions {
+            get => locationOptions;
+            set {
+                locationOptions = value;
                 OnPropertyChanged();
             }
         }

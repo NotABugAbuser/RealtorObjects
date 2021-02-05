@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -41,6 +42,24 @@ namespace RealtorObjects.View
                 this.WindowState = WindowState.Normal;
 
             }
+        }
+        private void EnglishOnly(object sender, TextCompositionEventArgs e) {
+            e.Handled = new Regex("[^a-zA-z]").IsMatch(e.Text);
+        }
+        private void RussianOnly(object sender, TextCompositionEventArgs e) {
+            e.Handled = new Regex("[^а-яА-Я]").IsMatch(e.Text);
+        }
+        private void NumericOnly(object sender, TextCompositionEventArgs e) {
+            e.Handled = new Regex("[^0-9]").IsMatch(e.Text);
+        }
+        private void AlphabeticalOnly(object sender, TextCompositionEventArgs e) {
+            e.Handled = new Regex("[^а-яА-Яa-zA-z]").IsMatch(e.Text);
+        }
+        private void AnyLetter(object sender, TextCompositionEventArgs e) {
+            e.Handled = new Regex("[^а-яА-Яa-zA-z0-9,]").IsMatch(e.Text);
+        }
+        private void PhoneNumbers(object sender, TextCompositionEventArgs e) {
+            e.Handled = new Regex("[^0-9;,]").IsMatch(e.Text);
         }
     }
 }

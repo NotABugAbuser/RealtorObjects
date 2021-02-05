@@ -268,13 +268,16 @@
                             </Grid.RowDefinitions>
                             <TextBox
                                 MinWidth="50"
+                                Width="{Binding RelativeSource={RelativeSource AncestorType=TextBox, Mode=FindAncestor}, Path=ActualWidth}"
                                 BorderThickness="0"
                                 Grid.RowSpan="2"
                                 HorizontalAlignment="Right"
                                 TextAlignment="Right"
+                                FontSize="13"
+                                FontFamily="Courier New"
                                 Text="{Binding Path=Text, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}, UpdateSourceTrigger=PropertyChanged}"
                                 x:Name="PART_NumericTextBox"
-                                Padding="2"/>
+                                Padding="2,4,2,0"/>
                             <RepeatButton 
                                 Style="{StaticResource PART_RepeatButtonStyle}"
                                 Command="{Binding Path=DataContext.IncreaseDouble, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
@@ -330,16 +333,17 @@
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
                             <TextBox
+                                Width="{Binding RelativeSource={RelativeSource AncestorType=TextBox, Mode=FindAncestor}, Path=ActualWidth}"
                                 MinWidth="50"
                                 BorderThickness="0"
                                 Grid.RowSpan="2"
                                 HorizontalAlignment="Right"
                                 TextAlignment="Right"
-                                FontSize="15"
+                                FontSize="13"
                                 FontFamily="Courier New"
                                 Text="{Binding Path=Text, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}, UpdateSourceTrigger=PropertyChanged}"
                                 x:Name="PART_NumericTextBox"
-                                Padding="2,3,2,0"/>
+                                Padding="2,4,2,0"/>
                             <RepeatButton 
                                     Style="{StaticResource PART_RepeatButtonStyle}"
                                     Command="{Binding Path=DataContext.IncreaseInteger, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"

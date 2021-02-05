@@ -264,20 +264,20 @@
                                 Width="90"/>
                         </Border>
                         <CheckBox 
-                                Foreground="{StaticResource GreenFont}"
-                                Grid.Column="7"
-                                Margin="10,0,0,0"
-                                VerticalAlignment="Center"
-                                Grid.Row="1"
-                                IsChecked="{Binding HasBanner, UpdateSourceTrigger=PropertyChanged}"
-                                Content="Растяжка"/>
+                            Foreground="{StaticResource GreenFont}"
+                            Grid.Column="7"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Grid.Row="1"
+                            IsChecked="{Binding HasBanner, UpdateSourceTrigger=PropertyChanged}"
+                            Content="Растяжка"/>
                         <CheckBox 
-                                Foreground="{StaticResource GreenFont}"
-                                Grid.Column="7"
-                                Margin="10,0,0,0"
-                                IsChecked="{Binding HasExchange, UpdateSourceTrigger=PropertyChanged}"
-                                VerticalAlignment="Center"
-                                Content="Обмен"/>
+                            Foreground="{StaticResource GreenFont}"
+                            Grid.Column="7"
+                            Margin="10,0,0,0"
+                            IsChecked="{Binding HasExchange, UpdateSourceTrigger=PropertyChanged}"
+                            VerticalAlignment="Center"
+                            Content="Обмен"/>
                     </Grid>
                 </Border>
                 <Border 
