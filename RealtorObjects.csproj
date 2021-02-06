@@ -128,11 +128,9 @@
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\CustomersViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
+    <Compile Include="ViewModel\LocationsViewModel.cs" />
     <Compile Include="ViewModel\LoginFormViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
-    <Compile Include="ViewModel\PhoneNumbersViewModel.cs" />
-    <Compile Include="ViewModel\RealtorObjectsViewModel.cs" />
-    <Compile Include="ViewModel\StatisticsViewModel.cs" />
     <Compile Include="View\Converters\StringMultiplierToNumericMultiplierConverter.cs" />
     <Compile Include="ViewModel\FlatFormViewModel.cs" />
     <Compile Include="View\Converters\ObjectAndPropertyMultiValueConverter.cs" />
@@ -140,14 +138,14 @@
     <Compile Include="View\Customers.xaml.cs">
       <DependentUpon>Customers.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\FlatForm.xaml.cs">
-      <DependentUpon>FlatForm.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\FlatFormV2.xaml.cs">
       <DependentUpon>FlatFormV2.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Home.xaml.cs">
       <DependentUpon>Home.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Locations.xaml.cs">
+      <DependentUpon>Locations.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\LoginForm.xaml.cs">
       <DependentUpon>LoginForm.xaml</DependentUpon>
@@ -158,12 +156,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="View\PhoneNumbers.xaml.cs">
-      <DependentUpon>PhoneNumbers.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\RealtorObjectsView.xaml.cs">
-      <DependentUpon>RealtorObjectsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Statistics.xaml.cs">
       <DependentUpon>Statistics.xaml</DependentUpon>
@@ -180,15 +172,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\FlatForm.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\FlatFormV2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Home.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Locations.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -199,14 +191,6 @@
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\PhoneNumbers.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\RealtorObjectsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Statistics.xaml">
       <SubType>Designer</SubType>

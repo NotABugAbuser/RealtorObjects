@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RealtorObjects.ViewModel
 {
-    class StatisticsViewModel : BaseViewModel
+    class LocationsViewModel : BaseViewModel
     {
     }
 }

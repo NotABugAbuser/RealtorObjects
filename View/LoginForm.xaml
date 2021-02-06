@@ -117,6 +117,21 @@
         </Style>
     </Window.Resources>
     <Grid>
+        <Border 
+            Width="20" 
+            Height="20"
+            VerticalAlignment="Top">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="Red"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
+                            <Setter Property="Background" Value="Green"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
         <Button
             Style="{StaticResource WhiteReturnButton}"
             HorizontalAlignment="Left"

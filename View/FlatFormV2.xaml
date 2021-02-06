@@ -326,7 +326,7 @@
                     Text="Материал:"/>
                 <ComboBox
                     PreviewTextInput="RussianOnly"
-                    ItemsSource="{Binding Path=DataContext.FlatOptions.Materials, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor} }"
+                    ItemsSource="{Binding Path=DataContext.Customers, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor} }"
                     Text="{Binding Material, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding Material}"
                     Style="{StaticResource GreenComboBox}"

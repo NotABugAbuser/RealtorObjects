@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RealtyModel.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -8,8 +9,9 @@ using System.Threading.Tasks;
 
 namespace RealtorObjects.ViewModel
 {
-    public class BaseViewModel : INotifyPropertyChanged
+    public abstract class BaseViewModel : INotifyPropertyChanged
     {
+        public virtual void HandleOperation(Operation operation) { }
         public void OnPropertyChanged([CallerMemberName] string property = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }

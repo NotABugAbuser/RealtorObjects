@@ -121,9 +121,9 @@
             VerticalAlignment="Center">
                 <ToggleButton 
                     Command="{Binding UpdateWorkAreaViewModel}"
-                    CommandParameter="0"
+                    CommandParameter="1"
                     ToolTip="Главная"
-                    IsChecked="{Binding ToggledButtons[0]}"
+                    IsChecked="{Binding ToggledButtons[1]}"
                     Style="{StaticResource LeftBarButton}">
                     <fa:ImageAwesome 
                         Icon="Home" 
@@ -132,41 +132,8 @@
                 </ToggleButton>
                 <ToggleButton
                     Command="{Binding UpdateWorkAreaViewModel}"
-                    CommandParameter="1"
-                    IsChecked="{Binding ToggledButtons[1]}"
-                    ToolTip="Номера телефонов"
-                    Style="{StaticResource LeftBarButton}">
-                    <fa:ImageAwesome 
-                        Icon="Phone"
-                        Foreground="White"
-                        Width="29"/>
-                </ToggleButton>
-                <ToggleButton
-                    Command="{Binding UpdateWorkAreaViewModel}"
                     CommandParameter="2"
                     IsChecked="{Binding ToggledButtons[2]}"
-                    ToolTip="Статистика"
-                    Style="{StaticResource LeftBarButton}">
-                    <fa:ImageAwesome 
-                        Icon="BarChart"
-                        Foreground="White"
-                        Width="29"/>
-                </ToggleButton>
-                <ToggleButton
-                    Command="{Binding UpdateWorkAreaViewModel}"
-                    CommandParameter="3"
-                    IsChecked="{Binding ToggledButtons[3]}"
-                    ToolTip="Объекты"
-                    Style="{StaticResource LeftBarButton}">
-                    <fa:ImageAwesome 
-                        Icon="List"
-                        Foreground="White"
-                        Width="29"/>
-                </ToggleButton>
-                <ToggleButton
-                    Command="{Binding UpdateWorkAreaViewModel}"
-                    CommandParameter="4"
-                    IsChecked="{Binding ToggledButtons[4]}"
                     ToolTip="Клиенты"
                     Style="{StaticResource LeftBarButton}">
                     <fa:ImageAwesome 

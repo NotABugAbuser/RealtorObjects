@@ -56,7 +56,7 @@ namespace RealtorObjects.Model
         /// </summary>
         /// <param name="ipAddress">ipAddress - ip адрес сервера.</param>
         /// <returns></returns>
-        public async Task ConnectAsync(IPAddress ipAddress)
+        public async void ConnectAsync(IPAddress ipAddress)
         {
             await Task.Run(() =>
             {

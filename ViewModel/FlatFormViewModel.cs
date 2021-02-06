@@ -82,7 +82,6 @@ namespace RealtorObjects.ViewModel
                 MessageBox.Show(JsonSerializer.Serialize(Flat).Replace(',', '\n'));
             }));
         #endregion
-
         public FlatFormViewModel() {
 
         }

@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace RealtorObjects.View
 {
     /// <summary>
-    /// Логика взаимодействия для RealtorObjectsView.xaml
+    /// Логика взаимодействия для Locations.xaml
     /// </summary>
-    public partial class RealtorObjectsView : UserControl
+    public partial class Locations : UserControl
     {
-        public RealtorObjectsView() {
+        public Locations() {
             InitializeComponent();
         }
     }
