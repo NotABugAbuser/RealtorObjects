@@ -65,7 +65,16 @@ namespace RealtorObjects.Model
                 {
                     IPEndPoint iPEndPoint = new IPEndPoint(ipAddress, 8005);
                     socket.Connect(iPEndPoint);
-
+                    SendMessage(new Operation()
+                    {
+                        Name = "ГвоздиковЕА",
+                        Data = "123",
+                        OperationParameters = new OperationParameters()
+                        {
+                            Direction = OperationDirection.Identity,
+                            Type = OperationType.Register
+                        }
+                    });
                     IsConnected = true;
                     while (IsConnected) ReceiveMessage();
                 }

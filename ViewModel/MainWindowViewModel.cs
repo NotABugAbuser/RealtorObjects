@@ -195,6 +195,7 @@ namespace RealtorObjects.ViewModel
         public MainWindowViewModel() {
             new LoginForm() { DataContext = viewModels[0] }.Show();
             WorkAreaViewModel = viewModels[1];
+            ((LoginFormViewModel)viewModels[0]).TryRegister += (operation) => client.SendMessage(operation);
             Connect();
 
 
@@ -266,8 +267,10 @@ namespace RealtorObjects.ViewModel
             try {
                 Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => client.ConnectAsync(IPAddress.Parse("192.168.1.107"))));
                 Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => AwaitOperationAsync()));
-                
-            } catch (Exception ex) {
+            
+
+            }
+            catch (Exception ex) {
                 UpdateLog("connection is failed. " + ex.Message);
             }
         }

@@ -15,8 +15,12 @@ using System.Windows.Threading;
 
 namespace RealtorObjects.ViewModel
 {
-    class LoginFormViewModel : BaseViewModel
+    public class LoginFormViewModel : BaseViewModel
     {
+        public delegate void AuthentificationHandler(Operation operation);
+        public event AuthentificationHandler TryLogin;
+        public event AuthentificationHandler TryRegister;
+
         private CustomCommand closeApp;
         private CustomCommand sendPassword;
         private CustomCommand changeRegistrationVisibility;
@@ -39,6 +43,8 @@ namespace RealtorObjects.ViewModel
         public LoginFormViewModel() {
             //Task connectTask = client.ConnectAsync(IPAddress.Loopback);
             //Task checkIncomingOps = CheckIncomingOps();
+
+
         }
 
         public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
@@ -55,15 +61,15 @@ namespace RealtorObjects.ViewModel
         }));
         public CustomCommand CreateNewUser => createNewUser ?? (createNewUser = new CustomCommand(obj => {
             CurrentLogin = $"{Surname}{Name[0]}{Patronymic[0]}";
-            Operation register = new Operation() {
+            Operation operation = new Operation() {
                 Name = CurrentLogin,
                 OperationParameters = new OperationParameters() {
                     Direction = OperationDirection.Identity,
                     Type = OperationType.Register
                 },
-                Data = CurrentPassword
+                Data = SecondPassword
             };
-            client.SendMessage(register);
+            TryRegister?.Invoke(operation);
         }, obj => { // проверяет поля формы на заполненность
             return !(String.IsNullOrEmpty(Name)
             && String.IsNullOrEmpty(Surname)
@@ -73,11 +79,17 @@ namespace RealtorObjects.ViewModel
             && String.IsNullOrEmpty(SecondPassword));
         }));
         public CustomCommand Login => login ?? (login = new CustomCommand(obj => {
-            if (IsLoggedIn) {
-                IsLoggedIn = false;
-            } else {
-                IsLoggedIn = true;
-            }
+            Operation operation = new Operation()
+            {
+                Name = CurrentLogin,
+                Data = CurrentPassword,
+                OperationParameters = new OperationParameters()
+                {
+                    Direction = OperationDirection.Identity,
+                    Type = OperationType.Login
+                }
+            };
+            TryLogin?.Invoke(operation);
         }));
 
         public string CurrentLogin {
