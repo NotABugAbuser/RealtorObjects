@@ -4,23 +4,23 @@
 
     <Color x:Key="MainGrayColor">#e8e8e8</Color>
     <!--<Color x:Key="MainGreenColor">#78B01C</Color>
-    <Color x:Key="LightMainGreenColor">#A0BF3E</Color>-->
+    <Color x:Key="LightMainGreenlueColor">#A0BF3E</Color>-->
     <Color x:Key="LightBackgroundGrayColor">#F3F3F3</Color>
     <Color x:Key="BackgroundGrayColor">#E6E6E6</Color>
     <Color x:Key="BorderGrayColor">#969696</Color>
     <Color x:Key="GreenFontColor">#005000</Color>
-    <Color x:Key="MainGreenColor">#217345</Color>
-    <Color x:Key="LightMainGreenColor">#0E5C2F</Color>
+    <Color x:Key="PrimaryBlueColor">#2B579A</Color>
+    <Color x:Key="DarkPrimaryBlueColor">#002050</Color>
     <Color x:Key="SplitterGrayColor">#B1B1B1</Color>
 
     <SolidColorBrush x:Key="SplitterGray" Color="{StaticResource SplitterGrayColor}"/>
     <SolidColorBrush x:Key="MainGray" Color="{StaticResource MainGrayColor}"/>
-    <SolidColorBrush x:Key="MainGreen" Color="{StaticResource MainGreenColor}"/>
+    <SolidColorBrush x:Key="PrimaryBlue" Color="{StaticResource PrimaryBlueColor}"/>
     <SolidColorBrush x:Key="BorderGray" Color="{StaticResource BorderGrayColor}" />
     <SolidColorBrush x:Key="LightBackgroundGray" Color="{StaticResource LightBackgroundGrayColor}"/>
     <SolidColorBrush x:Key="GreenFont" Color="{StaticResource GreenFontColor}"/>
     <SolidColorBrush x:Key="BackgroundGray" Color="{StaticResource BackgroundGrayColor}"/>
-    <SolidColorBrush x:Key="LightMainGreen" Color="{StaticResource LightMainGreenColor}"/>
+    <SolidColorBrush x:Key="DarkPrimaryBlue" Color="{StaticResource DarkPrimaryBlueColor}"/>
     
     <SolidColorBrush x:Key="ScrollBar.Static.Background" Color="#F0F0F0"/>
     <SolidColorBrush x:Key="ScrollBar.Static.Border" Color="#F0F0F0"/>

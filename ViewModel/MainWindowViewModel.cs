@@ -193,10 +193,10 @@ namespace RealtorObjects.ViewModel
         #endregion
 
         public MainWindowViewModel() {
-            new LoginForm() { DataContext = viewModels[0] }.Show();
+            new LoginForm() { DataContext = viewModels[0] }/*.Show()*/;
             WorkAreaViewModel = viewModels[1];
-            ((LoginFormViewModel)viewModels[0]).TryRegister += (operation) => client.SendMessage(operation);
-            Connect();
+            /*((LoginFormViewModel)viewModels[0]).TryRegister += (operation) => client.SendMessage(operation);
+            Connect();*/
 
 
             string dayOfWeek = new CultureInfo("ru-RU").DateTimeFormat.GetShortestDayName(DateTime.Now.DayOfWeek);

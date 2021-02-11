@@ -10,7 +10,7 @@
         xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
         xmlns:c="clr-namespace:RealtorObjects.View.Converters"
         WindowStyle="none"
-        BorderBrush="{StaticResource MainGreen}"
+        BorderBrush="{StaticResource PrimaryBlue}"
         ResizeMode="NoResize"
         Background="#f6f6f6"
         Height="600" Width="755">
@@ -65,7 +65,7 @@
         <Style TargetType="Button" x:Key="GreenButton">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Height" Value="23"/>
-            <Setter Property="Background" Value="{StaticResource MainGreen}"/>
+            <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -83,10 +83,10 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource LightMainGreen}"/>
+                    <Setter Property="Background" Value="{StaticResource DarkPrimaryBlue}"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="{StaticResource MainGreen}"/>
+                    <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -97,7 +97,7 @@
             <RowDefinition Height="32"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Border Background="{StaticResource MainGreen}"/>
+        <Border Background="{StaticResource PrimaryBlue}"/>
         <TextBlock 
             HorizontalAlignment="Center"
             FontSize="15"
@@ -715,7 +715,7 @@
                 <Grid.Resources>
                     <Style TargetType="Button" x:Key="ValueButton">
                         <Setter Property="BorderThickness" Value="0"/>
-                        <Setter Property="Background" Value="{StaticResource MainGreen}"/>
+                        <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
                         <Setter Property="Foreground" Value="White"/>
                     </Style>
                 </Grid.Resources>

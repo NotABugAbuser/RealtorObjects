@@ -259,13 +259,10 @@ C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\System.ValueTuple
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Windows.Interactivity.xml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\RealtorObjects.csprojAssemblyReference.cache
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Customers.g.cs
-C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\FlatForm.g.cs
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\FlatFormV2.g.cs
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Home.g.cs
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\LoginForm.g.cs
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\MainWindow.g.cs
-C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\PhoneNumbers.g.cs
-C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\RealtorObjectsView.g.cs
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Statistics.g.cs
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\App.g.cs
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\GeneratedInternalTypeHelper.g.cs
@@ -275,13 +272,10 @@ C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\App.baml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Customers.baml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Dictionaries\ColorsAndBrushes.baml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Dictionaries\ControlStylesAndTemplates.baml
-C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\FlatForm.baml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\FlatFormV2.baml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Home.baml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\LoginForm.baml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\MainWindow.baml
-C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\PhoneNumbers.baml
-C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\RealtorObjectsView.baml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Statistics.baml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\RealtorObjects.g.resources
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\RealtorObjects.Properties.Resources.resources
@@ -361,3 +355,5 @@ C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Loca
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Locations.baml
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\Locations.g.cs
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\Locations.baml
+C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Locations.g.cs
+C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Locations.baml

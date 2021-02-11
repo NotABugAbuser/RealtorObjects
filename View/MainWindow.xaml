@@ -11,9 +11,8 @@
         Title="MainWindow" 
         Height="768" 
         Width="1366" 
-        WindowState="Maximized"
         WindowStyle="none"
-        BorderBrush="{StaticResource MainGreen}"
+        BorderBrush="{StaticResource PrimaryBlue}"
         ResizeMode="NoResize"
         MinHeight="597" 
         Background="white">
@@ -22,7 +21,7 @@
     </Window.DataContext>
     <Window.Resources>
         <Style TargetType="ToggleButton" x:Key="LeftBarButton">
-            <Setter Property="Background" Value="{StaticResource MainGreen}"/>
+            <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
             <Setter Property="Height" Value="70"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
@@ -30,11 +29,11 @@
                     <ControlTemplate TargetType="ToggleButton">
                         <Grid Background="{TemplateBinding Background}">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition x:Name="PART_LeftMiniBar" Width="0"/>
                                 <ColumnDefinition/>
+                                <ColumnDefinition x:Name="PART_LeftMiniBar" Width="0"/>
                             </Grid.ColumnDefinitions>
-                            <Label Background="white"/>
-                            <ContentPresenter Grid.Column="1"/>
+                            <Label Background="white" Grid.Column="1"/>
+                            <ContentPresenter Grid.Column="0"/>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -44,10 +43,10 @@
                                 <Setter TargetName="PART_LeftMiniBar" Property="Width" Value="5"/>
                             </Trigger>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="Background" Value="{StaticResource LightMainGreen}"/>
+                                <Setter Property="Background" Value="{StaticResource DarkPrimaryBlue}"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{StaticResource LightMainGreen}"/>
+                                <Setter Property="Background" Value="{StaticResource DarkPrimaryBlue}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -88,7 +87,7 @@
                 </Grid.ColumnDefinitions>
                 <fa:ImageAwesome 
                     Icon="{Binding CurrentIcon}" 
-                    Foreground="{StaticResource MainGreen}" 
+                    Foreground="{StaticResource PrimaryBlue}" 
                     HorizontalAlignment="Center" 
                     Width="25"/>
                 <TextBlock 
@@ -115,10 +114,10 @@
             </Grid>
         </Border>
         <Grid
-            Background="{StaticResource MainGreen}"
+            Background="{StaticResource PrimaryBlue}"
             Grid.RowSpan="2">
             <StackPanel 
-            VerticalAlignment="Center">
+                VerticalAlignment="Center">
                 <ToggleButton 
                     Command="{Binding UpdateWorkAreaViewModel}"
                     CommandParameter="1"

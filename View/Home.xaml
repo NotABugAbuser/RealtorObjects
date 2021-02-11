@@ -14,172 +14,134 @@
         <Style TargetType="TextBlock" x:Key="ColumnHeader">
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Foreground" Value="{StaticResource GreenFont}"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkPrimaryBlue}"/>
         </Style>
-
+        <ControlTemplate x:Key="ListBoxWithGreenScrollBar" TargetType="{x:Type ListBox}">
+            <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="1" SnapsToDevicePixels="True">
+                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" TargetName="Bd" Value="White"/>
+                    <Setter Property="BorderBrush" TargetName="Bd" Value="#FFD9D9D9"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsGrouping" Value="True"/>
+                        <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
+                </MultiTrigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
         <Style TargetType="TextBlock" x:Key="WhiteColumnHeader">
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="FontSize" Value="15"/>
         </Style>
-
+        <Style TargetType="TextBlock" x:Key="ListItemTextBlock">
+            <Setter Property="FontFamily" Value="Courier New"/>
+            <Setter Property="Margin" Value="0,1"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="ListItemHeader">
+            <Setter Property="FontFamily" Value="Verdana"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkPrimaryBlue}"/>
+        </Style>
         <Style TargetType="ListBoxItem" x:Key="RealtorObjectListBoxItem">
-            <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBox}, Path=ActualWidth}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
                         <Grid>
                             <Border
-                                Margin="20,0,25,10"
-                                Height="103"
-                                BorderThickness="1,0,1,2"
+                                Padding="10,0"
+                                Height="105"
+                                BorderThickness="1,0,1,1"
                                 BorderBrush="#ccc"
-                                CornerRadius="5"
                                 Background="white">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="140"/>
-                                        <ColumnDefinition Width="140"/>
-                                        <ColumnDefinition Width="157"/>
+                                        <ColumnDefinition Width="115"/>
+                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition Width="160"/>
                                         <ColumnDefinition Width="140"/>
                                         <ColumnDefinition/>
-                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="90"/>
                                     </Grid.ColumnDefinitions>
-                                    <StackPanel 
-                                        VerticalAlignment="top"
-                                        Margin="10">
-                                        <TextBlock 
-                                            FontFamily="verdana"
-                                            FontWeight="Bold"
-                                            Foreground="{StaticResource GreenFont}"
-                                            HorizontalAlignment="Center"
-                                            Text="9 Ноября 2020"/>
-                                        <TextBlock
-                                            Margin="5"
-                                            FontFamily="verdana"
-                                            TextAlignment="Center"
-                                            TextWrapping="WrapWithOverflow"
-                                            Text="{Binding Customer.Name}"/>
-                                        <TextBlock 
-                                            HorizontalAlignment="Center"
-                                            FontFamily="verdana"
-                                            Text="{Binding Customer.PhoneNumberList[0]}"/>
-                                    </StackPanel>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="24"/>
+                                        <RowDefinition Height="5"/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        Style="{StaticResource ListItemHeader}"
+                                        Text="22/02/2021"/>
+                                    <TextBlock
+                                        Grid.RowSpan="2"
+                                        Grid.Row="1"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        TextWrapping="WrapWithOverflow"
+                                        TextAlignment="Center"
+                                        Style="{StaticResource ListItemHeader}"
+                                        Text="Севастополев Евкакий Александрович"/>
                                     <Image
                                         Margin="5"
-                                        Stretch="Fill"
-                                        Source="/View/Image/TestImage.png"
-                                        Grid.Column="1"/>
-                                    <StackPanel 
-                                        Margin="10"
-                                        VerticalAlignment="Top"
-                                        Grid.Column="2">
-                                        <TextBlock 
-                                            FontFamily="verdana"
-                                            FontWeight="Bold"
-                                            Foreground="{StaticResource GreenFont}"
-                                            HorizontalAlignment="Left"
-                                            Text="Квартира"/>
-                                        <StackPanel
-                                            Margin="0,5,0,2"
-                                            Orientation="Horizontal">
-                                            <TextBlock
-                                                FontFamily="verdana"
-                                                HorizontalAlignment="Left"
-                                                Text="Комнат:"/>
-                                            <TextBlock
-                                                Margin="5,0"
-                                                FontFamily="verdana"
-                                                HorizontalAlignment="Left"
-                                                Text="{Binding RoomCount}"/>
-                                        </StackPanel>
-                                        <StackPanel
-                                            Orientation="Horizontal">
-                                            <TextBlock
-                                                FontFamily="verdana"
-                                                HorizontalAlignment="Left"
-                                                Text="{Binding Cost.Area, StringFormat=0}"/>
-                                            <TextBlock
-                                                Margin="5,0"
-                                                FontFamily="verdana"
-                                                HorizontalAlignment="Left"
-                                                Text="кв.м."/>
-                                        </StackPanel>
-                                        <StackPanel
-                                            Margin="0,2"
-                                            Orientation="Horizontal">
-                                            <TextBlock
-                                                FontFamily="verdana"
-                                                HorizontalAlignment="Left"
-                                                Text="6"/>
-                                            <TextBlock
-                                                Margin="5,0"
-                                                FontFamily="verdana"
-                                                HorizontalAlignment="Left"
-                                                Text="соток"/>
-                                        </StackPanel>
-                                    </StackPanel>
-                                    <StackPanel 
-                                        Margin="10"
-                                        VerticalAlignment="Top"
-                                        Grid.Column="3">
-                                        <TextBlock 
-                                            FontFamily="verdana"
-                                            FontWeight="Bold"
-                                            Foreground="{StaticResource GreenFont}"
-                                            HorizontalAlignment="Left"
-                                            Text="Виноградная"/>
-                                        <StackPanel
-                                            Margin="0,5,0,2"
-                                            Orientation="Horizontal">
-                                            <TextBlock
-                                                FontFamily="Courier new"
-                                                HorizontalAlignment="Left"
-                                                Text="Квартира №:"/>
-                                            <TextBlock
-                                                Margin="5,0"
-                                                FontFamily="courier new"
-                                                HorizontalAlignment="Left"
-                                                Text="23"/>
-                                        </StackPanel>
-                                        <StackPanel
-                                            Orientation="Horizontal">
-                                            <TextBlock
-                                                FontFamily="verdana"
-                                                HorizontalAlignment="Left"
-                                                Text="Дом №:"/>
-                                            <TextBlock
-                                                Margin="5,0"
-                                                FontFamily="verdana"
-                                                HorizontalAlignment="Left"
-                                                Text="7"/>
-                                        </StackPanel>
+                                        Stretch="Uniform"
+                                        Source="./Image/TestImage.png"
+                                        Grid.Column="1"
+                                        Grid.RowSpan="3"/>
+                                    <TextBlock
+                                        Style="{StaticResource ListItemHeader}"
+                                        Text="Квартира"
+                                        Grid.Column="3"/>
+                                    <StackPanel
+                                        Grid.Column="3"
+                                        Grid.Row="2">
                                         <TextBlock
-                                            Margin="0,2"
-                                            FontFamily="verdana"
-                                            HorizontalAlignment="Left"
-                                            Text="Северная Звезда"/>
+                                            Style="{StaticResource ListItemTextBlock}"
+                                            Text="Комнат: 3"/>
+                                        <TextBlock
+                                            Style="{StaticResource ListItemTextBlock}"
+                                            Text="Кв.м: 35"/>
+                                        <TextBlock
+                                            Visibility="Collapsed"
+                                            Style="{StaticResource ListItemTextBlock}"
+                                            Text="Балкон"/>
+                                        <TextBlock
+                                            Style="{StaticResource ListItemTextBlock}"
+                                            Text="Лоджия"/>
                                     </StackPanel>
                                     <TextBlock
-                                        VerticalAlignment="Center"
-                                        Margin="8"
-                                        TextAlignment="Justify"
+                                        Style="{StaticResource ListItemHeader}"
+                                        Text="Виноградная"
+                                        Grid.Column="4"/>
+                                    <StackPanel
                                         Grid.Column="4"
-                                        FontFamily="Courier New"
-                                        TextWrapping="WrapWithOverflow"
-                                        Text="Просторный коридор, имеется чердачное помещение. Окна со ставнями. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor inci"/>
-                                    <StackPanel 
-                                        Margin="10"
-                                        VerticalAlignment="Top"
-                                        Grid.Column="5">
-                                        <TextBlock 
-                                            FontFamily="verdana"
-                                            FontWeight="Bold"
-                                            Foreground="{StaticResource GreenFont}"
-                                            HorizontalAlignment="Center"
-                                            Text="35 000 000"/>
+                                        Grid.Row="2">
+                                        <TextBlock
+                                            Style="{StaticResource ListItemTextBlock}"
+                                            Text="Дом №: 24"/>
+                                        <TextBlock
+                                            Style="{StaticResource ListItemTextBlock}"
+                                            Text="Квартира №: 40"/>
+                                        <TextBlock
+                                            Style="{StaticResource ListItemTextBlock}"
+                                            Text="Северная звезда"/>
                                     </StackPanel>
+                                    <TextBlock
+                                        Grid.Column="6"
+                                        HorizontalAlignment="Center"
+                                        Style="{StaticResource ListItemHeader}"
+                                        Text="35 000 000"/>
                                 </Grid>
                             </Border>
                         </Grid>
@@ -192,7 +154,6 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="MinHeight" Value="448"/>
-            <Setter Property="Template" Value="{StaticResource ListBoxWithGreenScrollBar}"/>
             <Setter Property="ItemContainerStyle" Value="{StaticResource RealtorObjectListBoxItem}"/>
             <Setter Property="ItemsPanel">
                 <Setter.Value>
@@ -225,116 +186,79 @@
             <Setter Property="Cursor" Value="Hand"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource MainGreen}"/>
+                    <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
                     <Setter Property="Foreground" Value="White"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    <Grid>
+    <Grid 
+        Margin="10,10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition Width="330"/>
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
-            <RowDefinition/>
-            <RowDefinition Height="50"/>
-        </Grid.RowDefinitions>
-        <Grid 
-            Margin="20,10,0,0"
-            Background="{StaticResource MainGreen}"
-            Height="30">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="140"/>
-                <ColumnDefinition Width="140"/>
-                <ColumnDefinition Width="157"/>
-                <ColumnDefinition Width="140"/>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="110"/>
-                <ColumnDefinition Width="23"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock
-                Style="{StaticResource WhiteColumnHeader}"
-                Text="Заявка"
-                Grid.Column="0"/>
-            <TextBlock
-                Style="{StaticResource WhiteColumnHeader}"
-                Text="Фото"
-                Grid.Column="1"/>
-            <TextBlock
-                Style="{StaticResource WhiteColumnHeader}"
-                Text="Объект"
-                Grid.Column="2"/>
-            <TextBlock
-                Style="{StaticResource WhiteColumnHeader}"
-                Text="Адрес"
-                Grid.Column="3"/>
-            <TextBlock
-                Style="{StaticResource WhiteColumnHeader}"
-                Text="Описание"
-                Grid.Column="4"/>
-            <TextBlock
-                Style="{StaticResource WhiteColumnHeader}"
-                Text="Цена, руб"
-                Grid.Column="5"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            <Border
+                Margin="1,0,0,0"
+                CornerRadius="6,6,0,0"
+                Background="{StaticResource PrimaryBlue}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="130"/>
+                        <ColumnDefinition Width="140"/>
+                        <ColumnDefinition Width="175"/>
+                        <ColumnDefinition Width="140"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="110"/>
+                        <ColumnDefinition Width="12"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Style="{StaticResource WhiteColumnHeader}"
+                        Text="Заявка"
+                        Grid.Column="0"/>
+                    <TextBlock
+                        Style="{StaticResource WhiteColumnHeader}"
+                        Text="Фото"
+                        Grid.Column="1"/>
+                    <TextBlock
+                        Style="{StaticResource WhiteColumnHeader}"
+                        Text="Объект"
+                        Grid.Column="2"/>
+                    <TextBlock
+                        Style="{StaticResource WhiteColumnHeader}"
+                        Text="Адрес"
+                        Grid.Column="3"/>
+                    <TextBlock
+                        Style="{StaticResource WhiteColumnHeader}"
+                        Text="Описание"
+                        Grid.Column="4"/>
+                    <TextBlock
+                        Style="{StaticResource WhiteColumnHeader}"
+                        Text="Цена, руб"
+                        Grid.Column="5"/>
+                </Grid>
+            </Border>
+            <ScrollViewer
+                CanContentScroll="false"
+                Grid.Row="1"
+                Template="{StaticResource GreenScrollViewer}">
+                    <ListBox 
+                        ScrollViewer.VerticalScrollBarVisibility="Visible"
+                        Template="{StaticResource ListBoxWithGreenScrollBar}"
+                        ItemsSource="{Binding ToggledButtons}"/>
+            </ScrollViewer>
+            <Border
+                CornerRadius="0,0,6,6"
+                Grid.Row="2"
+                Background="{StaticResource PrimaryBlue}">
+                
+            </Border>
         </Grid>
-        <ScrollViewer 
-            Template="{StaticResource GreenScrollViewer}" 
-            CanContentScroll="False" 
-            Margin="0,50,0,0"
-            Grid.Row="0" 
-            Grid.RowSpan="2" 
-            Grid.ColumnSpan="2">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="300"/>
-                </Grid.ColumnDefinitions>
-                <ListBox 
-                    Margin="0"
-                    ItemsSource="{Binding ToggledButtons}"/>
-            </Grid>
-        </ScrollViewer>
-        <StackPanel
-            VerticalAlignment="Top"
-            Height="30"
-            Grid.Row="2"
-            Margin="0,5"
-            HorizontalAlignment="Right"
-            Orientation="Horizontal">
-            <Button
-                Content="1"
-                Background="{StaticResource MainGreen}"
-                Foreground="White"
-                Style="{StaticResource NavigationButton}"/>
-            <Button
-                Content="2"
-                Style="{StaticResource NavigationButton}"/>
-            <Button
-                Content="3"
-                Style="{StaticResource NavigationButton}"/>
-            <Button
-                Content="4"
-                Style="{StaticResource NavigationButton}"/>
-            <Button
-                Content="5"
-                Style="{StaticResource NavigationButton}"/>
-            <Button
-                Content="6"
-                Style="{StaticResource NavigationButton}"/>
-            <Button
-                Content="7"
-                Style="{StaticResource NavigationButton}"/>
-            <Button
-                Content="..."
-                Style="{StaticResource NavigationButton}"/>
-            <Button
-                Content="24"
-                Style="{StaticResource NavigationButton}"/>
-            <Button
-                Content="25"
-                Style="{StaticResource NavigationButton}"/>
-        </StackPanel>
     </Grid>
 </UserControl>
