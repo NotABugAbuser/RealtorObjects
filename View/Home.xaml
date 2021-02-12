@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RealtorObjects.View"
              xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
+             xmlns:sys = "clr-namespace:System;assembly=mscorlib"
+             xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
              mc:Ignorable="d" 
              d:DesignHeight="667" d:DesignWidth="1298" Background="{StaticResource BackgroundGray}">
     <UserControl.DataContext>
@@ -84,15 +86,25 @@
                                         HorizontalAlignment="Center"
                                         Style="{StaticResource ListItemHeader}"
                                         Text="22/02/2021"/>
-                                    <TextBlock
-                                        Grid.RowSpan="2"
+                                    <StackPanel 
                                         Grid.Row="1"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Center"
-                                        TextWrapping="WrapWithOverflow"
-                                        TextAlignment="Center"
-                                        Style="{StaticResource ListItemHeader}"
-                                        Text="Севастополев Евкакий Александрович"/>
+                                        Grid.RowSpan="2">
+                                        <TextBlock
+                                            Grid.RowSpan="2"
+                                            Grid.Row="1"
+                                            Margin="0,7"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center"
+                                            TextWrapping="WrapWithOverflow"
+                                            TextAlignment="Center"
+                                            Style="{StaticResource ListItemTextBlock}"
+                                            Text="Севастополев Евкакий Александрович"/>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            Style="{StaticResource ListItemTextBlock}"
+                                            Text="88005553535"/>
+                                    </StackPanel>
+                                    
                                     <Image
                                         Margin="5"
                                         Stretch="Uniform"
@@ -138,10 +150,21 @@
                                             Text="Северная звезда"/>
                                     </StackPanel>
                                     <TextBlock
+                                        Grid.RowSpan="3"
+                                        Margin="0,8"
+                                        VerticalAlignment="Center"
+                                        TextWrapping="WrapWithOverflow"
+                                        FontFamily="Courier New"
+                                        FontSize="13"
+                                        TextAlignment="Justify"
+                                        Text="Давайте предположим, что в этой строке я описываю какое-либо здание или другой "
+                                        Grid.Column="5"/>
+                                    <TextBlock
                                         Grid.Column="6"
+                                        Margin="10,0,0,0"
                                         HorizontalAlignment="Center"
                                         Style="{StaticResource ListItemHeader}"
-                                        Text="35 000 000"/>
+                                        Text="2 500 000"/>
                                 </Grid>
                             </Border>
                         </Grid>
@@ -165,10 +188,10 @@
             </Setter>
         </Style>
         <Style TargetType="Button" x:Key="NavigationButton">
-            <Setter Property="Background" Value="white"/>
-            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
+            <Setter Property="Margin" Value="2,1"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="#555"/>
+            <Setter Property="Foreground" Value="#eee"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -186,19 +209,73 @@
             <Setter Property="Cursor" Value="Hand"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
-                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Background" Value="{StaticResource DarkPrimaryBlue}"/>
                 </Trigger>
             </Style.Triggers>
+        </Style>
+        <Style TargetType="ToggleButton" x:Key="SectionToggleButton">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Grid Background="{TemplateBinding Background}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Path Name="PART_Arrow"
+                                Margin="0,2,0,0"
+                                Width="10" 
+                                Height="10" 
+                                Fill="{StaticResource PrimaryBlue}" 
+                                Data="M 0,3.2  L0,3.2  L1.2,2.1  L5.05,5.7  L8.9,2.1  L10,3.2  L5.05,7.9  Z">
+                            </Path>
+                            <TextBlock
+                                Grid.Column="1"
+                                FontSize="14.5"
+                                FontWeight="{TemplateBinding FontWeight}"
+                                Foreground="{TemplateBinding Foreground}"
+                                VerticalAlignment="Center"
+                                Text="{TemplateBinding Content}"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Foreground" Value="{StaticResource DarkPrimaryBlue}"/>
+                                <Setter TargetName="PART_Arrow" Property="Fill" Value="{StaticResource DarkPrimaryBlue}"/>
+                                <Setter TargetName="PART_Arrow" Property="RenderTransform">
+                                    <Setter.Value>
+                                        <RotateTransform Angle="180" CenterX="5" CenterY="5"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#f2f2f2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Border" x:Key="FilterAreaSection">
+            <Setter Property="BorderThickness" Value="1,0,1,1"/>
+            <Setter Property="BorderBrush" Value="#ccc"/>
         </Style>
     </UserControl.Resources>
     <Grid 
         Margin="10,10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-            <ColumnDefinition Width="330"/>
+            <ColumnDefinition Width="15"/>
+            <ColumnDefinition Width="280"/>
         </Grid.ColumnDefinitions>
-        <Grid>
+        <Border
+            BorderThickness="0,0,1,0"
+            BorderBrush="#ccc">
+            <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="*"/>
@@ -257,8 +334,108 @@
                 CornerRadius="0,0,6,6"
                 Grid.Row="2"
                 Background="{StaticResource PrimaryBlue}">
-                
+                <StackPanel
+                    Margin="3,0"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <Button
+                        Background="{StaticResource DarkPrimaryBlue}"
+                        Style="{StaticResource NavigationButton}"
+                        Content="1"/>
+                    <Button
+                        Style="{StaticResource NavigationButton}"
+                        Content="2"/>
+                    <Button
+                        Style="{StaticResource NavigationButton}"
+                        Content="3"/>
+                    <Button
+                        Style="{StaticResource NavigationButton}"
+                        Content="4"/>
+                    <Button
+                        Style="{StaticResource NavigationButton}"
+                        Content="5"/>
+                    <Button
+                        Style="{StaticResource NavigationButton}"
+                        Content="..."/>
+                    <Button
+                        Style="{StaticResource NavigationButton}"
+                        Content="24"/>
+                    <Button
+                        Style="{StaticResource NavigationButton}"
+                        Content="25"/>
+                </StackPanel>
             </Border>
+        </Grid>
+        </Border>
+        <Grid 
+            Background="White"
+            Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            <Border
+                Background="{StaticResource PrimaryBlue}"
+                CornerRadius="6,6,0,0"/>
+            <Border
+                Grid.Row="1"
+                BorderThickness="0,0,1,0"
+                BorderBrush="#ccc">
+                <ScrollViewer
+                    Template="{StaticResource GreenScrollViewer}">
+                    <StackPanel>
+                        <Border
+                            Height="{Binding FilterAreaSections[0].Value}"
+                            Style="{StaticResource FilterAreaSection}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="50"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <ToggleButton 
+                                    IsChecked="{Binding FilterAreaSections[0].Key}"
+                                    Content="Цена"
+                                    Command="{Binding OpenOrCloseFilterSection}"
+                                    Style="{StaticResource SectionToggleButton}">
+                                    <ToggleButton.CommandParameter>
+                                        <x:Array Type="sys:Object">
+                                            <sys:Byte>0</sys:Byte>
+                                            <sys:Int16>200</sys:Int16>
+                                        </x:Array>
+                                    </ToggleButton.CommandParameter>
+                                </ToggleButton>
+                            </Grid>
+                        </Border>
+                        <Border
+                            Height="{Binding FilterAreaSections[1].Value}"
+                            Style="{StaticResource FilterAreaSection}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="50"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <ToggleButton 
+                                    IsChecked="{Binding FilterAreaSections[1].Key}"
+                                    Content="Тип объекта"
+                                    Command="{Binding OpenOrCloseFilterSection}"
+                                    Style="{StaticResource SectionToggleButton}">
+                                    <ToggleButton.CommandParameter>
+                                        <x:Array Type="sys:Object">
+                                            <sys:Byte>1</sys:Byte>
+                                            <sys:Int16>200</sys:Int16>
+                                        </x:Array>
+                                    </ToggleButton.CommandParameter>
+                                </ToggleButton>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+            </ScrollViewer>
+            </Border>
+            <Border
+                Grid.Row="2"
+                Background="{StaticResource PrimaryBlue}"
+                CornerRadius="0,0,6,6"/>
         </Grid>
     </Grid>
 </UserControl>

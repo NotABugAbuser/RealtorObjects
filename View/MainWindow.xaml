@@ -8,6 +8,7 @@
         xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
         xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
         mc:Ignorable="d"
+        MouseDown="Window_MouseDown"
         Title="MainWindow" 
         Height="768" 
         Width="1366" 

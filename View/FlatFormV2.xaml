@@ -439,7 +439,7 @@
                     Grid.Column="8"
                     VerticalAlignment="Center"
                     Margin="13,0,1,0"
-                    Grid.ColumnSpan="2"/>
+                    Grid.ColumnSpan="2" Style="{DynamicResource BlueCheckBoxStyle}"/>
             </Grid>
             <Grid Name="Fourth"
                 DataContext="{Binding Info}"
@@ -702,10 +702,9 @@
                         Style="{StaticResource inputTextBox}"
                         Height="46"
                         VerticalContentAlignment="Top"
-                        MaxLines="2"
                         Width="653"
-                        TextWrapping="Wrap"
-                        MaxLength="120"
+                        TextWrapping="WrapWithOverflow"
+                        MaxLength="140"
                         Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
                 </Border>
             </Grid>
