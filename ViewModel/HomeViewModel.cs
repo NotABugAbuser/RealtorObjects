@@ -45,9 +45,15 @@ namespace RealtorObjects.ViewModel
             false
         };
         private ObservableCollection<CheckAndHeightPair> filterAreaSections = new ObservableCollection<CheckAndHeightPair>() { 
-            new CheckAndHeightPair(true, 200),
+            new CheckAndHeightPair(true, 143),
+            new CheckAndHeightPair(true, 150),
             new CheckAndHeightPair(false, 50),
-            new CheckAndHeightPair(false, 50)
+            new CheckAndHeightPair(false, 50),
+            new CheckAndHeightPair(false, 50),
+            new CheckAndHeightPair(false, 50),
+            new CheckAndHeightPair(false, 50),
+            new CheckAndHeightPair(false, 50),
+            new CheckAndHeightPair(true, 200)
         };
         private ObservableCollection<BaseRealtorObject> originalObjectList = new ObservableCollection<BaseRealtorObject>() {
         };
