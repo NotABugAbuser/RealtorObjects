@@ -722,7 +722,7 @@
                             <Setter Property="Padding" Value="4,-1,0,0"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter Property="Background" TargetName="checkBoxBorder" Value="#FF5593FF"/>
+                            <Setter Property="Background" TargetName="checkBoxBorder" Value="#eeeeee"/>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="true">
                             <Setter Property="Opacity" TargetName="optionMark" Value="1"/>

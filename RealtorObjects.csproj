@@ -58,7 +58,8 @@
       <HintPath>packages\JonSkeet.MiscUtil.0.2.0\lib\net35\MiscUtil.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero2" />
-    <Reference Include="RandomFlatGenerator">
+    <Reference Include="RandomFlatGenerator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\source\repos\RandomFlatGenerator\RandomFlatGenerator\bin\Debug\RandomFlatGenerator.dll</HintPath>
     </Reference>
     <Reference Include="RealtyModel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
