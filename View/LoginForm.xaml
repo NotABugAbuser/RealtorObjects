@@ -1,4 +1,5 @@
 ﻿<Window x:Class="RealtorObjects.View.LoginForm"
+        Name="LoginWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -117,21 +118,6 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <Border 
-            Width="20" 
-            Height="20"
-            VerticalAlignment="Top">
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Setter Property="Background" Value="Red"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
-                            <Setter Property="Background" Value="Green"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-        </Border>
         <Button
             Style="{StaticResource WhiteReturnButton}"
             HorizontalAlignment="Left"
@@ -208,6 +194,7 @@
                 Grid.Row="6"
                 Content="Войти"
                 Command="{Binding Login}"
+                CommandParameter="{Binding ElementName=LoginWindow}"
                 Style="{StaticResource ConfirmButton}"/>
         </Grid>
         <Grid
@@ -232,7 +219,7 @@
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             <TextBlock
-                Foreground="{StaticResource GreenFont}"
+                Foreground="{StaticResource DarkPrimaryBlue}"
                 FontSize="24"
                 VerticalAlignment="bottom"
                 Text="Зарегистрируйтесь"/>

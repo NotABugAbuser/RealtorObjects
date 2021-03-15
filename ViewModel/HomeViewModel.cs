@@ -1,4 +1,5 @@
-﻿using RealtyModel.Model.Base;
+﻿using RealtyModel.Model;
+using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
 using RealtyModel.Service;
 using System;
@@ -26,24 +27,14 @@ namespace RealtorObjects.ViewModel
             new CheckAndHeightPair(false, 50),
             new CheckAndHeightPair(true, 200)
         };
-        private ObservableCollection<BaseRealtorObject> currentObjectList = new ObservableCollection<BaseRealtorObject>() { new RandomFlatGenerator.FlatGenerator().CreateFlat()};
+        private ObservableCollection<BaseRealtorObject> currentObjectList = new ObservableCollection<BaseRealtorObject>() { new RandomFlatGenerator.FlatGenerator().CreateFlat() };
         private List<ObservableCollection<BaseRealtorObject>> objectLists = new List<ObservableCollection<BaseRealtorObject>>();
-        private List<BaseRealtorObject> filteredObjects = new List<BaseRealtorObject>();
         private List<BaseRealtorObject> allObjects = new List<BaseRealtorObject>();
         private CustomCommand openOrCloseFilterSection;
         private CustomCommand testCommand;
         private CustomCommand filterCollection;
         private bool loadingScreenVisibility = false;
-
-        private bool isFlat = false;
-        private bool isHouse = false;
-        private bool isPlot = false;
-        private Int32 minimumPrice = 0;
-        private Int32 maximumPrice = 20000000;
-        private bool hasMortgage = false;
-        private Int32 minimumArea = 0;
-        private Int32 maximumArea = 1500;
-
+        private Filter filter = new Filter();
         public bool LoadingScreenVisibility {
             get => loadingScreenVisibility;
             set {
@@ -63,37 +54,12 @@ namespace RealtorObjects.ViewModel
                 CurrentObjectList.Add(flat);
             }*/
         }));
-        
+
         public CustomCommand FilterCollection => filterCollection ?? (filterCollection = new CustomCommand(obj => {
-            
-            FilteredObjects.Clear();
-            FilteredObjects.AddRange(AllObjects.Where(x => MaximumPrice >= x.Cost.Price).Where(x => MinimumPrice <= x.Cost.Price).ToList());
-            FilteredObjects = FilteredObjects.Where(x => MaximumArea >= x.Cost.Area).Where(x => MinimumArea <= x.Cost.Area).ToList();
-            if (HasMortgage) {
-                FilteredObjects.RemoveAll(x => x.Cost.HasMortgage == false);
-            }
-            FilterByObjectType();
-            CurrentObjectList = new ObservableCollection<BaseRealtorObject>(FilteredObjects);
-            
+            CurrentObjectList.Clear();
+            CurrentObjectList = new ObservableCollection<BaseRealtorObject>(Filter.CreateFilteredList(AllObjects));
+            GC.Collect();
         }));
-        private void FilterByObjectType() {
-            if (!IsPlot) {
-                FilteredObjects.RemoveAll(x => x.ObjectType == "Земельный участок");
-            }
-            if (!IsHouse) {
-                FilteredObjects.RemoveAll(x => x.ObjectType == "Частный дом");
-            }
-            if (!IsFlat) {
-                FilteredObjects.RemoveAll(x => x.ObjectType == "Квартира");
-            }
-        }
-        public List<BaseRealtorObject> FilteredObjects {
-            get => filteredObjects;
-            set {
-                filteredObjects = value;
-                OnPropertyChanged();
-            }
-        }
         public ObservableCollection<BaseRealtorObject> CurrentObjectList {
             get => currentObjectList;
             set {
@@ -121,72 +87,9 @@ namespace RealtorObjects.ViewModel
             }
         }));
         public ObservableCollection<CheckAndHeightPair> FilterAreaSections => filterAreaSections;
-
-        public int MinimumPrice {
-            get => minimumPrice;
-            set {
-                if (value > maximumPrice) {
-                    MaximumPrice = value;
-                }
-                minimumPrice = value;
-                OnPropertyChanged();
-            }
-        }
-        public int MaximumPrice {
-            get => maximumPrice;
-            set {
-                if (value < minimumPrice) {
-                    MinimumPrice = value;
-                }
-                maximumPrice = value;
-                OnPropertyChanged();
-            }
-        }
-        public bool HasMortgage {
-            get => hasMortgage;
-            set => hasMortgage = value;
-        }
-        public int MinimumArea {
-            get => minimumArea;
-            set {
-                if (value > maximumArea) {
-                    MaximumArea = value;
-                }
-                minimumArea = value;
-                OnPropertyChanged();
-            }
-        }
-        public int MaximumArea {
-            get => maximumArea;
-            set {
-                if (value < minimumArea) {
-                    MinimumArea = value;
-                }
-                maximumArea = value;
-                OnPropertyChanged();
-            }
-        }
-        public bool IsFlat {
-            get => isFlat;
-            set {
-                isFlat = value;
-
-                OnPropertyChanged();
-            }
-        }
-        public bool IsHouse {
-            get => isHouse;
-            set {
-                isHouse = value;
-                OnPropertyChanged();
-            }
-        }
-        public bool IsPlot {
-            get => isPlot;
-            set {
-                isPlot = value;
-                OnPropertyChanged();
-            }
+        public Filter Filter {
+            get => filter; 
+            set => filter = value;
         }
     }
 }

@@ -124,7 +124,7 @@
                                         Grid.Row="2">
                                         <TextBlock
                                             Style="{StaticResource ListItemTextBlock}"
-                                            Text="{Binding StringFormat=Комнат: {0}, Path=Info.RoomCount}"/>
+                                            Text="{Binding StringFormat=Комнат: {0}, Path=GeneralInfo.RoomCount}"/>
                                         <TextBlock
                                             Style="{StaticResource ListItemTextBlock}"
                                             Text="{Binding StringFormat=Кв.м: {0}, Path=Cost.Area}"/>
@@ -471,8 +471,8 @@
                             BorderBrush="#ccc">
                             <StackPanel>
                                 <Border
-                                    Visibility="Collapsed"
-                                    Height="170"
+                                    Visibility="visible"
+                                    Height="{Binding FilterAreaSections[0].Height}"
                                     Style="{StaticResource FilterAreaSection}">
                                     <Grid>
                                         <Grid.RowDefinitions>
@@ -494,15 +494,15 @@
                                         <StackPanel
                                             Grid.Row="1">
                                             <CheckBox
-                                                IsChecked="{Binding IsFlat}"
+                                                IsChecked="{Binding Filter.IsFlat}"
                                                 Style="{StaticResource FilterAreaBlueCheckBox}"
                                                 Content="Квартира"/>
                                             <CheckBox
-                                                IsChecked="{Binding IsPlot}"
+                                                IsChecked="{Binding Filter.IsPlot}"
                                                 Style="{StaticResource FilterAreaBlueCheckBox}"
                                                 Content="Земельный участок"/>
                                             <CheckBox
-                                                IsChecked="{Binding IsHouse}"
+                                                IsChecked="{Binding Filter.IsHouse}"
                                                 Style="{StaticResource FilterAreaBlueCheckBox}"
                                                 Content="Частный дом"/>
                                         </StackPanel>
@@ -533,30 +533,31 @@
                                             Grid.Row="1">
                                             <TextBlock
                                                 Margin="19,0"
-                                                Text="{Binding StringFormat='От: {0:### ### ##0}', Path=MinimumPrice}"/>
+                                                Text="{Binding StringFormat='От: {0:### ### ##0}', Path=Filter.MinimumPrice}"/>
                                             <Slider
                                                 Style="{StaticResource FilterAreaSlider}"
-                                                Value="{Binding MinimumPrice, UpdateSourceTrigger=PropertyChanged}"
+                                                Value="{Binding Filter.MinimumPrice, UpdateSourceTrigger=PropertyChanged}"
                                                 Maximum="20000000"
                                                 TickFrequency="100000"
                                                 LargeChange="1000000"/>
                                             <TextBlock
                                                 Margin="19,0"
-                                                Text="{Binding StringFormat='До: {0:### ### ##0}', Path=MaximumPrice}"/>
+                                                Text="{Binding StringFormat='До: {0:### ### ##0}', Path=Filter.MaximumPrice}"/>
                                             <Slider
                                                 Style="{StaticResource FilterAreaSlider}"
-                                                Value="{Binding MaximumPrice, UpdateSourceTrigger=PropertyChanged}"
+                                                Value="{Binding Filter.MaximumPrice, UpdateSourceTrigger=PropertyChanged}"
                                                 TickFrequency="100000"
                                                 Maximum="20000000"
                                                 LargeChange="1000000"/>
                                             <CheckBox
                                                 Style="{StaticResource FilterAreaBlueCheckBox}"
-                                                IsChecked="{Binding HasMortgage}"
+                                                IsChecked="{Binding Filter.HasMortgage}"
                                                 Content="Ипотека"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border
+                                    Visibility="Visible"
                                     Height="{Binding FilterAreaSections[2].Height}"
                                     Style="{StaticResource FilterAreaSection}">
                                     <Grid>
@@ -580,18 +581,18 @@
                                             Grid.Row="1">
                                             <TextBlock
                                                 Margin="19,0"
-                                                Text="{Binding StringFormat='От: {0:### ### ##0}', Path=MinimumArea}"/>
+                                                Text="{Binding StringFormat='От: {0:### ### ##0}', Path=Filter.MinimumArea}"/>
                                             <Slider
-                                                Value="{Binding MinimumArea, UpdateSourceTrigger=PropertyChanged}"
+                                                Value="{Binding Filter.MinimumArea, UpdateSourceTrigger=PropertyChanged}"
                                                 Style="{StaticResource FilterAreaSlider}"
                                                 Maximum="1500"
                                                 TickFrequency="10"
                                                 LargeChange="10"/>
                                             <TextBlock
                                                 Margin="19,0"
-                                                Text="{Binding StringFormat='До: {0:### ### ##0}', Path=MaximumArea}"/>
+                                                Text="{Binding StringFormat='До: {0:### ### ##0}', Path=Filter.MaximumArea}"/>
                                             <Slider
-                                                Value="{Binding MaximumArea, UpdateSourceTrigger=PropertyChanged}"
+                                                Value="{Binding Filter.MaximumArea, UpdateSourceTrigger=PropertyChanged}"
                                                 Style="{StaticResource FilterAreaSlider}"
                                                 TickFrequency="10"
                                                 Maximum="1500"
@@ -600,47 +601,108 @@
                                     </Grid>
                                 </Border>
                                 <Border
-                                Height="{Binding FilterAreaSections[3].Height}"
-                                Style="{StaticResource FilterAreaSection}">
+                                    Visibility="Visible"
+                                    Height="{Binding FilterAreaSections[3].Height}"
+                                    Style="{StaticResource FilterAreaSection}">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="50"/>
                                             <RowDefinition/>
                                         </Grid.RowDefinitions>
                                         <ToggleButton 
-                                        IsChecked="{Binding FilterAreaSections[3].Check}"
-                                        Content="Состояние"
-                                        Command="{Binding OpenOrCloseFilterSection}"
-                                        Style="{StaticResource SectionToggleButton}">
+                                            IsChecked="{Binding FilterAreaSections[3].Check}"
+                                            Content="Состояние"
+                                            Command="{Binding OpenOrCloseFilterSection}"
+                                            Style="{StaticResource SectionToggleButton}">
                                             <ToggleButton.CommandParameter>
                                                 <x:Array Type="sys:Object">
                                                     <sys:Byte>3</sys:Byte>
-                                                    <sys:Int16>200</sys:Int16>
+                                                    <sys:Int16>245</sys:Int16>
                                                 </x:Array>
                                             </ToggleButton.CommandParameter>
                                         </ToggleButton>
+                                        <StackPanel Grid.Row="1">
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsEuro}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="Евро"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsExcellent}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="Отличное"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsGood}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="Хорошее"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsLiving}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="Жилое"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsCosmeticRequired}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="Требуется косм. ремонт"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsMajorRequired}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="Требуется кап. ремонт"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsWithoutDecoration}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="Без внутренней отделки"/>
+                                        </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border
-                                Height="{Binding FilterAreaSections[4].Height}"
-                                Style="{StaticResource FilterAreaSection}">
+                                    Height="{Binding FilterAreaSections[4].Height}"
+                                    Style="{StaticResource FilterAreaSection}">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="50"/>
                                             <RowDefinition/>
                                         </Grid.RowDefinitions>
                                         <ToggleButton 
-                                        IsChecked="{Binding FilterAreaSections[4].Check}"
-                                        Content="Отопление"
-                                        Command="{Binding OpenOrCloseFilterSection}"
-                                        Style="{StaticResource SectionToggleButton}">
+                                            IsChecked="{Binding FilterAreaSections[4].Check}"
+                                            Content="Отопление"
+                                            Command="{Binding OpenOrCloseFilterSection}"
+                                            Style="{StaticResource SectionToggleButton}">
                                             <ToggleButton.CommandParameter>
                                                 <x:Array Type="sys:Object">
                                                     <sys:Byte>4</sys:Byte>
-                                                    <sys:Int16>200</sys:Int16>
+                                                    <sys:Int16>245</sys:Int16>
                                                 </x:Array>
                                             </ToggleButton.CommandParameter>
                                         </ToggleButton>
+                                        <StackPanel Grid.Row="1">
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsAGV}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="АГВ"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsBoiler}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="Котел"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsLocal}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="Местное"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsStove}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="Печное"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsTPS}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="ТЭЦ"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsNozzle}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="Форсунка"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsElectro}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="Электро"/>
+                                        </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border

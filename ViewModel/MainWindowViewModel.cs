@@ -17,6 +17,7 @@ using RealtyModel.Service;
 using System.Windows.Threading;
 using System.Net;
 using RealtorObjects.Model;
+using RealtyModel.Event;
 
 namespace RealtorObjects.ViewModel
 {
@@ -75,7 +76,7 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
-       
+
         /// <summary>
         /// Метод для добавления сообщений в лог событий (Log) при помощи диспетчера основного (UI) потока.
         /// </summary>
@@ -193,12 +194,14 @@ namespace RealtorObjects.ViewModel
         #endregion
 
         public MainWindowViewModel() {
-            new LoginForm() { DataContext = viewModels[0] }/*.Show()*/;
-            WorkAreaViewModel = viewModels[1];
-            /*((LoginFormViewModel)viewModels[0]).TryRegister += (operation) => client.SendMessage(operation);
-            Connect();*/
+            WorkAreaViewModel = ViewModels[1];
+            var loginViewModel = (LoginFormViewModel)ViewModels[0];
+            loginViewModel.Client = this.client;
+            loginViewModel.Logged += CloseLoginOpenMain;
+            StartUpTheClock();
+        }
 
-
+        private void StartUpTheClock() {
             string dayOfWeek = new CultureInfo("ru-RU").DateTimeFormat.GetShortestDayName(DateTime.Now.DayOfWeek);
             CurrentTime = $"{DateTime.Now:HH:mm} {dayOfWeek}";
             Task.Factory.StartNew(() => {
@@ -208,12 +211,18 @@ namespace RealtorObjects.ViewModel
                 }
             });
         }
+
+        private void CloseLoginOpenMain(object sender, LoggedEventArgs e) {
+            IsLoggedIn = true;
+            ((Window)e.Window).Close();
+            new MainWindow() { DataContext = this }.Show();
+        }
         public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
             Application.Current.Shutdown();
         }));
         public CustomCommand UpdateWorkAreaViewModel => updateWorkAreaViewModel ?? (updateWorkAreaViewModel = new CustomCommand(obj => {
             byte index = Convert.ToByte(obj);
-            WorkAreaViewModel = viewModels[index];
+            WorkAreaViewModel = ViewModels[index];
             Header = headers[index];
             CurrentIcon = icons[index];
             for (byte i = 0; i < ToggledButtons.Count; i++) {
@@ -258,6 +267,11 @@ namespace RealtorObjects.ViewModel
             }
         }
 
+        public BaseViewModel[] ViewModels {
+            get => viewModels;
+            set => viewModels = value;
+        }
+
         /// <summary>
         /// НЕ ОКОНЧАТЕЛЬНАЯ ВЕРСИЯ!
         /// Метод асинхронного подключения к серверу.
@@ -267,10 +281,9 @@ namespace RealtorObjects.ViewModel
             try {
                 Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => client.ConnectAsync(IPAddress.Parse("192.168.1.107"))));
                 Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => AwaitOperationAsync()));
-            
 
-            }
-            catch (Exception ex) {
+
+            } catch (Exception ex) {
                 UpdateLog("connection is failed. " + ex.Message);
             }
         }
@@ -289,4 +302,3 @@ namespace RealtorObjects.ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }
-//добавить поле для текстблока, который будет отображать успешность логина в HandleOperation

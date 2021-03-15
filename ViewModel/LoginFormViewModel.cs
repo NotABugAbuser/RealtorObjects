@@ -12,15 +12,13 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using RealtyModel.Event;
+using RealtorObjects.View;
 
 namespace RealtorObjects.ViewModel
 {
-    public class LoginFormViewModel : BaseViewModel
+    public class LoginFormViewModel : BaseViewModel, ILogged
     {
-        public delegate void AuthentificationHandler(Operation operation);
-        public event AuthentificationHandler TryLogin;
-        public event AuthentificationHandler TryRegister;
-
         private CustomCommand closeApp;
         private CustomCommand sendPassword;
         private CustomCommand changeRegistrationVisibility;
@@ -37,13 +35,9 @@ namespace RealtorObjects.ViewModel
         private string secondPassword = "";
         private Visibility registrationVisibility = Visibility.Collapsed;
 
-        private Boolean isLoggedIn = true;
         private Client client = new Client(Dispatcher.CurrentDispatcher);
 
         public LoginFormViewModel() {
-            //Task connectTask = client.ConnectAsync(IPAddress.Loopback);
-            //Task checkIncomingOps = CheckIncomingOps();
-
 
         }
 
@@ -53,7 +47,8 @@ namespace RealtorObjects.ViewModel
         public CustomCommand SendPassword => sendPassword ?? (sendPassword = new CustomCommand(obj => {
 
         }));
-        public CustomCommand ChangeRegistrationVisibility => changeRegistrationVisibility ?? (changeRegistrationVisibility = new CustomCommand(obj => {            if (RegistrationVisibility == Visibility.Visible) {
+        public CustomCommand ChangeRegistrationVisibility => changeRegistrationVisibility ?? (changeRegistrationVisibility = new CustomCommand(obj => {            
+            if (RegistrationVisibility == Visibility.Visible) {
                 RegistrationVisibility = Visibility.Collapsed;
             } else {
                 RegistrationVisibility = Visibility.Visible;
@@ -61,15 +56,7 @@ namespace RealtorObjects.ViewModel
         }));
         public CustomCommand CreateNewUser => createNewUser ?? (createNewUser = new CustomCommand(obj => {
             CurrentLogin = $"{Surname}{Name[0]}{Patronymic[0]}";
-            Operation operation = new Operation() {
-                Name = CurrentLogin,
-                OperationParameters = new OperationParameters() {
-                    Direction = OperationDirection.Identity,
-                    Type = OperationType.Register
-                },
-                Data = SecondPassword
-            };
-            TryRegister?.Invoke(operation);
+            
         }, obj => { // проверяет поля формы на заполненность
             return !(String.IsNullOrEmpty(Name)
             && String.IsNullOrEmpty(Surname)
@@ -79,17 +66,15 @@ namespace RealtorObjects.ViewModel
             && String.IsNullOrEmpty(SecondPassword));
         }));
         public CustomCommand Login => login ?? (login = new CustomCommand(obj => {
-            Operation operation = new Operation()
-            {
-                Name = CurrentLogin,
-                Data = CurrentPassword,
-                OperationParameters = new OperationParameters()
-                {
-                    Direction = OperationDirection.Identity,
-                    Type = OperationType.Login
-                }
-            };
-            TryLogin?.Invoke(operation);
+            var isLoginSuccessful = true;
+            /*
+            * 
+            *  твой код обращения к серверу и получения ответа здесь 
+            *
+            */
+            if (isLoginSuccessful) {
+                Logged?.Invoke(this, new LoggedEventArgs(obj));
+            }
         }));
 
         public string CurrentLogin {
@@ -156,12 +141,8 @@ namespace RealtorObjects.ViewModel
             }
         }
 
-        public bool IsLoggedIn {
-            get => isLoggedIn;
-            set {
-                isLoggedIn = value;
-                OnPropertyChanged();
-            }
-        }
+        public Client Client { get => client; set => client = value; }
+
+        public event LoggedEventHandler Logged;
     }
 }

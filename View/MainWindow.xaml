@@ -17,9 +17,6 @@
         ResizeMode="NoResize"
         MinHeight="597" 
         Background="white">
-    <Window.DataContext>
-        <vm:MainWindowViewModel/>
-    </Window.DataContext>
     <Window.Resources>
         <Style TargetType="ToggleButton" x:Key="LeftBarButton">
             <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
@@ -67,6 +64,7 @@
         </Grid.RowDefinitions>
         
         <ContentControl 
+            
             Content="{Binding WorkAreaViewModel}" 
             Grid.Column="1" 
             Grid.Row="1"

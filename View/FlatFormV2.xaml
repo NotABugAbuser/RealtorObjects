@@ -300,7 +300,6 @@
                     Content="Обмен"/>
             </Grid>
             <Grid Name="Third" 
-                DataContext="{Binding Info}"
                 Grid.Row="4">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="23"/>
@@ -328,7 +327,7 @@
                     PreviewTextInput="RussianOnly"
                     ItemsSource="{Binding Path=DataContext.Customers, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor} }"
                     Text="{Binding Material, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding Material}"
+                    SelectedItem="{Binding Info.Material}"
                     Style="{StaticResource GreenComboBox}"
                     Grid.Column="1"
                     Grid.Row="0"/>
@@ -340,7 +339,7 @@
                 <ComboBox
                     PreviewTextInput="RussianOnly"
                     Text="{Binding Fund, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding Fund}"
+                    SelectedItem="{Binding Info.Fund}"
                     ItemsSource="{Binding Path=DataContext.FlatOptions.Funds, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor} }"
                     Style="{StaticResource GreenComboBox}"
                     Grid.Column="1"
@@ -353,7 +352,7 @@
                     <TextBox 
                         PreviewTextInput="NumericOnly"
                         Width="70"
-                        Text="{Binding RoomCount, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding GeneralInfo.RoomCount, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
                         Tag="RoomCount"
                         HorizontalAlignment="Right"
                         Style="{StaticResource IntegerNumericUpDown}"/>
@@ -365,7 +364,7 @@
                     Text="Тип:"/>
                 <ComboBox
                     PreviewTextInput="RussianOnly"
-                    Text="{Binding Type, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding Info.Type, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding Type}"
                     ItemsSource="{Binding Path=DataContext.FlatOptions.Types, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
                     Style="{StaticResource GreenComboBox}"
@@ -380,7 +379,7 @@
                     PreviewTextInput="NumericOnly"
                     Grid.Column="5"
                     Grid.Row="0"
-                    Text="{Binding Kvl, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding Info.Kvl, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
                     Tag="Kvl"
                     Style="{StaticResource IntegerNumericUpDown}"/>
                 <TextBlock
@@ -392,7 +391,7 @@
                     PreviewTextInput="NumericOnly"
                     Grid.Column="7"
                     Grid.Row="0"
-                    Text="{Binding Year, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding GeneralInfo.Year, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
                     Tag="Year"
                     Style="{StaticResource IntegerNumericUpDown}"/>
                 <TextBlock
@@ -404,7 +403,7 @@
                     PreviewTextInput="NumericOnly"
                     Grid.Column="5"
                     Grid.Row="2"
-                    Text="{Binding General, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding GeneralInfo.General, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
                     Tag="General"
                     Style="{StaticResource DoubleNumericUpDown}"/>
                 <TextBlock
@@ -416,7 +415,7 @@
                     PreviewTextInput="NumericOnly"
                     Grid.Column="7"
                     Grid.Row="2"
-                    Text="{Binding Living, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding GeneralInfo.Living, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
                     Tag="Living"
                     Style="{StaticResource DoubleNumericUpDown}"/>
                 <TextBlock
@@ -428,11 +427,11 @@
                     PreviewTextInput="NumericOnly"
                     Grid.Column="9"
                     Grid.Row="2"
-                    Text="{Binding Kitchen, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding GeneralInfo.Kitchen, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
                     Tag="Kitchen"
                     Style="{StaticResource DoubleNumericUpDown}"/>
                 <CheckBox 
-                    IsChecked="{Binding IsPrivatised}"
+                    IsChecked="{Binding Info.IsPrivatised}"
                     HorizontalAlignment="Right"
                     Foreground="#262626"
                     Content="Приватизация"
@@ -442,7 +441,6 @@
                     Grid.ColumnSpan="2" Style="{DynamicResource BlueCheckBoxStyle}"/>
             </Grid>
             <Grid Name="Fourth"
-                DataContext="{Binding Info}"
                 Grid.Row="6">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="23"/>
@@ -489,39 +487,39 @@
                     Grid.Row="8"/>
                 <ComboBox 
                     PreviewTextInput="RussianOnly"
-                    Text="{Binding Condition, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding GeneralInfo.Condition, UpdateSourceTrigger=PropertyChanged}"
                     ItemsSource="{Binding Path=DataContext.FlatOptions.Conditions, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
-                    SelectedItem="{Binding Condition, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding GeneralInfo.Condition, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource GreenComboBox}"
                     Grid.Column="1"
                     Grid.Row="0"/>
                 <ComboBox 
                     PreviewTextInput="RussianOnly"
-                    Text="{Binding Floor, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding Floor}"
+                    Text="{Binding Info.Floor, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding Info.Floor}"
                     ItemsSource="{Binding Path=DataContext.FlatOptions.Floors, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
                     Style="{StaticResource GreenComboBox}"
                     Grid.Column="1"
                     Grid.Row="2"/>
                 <TextBox
                     PreviewTextInput="NumericOnly"
-                    Text="{Binding Ceiling, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding GeneralInfo.Ceiling, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource DoubleNumericUpDown}"
                     Tag="Ceiling"
                     Grid.Row="4"
                     Grid.Column="1"/>
                 <ComboBox 
                     PreviewTextInput="RussianOnly"
-                    Text="{Binding Balcony, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding Balcony}"
+                    Text="{Binding Info.Balcony, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding Info.Balcony}"
                     ItemsSource="{Binding Path=DataContext.FlatOptions.Balconies, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
                     Style="{StaticResource GreenComboBox}"
                     Grid.Column="1"
                     Grid.Row="6"/>
                 <ComboBox 
                     PreviewTextInput="RussianOnly"
-                    Text="{Binding Loggia, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding Loggia}"
+                    Text="{Binding Info.Loggia, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding Info.Loggia}"
                     ItemsSource="{Binding Path=DataContext.FlatOptions.Loggias, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
                     Style="{StaticResource GreenComboBox}"
                     Grid.Column="1"
@@ -553,40 +551,40 @@
                     Grid.Column="2"/>
                 <ComboBox 
                     PreviewTextInput="RussianOnly"
-                    Text="{Binding Bathroom, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding Bathroom}"
+                    Text="{Binding Info.Bathroom, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding Info.Bathroom}"
                     ItemsSource="{Binding Path=DataContext.FlatOptions.Bathrooms, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
                     Style="{StaticResource GreenComboBox}"
                     Grid.Column="3"
                     Grid.Row="0"/>
                 <ComboBox 
                     PreviewTextInput="RussianOnly"
-                    Text="{Binding Convenience, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding Convenience}"
+                    Text="{Binding GeneralInfo.Convenience, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding GeneralInfo.Convenience}"
                     ItemsSource="{Binding Path=DataContext.FlatOptions.Conveniences, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
                     Style="{StaticResource GreenComboBox}"
                     Grid.Column="3"
                     Grid.Row="2"/>
                 <ComboBox 
                     PreviewTextInput="RussianOnly"
-                    Text="{Binding Heating, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding Heating}"
+                    Text="{Binding GeneralInfo.Heating, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding GeneralInfo.Heating}"
                     ItemsSource="{Binding Path=DataContext.FlatOptions.Heatings, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
                     Style="{StaticResource GreenComboBox}"
                     Grid.Column="3"
                     Grid.Row="4"/>
                 <ComboBox 
                     PreviewTextInput="RussianOnly"
-                    Text="{Binding Water, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding Water}"
+                    Text="{Binding GeneralInfo.Water, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding GeneralInfo.Water}"
                     ItemsSource="{Binding Path=DataContext.FlatOptions.Waters, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
                     Style="{StaticResource GreenComboBox}"
                     Grid.Column="3"
                     Grid.Row="6"/>
                 <ComboBox 
                     PreviewTextInput="RussianOnly"
-                    Text="{Binding Bath, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding Bath}"
+                    Text="{Binding Info.Bath, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding Info.Bath}"
                     ItemsSource="{Binding Path=DataContext.FlatOptions.Baths, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
                     Style="{StaticResource GreenComboBox}"
                     Grid.Column="3"
@@ -609,7 +607,7 @@
                             HorizontalAlignment="Left"
                             Style="{StaticResource Header}"/>
                         <RadioButton
-                            IsChecked="{Binding IsSeparated}"
+                            IsChecked="{Binding Info.IsSeparated}"
                             VerticalAlignment="Center"
                             Content="Раздельные"
                             Grid.Row="1"/>
@@ -625,7 +623,7 @@
                                 PreviewTextInput="AlphabeticalOnly"
                                 MaxLength="24" 
                                 Style="{StaticResource inputTextBox}"
-                                Text="{Binding Rooms, UpdateSourceTrigger=PropertyChanged}"/>
+                                Text="{Binding Info.Rooms, UpdateSourceTrigger=PropertyChanged}"/>
                         </Border>
                     </Grid>
                 </Border>
@@ -643,7 +641,7 @@
                         PreviewTextInput="AnyLetter"
                         MaxLength="25"
                         Style="{StaticResource inputTextBox}"
-                        Text="{Binding Windows, UpdateSourceTrigger=PropertyChanged}"/>
+                        Text="{Binding Info.Windows, UpdateSourceTrigger=PropertyChanged}"/>
                 </Border>
                 <Grid
                     Grid.Column="7"
@@ -659,31 +657,31 @@
                     <CheckBox
                         Style="{StaticResource OptionCheckBox}"
                         Content="Перепланировка"
-                        IsChecked="{Binding HasRenovation}"/>
+                        IsChecked="{Binding Info.HasRenovation}"/>
                     <CheckBox
                         Style="{StaticResource OptionCheckBox}"
                         Grid.Row="5"
-                        IsChecked="{Binding HasImprovedLayout}"
+                        IsChecked="{Binding Info.HasImprovedLayout}"
                         Content="Улуч. планировка"/>
                     <CheckBox
                         Style="{StaticResource OptionCheckBox}"
                         Grid.Row="4"
-                        IsChecked="{Binding HasChute}"
+                        IsChecked="{Binding Info.HasChute}"
                         Content="Мусоропровод"/>
                     <CheckBox
                         Style="{StaticResource OptionCheckBox}"
                         Grid.Row="1"
-                        IsChecked="{Binding IsCorner}"
+                        IsChecked="{Binding Info.IsCorner}"
                         Content="Угловая"/>
                     <CheckBox
                         Style="{StaticResource OptionCheckBox}"
                         Grid.Row="2"
-                        IsChecked="{Binding HasGarage}"
+                        IsChecked="{Binding Info.HasGarage}"
                         Content="Гараж"/>
                     <CheckBox
                         Style="{StaticResource OptionCheckBox}"
                         Grid.Row="3"
-                        IsChecked="{Binding HasElevator}"
+                        IsChecked="{Binding Info.HasElevator}"
                         Content="Лифт"/>
                 </Grid>
                 <TextBlock
@@ -705,7 +703,7 @@
                         Width="653"
                         TextWrapping="WrapWithOverflow"
                         MaxLength="140"
-                        Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
+                        Text="{Binding GeneralInfo.Description, UpdateSourceTrigger=PropertyChanged}"/>
                 </Border>
             </Grid>
             <Grid Name="Fifth"
