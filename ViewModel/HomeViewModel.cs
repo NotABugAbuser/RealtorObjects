@@ -19,6 +19,7 @@ namespace RealtorObjects.ViewModel
     {
         private ObservableCollection<CheckAndHeightPair> filterAreaSections = new ObservableCollection<CheckAndHeightPair>() {
             new CheckAndHeightPair(true, 143),
+            new CheckAndHeightPair(true, 143),
             new CheckAndHeightPair(true, 180),
             new CheckAndHeightPair(true, 153),
             new CheckAndHeightPair(false, 50),
@@ -26,9 +27,9 @@ namespace RealtorObjects.ViewModel
             new CheckAndHeightPair(false, 50),
             new CheckAndHeightPair(false, 50),
             new CheckAndHeightPair(false, 50),
-            new CheckAndHeightPair(false, 50)
+            new CheckAndHeightPair(false, 50),
         };
-        private ObservableCollection<BaseRealtorObject> currentObjectList = new ObservableCollection<BaseRealtorObject>() { new RandomFlatGenerator.FlatGenerator().CreateFlat() };
+        private ObservableCollection<BaseRealtorObject> currentObjectList = new ObservableCollection<BaseRealtorObject>() { };
         private List<ObservableCollection<BaseRealtorObject>> objectLists = new List<ObservableCollection<BaseRealtorObject>>();
         private List<BaseRealtorObject> allObjects = new List<BaseRealtorObject>();
         private CustomCommand openOrCloseFilterSection;
@@ -36,6 +37,12 @@ namespace RealtorObjects.ViewModel
         private CustomCommand filterCollection;
         private bool loadingScreenVisibility = false;
         private Filter filter = new Filter();
+        public HomeViewModel() {
+            FlatGenerator flatGenerator = new FlatGenerator();
+            Flat flat = flatGenerator.CreateFlat();
+            flat.Status = Status.Archived;
+            CurrentObjectList.Add(flat);
+        }
         public bool LoadingScreenVisibility {
             get => loadingScreenVisibility;
             set {

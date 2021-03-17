@@ -4,24 +4,20 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 
 namespace RealtorObjects.View.Converters
 {
-    class StringMultiplierToNumericMultiplierConverter : IValueConverter
+    class BoolToVisibilityReversedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            if ((double)value == 1000000)
-                return "Млн. руб";
-            else
-                return "Тыс. руб";
+            bool result = (bool)value;
+            return result ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-            if ((string)value == "Тыс. руб")
-                return 1000;
-            else
-                return 1000000;
+            throw new NotImplementedException();
         }
     }
 }

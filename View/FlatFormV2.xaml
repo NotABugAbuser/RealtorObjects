@@ -90,7 +90,6 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <c:StringMultiplierToNumericMultiplierConverter x:Key="StringMultiplierToNumericMultiplier"/>
     </Window.Resources>
     <Grid DataContext="{Binding Flat}">
         <Grid.RowDefinitions>

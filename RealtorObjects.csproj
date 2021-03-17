@@ -132,8 +132,8 @@
     <Compile Include="ViewModel\LocationsViewModel.cs" />
     <Compile Include="ViewModel\LoginFormViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
-    <Compile Include="View\Converters\StringMultiplierToNumericMultiplierConverter.cs" />
     <Compile Include="ViewModel\FlatFormViewModel.cs" />
+    <Compile Include="View\Converters\BoolToVisibilityReversedConverter.cs" />
     <Compile Include="View\Converters\ObjectAndPropertyMultiValueConverter.cs" />
     <Compile Include="View\Converters\SymbolToStarConverter.cs" />
     <Compile Include="View\Customers.xaml.cs">
