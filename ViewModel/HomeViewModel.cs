@@ -1,4 +1,5 @@
-﻿using RealtyModel.Model;
+﻿using RandomFlatGenerator;
+using RealtyModel.Model;
 using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
 using RealtyModel.Service;
@@ -25,7 +26,7 @@ namespace RealtorObjects.ViewModel
             new CheckAndHeightPair(false, 50),
             new CheckAndHeightPair(false, 50),
             new CheckAndHeightPair(false, 50),
-            new CheckAndHeightPair(true, 200)
+            new CheckAndHeightPair(false, 50)
         };
         private ObservableCollection<BaseRealtorObject> currentObjectList = new ObservableCollection<BaseRealtorObject>() { new RandomFlatGenerator.FlatGenerator().CreateFlat() };
         private List<ObservableCollection<BaseRealtorObject>> objectLists = new List<ObservableCollection<BaseRealtorObject>>();
@@ -43,20 +44,16 @@ namespace RealtorObjects.ViewModel
             }
         }
         public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj => {
-            var flatGenerator = new RandomFlatGenerator.FlatGenerator();
+            FlatGenerator flatGenerator = new FlatGenerator();
             foreach (BaseRealtorObject bro in flatGenerator.CreateFlatList(AllObjects.Count, AllObjects.Count + 50)) {
                 AllObjects.Add(bro);
             }
-            /*
-            for (int i = 0; i < 10; i++) {
-                var flat = flatGenerator.CreateFlat();
-                flat.Info.Description = "Гарри Поттер и Лорем ипсум долор сит амет, справа находится описание, слева - дорога на Эльдорадо";
-                CurrentObjectList.Add(flat);
-            }*/
         }));
 
         public CustomCommand FilterCollection => filterCollection ?? (filterCollection = new CustomCommand(obj => {
             CurrentObjectList.Clear();
+            DateTime dateTime = new DateTime(2021, 4, 16);
+            DateTime dateTime2 = new DateTime(2020, 4, 16);
             CurrentObjectList = new ObservableCollection<BaseRealtorObject>(Filter.CreateFilteredList(AllObjects));
             GC.Collect();
         }));

@@ -557,7 +557,7 @@
                                     </Grid>
                                 </Border>
                                 <Border
-                                    Visibility="Visible"
+                                    Visibility="Collapsed"
                                     Height="{Binding FilterAreaSections[2].Height}"
                                     Style="{StaticResource FilterAreaSection}">
                                     <Grid>
@@ -601,7 +601,7 @@
                                     </Grid>
                                 </Border>
                                 <Border
-                                    Visibility="Visible"
+                                    Visibility="collapsed"
                                     Height="{Binding FilterAreaSections[3].Height}"
                                     Style="{StaticResource FilterAreaSection}">
                                     <Grid>
@@ -654,6 +654,7 @@
                                     </Grid>
                                 </Border>
                                 <Border
+                                    Visibility="Collapsed"
                                     Height="{Binding FilterAreaSections[4].Height}"
                                     Style="{StaticResource FilterAreaSection}">
                                     <Grid>
@@ -706,84 +707,152 @@
                                     </Grid>
                                 </Border>
                                 <Border
-                                Height="{Binding FilterAreaSections[5].Height}"
-                                Style="{StaticResource FilterAreaSection}">
+                                    Visibility="Collapsed"
+                                    Height="{Binding FilterAreaSections[5].Height}"
+                                    Style="{StaticResource FilterAreaSection}">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="50"/>
                                             <RowDefinition/>
                                         </Grid.RowDefinitions>
                                         <ToggleButton 
-                                        IsChecked="{Binding FilterAreaSections[5].Check}"
-                                        Content="Состояние"
-                                        Command="{Binding OpenOrCloseFilterSection}"
-                                        Style="{StaticResource SectionToggleButton}">
+                                            IsChecked="{Binding FilterAreaSections[5].Check}"
+                                            Content="Горячая вода"
+                                            Command="{Binding OpenOrCloseFilterSection}"
+                                            Style="{StaticResource SectionToggleButton}">
                                             <ToggleButton.CommandParameter>
                                                 <x:Array Type="sys:Object">
                                                     <sys:Byte>5</sys:Byte>
-                                                    <sys:Int16>200</sys:Int16>
+                                                    <sys:Int16>245</sys:Int16>
                                                 </x:Array>
                                             </ToggleButton.CommandParameter>
                                         </ToggleButton>
+                                        <StackPanel Grid.Row="1">
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsTPSWater}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="ТЭЦ"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsBoilerRoomWater}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="Котельная"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsStandPipe}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="Колонка"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsBoilerWater}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="Котел"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsTrulyBoilerWater}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="Бойлер"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsAGVWater}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="АГВ"/>
+                                            <CheckBox
+                                                IsChecked="{Binding Filter.IsElectroWater}"
+                                                Style="{StaticResource FilterAreaBlueCheckBox}"
+                                                Content="Электро"/>
+                                        </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border
-                                Height="{Binding FilterAreaSections[6].Height}"
-                                Style="{StaticResource FilterAreaSection}">
+                                    Visibility="Collapsed"
+                                    Height="{Binding FilterAreaSections[6].Height}"
+                                    Style="{StaticResource FilterAreaSection}">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="50"/>
                                             <RowDefinition/>
                                         </Grid.RowDefinitions>
                                         <ToggleButton 
-                                        IsChecked="{Binding FilterAreaSections[6].Check}"
-                                        Content="Город"
-                                        Command="{Binding OpenOrCloseFilterSection}"
-                                        Style="{StaticResource SectionToggleButton}">
+                                            IsChecked="{Binding FilterAreaSections[6].Check}"
+                                            Content="Местоположение"
+                                            Command="{Binding OpenOrCloseFilterSection}"
+                                            Style="{StaticResource SectionToggleButton}">
                                             <ToggleButton.CommandParameter>
                                                 <x:Array Type="sys:Object">
                                                     <sys:Byte>6</sys:Byte>
-                                                    <sys:Int16>200</sys:Int16>
+                                                    <sys:Int16>168</sys:Int16>
                                                 </x:Array>
                                             </ToggleButton.CommandParameter>
                                         </ToggleButton>
+                                        <StackPanel Grid.Row="1">
+                                            <TextBlock
+                                                Margin="19,0"
+                                                Text="Город:"/>
+                                            <ComboBox
+                                                IsEditable="true"
+                                                Margin="19,2,19,15"
+                                                Style="{StaticResource GreenComboBox}"/>
+                                            <TextBlock
+                                                Margin="19,0"
+                                                Text="Район:"/>
+                                            <ComboBox
+                                                IsEditable="True"
+                                                Margin="19,2,19,15"
+                                                Style="{StaticResource GreenComboBox}"/>
+                                        </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border
-                                Height="{Binding FilterAreaSections[7].Height}"
-                                Style="{StaticResource FilterAreaSection}">
+                                    Height="169"
+                                    Style="{StaticResource FilterAreaSection}">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="50"/>
                                             <RowDefinition/>
                                         </Grid.RowDefinitions>
                                         <ToggleButton 
-                                        IsChecked="{Binding FilterAreaSections[7].Check}"
-                                        Content="Год постройки"
-                                        Command="{Binding OpenOrCloseFilterSection}"
-                                        Style="{StaticResource SectionToggleButton}">
+                                            IsChecked="{Binding FilterAreaSections[7].Check}"
+                                            Content="Год постройки"
+                                            Command="{Binding OpenOrCloseFilterSection}"
+                                            Style="{StaticResource SectionToggleButton}">
                                             <ToggleButton.CommandParameter>
                                                 <x:Array Type="sys:Object">
                                                     <sys:Byte>7</sys:Byte>
-                                                    <sys:Int16>200</sys:Int16>
+                                                    <sys:Int16>169</sys:Int16>
                                                 </x:Array>
                                             </ToggleButton.CommandParameter>
                                         </ToggleButton>
+                                        <StackPanel Grid.Row="1">
+                                            <TextBlock
+                                                Margin="19,0"
+                                                Text="От:"/>
+                                            <DatePicker 
+                                                Margin="19,2,19,15"
+                                                SelectedDateFormat="Long" 
+                                                DisplayDateStart="1/01/2009" 
+                                                DisplayDateEnd="1/01/2021" 
+                                                FirstDayOfWeek="Monday"/>
+                                            <TextBlock
+                                                Margin="19,0"
+                                                Text="До:"/>
+                                            <DatePicker 
+                                                Margin="19,2,19,15"
+                                                SelectedDateFormat="Long" 
+                                                DisplayDateStart="1/01/09" 
+                                                DisplayDateEnd="1/01/21" 
+                                                FirstDayOfWeek="Monday"/>
+                                        </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border
-                                Height="{Binding FilterAreaSections[8].Height}"
-                                Style="{StaticResource FilterAreaSection}">
+                                    Height="{Binding FilterAreaSections[8].Height}"
+                                    Style="{StaticResource FilterAreaSection}">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="50"/>
                                             <RowDefinition/>
                                         </Grid.RowDefinitions>
                                         <ToggleButton 
-                                        IsChecked="{Binding FilterAreaSections[8].Check}"
-                                        Content="Район"
-                                        Command="{Binding OpenOrCloseFilterSection}"
-                                        Style="{StaticResource SectionToggleButton}">
+                                            IsChecked="{Binding FilterAreaSections[8].Check}"
+                                            Content="Район"
+                                            Command="{Binding OpenOrCloseFilterSection}"
+                                            Style="{StaticResource SectionToggleButton}">
                                             <ToggleButton.CommandParameter>
                                                 <x:Array Type="sys:Object">
                                                     <sys:Byte>8</sys:Byte>
