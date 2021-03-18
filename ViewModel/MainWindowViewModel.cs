@@ -196,7 +196,6 @@ namespace RealtorObjects.ViewModel
         public MainWindowViewModel() {
             WorkAreaViewModel = ViewModels[1];
             var loginViewModel = (LoginFormViewModel)ViewModels[0];
-            loginViewModel.Client = this.client;
             loginViewModel.Logged += CloseLoginOpenMain;
             StartUpTheClock();
         }
@@ -279,7 +278,7 @@ namespace RealtorObjects.ViewModel
         /// </summary>
         private void Connect() {
             try {
-                Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => client.ConnectAsync(IPAddress.Parse("192.168.1.107"))));
+                Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => client.ConnectAsync()));
                 Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => AwaitOperationAsync()));
 
 

@@ -10,6 +10,9 @@ using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using RealtyModel.Model;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
+using System.Linq;
+using System.Threading;
 
 namespace RealtorObjects.Model
 {
@@ -18,9 +21,12 @@ namespace RealtorObjects.Model
     /// </summary>
     public class Client : INotifyPropertyChanged
     {
-        Socket socket;
-        Boolean isConnected;
-        Dispatcher uiDispatcher;
+        public List<String> Vs { get; set; }
+
+        Socket socket = null;
+        Boolean isConnected = false;
+        Boolean isTryingToConnect = false;
+        Dispatcher uiDispatcher = null;
 
         /// <summary>
         /// Свойство, которое равно true если клиент подключен к серверу, false если нет.
@@ -31,6 +37,15 @@ namespace RealtorObjects.Model
             private set
             {
                 isConnected = value;
+                OnPropertyChanged();
+            }
+        }
+        public Boolean IsTryingToConnect
+        {
+            get => isTryingToConnect;
+            private set
+            {
+                isTryingToConnect = value;
                 OnPropertyChanged();
             }
         }
@@ -45,6 +60,7 @@ namespace RealtorObjects.Model
 
         public Client(Dispatcher dispatcher)
         {
+            Vs = new List<string>();
             uiDispatcher = dispatcher;
             Log = new ObservableCollection<LogMessage>();
             IncomingOperations = new Queue<Operation>();
@@ -56,45 +72,121 @@ namespace RealtorObjects.Model
         /// </summary>
         /// <param name="ipAddress">ipAddress - ip адрес сервера.</param>
         /// <returns></returns>
-        public async void ConnectAsync(IPAddress ipAddress)
+        public async void ConnectAsync()
         {
             await Task.Run(() =>
             {
-                socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                try
+                IsTryingToConnect = true;
+                IPAddress ipAddress = FindServerIPAddress();
+                if (ipAddress != null)
                 {
-                    IPEndPoint iPEndPoint = new IPEndPoint(ipAddress, 8005);
-                    socket.Connect(iPEndPoint);
-                    SendMessage(new Operation()
-                    {
-                        Name = "ГвоздиковЕА",
-                        Data = "123",
-                        OperationParameters = new OperationParameters()
-                        {
-                            Direction = OperationDirection.Identity,
-                            Type = OperationType.Register
-                        }
-                    });
-                    IsConnected = true;
-                    while (IsConnected) ReceiveMessage();
-                }
-                catch (Exception ex)
-                {
-                    UpdateLog(ex.Message);
-                }
-                finally
-                {
+                    socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                     try
                     {
-                        socket.Shutdown(SocketShutdown.Both);
-                        socket.Close();
+                        IPEndPoint iPEndPoint = new IPEndPoint(ipAddress, 8005);
+                        socket.Connect(iPEndPoint);
+                        IsConnected = true;
+                        IsTryingToConnect = false;
+                        while (IsConnected) ReceiveMessage();
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         UpdateLog(ex.Message);
                     }
+                    finally
+                    {
+                        IsConnected = false;
+                        try
+                        {
+                            socket.Shutdown(SocketShutdown.Both);
+                            socket.Close();
+                        }
+                        catch (Exception ex)
+                        {
+                            UpdateLog(ex.Message);
+                        }
+                    }
                 }
             });
+        }
+        /// <summary>
+        /// Метод поиска адреса сервера при помощи широковещательной UDP рассылки.
+        /// </summary>
+        /// <returns></returns>
+        private IPAddress FindServerIPAddress()
+        {
+            IPAddress serverIP = null;
+            try
+            {
+                Socket socket = null;
+
+                IPAddress[] iPAddresses = GetLocalIPv4Addresses();
+                do
+                {
+                    foreach (IPAddress iP in iPAddresses)
+                    {
+                        socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                        socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontRoute, true);
+                        socket.EnableBroadcast = true;
+                        socket.ReceiveTimeout = 1000;
+                        socket.Bind(new IPEndPoint(iP, 8080));
+                        for (Int32 attempts = 1; attempts < 11 && serverIP == null; attempts++)
+                        {
+                            socket.SendTo(new byte[] { 0x10 }, new IPEndPoint(IPAddress.Broadcast, 8080));
+                            Int32 byteCount = 0;
+                            byte[] buffer = new byte[socket.ReceiveBufferSize];
+                            EndPoint endPoint = new IPEndPoint(IPAddress.None, 0);
+                            if (socket.Poll(1000000, SelectMode.SelectRead))
+                            {
+                                byteCount = socket.ReceiveFrom(buffer, ref endPoint);
+                                if (byteCount == 1 && buffer[0] == 0x20)
+                                    serverIP = (endPoint as IPEndPoint).Address;
+                            }
+                            Thread.Sleep(200);
+                        }
+                        if (serverIP != null) break;
+                        socket.Dispose();
+                        socket.Close();
+                    }
+                }
+                while (serverIP == null && IsTryingToConnect);
+                return serverIP;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"(FindServer) {ex.Message} {ex.StackTrace}");
+                return null;
+            }
+            finally
+            {
+                if (serverIP == null)
+                    Console.WriteLine("server is unreachable");
+                else Console.WriteLine($"server has found on {serverIP}");
+            }
+        }
+        /// <summary>
+        /// Метод возвращает массив IPv4 адресов рабочих адаптеров данного ПК, которые используют сетевой протокол IEEE 802.3(Ethernet) или IEEE 802.11(Wi-Fi).
+        /// </summary>
+        /// <returns></returns>
+        private IPAddress[] GetLocalIPv4Addresses()
+        {
+            NetworkInterface[] netInterfaces = NetworkInterface.GetAllNetworkInterfaces().Where(inf =>
+                inf.OperationalStatus == OperationalStatus.Up
+                && (inf.NetworkInterfaceType == NetworkInterfaceType.Ethernet
+                || inf.NetworkInterfaceType == NetworkInterfaceType.Wireless80211
+                )).ToArray();
+
+            List<IPAddress> addresses = new List<IPAddress>();
+
+            foreach (NetworkInterface netInterface in netInterfaces)
+            {
+                foreach (UnicastIPAddressInformation unicastIP in netInterface.GetIPProperties().UnicastAddresses)
+                {
+                    if (unicastIP.Address.AddressFamily == AddressFamily.InterNetwork)
+                        addresses.Add(unicastIP.Address);
+                }
+            }
+            return addresses.ToArray();
         }
         /// <summary>
         /// Метод отправки операций серверу. Операция передаётся в виде последовательности байт закодированной в UTF-8 json-строки.
@@ -120,6 +212,7 @@ namespace RealtorObjects.Model
         {
             uiDispatcher.BeginInvoke(new Action(() =>
             {
+                IsTryingToConnect = false;
                 IsConnected = false;
             }));
         }
@@ -142,10 +235,7 @@ namespace RealtorObjects.Model
             if (!String.IsNullOrWhiteSpace(message.ToString()))
             {
                 Operation operation = JsonSerializer.Deserialize<Operation>(message.ToString());
-                uiDispatcher.BeginInvoke(new Action(() =>
-                {
-                    IncomingOperations.Enqueue(operation);
-                }));
+                IncomingOperations.Enqueue(operation);
             }
         }
         /// <summary>
@@ -159,7 +249,7 @@ namespace RealtorObjects.Model
                 Log.Add(new LogMessage(DateTime.Now.ToString("dd:MM:yy hh:mm"), message));
             }));
         }
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] String prop = "")
         {

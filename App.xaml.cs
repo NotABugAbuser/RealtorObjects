@@ -1,12 +1,15 @@
-﻿using RealtorObjects.View;
+﻿using RealtorObjects.Model;
+using RealtorObjects.View;
 using RealtorObjects.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace RealtorObjects
 {
@@ -15,11 +18,34 @@ namespace RealtorObjects
     /// </summary>
     public partial class App : Application
     {
-        protected override void OnStartup(StartupEventArgs e) {
+        private Client client = new Client(Dispatcher.CurrentDispatcher);
+        public Client Client
+        {
+            get => client;
+            set => client = value;
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
             base.OnStartup(e);
-            var mainWindow = new MainWindow() { DataContext = new MainWindowViewModel() };
-            var loginForm = new LoginForm() { DataContext = ((MainWindowViewModel)mainWindow.DataContext).ViewModels[0]};
-            loginForm.Show();
+
+            Dispatcher.BeginInvoke(new Action(() => Client.ConnectAsync()));
+            for(byte attempts = 0; attempts <= 30; attempts++)
+            {
+                if (Client.IsConnected)
+                {
+                    var mainWindow = new MainWindow() { DataContext = new MainWindowViewModel() };
+                    var loginForm = new LoginForm() { DataContext = ((MainWindowViewModel)mainWindow.DataContext).ViewModels[0] };
+                    loginForm.Show();
+                    break;
+                }
+                if (attempts == 30)
+                {
+                    MessageBox.Show("Сервер недоступен");
+                    Application.Current.Shutdown();
+                }
+                Thread.Sleep(100);
+            }
         }
     }
 }

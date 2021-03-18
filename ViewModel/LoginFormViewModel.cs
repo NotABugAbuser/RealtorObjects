@@ -14,6 +14,8 @@ using System.Windows;
 using System.Windows.Threading;
 using RealtyModel.Event;
 using RealtorObjects.View;
+using System.Threading;
+using System.IO;
 
 namespace RealtorObjects.ViewModel
 {
@@ -35,29 +37,67 @@ namespace RealtorObjects.ViewModel
         private string secondPassword = "";
         private Visibility registrationVisibility = Visibility.Collapsed;
 
-        private Client client = new Client(Dispatcher.CurrentDispatcher);
-
-        public LoginFormViewModel() {
+        public LoginFormViewModel()
+        {
 
         }
 
-        public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
+        public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj =>
+        {
             Application.Current.Shutdown();
         }));
-        public CustomCommand SendPassword => sendPassword ?? (sendPassword = new CustomCommand(obj => {
+        public CustomCommand SendPassword => sendPassword ?? (sendPassword = new CustomCommand(obj =>
+        {
 
         }));
-        public CustomCommand ChangeRegistrationVisibility => changeRegistrationVisibility ?? (changeRegistrationVisibility = new CustomCommand(obj => {            
-            if (RegistrationVisibility == Visibility.Visible) {
+        public CustomCommand ChangeRegistrationVisibility => changeRegistrationVisibility ?? (changeRegistrationVisibility = new CustomCommand(obj =>
+        {
+            if (RegistrationVisibility == Visibility.Visible)
+            {
                 RegistrationVisibility = Visibility.Collapsed;
-            } else {
+            }
+            else
+            {
                 RegistrationVisibility = Visibility.Visible;
             }
         }));
-        public CustomCommand CreateNewUser => createNewUser ?? (createNewUser = new CustomCommand(obj => {
+        public CustomCommand CreateNewUser => createNewUser ?? (createNewUser = new CustomCommand(obj =>
+        {
             CurrentLogin = $"{Surname}{Name[0]}{Patronymic[0]}";
-            
-        }, obj => { // проверяет поля формы на заполненность
+            Client client = ((App)Application.Current).Client;
+            Operation operation = new Operation()
+            {
+                Name = CurrentLogin,
+                Data = SecondPassword, //Нужна кодировка
+                OperationParameters = new OperationParameters()
+                {
+                    Direction = OperationDirection.Identity,
+                    Type = OperationType.Register
+                }
+            };
+            client.SendMessage(operation);
+
+            for(byte attempts = 0; attempts <= 30; attempts++)
+            {
+                if (client.IncomingOperations.Count > 0)
+                {
+                    Operation incomnigOperation = client.IncomingOperations.Dequeue();
+                    if (incomnigOperation.OperationParameters.Direction == OperationDirection.Identity 
+                    && incomnigOperation.OperationParameters.Type == OperationType.Register 
+                    && incomnigOperation.Name == CurrentLogin 
+                    && incomnigOperation.IsSuccessfully
+                    )
+                    {
+                        MessageBox.Show("Регистрация прошла успешно");
+                        RegistrationVisibility = Visibility.Collapsed;
+                        break;
+                    }
+                }
+                if (attempts == 30) MessageBox.Show("Что-то пошло не так");
+                Thread.Sleep(100);
+            }
+        }, obj =>
+        { // проверяет поля формы на заполненность НАДО ПЕРЕДЕЛАТЬ!!!
             return !(String.IsNullOrEmpty(Name)
             && String.IsNullOrEmpty(Surname)
             && String.IsNullOrEmpty(Patronymic)
@@ -65,83 +105,123 @@ namespace RealtorObjects.ViewModel
             && String.IsNullOrEmpty(FirstPassword)
             && String.IsNullOrEmpty(SecondPassword));
         }));
-        public CustomCommand Login => login ?? (login = new CustomCommand(obj => {
-            var isLoginSuccessful = true;
-            /*
-            * 
-            *  твой код обращения к серверу и получения ответа здесь 
-            *
-            */
-            if (isLoginSuccessful) {
-                Logged?.Invoke(this, new LoggedEventArgs(obj));
+        public CustomCommand Login => login ?? (login = new CustomCommand(obj =>
+        {
+            Client client = ((App)Application.Current).Client;
+            Operation operation = new Operation()
+            {
+                Name = CurrentLogin,
+                OperationParameters = new OperationParameters()
+                {
+                    Direction = OperationDirection.Identity,
+                    Type = OperationType.Login
+                },
+                Data = currentPassword
+            };
+            client.SendMessage(operation);
+
+            for(byte attempts = 0; attempts <= 30; attempts++)
+            {
+                if (client.IncomingOperations.Count > 0)
+                {
+                    Operation incomnigOperation = client.IncomingOperations.Dequeue();
+                    if (
+                    incomnigOperation.OperationParameters.Direction == OperationDirection.Identity
+                    && incomnigOperation.OperationParameters.Type == OperationType.Login
+                    && incomnigOperation.Name == CurrentLogin
+                    && incomnigOperation.IsSuccessfully
+                    )
+                    {
+                        Logged?.Invoke(this, new LoggedEventArgs(obj));
+                        break;
+                    }
+                    if (attempts == 30) MessageBox.Show("Что-то пошло не так");
+                }
+                Thread.Sleep(100);
             }
         }));
 
-        public string CurrentLogin {
+        public string CurrentLogin
+        {
             get => currentLogin;
-            set {
+            set
+            {
                 currentLogin = value;
                 OnPropertyChanged();
             }
         }
-        public string CurrentPassword {
+        public string CurrentPassword
+        {
             get => currentPassword;
-            set {
+            set
+            {
                 currentPassword = value;
                 OnPropertyChanged();
             }
         }
-        public Visibility RegistrationVisibility {
+        public Visibility RegistrationVisibility
+        {
             get => registrationVisibility;
-            set {
+            set
+            {
                 registrationVisibility = value;
                 OnPropertyChanged();
             }
         }
-        public string Name {
+        public string Name
+        {
             get => name;
-            set {
+            set
+            {
                 name = value;
                 OnPropertyChanged();
             }
         }
-        public string Surname {
+        public string Surname
+        {
             get => surname;
-            set {
+            set
+            {
                 surname = value;
                 OnPropertyChanged();
             }
         }
-        public string Patronymic {
+        public string Patronymic
+        {
             get => patronymic;
-            set {
+            set
+            {
                 patronymic = value;
                 OnPropertyChanged();
             }
         }
-        public string Email {
+        public string Email
+        {
             get => email;
-            set {
+            set
+            {
                 email = value;
                 OnPropertyChanged();
             }
         }
-        public string FirstPassword {
+        public string FirstPassword
+        {
             get => firstPassword;
-            set {
+            set
+            {
                 firstPassword = value;
                 OnPropertyChanged();
             }
         }
-        public string SecondPassword {
+        public string SecondPassword
+        {
             get => secondPassword;
-            set {
+            set
+            {
                 secondPassword = value;
                 OnPropertyChanged();
             }
         }
-
-        public Client Client { get => client; set => client = value; }
 
         public event LoggedEventHandler Logged;
     }
