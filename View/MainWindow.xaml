@@ -10,12 +10,13 @@
         mc:Ignorable="d"
         MouseDown="Window_MouseDown"
         Title="MainWindow" 
-        Height="768" 
+        Height="728" 
         Width="1366" 
-        WindowStyle="none"
         BorderBrush="{StaticResource PrimaryBlue}"
-        ResizeMode="NoResize"
+        ResizeMode="CanResize"
+        WindowStyle="none"
         MinHeight="597" 
+        Name="ThisMainWindow"
         Background="white">
     <Window.Resources>
         <Style TargetType="ToggleButton" x:Key="LeftBarButton">
@@ -51,12 +52,26 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+        <Style TargetType="Grid" x:Key="MainGridStyle">
+            <Setter Property="Margin" Value="0"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=ThisMainWindow, Path=WindowState}" Value="Maximized">
+                    <Setter Property="Margin" Value="7"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
-    <Grid>
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+            NonClientFrameEdges="None"
+            CaptionHeight="0"
+            ResizeBorderThickness="2"/>
+    </WindowChrome.WindowChrome>
+    <Grid
+        Style="{StaticResource MainGridStyle}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="60"/>
-            <ColumnDefinition/>
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="33"/>

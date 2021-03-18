@@ -225,7 +225,6 @@ C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\FontAweso
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\Microsoft.Expression.Interactions.dll
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\MiscUtil.dll
-C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\RealtyModel.dll
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Buffers.dll
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Data.SQLite.dll
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Data.SQLite.EF6.dll
