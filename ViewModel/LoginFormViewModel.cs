@@ -77,14 +77,14 @@ namespace RealtorObjects.ViewModel
             };
             client.SendMessage(operation);
 
-            for(byte attempts = 0; attempts <= 30; attempts++)
+            for (byte attempts = 0; attempts <= 30; attempts++)
             {
                 if (client.IncomingOperations.Count > 0)
                 {
                     Operation incomnigOperation = client.IncomingOperations.Dequeue();
-                    if (incomnigOperation.OperationParameters.Direction == OperationDirection.Identity 
-                    && incomnigOperation.OperationParameters.Type == OperationType.Register 
-                    && incomnigOperation.Name == CurrentLogin 
+                    if (incomnigOperation.OperationParameters.Direction == OperationDirection.Identity
+                    && incomnigOperation.OperationParameters.Type == OperationType.Register
+                    && incomnigOperation.Name == CurrentLogin
                     && incomnigOperation.IsSuccessfully
                     )
                     {
@@ -120,7 +120,7 @@ namespace RealtorObjects.ViewModel
             };
             client.SendMessage(operation);
 
-            for(byte attempts = 0; attempts <= 30; attempts++)
+            for (byte attempts = 0; attempts <= 30; attempts++)
             {
                 if (client.IncomingOperations.Count > 0)
                 {
@@ -129,11 +129,18 @@ namespace RealtorObjects.ViewModel
                     incomnigOperation.OperationParameters.Direction == OperationDirection.Identity
                     && incomnigOperation.OperationParameters.Type == OperationType.Login
                     && incomnigOperation.Name == CurrentLogin
-                    && incomnigOperation.IsSuccessfully
                     )
                     {
-                        Logged?.Invoke(this, new LoggedEventArgs(obj));
-                        break;
+                        if (incomnigOperation.IsSuccessfully)
+                        {
+                            Logged?.Invoke(this, new LoggedEventArgs(obj));
+                            break;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Возможно логин или пароль введены неверно");
+                            break;
+                        }
                     }
                     if (attempts == 30) MessageBox.Show("Что-то пошло не так");
                 }
