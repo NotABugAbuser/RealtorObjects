@@ -21,8 +21,6 @@ namespace RealtorObjects.Model
     /// </summary>
     public class Client : INotifyPropertyChanged
     {
-        public List<String> Vs { get; set; }
-
         Socket socket = null;
         Boolean isConnected = false;
         Boolean isTryingToConnect = false;
@@ -60,7 +58,6 @@ namespace RealtorObjects.Model
 
         public Client(Dispatcher dispatcher)
         {
-            Vs = new List<string>();
             uiDispatcher = dispatcher;
             Log = new ObservableCollection<LogMessage>();
             IncomingOperations = new Queue<Operation>();
@@ -85,8 +82,8 @@ namespace RealtorObjects.Model
                     {
                         IPEndPoint iPEndPoint = new IPEndPoint(ipAddress, 8005);
                         socket.Connect(iPEndPoint);
-                        IsConnected = true;
                         IsTryingToConnect = false;
+                        IsConnected = true;
                         while (IsConnected) ReceiveMessage();
                     }
                     catch (Exception ex)
@@ -96,15 +93,8 @@ namespace RealtorObjects.Model
                     finally
                     {
                         IsConnected = false;
-                        try
-                        {
-                            socket.Shutdown(SocketShutdown.Both);
-                            socket.Close();
-                        }
-                        catch (Exception ex)
-                        {
-                            UpdateLog(ex.Message);
-                        }
+                        socket.Shutdown(SocketShutdown.Both);
+                        socket.Close();
                     }
                 }
             });

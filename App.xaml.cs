@@ -28,9 +28,9 @@ namespace RealtorObjects
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            Client.ConnectAsync();
 
-            Dispatcher.BeginInvoke(new Action(() => Client.ConnectAsync()));
-            for(byte attempts = 0; attempts <= 30; attempts++)
+            for (byte attempts = 0; attempts <= 30; attempts++)
             {
                 if (Client.IsConnected)
                 {
