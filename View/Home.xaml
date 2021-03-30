@@ -14,6 +14,7 @@
         <vm:HomeViewModel/>
     </UserControl.DataContext>
     <UserControl.Resources>
+        <c:StatusToVisibilityConverter x:Key="StatusToVisibility"/>
         <Style TargetType="TextBlock" x:Key="ColumnHeader">
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -62,13 +63,66 @@
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="Foreground" Value="{StaticResource DarkPrimaryBlue}"/>
         </Style>
+
+        <Style TargetType="Button" x:Key="Modify">
+            <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            CornerRadius="4"
+                            Margin="0,0,5,0"
+                            Width="30"
+                            Height="30"
+                            Background="{TemplateBinding Background}">
+                            <fa:ImageAwesome 
+                                Icon="Pencil" 
+                                Width="18"
+                                Foreground="White"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource DarkPrimaryBlue}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button" x:Key="Delete">
+            <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            CornerRadius="4"
+                            Width="30"
+                            Height="30"
+                            Background="{TemplateBinding Background}">
+                            <fa:ImageAwesome 
+                                Icon="Close" 
+                                Margin="1,1,0,0"
+                                Width="18"
+                                Foreground="White"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Red"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="ListBoxItem" x:Key="RealtorObjectListBoxItem">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
                         <Grid>
                             <Border
-                                Padding="10,0"
+                                Padding="10,0,10,0"
                                 Height="105"
                                 BorderThickness="0,0,0,1"
                                 BorderBrush="#ccc"
@@ -80,8 +134,9 @@
                                         <ColumnDefinition Width="10"/>
                                         <ColumnDefinition Width="160"/>
                                         <ColumnDefinition Width="140"/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition Width="90"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="100"/>
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="24"/>
@@ -157,7 +212,7 @@
                                     <TextBlock
                                         Grid.RowSpan="3"
                                         Margin="0,8"
-                                        VerticalAlignment="Center"
+                                        VerticalAlignment="Top"
                                         TextWrapping="WrapWithOverflow"
                                         FontFamily="Courier New"
                                         FontSize="13"
@@ -166,11 +221,45 @@
                                         Grid.Column="5"/>
                                     <TextBlock
                                         Grid.Column="6"
-                                        Margin="10,0,0,0"
                                         HorizontalAlignment="Center"
                                         Style="{StaticResource ListItemHeader}"
                                         Text="{Binding StringFormat=### ### ##0, Path=Cost.Price}"/>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        Style="{StaticResource ListItemHeader}"
+                                        Text="{Binding StringFormat=№: {0}, Path=Id}"
+                                        Grid.Column="7"/>
+                                    <Grid
+                                        Grid.Row="2"
+                                        Grid.Column="7">
+                                        <StackPanel>
+                                            <TextBlock
+                                                Margin="0,10"
+                                                HorizontalAlignment="Center"
+                                                Style="{StaticResource ListItemTextBlock}"
+                                                Text="{Binding Agent}"/>
+                                            <StackPanel 
+                                                HorizontalAlignment="Center"
+                                                Orientation="Horizontal">
+                                                <Button
+                                                    Style="{StaticResource Modify}"/>
+                                                <Button
+                                                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DataContext.Delete}"
+                                                    CommandParameter="{Binding .}"
+                                                    Style="{StaticResource Delete}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
                                 </Grid>
+                            </Border>
+                            <Border
+                                Visibility="{Binding Status, Converter={StaticResource StatusToVisibility}}"
+                                HorizontalAlignment="Left"
+                                Width="910">
+                                <Image
+                                    Opacity="0.4"
+                                    Stretch="None"
+                                    Source="./Image/Archived.png"/>
                             </Border>
                         </Grid>
                     </ControlTemplate>
@@ -376,23 +465,28 @@
                                 <ColumnDefinition Width="140"/>
                                 <ColumnDefinition Width="175"/>
                                 <ColumnDefinition Width="140"/>
-                                <ColumnDefinition Width="334"/>
-                                <ColumnDefinition Width="110"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="125"/>
                                 <ColumnDefinition Width="12"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock
                                 Style="{StaticResource WhiteColumnHeader}"
-                                Text="Заявка"
+                                Text="Клиент"
                                 Grid.Column="0"/>
                             <TextBlock
                                 Style="{StaticResource WhiteColumnHeader}"
                                 Text="Фото"
                                 Grid.Column="1"/>
                             <TextBlock
+                                HorizontalAlignment="Left"
+                                Margin="17,0,0,0"
                                 Style="{StaticResource WhiteColumnHeader}"
                                 Text="Объект"
                                 Grid.Column="2"/>
                             <TextBlock
+                                HorizontalAlignment="Left"
+                                Margin="5,0,0,0"
                                 Style="{StaticResource WhiteColumnHeader}"
                                 Text="Адрес"
                                 Grid.Column="3"/>
@@ -404,6 +498,10 @@
                                 Style="{StaticResource WhiteColumnHeader}"
                                 Text="Цена, руб"
                                 Grid.Column="5"/>
+                            <TextBlock
+                                Style="{StaticResource WhiteColumnHeader}"
+                                Text="Заявка"
+                                Grid.Column="6"/>
                         </Grid>
                     </Border>
                     <ScrollViewer
@@ -427,7 +525,8 @@
                             HorizontalAlignment="Right"
                             Orientation="Horizontal">
                             <Button
-                                Background="{StaticResource DarkPrimaryBlue}"
+                                Background="white"
+                                Foreground="{StaticResource PrimaryBlue}"
                                 Style="{StaticResource NavigationButton}"
                                 Content="1"/>
                             <Button

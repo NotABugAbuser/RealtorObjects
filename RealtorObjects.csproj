@@ -138,6 +138,7 @@
     <Compile Include="ViewModel\FlatFormViewModel.cs" />
     <Compile Include="View\Converters\BoolToVisibilityReversedConverter.cs" />
     <Compile Include="View\Converters\ObjectAndPropertyMultiValueConverter.cs" />
+    <Compile Include="View\Converters\StatusToVisibilityConverter.cs" />
     <Compile Include="View\Converters\SymbolToStarConverter.cs" />
     <Compile Include="View\Customers.xaml.cs">
       <DependentUpon>Customers.xaml</DependentUpon>
@@ -233,6 +234,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="View\Image\TestImage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Image\Archived.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

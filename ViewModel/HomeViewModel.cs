@@ -1,4 +1,5 @@
 ﻿using RandomFlatGenerator;
+using RealtorObjects.Model;
 using RealtyModel.Model;
 using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
@@ -17,6 +18,15 @@ namespace RealtorObjects.ViewModel
 {
     class HomeViewModel : BaseViewModel
     {
+        private ObservableCollection<BaseRealtorObject> currentObjectList = new ObservableCollection<BaseRealtorObject>() { };
+        private List<ObservableCollection<BaseRealtorObject>> objectLists = new List<ObservableCollection<BaseRealtorObject>>();
+        private List<BaseRealtorObject> allObjects = new List<BaseRealtorObject>();
+        private CustomCommand openOrCloseFilterSection;
+        private CustomCommand testCommand;
+        private CustomCommand filterCollection;
+        private CustomCommand delete;
+        private CustomCommand modify;
+        private Filter filter = new Filter();
         private ObservableCollection<CheckAndHeightPair> filterAreaSections = new ObservableCollection<CheckAndHeightPair>() {
             new CheckAndHeightPair(true, 143),
             new CheckAndHeightPair(true, 143),
@@ -29,55 +39,48 @@ namespace RealtorObjects.ViewModel
             new CheckAndHeightPair(false, 50),
             new CheckAndHeightPair(false, 50),
         };
-        private ObservableCollection<BaseRealtorObject> currentObjectList = new ObservableCollection<BaseRealtorObject>() { };
-        private List<ObservableCollection<BaseRealtorObject>> objectLists = new List<ObservableCollection<BaseRealtorObject>>();
-        private List<BaseRealtorObject> allObjects = new List<BaseRealtorObject>();
-        private CustomCommand openOrCloseFilterSection;
-        private CustomCommand testCommand;
-        private CustomCommand filterCollection;
-        private bool loadingScreenVisibility = false;
-        private Filter filter = new Filter();
         public HomeViewModel() {
             FlatGenerator flatGenerator = new FlatGenerator();
             Flat flat = flatGenerator.CreateFlat();
+            flat.Agent = "ГвоздиковЕА";
             flat.Status = Status.Archived;
             CurrentObjectList.Add(flat);
         }
-        public bool LoadingScreenVisibility {
-            get => loadingScreenVisibility;
-            set {
-                loadingScreenVisibility = value;
-                OnPropertyChanged();
-            }
-        }
+        public CustomCommand Modify => modify ?? (modify = new CustomCommand(obj => {
+            MessageBox.Show($"{obj}");
+        }));
+        public CustomCommand Delete => delete ?? (delete = new CustomCommand(obj => {
+            BaseRealtorObject baseRealtorObject = (BaseRealtorObject)obj;
+            AllObjects.RemoveAll(x => x.Id == baseRealtorObject.Id);
+            CurrentObjectList.Remove(baseRealtorObject);
+            Operation operation = new Operation() { 
+                OperationParameters = new OperationParameters() { 
+                    Direction = OperationDirection.Realty,
+                    Type = OperationType.Remove
+                },
+            };
+            Client client = ((App)Application.Current).Client;
+        }));
         public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj => {
             FlatGenerator flatGenerator = new FlatGenerator();
             foreach (BaseRealtorObject bro in flatGenerator.CreateFlatList(AllObjects.Count, AllObjects.Count + 50)) {
                 AllObjects.Add(bro);
             }
         }));
-
         public CustomCommand FilterCollection => filterCollection ?? (filterCollection = new CustomCommand(obj => {
-            CurrentObjectList.Clear();
-            DateTime dateTime = new DateTime(2021, 4, 16);
-            DateTime dateTime2 = new DateTime(2020, 4, 16);
-            CurrentObjectList = new ObservableCollection<BaseRealtorObject>(Filter.CreateFilteredList(AllObjects));
+            List<BaseRealtorObject> filteredObjects = Filter.CreateFilteredList(AllObjects);
+            SplitFilteredCollection(filteredObjects, 25);
             GC.Collect();
         }));
-        public ObservableCollection<BaseRealtorObject> CurrentObjectList {
-            get => currentObjectList;
-            set {
-                currentObjectList = value;
-                OnPropertyChanged();
+        private void SplitFilteredCollection(List<BaseRealtorObject> filteredObjects, byte count) {
+            //разбиение фильтрованной коллекции на parts частей по count объектов
+            Int16 parts = (Int16)Math.Ceiling(filteredObjects.Count / (double)count);
+            List<List<BaseRealtorObject>> lists = Enumerable.Range(0, parts).AsParallel().Select(x => filteredObjects.Skip(x * count).Take(count).ToList()).ToList();
+            ObjectLists.Clear();
+            foreach (List<BaseRealtorObject> ol in lists) {
+                ObjectLists.Add(new ObservableCollection<BaseRealtorObject>(ol));
             }
-        }
-        public List<ObservableCollection<BaseRealtorObject>> ObjectLists {
-            get => objectLists;
-            set => objectLists = value;
-        }
-        public List<BaseRealtorObject> AllObjects {
-            get => allObjects;
-            set => allObjects = value;
+            CurrentObjectList = ObjectLists[0];
         }
         public CustomCommand OpenOrCloseFilterSection => openOrCloseFilterSection ?? (openOrCloseFilterSection = new CustomCommand(obj => {
             object[] objects = obj as object[];
@@ -90,6 +93,21 @@ namespace RealtorObjects.ViewModel
                 FilterAreaSections[index].Height = height;
             }
         }));
+        public ObservableCollection<BaseRealtorObject> CurrentObjectList {
+            get => currentObjectList;
+            set {
+                currentObjectList = value;
+                OnPropertyChanged();
+            }
+        }
+        public List<ObservableCollection<BaseRealtorObject>> ObjectLists {
+            get => objectLists; 
+            set => objectLists = value;
+        }
+        public List<BaseRealtorObject> AllObjects {
+            get => allObjects; 
+            set => allObjects = value;
+        }
         public ObservableCollection<CheckAndHeightPair> FilterAreaSections => filterAreaSections;
         public Filter Filter {
             get => filter; 
