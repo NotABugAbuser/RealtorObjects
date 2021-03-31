@@ -356,3 +356,4 @@ C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\RealtorObjects.pd
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\RealtorObjects.csprojAssemblyReference.cache
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\LoginForm.g.cs
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\LoginForm.baml
+C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\bin\Debug\RealtyModel.dll

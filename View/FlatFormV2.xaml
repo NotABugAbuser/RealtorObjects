@@ -102,7 +102,7 @@
             FontSize="15"
             SnapsToDevicePixels="True"
             Foreground="white"
-            Text="[Каталог: Продажа квартир] — Новая запись"
+            Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Title}"
             Grid.ColumnSpan="5"/>
         <Grid
             Grid.Row="1"
@@ -324,8 +324,8 @@
                     Text="Материал:"/>
                 <ComboBox
                     PreviewTextInput="RussianOnly"
-                    ItemsSource="{Binding Path=DataContext.Customers, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor} }"
-                    Text="{Binding Material, UpdateSourceTrigger=PropertyChanged}"
+                    ItemsSource="{Binding Path=DataContext.Materials, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor} }"
+                    Text="{Binding Info.Material, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding Info.Material}"
                     Style="{StaticResource GreenComboBox}"
                     Grid.Column="1"
@@ -349,9 +349,10 @@
                         Margin="0,0,77,0"
                         Text="Кол. комнат:"/>
                     <TextBox 
+                        DataContext="{Binding GeneralInfo}"
                         PreviewTextInput="NumericOnly"
                         Width="70"
-                        Text="{Binding GeneralInfo.RoomCount, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding RoomCount, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
                         Tag="RoomCount"
                         HorizontalAlignment="Right"
                         Style="{StaticResource IntegerNumericUpDown}"/>
@@ -378,7 +379,8 @@
                     PreviewTextInput="NumericOnly"
                     Grid.Column="5"
                     Grid.Row="0"
-                    Text="{Binding Info.Kvl, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                    DataContext="{Binding Info}"
+                    Text="{Binding Kvl, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
                     Tag="Kvl"
                     Style="{StaticResource IntegerNumericUpDown}"/>
                 <TextBlock
@@ -390,7 +392,8 @@
                     PreviewTextInput="NumericOnly"
                     Grid.Column="7"
                     Grid.Row="0"
-                    Text="{Binding GeneralInfo.Year, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                    DataContext="{Binding GeneralInfo}"
+                    Text="{Binding Year, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
                     Tag="Year"
                     Style="{StaticResource IntegerNumericUpDown}"/>
                 <TextBlock
@@ -402,7 +405,8 @@
                     PreviewTextInput="NumericOnly"
                     Grid.Column="5"
                     Grid.Row="2"
-                    Text="{Binding GeneralInfo.General, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                    DataContext="{Binding GeneralInfo}"
+                    Text="{Binding General, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
                     Tag="General"
                     Style="{StaticResource DoubleNumericUpDown}"/>
                 <TextBlock
@@ -414,7 +418,8 @@
                     PreviewTextInput="NumericOnly"
                     Grid.Column="7"
                     Grid.Row="2"
-                    Text="{Binding GeneralInfo.Living, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                    DataContext="{Binding GeneralInfo}"
+                    Text="{Binding Living, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
                     Tag="Living"
                     Style="{StaticResource DoubleNumericUpDown}"/>
                 <TextBlock
@@ -426,11 +431,13 @@
                     PreviewTextInput="NumericOnly"
                     Grid.Column="9"
                     Grid.Row="2"
-                    Text="{Binding GeneralInfo.Kitchen, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                    DataContext="{Binding GeneralInfo}"
+                    Text="{Binding Kitchen, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
                     Tag="Kitchen"
                     Style="{StaticResource DoubleNumericUpDown}"/>
                 <CheckBox 
-                    IsChecked="{Binding Info.IsPrivatised}"
+                    DataContext="{Binding Info}"
+                    IsChecked="{Binding IsPrivatised}"
                     HorizontalAlignment="Right"
                     Foreground="#262626"
                     Content="Приватизация"
@@ -502,7 +509,8 @@
                     Grid.Row="2"/>
                 <TextBox
                     PreviewTextInput="NumericOnly"
-                    Text="{Binding GeneralInfo.Ceiling, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                    DataContext="{Binding GeneralInfo}"
+                    Text="{Binding Ceiling, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource DoubleNumericUpDown}"
                     Tag="Ceiling"
                     Grid.Row="4"

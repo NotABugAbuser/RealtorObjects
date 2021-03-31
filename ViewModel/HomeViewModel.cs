@@ -1,5 +1,6 @@
 ﻿using RandomFlatGenerator;
 using RealtorObjects.Model;
+using RealtorObjects.View;
 using RealtyModel.Model;
 using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
@@ -47,19 +48,42 @@ namespace RealtorObjects.ViewModel
             CurrentObjectList.Add(flat);
         }
         public CustomCommand Modify => modify ?? (modify = new CustomCommand(obj => {
-            MessageBox.Show($"{obj}");
+            BaseRealtorObject bro = (BaseRealtorObject)obj;
+            if (CheckAccess(bro.Agent)) {
+                if (bro is Flat flat) {
+                    Operation operation = new Operation() { };
+                    FlatFormViewModel flatFormVM = new FlatFormViewModel(flat, "[Квартира] — Редактирование", new LocationOptions());
+                    new FlatFormV2 { DataContext = flatFormVM }.Show();
+                } else if (bro is House) {
+
+                }
+            }
         }));
-        public CustomCommand Delete => delete ?? (delete = new CustomCommand(obj => {
-            BaseRealtorObject baseRealtorObject = (BaseRealtorObject)obj;
-            AllObjects.RemoveAll(x => x.Id == baseRealtorObject.Id);
-            CurrentObjectList.Remove(baseRealtorObject);
-            Operation operation = new Operation() { 
-                OperationParameters = new OperationParameters() { 
-                    Direction = OperationDirection.Realty,
-                    Type = OperationType.Remove
-                },
-            };
+        private bool CheckAccess(string agent) {
             Client client = ((App)Application.Current).Client;
+            if (agent == "ГвоздиковЕА") {  //переделать на проверку агента из клиента
+                return true;
+            } else {
+                MessageBox.Show("У вас нет права на доступ к этому объекту");
+                return false;
+            }
+        }
+        public CustomCommand Delete => delete ?? (delete = new CustomCommand(obj => {
+            BaseRealtorObject bro = (BaseRealtorObject)obj;
+            if (CheckAccess(bro.Agent)){
+                AllObjects.RemoveAll(x => x.Id == bro.Id);
+                CurrentObjectList.Remove(bro);
+                Operation operation = new Operation() {
+                    Name = "",
+                    Data = "",
+                    OperationParameters = new OperationParameters() {
+                        Direction = OperationDirection.Realty,
+                        Type = OperationType.Remove
+                    },
+                };
+                Client client = ((App)Application.Current).Client;
+                //вот тут логика отправки запроса удаления на сервер
+            }
         }));
         public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj => {
             FlatGenerator flatGenerator = new FlatGenerator();
@@ -101,16 +125,16 @@ namespace RealtorObjects.ViewModel
             }
         }
         public List<ObservableCollection<BaseRealtorObject>> ObjectLists {
-            get => objectLists; 
+            get => objectLists;
             set => objectLists = value;
         }
         public List<BaseRealtorObject> AllObjects {
-            get => allObjects; 
+            get => allObjects;
             set => allObjects = value;
         }
         public ObservableCollection<CheckAndHeightPair> FilterAreaSections => filterAreaSections;
         public Filter Filter {
-            get => filter; 
+            get => filter;
             set => filter = value;
         }
     }

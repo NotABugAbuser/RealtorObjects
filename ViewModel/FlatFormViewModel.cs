@@ -28,6 +28,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand changePrice;
         private LocationOptions locationOptions = new LocationOptions();
         private Flat flat = new Flat(true);
+        private string title;
         private readonly FlatOptions flatOptions = new FlatOptions();
         #region UpDownOperations
         private CustomCommand increaseDouble;
@@ -85,8 +86,9 @@ namespace RealtorObjects.ViewModel
         public FlatFormViewModel() {
 
         }
-        public FlatFormViewModel(Flat flat, LocationOptions locationOptions) {
-            this.Flat = flat;
+        public FlatFormViewModel(Flat flat, string title, LocationOptions locationOptions) {
+            this.Flat = JsonSerializer.Deserialize<Flat>(JsonSerializer.Serialize(flat));
+            this.Title = title;
             this.LocationOptions = locationOptions;
         }
         public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj => {
@@ -94,6 +96,14 @@ namespace RealtorObjects.ViewModel
             Flat.Cost.Price += value;
         }));
         public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
+        public void ChangeProperty<T>(object obj, T step) {
+            var objects = obj as object[];
+            object instance = objects[0];
+            string name = objects[1].ToString();
+            PropertyInfo property = instance.GetType().GetProperty(name);
+            T value = (T)property.GetValue(instance, null);
+            property.SetValue(instance, Operator.Add(step, value));
+        }
         public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj => {
             var options = new JsonSerializerOptions { Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) };
             MessageBox.Show(JsonSerializer.Serialize(Flat, options).Replace(',', '\n'));
@@ -115,14 +125,8 @@ namespace RealtorObjects.ViewModel
         public FlatOptions FlatOptions {
             get => flatOptions;
         }
-        public void ChangeProperty<T>(object obj, T step) {
-            var objects = obj as object[];
-            string name = objects[1].ToString();
-            object instance = objects[0];
-
-            PropertyInfo property = instance.GetType().GetProperty(name);
-            T value = (T)property.GetValue(instance, null);
-            property.SetValue(instance, Operator.Add(step, value));
+        public string Title {
+            get => title; set => title = value;
         }
     }
 }
