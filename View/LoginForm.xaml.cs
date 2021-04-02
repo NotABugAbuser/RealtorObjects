@@ -25,8 +25,10 @@ namespace RealtorObjects.View
             InitializeComponent();
         }
         private void Window_MouseDown(object sender, MouseButtonEventArgs e) {
-            this.DragMove();
-            
+            if (e.LeftButton == MouseButtonState.Pressed) {
+                this.DragMove();
+            }
+
         }
         private void LoginValidation(object sender, TextCompositionEventArgs e) {
             e.Handled = new Regex("[^а-яА-Я]").IsMatch(e.Text);

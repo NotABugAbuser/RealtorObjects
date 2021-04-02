@@ -1,4 +1,5 @@
 ﻿using MiscUtil;
+using RealtyModel.Event;
 using RealtyModel.Interface;
 using RealtyModel.Model;
 using RealtyModel.Model.Derived;
@@ -27,7 +28,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand confirm;
         private CustomCommand changePrice;
         private LocationOptions locationOptions = new LocationOptions();
-        private Flat flat = new Flat(true);
+        private Flat flat;
         private string title;
         private readonly FlatOptions flatOptions = new FlatOptions();
         #region UpDownOperations
@@ -105,6 +106,7 @@ namespace RealtorObjects.ViewModel
             property.SetValue(instance, Operator.Add(step, value));
         }
         public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj => {
+            FlatCreated?.Invoke(this, new FlatCreatedEventArgs(this.Flat));
             var options = new JsonSerializerOptions { Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) };
             MessageBox.Show(JsonSerializer.Serialize(Flat, options).Replace(',', '\n'));
         }));
@@ -128,5 +130,6 @@ namespace RealtorObjects.ViewModel
         public string Title {
             get => title; set => title = value;
         }
+        public FlatCreatedEventHandler FlatCreated;
     }
 }

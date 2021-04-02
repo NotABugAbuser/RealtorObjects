@@ -19,7 +19,7 @@ using System.IO;
 
 namespace RealtorObjects.ViewModel
 {
-    public class LoginFormViewModel : BaseViewModel, ILogged
+    public class LoginFormViewModel : BaseViewModel
     {
         private CustomCommand closeApp;
         private CustomCommand sendPassword;
@@ -38,7 +38,6 @@ namespace RealtorObjects.ViewModel
         private Visibility registrationVisibility = Visibility.Collapsed;
 
         public LoginFormViewModel() {
-
         }
 
         public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
@@ -91,21 +90,21 @@ namespace RealtorObjects.ViewModel
 
             for (byte attempts = 0; attempts <= 30; attempts++) {
                 if (client.IncomingOperations.Count > 0) {
-                    Operation incomnigOperation = client.IncomingOperations.Dequeue();
-                    bool isRightAgent = incomnigOperation.OperationParameters.Direction == OperationDirection.Identity
-                        && incomnigOperation.OperationParameters.Type == OperationType.Login
-                        && incomnigOperation.Name == CurrentLogin;
+                    Operation incomingOperation = client.IncomingOperations.Dequeue();
+                    bool isRightAgent = incomingOperation.OperationParameters.Direction == OperationDirection.Identity
+                        && incomingOperation.OperationParameters.Type == OperationType.Login
+                        && incomingOperation.Name == CurrentLogin;
                     if (isRightAgent) {
-                        if (incomnigOperation.IsSuccessfully) {
+                        if (incomingOperation.IsSuccessfully) {
                             client.CurrentAgent = CurrentLogin;
                             Logged?.Invoke(this, new LoggedEventArgs(obj));
                             break;
                         } else {
-                            MessageBox.Show("Возможно логин или пароль введены неверно");
+                            MessageBox.Show("Введены неверные данные");
                             break;
                         }
                     }
-                    if (attempts == 30) MessageBox.Show("Что-то пошло не так");
+                    if (attempts == 30) MessageBox.Show("Связь с сервером идентификации прервана");
                 }
                 Thread.Sleep(100);
             }

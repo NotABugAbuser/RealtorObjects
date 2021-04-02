@@ -161,7 +161,7 @@
                         MaxLength="32"
                         PreviewTextInput="AlphabeticalOnly"
                         Style="{StaticResource inputTextBox}"
-                        Text="{Binding Customer.Name}"/>
+                        Text="{Binding Customer.Name, UpdateSourceTrigger=PropertyChanged}"/>
                 </Border>
                 <TextBlock
                     Text="Телефоны через &lt;;&gt; или &lt;,&gt;"
@@ -714,7 +714,6 @@
                 </Border>
             </Grid>
             <Grid Name="Fifth"
-                DataContext="{Binding Cost}"
                 Grid.Row="8">
                 <Grid.Resources>
                     <Style TargetType="Button" x:Key="ValueButton">
@@ -745,6 +744,7 @@
                     Style="{StaticResource Header}"
                     Text="Кв.М:"/>
                 <TextBox
+                    DataContext="{Binding Cost}"
                     PreviewTextInput="NumericOnly"
                     MaxLength="7"
                     Style="{StaticResource IntegerNumericUpDown}"
@@ -759,7 +759,8 @@
                     Grid.Column="5"
                     Style="{StaticResource Border}">
                     <TextBox
-                    PreviewTextInput="NumericOnly"
+                        DataContext="{Binding Cost}"
+                        PreviewTextInput="NumericOnly"
                         MaxLength="9"
                         FontSize="15"
                         Padding="2,2,4,0"
@@ -892,16 +893,19 @@
                 <CheckBox
                     Style="{StaticResource OptionCheckBox}"
                     Grid.Column="8"
+                    DataContext="{Binding Cost}"
                     IsChecked="{Binding HasPercents}"
                     Content="Проценты"/>
                 <CheckBox
                     Style="{StaticResource OptionCheckBox}"
                     Grid.Column="9"
+                    DataContext="{Binding Cost}"
                     IsChecked="{Binding HasVAT}"
                     Content="НДС"/>
                 <CheckBox
                     Style="{StaticResource OptionCheckBox}"
                     Grid.Column="10"
+                    DataContext="{Binding Cost}"
                     IsChecked="{Binding HasMortgage}"
                     Content="Ипотека"/>
                 <Grid

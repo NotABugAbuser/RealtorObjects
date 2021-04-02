@@ -285,6 +285,7 @@ C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Loca
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Locations.baml
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\Locations.g.cs
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\Locations.baml
+C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\bin\Debug\RealtyModel.dll
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\RealtorObjects.exe.config
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\RealtorObjects.exe
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\RealtorObjects.pdb
@@ -307,7 +308,6 @@ C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Text.Encod
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Text.Json.dll
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Threading.Tasks.Extensions.dll
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\System.ValueTuple.dll
-C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Windows.Interactivity.dll
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\EntityFramework.xml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\FontAwesome.WPF.xml
@@ -325,11 +325,11 @@ C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Text.Encod
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Text.Json.xml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\System.ValueTuple.xml
-C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Windows.Interactivity.xml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Customers.g.cs
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\FlatFormV2.g.cs
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Home.g.cs
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Locations.g.cs
+C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\LoginForm.g.cs
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\MainWindow.g.cs
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Statistics.g.cs
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\App.g.cs
@@ -343,6 +343,7 @@ C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Dictionaries
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\FlatFormV2.baml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Home.baml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Locations.baml
+C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\LoginForm.baml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\MainWindow.baml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Statistics.baml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\RealtorObjects.g.resources
@@ -353,6 +354,3 @@ C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\RealtorObjects.cs
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\RealtorObjects.exe
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\RealtorObjects.pdb
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\RealtorObjects.csprojAssemblyReference.cache
-C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\LoginForm.g.cs
-C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\LoginForm.baml
-C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\bin\Debug\RealtyModel.dll

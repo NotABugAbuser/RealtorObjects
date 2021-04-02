@@ -16,22 +16,7 @@
     </UserControl.DataContext>
     <UserControl.Resources>
         <c:StatusToVisibilityConverter x:Key="StatusToVisibility"/>
-        <Style TargetType="fa:ImageAwesome" x:Key="AddButton">
-            <Setter Property="Width" Value="50"/>
-            <Setter Property="Height" Value="50"/>
-            <Setter Property="Margin" Value="10"/>
-            <Setter Property="VerticalAlignment" Value="Bottom"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="Opacity" Value="0.7"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Foreground" Value="{StaticResource PrimaryBlue}"/>
-            <Setter Property="Icon" Value="PlusCircle"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Opacity" Value="1"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
+        
         <Style TargetType="TextBlock" x:Key="ColumnHeader">
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -281,6 +266,149 @@
                                     Source="./Image/Archived.png"/>
                             </Border>
                         </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="fa:ImageAwesome" x:Key="PlusButton">
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="HorizontalAlignment" Value="right"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryBlue}"/>
+            <Setter Property="Icon" Value="PlusCircle"/>
+        </Style>
+        <Style TargetType="fa:ImageAwesome" x:Key="SubButtons">
+            <Setter Property="Foreground" Value="{StaticResource PrimaryBlue}"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.9"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Image" x:Key="Plot">
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Margin" Value="10,0,0,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Source" Value="./Image/Plot.png"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.9"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button" x:Key="CreateRealtorObject">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Margin" Value="10,2,0,10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="PART_MainBorder">
+                            <Grid Name="PART_MainGrid" Width="230">
+                                <Border
+                                    Name="PART_ListOfButtons"
+                                    CornerRadius="25"
+                                    BorderThickness="1"
+                                    MinWidth="50"
+                                    ClipToBounds="True"
+                                    Width="220"
+                                    Background="White"
+                                    HorizontalAlignment="Left"
+                                    BorderBrush="{StaticResource BorderGray}">
+                                    <StackPanel 
+                                        Name="PART_StackPanel"
+                                        Orientation="Horizontal">
+                                        <fa:ImageAwesome
+                                            Margin="10,0,0,0"
+                                            Style="{StaticResource SubButtons}"
+                                            Icon="Home">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="MouseLeftButtonDown">
+                                                    <i:InvokeCommandAction 
+                                                        Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DataContext.CreateRealtorObject}"
+                                                        CommandParameter="House"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </fa:ImageAwesome>
+                                        <fa:ImageAwesome
+                                            Margin="10,0,0,0"
+                                            Height="35"
+                                            Style="{StaticResource SubButtons}"
+                                            Icon="Building">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="MouseLeftButtonDown">
+                                                    <i:InvokeCommandAction 
+                                                        Command="{Binding CreateRealtorObject}"
+                                                        CommandParameter="Flat"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </fa:ImageAwesome>
+                                        <Image
+                                            Style="{StaticResource Plot}">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="MouseLeftButtonDown">
+                                                    <i:InvokeCommandAction 
+                                                        Command="{Binding CreateRealtorObject}"
+                                                        CommandParameter="Plot"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </Image>
+                                    </StackPanel>
+                                </Border>
+                                <Border
+                                    Background="White"
+                                    Width="30"
+                                    Margin="10"
+                                    Height="30"
+                                    HorizontalAlignment="right"/>
+                                <fa:ImageAwesome 
+                                    Name="PART_Plus"
+                                    Style="{StaticResource PlusButton}"/>
+                            </Grid>
+                        </Border>
+                        
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation 
+                                                Storyboard.TargetProperty="Width" 
+                                                Duration="0:0:0.5"
+                                                Storyboard.TargetName="PART_ListOfButtons"
+                                                To="220"/>
+                                            <DoubleAnimation 
+                                                Storyboard.TargetProperty="(Grid.Width)" 
+                                                Duration="0:0:0.5"
+                                                Storyboard.TargetName="PART_MainGrid"
+                                                To="230"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation 
+                                                Storyboard.TargetProperty="Width" 
+                                                Duration="0:0:0.5"
+                                                Storyboard.TargetName="PART_ListOfButtons"
+                                                To="50"/>
+                                            <DoubleAnimation 
+                                                Storyboard.TargetProperty="(Grid.Width)" 
+                                                Storyboard.TargetName="PART_MainGrid" 
+                                                Duration="0:0:0.5"
+                                                To="50"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -536,15 +664,9 @@
                             Template="{StaticResource ListBoxWithGreenScrollBar}"
                             ItemsSource="{Binding CurrentObjectList}"/>
                     </ScrollViewer>
-                    <fa:ImageAwesome
+                    <Button
                         Grid.Row="1"
-                        Style="{StaticResource AddButton}">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="MouseLeftButtonDown">
-                                <i:InvokeCommandAction Command="{Binding ChangeRegistrationVisibility}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </fa:ImageAwesome>
+                        Style="{StaticResource CreateRealtorObject}"/>
                     <Border
                         Grid.Row="2"
                         Background="{StaticResource PrimaryBlue}">

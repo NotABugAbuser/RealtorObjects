@@ -239,6 +239,9 @@
   <ItemGroup>
     <Resource Include="View\Image\Archived.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Image\Plot.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

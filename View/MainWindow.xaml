@@ -19,7 +19,6 @@
         Name="ThisMainWindow"
         Background="white">
     <Window.Resources>
-
         <Style TargetType="ToggleButton" x:Key="LeftBarButton">
             <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
             <Setter Property="Height" Value="70"/>
@@ -134,7 +133,9 @@
             <StackPanel 
                 VerticalAlignment="Center">
                 <ToggleButton 
-                    Command="{Binding UpdateWorkAreaViewModel}"
+                    Command="{Binding 
+                    
+                    WorkAreaViewModel}"
                     CommandParameter="1"
                     ToolTip="Главная"
                     IsChecked="{Binding ToggledButtons[1]}"

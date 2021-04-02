@@ -32,7 +32,9 @@ namespace RealtorObjects.View
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e) {
-            this.DragMove();
+            if (e.LeftButton == MouseButtonState.Pressed) {
+                this.DragMove();
+            }
         }
 
         private void WindowApplication_Click(object sender, RoutedEventArgs e) {

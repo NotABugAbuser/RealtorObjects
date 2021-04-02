@@ -34,7 +34,7 @@ namespace RealtorObjects.ViewModel
             new LoginFormViewModel(),
             new HomeViewModel(),
             new CustomersViewModel(),
-            new LocationsViewModel()
+            new LocationsViewModel(),
         };
         private FontAwesomeIcon[] icons = new FontAwesomeIcon[5] {
             FontAwesomeIcon.Home,
@@ -195,8 +195,8 @@ namespace RealtorObjects.ViewModel
 
         public MainWindowViewModel() {
             WorkAreaViewModel = ViewModels[1];
-            var loginViewModel = (LoginFormViewModel)ViewModels[0];
-            loginViewModel.Logged += CloseLoginOpenMain;
+            LoginFormViewModel loginVM = (LoginFormViewModel)ViewModels[0];
+            loginVM.Logged += CloseLoginOpenMain;
             StartUpTheClock();
         }
 
