@@ -9,12 +9,29 @@
              xmlns:sys = "clr-namespace:System;assembly=mscorlib"
              xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
              mc:Ignorable="d" 
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              d:DesignHeight="667" d:DesignWidth="1298" Background="{StaticResource BackgroundGray}">
     <UserControl.DataContext>
         <vm:HomeViewModel/>
     </UserControl.DataContext>
     <UserControl.Resources>
         <c:StatusToVisibilityConverter x:Key="StatusToVisibility"/>
+        <Style TargetType="fa:ImageAwesome" x:Key="AddButton">
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Opacity" Value="0.7"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryBlue}"/>
+            <Setter Property="Icon" Value="PlusCircle"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="TextBlock" x:Key="ColumnHeader">
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -519,6 +536,15 @@
                             Template="{StaticResource ListBoxWithGreenScrollBar}"
                             ItemsSource="{Binding CurrentObjectList}"/>
                     </ScrollViewer>
+                    <fa:ImageAwesome
+                        Grid.Row="1"
+                        Style="{StaticResource AddButton}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding ChangeRegistrationVisibility}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </fa:ImageAwesome>
                     <Border
                         Grid.Row="2"
                         Background="{StaticResource PrimaryBlue}">

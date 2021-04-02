@@ -8,7 +8,7 @@
         xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
         xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
         mc:Ignorable="d"
-        MouseDown="Window_MouseDown"
+        MouseLeftButtonDown="ThisMainWindow_MouseLeftButtonDown"
         Title="MainWindow" 
         Height="728" 
         Width="1366" 
@@ -19,6 +19,7 @@
         Name="ThisMainWindow"
         Background="white">
     <Window.Resources>
+
         <Style TargetType="ToggleButton" x:Key="LeftBarButton">
             <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
             <Setter Property="Height" Value="70"/>

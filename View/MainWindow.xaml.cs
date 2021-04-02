@@ -24,16 +24,13 @@ namespace RealtorObjects.View
         public MainWindow() {
             InitializeComponent();
         }
-
         private void CloseApplication_Click(object sender, RoutedEventArgs e) {
             Application.Current.Shutdown();
         }
-
         private void MinimizeApplcation_Click(object sender, RoutedEventArgs e) {
             this.WindowState = WindowState.Minimized;
         }
-
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e) {
+        private void ThisMainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             this.DragMove();
         }
     }

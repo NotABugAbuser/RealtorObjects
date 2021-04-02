@@ -57,24 +57,17 @@ namespace RealtorObjects.ViewModel
         public CustomCommand CreateNewUser => createNewUser ?? (createNewUser = new CustomCommand(obj => {
             CurrentLogin = $"{Surname}{Name[0]}{Patronymic[0]}";
             Client client = ((App)Application.Current).Client;
-            Operation operation = new Operation() {
-                Name = CurrentLogin,
-                Data = SecondPassword, //Нужна кодировка
-                OperationParameters = new OperationParameters() {
-                    Direction = OperationDirection.Identity,
-                    Type = OperationType.Register
-                }
-            };
+            Operation operation = new Operation(CurrentLogin, SecondPassword, OperationDirection.Identity, OperationType.Register);
             client.SendMessage(operation);
 
             for (byte attempts = 0; attempts <= 30; attempts++) {
                 if (client.IncomingOperations.Count > 0) {
-                    Operation incomnigOperation = client.IncomingOperations.Dequeue();
-                    if (incomnigOperation.OperationParameters.Direction == OperationDirection.Identity
-                    && incomnigOperation.OperationParameters.Type == OperationType.Register
-                    && incomnigOperation.Name == CurrentLogin
-                    && incomnigOperation.IsSuccessfully
-                    ) {
+                    Operation incomingOperation = client.IncomingOperations.Dequeue();
+                    bool isRegistrationSuccessful = incomingOperation.OperationParameters.Direction == OperationDirection.Identity
+                        && incomingOperation.OperationParameters.Type == OperationType.Register
+                        && incomingOperation.Name == CurrentLogin
+                        && incomingOperation.IsSuccessfully;
+                    if (isRegistrationSuccessful) {
                         MessageBox.Show("Регистрация прошла успешно");
                         RegistrationVisibility = Visibility.Collapsed;
                         break;
@@ -93,25 +86,18 @@ namespace RealtorObjects.ViewModel
         }));
         public CustomCommand Login => login ?? (login = new CustomCommand(obj => {
             Client client = ((App)Application.Current).Client;
-            Operation operation = new Operation() {
-                Name = CurrentLogin,
-                OperationParameters = new OperationParameters() {
-                    Direction = OperationDirection.Identity,
-                    Type = OperationType.Login
-                },
-                Data = currentPassword
-            };
+            Operation operation = new Operation(CurrentLogin, CurrentPassword, OperationDirection.Identity, OperationType.Login);
             client.SendMessage(operation);
 
             for (byte attempts = 0; attempts <= 30; attempts++) {
                 if (client.IncomingOperations.Count > 0) {
                     Operation incomnigOperation = client.IncomingOperations.Dequeue();
-                    if (
-                    incomnigOperation.OperationParameters.Direction == OperationDirection.Identity
-                    && incomnigOperation.OperationParameters.Type == OperationType.Login
-                    && incomnigOperation.Name == CurrentLogin
-                    ) {
+                    bool isRightAgent = incomnigOperation.OperationParameters.Direction == OperationDirection.Identity
+                        && incomnigOperation.OperationParameters.Type == OperationType.Login
+                        && incomnigOperation.Name == CurrentLogin;
+                    if (isRightAgent) {
                         if (incomnigOperation.IsSuccessfully) {
+                            client.CurrentAgent = CurrentLogin;
                             Logged?.Invoke(this, new LoggedEventArgs(obj));
                             break;
                         } else {
@@ -124,7 +110,6 @@ namespace RealtorObjects.ViewModel
                 Thread.Sleep(100);
             }
         }));
-
         public string CurrentLogin {
             get => currentLogin;
             set {
@@ -188,7 +173,6 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
-
         public event LoggedEventHandler Logged;
     }
 }

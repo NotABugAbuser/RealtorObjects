@@ -21,28 +21,25 @@ namespace RealtorObjects.Model
     /// </summary>
     public class Client : INotifyPropertyChanged
     {
-        Socket socket = null;
-        Boolean isConnected = false;
-        Boolean isTryingToConnect = false;
-        Dispatcher uiDispatcher = null;
 
+        private Socket socket = null;
+        private Boolean isConnected = false;
+        private Boolean isTryingToConnect = false;
+        private Dispatcher uiDispatcher = null;
+        private String currentAgent = "";
         /// <summary>
         /// Свойство, которое равно true если клиент подключен к серверу, false если нет.
         /// </summary>
-        public Boolean IsConnected
-        {
+        public Boolean IsConnected {
             get => isConnected;
-            private set
-            {
+            private set {
                 isConnected = value;
                 OnPropertyChanged();
             }
         }
-        public Boolean IsTryingToConnect
-        {
+        public Boolean IsTryingToConnect {
             get => isTryingToConnect;
-            private set
-            {
+            private set {
                 isTryingToConnect = value;
                 OnPropertyChanged();
             }
@@ -50,14 +47,21 @@ namespace RealtorObjects.Model
         /// <summary>
         /// Коллекция сообщений лога событий данной клиента.
         /// </summary>
-        public ObservableCollection<LogMessage> Log { get; private set; }
+        public ObservableCollection<LogMessage> Log {
+            get; private set;
+        }
         /// <summary>
         /// Коллекция приходящих от сервера операций.
         /// </summary>
-        public Queue<Operation> IncomingOperations { get; private set; }
+        public Queue<Operation> IncomingOperations {
+            get; private set;
+        }
+        public string CurrentAgent {
+            get => currentAgent;
+            set => currentAgent = value;
+        }
 
-        public Client(Dispatcher dispatcher)
-        {
+        public Client(Dispatcher dispatcher) {
             uiDispatcher = dispatcher;
             Log = new ObservableCollection<LogMessage>();
             IncomingOperations = new Queue<Operation>();
@@ -69,29 +73,21 @@ namespace RealtorObjects.Model
         /// </summary>
         /// <param name="ipAddress">ipAddress - ip адрес сервера.</param>
         /// <returns></returns>
-        public async void ConnectAsync()
-        {
-            await Task.Run(() =>
-            {
+        public async void ConnectAsync() {
+            await Task.Run(() => {
                 IsTryingToConnect = true;
                 IPAddress ipAddress = FindServerIPAddress();
-                if (ipAddress != null)
-                {
+                if (ipAddress != null) {
                     socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                    try
-                    {
+                    try {
                         IPEndPoint iPEndPoint = new IPEndPoint(ipAddress, 8005);
                         socket.Connect(iPEndPoint);
                         IsTryingToConnect = false;
                         IsConnected = true;
                         while (IsConnected) ReceiveMessage();
-                    }
-                    catch (Exception ex)
-                    {
+                    } catch (Exception ex) {
                         UpdateLog(ex.Message);
-                    }
-                    finally
-                    {
+                    } finally {
                         IsConnected = false;
                         socket.Shutdown(SocketShutdown.Both);
                         socket.Close();
@@ -103,31 +99,24 @@ namespace RealtorObjects.Model
         /// Метод поиска адреса сервера при помощи широковещательной UDP рассылки.
         /// </summary>
         /// <returns></returns>
-        private IPAddress FindServerIPAddress()
-        {
+        private IPAddress FindServerIPAddress() {
             IPAddress serverIP = null;
-            try
-            {
+            try {
                 Socket socket = null;
-
                 IPAddress[] iPAddresses = GetLocalIPv4Addresses();
-                do
-                {
-                    foreach (IPAddress iP in iPAddresses)
-                    {
+                do {
+                    foreach (IPAddress iP in iPAddresses) {
                         socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
                         socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontRoute, true);
                         socket.EnableBroadcast = true;
                         socket.ReceiveTimeout = 1000;
                         socket.Bind(new IPEndPoint(iP, 8080));
-                        for (Int32 attempts = 1; attempts < 11 && serverIP == null; attempts++)
-                        {
+                        for (Int32 attempts = 1; attempts < 11 && serverIP == null; attempts++) {
                             socket.SendTo(new byte[] { 0x10 }, new IPEndPoint(IPAddress.Broadcast, 8080));
                             Int32 byteCount = 0;
                             byte[] buffer = new byte[socket.ReceiveBufferSize];
                             EndPoint endPoint = new IPEndPoint(IPAddress.None, 0);
-                            if (socket.Poll(1000000, SelectMode.SelectRead))
-                            {
+                            if (socket.Poll(1000000, SelectMode.SelectRead)) {
                                 byteCount = socket.ReceiveFrom(buffer, ref endPoint);
                                 if (byteCount == 1 && buffer[0] == 0x20)
                                     serverIP = (endPoint as IPEndPoint).Address;
@@ -141,14 +130,10 @@ namespace RealtorObjects.Model
                 }
                 while (serverIP == null && IsTryingToConnect);
                 return serverIP;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Console.WriteLine($"(FindServer) {ex.Message} {ex.StackTrace}");
                 return null;
-            }
-            finally
-            {
+            } finally {
                 if (serverIP == null)
                     Console.WriteLine("server is unreachable");
                 else Console.WriteLine($"server has found on {serverIP}");
@@ -158,8 +143,7 @@ namespace RealtorObjects.Model
         /// Метод возвращает массив IPv4 адресов рабочих адаптеров данного ПК, которые используют сетевой протокол IEEE 802.3(Ethernet) или IEEE 802.11(Wi-Fi).
         /// </summary>
         /// <returns></returns>
-        private IPAddress[] GetLocalIPv4Addresses()
-        {
+        private IPAddress[] GetLocalIPv4Addresses() {
             NetworkInterface[] netInterfaces = NetworkInterface.GetAllNetworkInterfaces().Where(inf =>
                 inf.OperationalStatus == OperationalStatus.Up
                 && (inf.NetworkInterfaceType == NetworkInterfaceType.Ethernet
@@ -168,10 +152,8 @@ namespace RealtorObjects.Model
 
             List<IPAddress> addresses = new List<IPAddress>();
 
-            foreach (NetworkInterface netInterface in netInterfaces)
-            {
-                foreach (UnicastIPAddressInformation unicastIP in netInterface.GetIPProperties().UnicastAddresses)
-                {
+            foreach (NetworkInterface netInterface in netInterfaces) {
+                foreach (UnicastIPAddressInformation unicastIP in netInterface.GetIPProperties().UnicastAddresses) {
                     if (unicastIP.Address.AddressFamily == AddressFamily.InterNetwork)
                         addresses.Add(unicastIP.Address);
                 }
@@ -182,26 +164,20 @@ namespace RealtorObjects.Model
         /// Метод отправки операций серверу. Операция передаётся в виде последовательности байт закодированной в UTF-8 json-строки.
         /// </summary>
         /// <param name="operation">operation - операция, которую необходимо отправить серверу.</param>
-        public void SendMessage(Operation operation)
-        {
-            try
-            {
+        public void SendMessage(Operation operation) {
+            try {
                 String json = JsonSerializer.Serialize<Operation>(operation);
                 Byte[] data = Encoding.UTF8.GetBytes(json);
                 socket.Send(data);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 UpdateLog(ex.Message);
             }
         }
         /// <summary>
         /// Метод отключения от сервера.
         /// </summary>
-        internal void Disconnect()
-        {
-            uiDispatcher.BeginInvoke(new Action(() =>
-            {
+        internal void Disconnect() {
+            uiDispatcher.BeginInvoke(new Action(() => {
                 IsTryingToConnect = false;
                 IsConnected = false;
             }));
@@ -209,21 +185,18 @@ namespace RealtorObjects.Model
         /// <summary>
         /// Метод приём операции.
         /// </summary>
-        private void ReceiveMessage()
-        {
+        private void ReceiveMessage() {
             Int32 byteCount = 0;
             Byte[] buffer = new Byte[256];
             StringBuilder message = new StringBuilder();
 
-            do
-            {
+            do {
                 byteCount = socket.Receive(buffer);
                 message.Append(Encoding.UTF8.GetString(buffer), 0, byteCount);
             }
             while (socket.Available > 0);
 
-            if (!String.IsNullOrWhiteSpace(message.ToString()))
-            {
+            if (!String.IsNullOrWhiteSpace(message.ToString())) {
                 Operation operation = JsonSerializer.Deserialize<Operation>(message.ToString());
                 IncomingOperations.Enqueue(operation);
             }
@@ -232,17 +205,14 @@ namespace RealtorObjects.Model
         /// Метод для добавления сообщений в лог событий (Log) при помощи диспетчера основного (UI) потока.
         /// </summary>
         /// <param name="message">message - текст сообщения. При вызове метода желательно указывать место вызова.</param>
-        private void UpdateLog(String message)
-        {
-            uiDispatcher.BeginInvoke(new Action(() =>
-            {
+        private void UpdateLog(String message) {
+            uiDispatcher.BeginInvoke(new Action(() => {
                 Log.Add(new LogMessage(DateTime.Now.ToString("dd:MM:yy hh:mm"), message));
             }));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] String prop = "")
-        {
+        private void OnPropertyChanged([CallerMemberName] String prop = "") {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }

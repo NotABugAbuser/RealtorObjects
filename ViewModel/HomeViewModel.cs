@@ -27,6 +27,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand filterCollection;
         private CustomCommand delete;
         private CustomCommand modify;
+        private CustomCommand createRealtorObject;
         private Filter filter = new Filter();
         private ObservableCollection<CheckAndHeightPair> filterAreaSections = new ObservableCollection<CheckAndHeightPair>() {
             new CheckAndHeightPair(true, 143),
@@ -47,6 +48,9 @@ namespace RealtorObjects.ViewModel
             flat.Status = Status.Archived;
             CurrentObjectList.Add(flat);
         }
+        public CustomCommand CreateRealtorObject => createRealtorObject ?? (createRealtorObject = new CustomCommand(obj => {
+            MessageBox.Show("123");
+        }));
         public CustomCommand Modify => modify ?? (modify = new CustomCommand(obj => {
             BaseRealtorObject bro = (BaseRealtorObject)obj;
             if (CheckAccess(bro.Agent)) {
@@ -59,9 +63,17 @@ namespace RealtorObjects.ViewModel
                 }
             }
         }));
-        private bool CheckAccess(string agent) {
-            Client client = ((App)Application.Current).Client;
-            if (agent == "ГвоздиковЕА") {  //переделать на проверку агента из клиента
+        private bool CheckAccess(string objectAgent) {
+            string currentAgent = ((App)Application.Current).Client.CurrentAgent;
+            if (objectAgent == currentAgent) {
+                return true;
+            } else {
+                MessageBox.Show("У вас нет права на доступ к этому объекту");
+                return false;
+            }
+        }
+        private bool CheckAccess(string objectAgent, string currentAgent) {
+            if (objectAgent == currentAgent) {
                 return true;
             } else {
                 MessageBox.Show("У вас нет права на доступ к этому объекту");
@@ -70,18 +82,11 @@ namespace RealtorObjects.ViewModel
         }
         public CustomCommand Delete => delete ?? (delete = new CustomCommand(obj => {
             BaseRealtorObject bro = (BaseRealtorObject)obj;
-            if (CheckAccess(bro.Agent)){
+                Client client = ((App)Application.Current).Client;
+            if (CheckAccess(bro.Agent, client.CurrentAgent)) {
                 AllObjects.RemoveAll(x => x.Id == bro.Id);
                 CurrentObjectList.Remove(bro);
-                Operation operation = new Operation() {
-                    Name = "",
-                    Data = "",
-                    OperationParameters = new OperationParameters() {
-                        Direction = OperationDirection.Realty,
-                        Type = OperationType.Remove
-                    },
-                };
-                Client client = ((App)Application.Current).Client;
+                Operation operation = new Operation(client.CurrentAgent, "", OperationDirection.Realty, OperationType.Remove);
                 //вот тут логика отправки запроса удаления на сервер
             }
         }));

@@ -236,7 +236,6 @@ C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Te
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Text.Json.dll
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Threading.Tasks.Extensions.dll
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\System.ValueTuple.dll
-C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Windows.Interactivity.dll
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\EntityFramework.xml
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\FontAwesome.WPF.xml
