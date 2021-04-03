@@ -11,9 +11,6 @@
              mc:Ignorable="d" 
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              d:DesignHeight="667" d:DesignWidth="1298" Background="{StaticResource BackgroundGray}">
-    <UserControl.DataContext>
-        <vm:HomeViewModel/>
-    </UserControl.DataContext>
     <UserControl.Resources>
         <c:StatusToVisibilityConverter x:Key="StatusToVisibility"/>
         

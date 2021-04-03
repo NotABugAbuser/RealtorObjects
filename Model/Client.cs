@@ -61,6 +61,10 @@ namespace RealtorObjects.Model
             set => currentAgent = value;
         }
 
+        public Client()
+        {
+
+        }
         public Client(Dispatcher dispatcher) {
             uiDispatcher = dispatcher;
             Log = new ObservableCollection<LogMessage>();

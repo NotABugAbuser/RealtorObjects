@@ -22,7 +22,7 @@ using System.Windows;
 
 namespace RealtorObjects.ViewModel
 {
-    class HomeViewModel : BaseViewModel
+    public class HomeViewModel : BaseViewModel
     {
         private ObservableCollection<BaseRealtorObject> currentObjectList = new ObservableCollection<BaseRealtorObject>() { };
         private List<ObservableCollection<BaseRealtorObject>> objectLists = new List<ObservableCollection<BaseRealtorObject>>();
@@ -46,6 +46,7 @@ namespace RealtorObjects.ViewModel
             new CheckAndHeightPair(false, 50),
             new CheckAndHeightPair(false, 50),
         };
+
         public HomeViewModel() {
             FlatGenerator flatGenerator = new FlatGenerator();
             Flat flat = flatGenerator.CreateFlat();
@@ -54,27 +55,20 @@ namespace RealtorObjects.ViewModel
             flat.Status = Status.Archived;
             CurrentObjectList.Add(flat);
             AllObjects.Add(flat);
-            FlatFormViewModel flatFormVM = ((App)Application.Current).FlatFormViewModel;
-            flatFormVM.FlatCreated += HandleFlat;
         }
-        public void HandleHouse(object sender, FlatCreatedEventArgs e) {
 
-        }
-        public void HandlePlot(object sender, FlatCreatedEventArgs e) {
-
-        }
         public void HandleFlat(object sender, FlatCreatedEventArgs e) {
             Client client = ((App)Application.Current).Client;
             if (AllObjects.Where(x => x.Id == e.Flat.Id).Count() == 0) {
-                Debug.WriteLine("Таких объектов нет");
-                Operation operation = new Operation(client.CurrentAgent, JsonSerializer.Serialize(e.Flat), OperationDirection.Realty, OperationType.Add);
+                Debug.WriteLine("Такого объекта нет");
                 AllObjects.Add(e.Flat);
-                //отправить операцию на сервер
+                Debug.WriteLine(AllObjects.Count());
+                Operation operation = new Operation(client.CurrentAgent, JsonSerializer.Serialize(e.Flat), OperationDirection.Realty, OperationType.Add, TargetType.Flat);
+                client.SendMessage(operation);
             } else {
-                Operation operation = new Operation(client.CurrentAgent, JsonSerializer.Serialize(e.Flat), OperationDirection.Realty, OperationType.Change);
                 Debug.WriteLine($"Номер объекта {AllObjects.FindIndex(x => x.Id == e.Flat.Id)}");
-                AllObjects[AllObjects.FindIndex(x => x.Id == e.Flat.Id)] = e.Flat;
-                //отправить операцию на сервер
+                Operation operation = new Operation(client.CurrentAgent, JsonSerializer.Serialize(e.Flat), OperationDirection.Realty, OperationType.Change, TargetType.Flat);
+                client.SendMessage(operation);
             }
         }
         public CustomCommand CreateRealtorObject => createRealtorObject ?? (createRealtorObject = new CustomCommand(obj => {
@@ -152,6 +146,7 @@ namespace RealtorObjects.ViewModel
             foreach (List<BaseRealtorObject> ol in lists) {
                 ObjectLists.Add(new ObservableCollection<BaseRealtorObject>(ol));
             }
+            Debug.WriteLine(ObjectLists.Count());
             CurrentObjectList = ObjectLists[0];
         }
         public CustomCommand OpenOrCloseFilterSection => openOrCloseFilterSection ?? (openOrCloseFilterSection = new CustomCommand(obj => {

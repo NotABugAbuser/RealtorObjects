@@ -1,6 +1,8 @@
 ﻿using RealtorObjects.Model;
 using RealtorObjects.View;
 using RealtorObjects.ViewModel;
+using RealtyModel.Event;
+using RealtyModel.Model;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -20,32 +22,69 @@ namespace RealtorObjects
     {
         private Client client = new Client(Dispatcher.CurrentDispatcher);
         private FlatFormViewModel flatFormViewModel = new FlatFormViewModel();
-        public Client Client {
+        private LoginFormViewModel loginFormVM = new LoginFormViewModel();
+        private MainWindowViewModel mainWindowVM = new MainWindowViewModel();
+        private HomeViewModel homeVM = new HomeViewModel();
+        private OperationManager operationManager;
+
+        public Client Client
+        {
             get => client;
             set => client = value;
         }
-        public FlatFormViewModel FlatFormViewModel {
-            get => flatFormViewModel; set => flatFormViewModel = value;
+        public FlatFormViewModel FlatFormViewModel
+        {
+            get => flatFormViewModel;
+            set => flatFormViewModel = value;
+        }
+        public LoginFormViewModel LoginFormVM
+        {
+            get => loginFormVM; 
+            set => loginFormVM = value;
+        }
+        public MainWindowViewModel MainWindowVM
+        {
+            get => mainWindowVM; 
+            set => mainWindowVM = value;
+        }
+        public HomeViewModel HomeVM
+        {
+            get => homeVM; 
+            set => homeVM = value;
         }
 
-        protected override void OnStartup(StartupEventArgs e) {
+        protected override void OnStartup(StartupEventArgs e)
+        {
             base.OnStartup(e);
             Client.ConnectAsync();
-
-            for (byte attempts = 0; attempts <= 30; attempts++) {
-                if (Client.IsConnected) {
-                    var mainWindow = new MainWindow() { DataContext = new MainWindowViewModel() };
-                    var loginForm = new LoginForm() { DataContext = ((MainWindowViewModel)mainWindow.DataContext).ViewModels[0] };
+            MainWindow = new MainWindow();
+            MainWindow.DataContext = MainWindowVM;
+            MainWindowVM.ViewModels[0] = HomeVM;
+            //MainWindowVM.WorkAreaViewModel = HomeVM;
+            FlatFormViewModel.FlatCreated = HomeVM.HandleFlat;
+            LoginFormVM.Logged += CloseLoginOpenMain;
+            //operationManager = new OperationManager(Client);
+            //operationManager.AwaitOperationAsync();
+            for (byte attempts = 0; attempts <= 30; attempts++)
+            {
+                if (Client.IsConnected)
+                {
+                    var loginForm = new LoginForm() { DataContext = LoginFormVM };
                     loginForm.Show();
-                    //mainWindow.Show();
                     break;
                 }
-                if (attempts == 30) {
+                if (attempts == 30)
+                {
                     MessageBox.Show("Сервер недоступен");
                     Application.Current.Shutdown();
                 }
                 Thread.Sleep(100);
             }
+        }
+        private void CloseLoginOpenMain(object sender, LoggedEventArgs e)
+        {
+            ((Window)e.Window).Close();
+            MainWindow.Show();
         }
     }
 }

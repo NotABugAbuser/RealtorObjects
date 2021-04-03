@@ -16,6 +16,7 @@ using RealtyModel.Event;
 using RealtorObjects.View;
 using System.Threading;
 using System.IO;
+using System.Diagnostics;
 
 namespace RealtorObjects.ViewModel
 {

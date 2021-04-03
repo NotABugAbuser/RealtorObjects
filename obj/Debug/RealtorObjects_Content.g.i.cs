@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("letter_c_gold_35041.ico")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("readme.txt")]
 
 

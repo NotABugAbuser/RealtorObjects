@@ -79,7 +79,6 @@
         </Grid.RowDefinitions>
         
         <ContentControl 
-            
             Content="{Binding WorkAreaViewModel}" 
             Grid.Column="1" 
             Grid.Row="1"
@@ -133,12 +132,10 @@
             <StackPanel 
                 VerticalAlignment="Center">
                 <ToggleButton 
-                    Command="{Binding 
-                    
-                    WorkAreaViewModel}"
-                    CommandParameter="1"
+                    Command="{Binding UpdateWorkAreaViewModel}"
+                    CommandParameter="0"
                     ToolTip="Главная"
-                    IsChecked="{Binding ToggledButtons[1]}"
+                    IsChecked="{Binding ToggledButtons[0]}"
                     Style="{StaticResource LeftBarButton}">
                     <fa:ImageAwesome 
                         Icon="Home" 
@@ -147,8 +144,8 @@
                 </ToggleButton>
                 <ToggleButton
                     Command="{Binding UpdateWorkAreaViewModel}"
-                    CommandParameter="2"
-                    IsChecked="{Binding ToggledButtons[2]}"
+                    CommandParameter="1"
+                    IsChecked="{Binding ToggledButtons[1]}"
                     ToolTip="Клиенты"
                     Style="{StaticResource LeftBarButton}">
                     <fa:ImageAwesome 

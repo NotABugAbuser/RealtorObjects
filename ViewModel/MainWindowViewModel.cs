@@ -18,10 +18,11 @@ using System.Windows.Threading;
 using System.Net;
 using RealtorObjects.Model;
 using RealtyModel.Event;
+using System.Diagnostics;
 
 namespace RealtorObjects.ViewModel
 {
-    class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
         private BaseViewModel workAreaViewModel;
         private CustomCommand updateWorkAreaViewModel;
@@ -30,12 +31,7 @@ namespace RealtorObjects.ViewModel
         private string currentTime;
         private FontAwesomeIcon currentIcon = FontAwesomeIcon.Home;
         private LocationOptions locationOptions = new LocationOptions();
-        private BaseViewModel[] viewModels = new BaseViewModel[] {
-            new LoginFormViewModel(),
-            new HomeViewModel(),
-            new CustomersViewModel(),
-            new LocationsViewModel(),
-        };
+        private BaseViewModel[] viewModels = new BaseViewModel[5];
         private FontAwesomeIcon[] icons = new FontAwesomeIcon[5] {
             FontAwesomeIcon.Home,
             FontAwesomeIcon.Phone,
@@ -54,8 +50,7 @@ namespace RealtorObjects.ViewModel
             "Главная",
             "Клиенты",
         };
-        private Boolean isLoggedIn = false;
-        private Client client = new Client(Dispatcher.CurrentDispatcher);
+        private Client client = new Client();
         #region TestMethods
         private CustomCommand testCommand;
         private CustomCommand secondTestCommand;
@@ -66,138 +61,9 @@ namespace RealtorObjects.ViewModel
         public CustomCommand SecondTestCommand => secondTestCommand ?? (secondTestCommand = new CustomCommand(obj => {
         }));
         #endregion
-        public List<LogMessage> Log {
-            get; private set;
-        }
-        public Boolean IsLoggedIn {
-            get => isLoggedIn;
-            private set {
-                isLoggedIn = value;
-                OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// Метод для добавления сообщений в лог событий (Log) при помощи диспетчера основного (UI) потока.
-        /// </summary>
-        /// <param name="message">message - текст сообщения. При вызове метода желательно указывать место вызова.</param>
-        private void UpdateLog(String message) {
-            Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => {
-                Log.Add(new LogMessage(DateTime.Now.ToString("dd:MM:yy hh:mm"), message));
-            }));
-        }
-        #region HandlingMethods
-        private void HandleOperation(Operation operation) {
-            try {
-                if (operation.OperationParameters.Direction == OperationDirection.Identity) {
-                    if (operation.IsSuccessfully) {
-                        HandleSuccessfullIdentity(operation);
-                    } else {
-                        HandleUnsuccessfullIdentity(operation);
-                    }
-                } else if (operation.OperationParameters.Direction == OperationDirection.Realty) {
-                    if (operation.IsSuccessfully) {
-                        HandleSuccessfullRealty(operation);
-                    } else {
-                        HandleSuccessfullRealty(operation);
-                    }
-                }
-            } catch (Exception ex) {
-                UpdateLog(ex.Message);
-            }
-        }
-        private void HandleSuccessfullIdentity(Operation operation) {
-            switch (operation.OperationParameters.Type) {
-                case OperationType.Login: {
-                        //LoginVM.IsLoggedIn = true;
-                        break;
-                    }
-                case OperationType.Logout: {
-                        //LoginVM.IsLoggedIn = false;
-                        break;
-                    }
-                case OperationType.Register: {
-                        //LoginVM.Message = "Регистрация была успешной";
-                        break;
-                    }
-                case OperationType.ToFire: {
-                        //LoginVM.Message = "Удаление учётки было успешным";
-                        //Выбросить в окно регистрации
-                        break;
-                    }
-            }
-        }
-        private void HandleSuccessfullRealty(Operation operation) {
-            switch (operation.OperationParameters.Type) {
-                case OperationType.Add: {
-                        //HomeVM.LocationOptions - добавить новые объекты в списки
-                        //LocationVM.LocationOptions - добавить новые объекты в списки
-                        break;
-                    }
-                case OperationType.Change: {
-                        //HomeVM.LocationOptions - обновить по Id необходимые объекты в списках
-                        //LocationVM.LocationOptions - обновить по Id необходимые объекты в списках
-                        break;
-                    }
-                case OperationType.Remove: {
-                        //HomeVM.LocationOptions - удалить по Id необходимые объекты из списков
-                        //LocationVM.LocationOptions - удалить по Id необходимые объекты из списков
-                        break;
-                    }
-                case OperationType.Update: {
-                        //HomeVM.LocationOptions - получение всех списков от сервера
-                        //LocationVM.LocationOptions - получение всех списков от сервера
-                        break;
-                    }
-            }
-        }
-        private void HandleUnsuccessfullIdentity(Operation operation) {
-            switch (operation.OperationParameters.Type) {
-                case OperationType.Login: {
-                        //LoginVM.Message = "Логин не был успешным";
-                        break;
-                    }
-                case OperationType.Logout: {
-                        //LoginVM.Message = "Логаут не был успешным";
-                        break;
-                    }
-                case OperationType.Register: {
-                        //LoginVM.Message = "Регистрация не была успешной";
-                        break;
-                    }
-                case OperationType.ToFire: {
-                        //LoginVM.Message = "Удаление учётки не было успешным";
-                        break;
-                    }
-            }
-        }
-        private void HandleUnsuccessfullReality(Operation operation) {
-            switch (operation.OperationParameters.Type) {
-                case OperationType.Add: {
-                        //Сообщить о неуспешности
-                        break;
-                    }
-                case OperationType.Change: {
-                        //Сообщить о неуспешности
-                        break;
-                    }
-                case OperationType.Remove: {
-                        //Сообщить о неуспешности
-                        break;
-                    }
-                case OperationType.Update: {
-                        //Сообщить о неуспешности
-                        break;
-                    }
-            }
-        }
-        #endregion
 
         public MainWindowViewModel() {
-            WorkAreaViewModel = ViewModels[1];
-            LoginFormViewModel loginVM = (LoginFormViewModel)ViewModels[0];
-            loginVM.Logged += CloseLoginOpenMain;
-            StartUpTheClock();
+            //StartUpTheClock();
         }
 
         private void StartUpTheClock() {
@@ -211,17 +77,17 @@ namespace RealtorObjects.ViewModel
             });
         }
 
-        private void CloseLoginOpenMain(object sender, LoggedEventArgs e) {
-            IsLoggedIn = true;
-            ((Window)e.Window).Close();
-            new MainWindow() { DataContext = this }.Show();
-        }
+        
         public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
             Application.Current.Shutdown();
         }));
         public CustomCommand UpdateWorkAreaViewModel => updateWorkAreaViewModel ?? (updateWorkAreaViewModel = new CustomCommand(obj => {
+            Debug.WriteLine("Update сработал");
             byte index = Convert.ToByte(obj);
+            Debug.WriteLine(index);
             WorkAreaViewModel = ViewModels[index];
+            if (WorkAreaViewModel is HomeViewModel) 
+                Debug.WriteLine("WorkArea это HomeVM");
             Header = headers[index];
             CurrentIcon = icons[index];
             for (byte i = 0; i < ToggledButtons.Count; i++) {
@@ -271,30 +137,6 @@ namespace RealtorObjects.ViewModel
             set => viewModels = value;
         }
 
-        /// <summary>
-        /// НЕ ОКОНЧАТЕЛЬНАЯ ВЕРСИЯ!
-        /// Метод асинхронного подключения к серверу.
-        /// Возварщает экземпляр Task для отслеживания состояния задачи.
-        /// </summary>
-        private void Connect() {
-            try {
-                Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => client.ConnectAsync()));
-                Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => AwaitOperationAsync()));
-
-
-            } catch (Exception ex) {
-                UpdateLog("connection is failed. " + ex.Message);
-            }
-        }
-        private async void AwaitOperationAsync() {
-            await Task.Run(() => {
-                while (true) {
-                    while (client.IncomingOperations.Count > 0) {
-                        HandleOperation(client.IncomingOperations.Dequeue());
-                    }
-                }
-            });
-        }
         public void OnPropertyChanged([CallerMemberName] string property = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }

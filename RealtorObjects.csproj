@@ -130,6 +130,7 @@
     </ApplicationDefinition>
     <Compile Include="Model\Client.cs" />
     <Compile Include="Model\IdentityContext.cs" />
+    <Compile Include="Model\OperationManager.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\CustomersViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
@@ -241,6 +242,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="View\Image\Plot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

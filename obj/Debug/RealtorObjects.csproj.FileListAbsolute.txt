@@ -165,7 +165,6 @@ C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Text.Encodings.Web
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Text.Json.dll
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Threading.Tasks.Extensions.dll
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.ValueTuple.dll
-C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Windows.Interactivity.dll
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\FontAwesome.WPF.xml
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\Microsoft.Expression.Interactions.xml
@@ -180,7 +179,6 @@ C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Text.Encodings.Web
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Text.Json.xml
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.ValueTuple.xml
-C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Windows.Interactivity.xml
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\RealtorObjects.csprojAssemblyReference.cache
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\Customers.g.cs
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\FlatFormV2.g.cs
