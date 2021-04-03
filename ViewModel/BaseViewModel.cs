@@ -1,4 +1,5 @@
-﻿using RealtyModel.Model;
+﻿using RealtorObjects.Model;
+using RealtyModel.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,7 +12,12 @@ namespace RealtorObjects.ViewModel
 {
     public abstract class BaseViewModel : INotifyPropertyChanged
     {
-        public virtual void HandleOperation(Operation operation) { }
+        private Client client = new Client();
+        internal Client Client
+        {
+            get => client;
+            set => client = value;
+        }
         public void OnPropertyChanged([CallerMemberName] string property = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }

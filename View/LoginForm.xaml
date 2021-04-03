@@ -26,7 +26,6 @@
     <Window.Resources>
         <c:SymbolToStarConverter x:Key="SymbolToStar"/>
         <Style TargetType="Button" x:Key="SubmitButton">
-            <Setter Property="Command" Value="{Binding Submit}"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
@@ -149,7 +148,7 @@
                 BorderThickness="1">
                 <TextBox
                     PreviewTextInput="LoginValidation"
-                    Text="{Binding CurrentLogin}"
+                    Text="{Binding Credentials.CurrentUsername}"
                     Style="{StaticResource fieldTextBox}"/>
             </Border>
             <Border
@@ -159,11 +158,11 @@
                 <Grid>
                     <TextBox
                         PreviewTextInput="PasswordValidation"
-                        Text="{Binding CurrentPassword, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding Credentials.CurrentPassword, UpdateSourceTrigger=PropertyChanged}"
                         Foreground="Transparent"
                         Style="{StaticResource fieldTextBox}"/>
                     <TextBox
-                        Text="{Binding CurrentPassword, Converter={StaticResource SymbolToStar}}"
+                        Text="{Binding Credentials.CurrentPassword, Converter={StaticResource SymbolToStar}}"
                         Background="Transparent"
                         IsHitTestVisible="False"
                         Style="{StaticResource fieldTextBox}"/>
@@ -233,7 +232,7 @@
                 BorderThickness="1">
                 <TextBox
                     PreviewTextInput="LoginValidation"
-                    Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding Credentials.Name, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource fieldTextBox}"/>
             </Border>
             <TextBlock
@@ -246,7 +245,7 @@
                 BorderThickness="1">
                 <TextBox
                     PreviewTextInput="LoginValidation"
-                    Text="{Binding Surname, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding Credentials.Surname, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource fieldTextBox}"/>
             </Border>
             <TextBlock
@@ -259,7 +258,7 @@
                 BorderThickness="1">
                 <TextBox
                     PreviewTextInput="LoginValidation"
-                    Text="{Binding Patronymic, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding Credentials.Patronymic, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource fieldTextBox}"/>
             </Border>
             <TextBlock
@@ -273,7 +272,7 @@
                 <TextBox
                     MaxLength="40"
                     PreviewTextInput="EmailValidation"
-                    Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding Credentials.Email, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource fieldTextBox}"/>
             </Border>
             <TextBlock
@@ -287,11 +286,11 @@
                 <Grid>
                     <TextBox
                         PreviewTextInput="PasswordValidation"
-                        Text="{Binding FirstPassword, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding Credentials.FirstPassword, UpdateSourceTrigger=PropertyChanged}"
                         Foreground="Transparent"
                         Style="{StaticResource fieldTextBox}"/>
                     <TextBox
-                        Text="{Binding FirstPassword, Converter={StaticResource SymbolToStar}}"
+                        Text="{Binding Credentials.FirstPassword, Converter={StaticResource SymbolToStar}}"
                         Background="Transparent"
                         IsHitTestVisible="False"
                         Style="{StaticResource fieldTextBox}"/>
@@ -308,11 +307,11 @@
                 <Grid>
                     <TextBox
                         PreviewTextInput="PasswordValidation"
-                        Text="{Binding SecondPassword, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding Credentials.SecondPassword, UpdateSourceTrigger=PropertyChanged}"
                         Foreground="Transparent"
                         Style="{StaticResource fieldTextBox}"/>
                     <TextBox
-                        Text="{Binding SecondPassword, Converter={StaticResource SymbolToStar}}"
+                        Text="{Binding Credentials.SecondPassword, Converter={StaticResource SymbolToStar}}"
                         Background="Transparent"
                         IsHitTestVisible="False"
                         Style="{StaticResource fieldTextBox}"/>

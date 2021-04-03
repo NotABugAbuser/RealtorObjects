@@ -190,12 +190,11 @@ namespace RealtorObjects.Model
         /// Метод приём операции.
         /// </summary>
         private void ReceiveMessage() {
-            Int32 byteCount = 0;
             Byte[] buffer = new Byte[256];
             StringBuilder message = new StringBuilder();
 
             do {
-                byteCount = socket.Receive(buffer);
+                Int32 byteCount = socket.Receive(buffer);
                 message.Append(Encoding.UTF8.GetString(buffer), 0, byteCount);
             }
             while (socket.Available > 0);
@@ -217,8 +216,7 @@ namespace RealtorObjects.Model
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] String prop = "") {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
     }
 }

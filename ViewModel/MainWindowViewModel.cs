@@ -22,7 +22,7 @@ using System.Diagnostics;
 
 namespace RealtorObjects.ViewModel
 {
-    public class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : BaseViewModel, INotifyPropertyChanged
     {
         private BaseViewModel workAreaViewModel;
         private CustomCommand updateWorkAreaViewModel;
@@ -50,7 +50,6 @@ namespace RealtorObjects.ViewModel
             "Главная",
             "Клиенты",
         };
-        private Client client = new Client();
         #region TestMethods
         private CustomCommand testCommand;
         private CustomCommand secondTestCommand;
@@ -63,6 +62,7 @@ namespace RealtorObjects.ViewModel
         #endregion
 
         public MainWindowViewModel() {
+            this.Client = ((App)Application.Current).Client;
             //StartUpTheClock();
         }
 
@@ -82,12 +82,8 @@ namespace RealtorObjects.ViewModel
             Application.Current.Shutdown();
         }));
         public CustomCommand UpdateWorkAreaViewModel => updateWorkAreaViewModel ?? (updateWorkAreaViewModel = new CustomCommand(obj => {
-            Debug.WriteLine("Update сработал");
             byte index = Convert.ToByte(obj);
-            Debug.WriteLine(index);
             WorkAreaViewModel = ViewModels[index];
-            if (WorkAreaViewModel is HomeViewModel) 
-                Debug.WriteLine("WorkArea это HomeVM");
             Header = headers[index];
             CurrentIcon = icons[index];
             for (byte i = 0; i < ToggledButtons.Count; i++) {
@@ -136,10 +132,5 @@ namespace RealtorObjects.ViewModel
             get => viewModels;
             set => viewModels = value;
         }
-
-        public void OnPropertyChanged([CallerMemberName] string property = null) {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

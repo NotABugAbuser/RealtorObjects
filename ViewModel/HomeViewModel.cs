@@ -47,7 +47,14 @@ namespace RealtorObjects.ViewModel
             new CheckAndHeightPair(false, 50),
         };
 
-        public HomeViewModel() {
+        public HomeViewModel()
+        {
+            this.Client = ((App)Application.Current).Client;
+            TestMethod();
+        }
+
+        private void TestMethod()
+        {
             FlatGenerator flatGenerator = new FlatGenerator();
             Flat flat = flatGenerator.CreateFlat();
             flat.Id = 9999;
@@ -58,29 +65,24 @@ namespace RealtorObjects.ViewModel
         }
 
         public void HandleFlat(object sender, FlatCreatedEventArgs e) {
-            Client client = ((App)Application.Current).Client;
+            Operation operation = new Operation(Client.CurrentAgent, JsonSerializer.Serialize(e.Flat), OperationDirection.Realty, OperationType.Add, TargetType.Flat);
             if (AllObjects.Where(x => x.Id == e.Flat.Id).Count() == 0) {
-                Debug.WriteLine("Такого объекта нет");
                 AllObjects.Add(e.Flat);
-                Debug.WriteLine(AllObjects.Count());
-                Operation operation = new Operation(client.CurrentAgent, JsonSerializer.Serialize(e.Flat), OperationDirection.Realty, OperationType.Add, TargetType.Flat);
-                client.SendMessage(operation);
+                Client.SendMessage(operation);
             } else {
-                Debug.WriteLine($"Номер объекта {AllObjects.FindIndex(x => x.Id == e.Flat.Id)}");
-                Operation operation = new Operation(client.CurrentAgent, JsonSerializer.Serialize(e.Flat), OperationDirection.Realty, OperationType.Change, TargetType.Flat);
-                client.SendMessage(operation);
+                operation.OperationParameters.Type = OperationType.Change;
+                Client.SendMessage(operation);
             }
         }
         public CustomCommand CreateRealtorObject => createRealtorObject ?? (createRealtorObject = new CustomCommand(obj => {
             string type = (string)obj;
-            Client client = ((App)Application.Current).Client;
             if (type == "House") {
 
             }
             if (type == "Flat") {
-                Flat flat = new Flat(true) { Agent = client.CurrentAgent};
+                Flat flat = new Flat(true) { Agent = Client.CurrentAgent};
                 FlatFormV2 flatForm = new FlatFormV2();
-                FlatFormViewModel flatFormVM = ((App)Application.Current).FlatFormViewModel;
+                FlatFormViewModel flatFormVM = ((App)Application.Current).FlatFormVM;
                 flatFormVM.Title = "[Квартира] — Создание";
                 flatFormVM.Flat = flat;
                 flatFormVM.LocationOptions = new LocationOptions();
@@ -93,16 +95,13 @@ namespace RealtorObjects.ViewModel
         }));
         public CustomCommand Modify => modify ?? (modify = new CustomCommand(obj => {
             BaseRealtorObject bro = (BaseRealtorObject)obj;
-            Client client = ((App)Application.Current).Client;
-            if (CheckAccess(bro.Agent, client.CurrentAgent)) {
+            if (CheckAccess(bro.Agent, Client.CurrentAgent)) {
                 if (bro is Flat flat) {
-                    Operation operation = new Operation(client.CurrentAgent, JsonSerializer.Serialize(flat), OperationDirection.Realty, OperationType.Change);
-                    FlatFormViewModel flatFormVM = ((App)Application.Current).FlatFormViewModel;
+                    FlatFormViewModel flatFormVM = ((App)Application.Current).FlatFormVM;
                     flatFormVM.Title = "[Квартира] — Редактирование";
                     flatFormVM.Flat = JsonSerializer.Deserialize<Flat>(JsonSerializer.Serialize(flat)); //нужно, чтобы разорвать связь объекта в форме и объекта в списке
                     flatFormVM.LocationOptions = new LocationOptions();
                     new FlatFormV2 { DataContext = flatFormVM }.Show();
-                    // отправить операцию на сервер
                 } else if (bro is House) {
 
                 }
@@ -118,12 +117,10 @@ namespace RealtorObjects.ViewModel
         }
         public CustomCommand Delete => delete ?? (delete = new CustomCommand(obj => {
             BaseRealtorObject bro = (BaseRealtorObject)obj;
-            Client client = ((App)Application.Current).Client;
-            if (CheckAccess(bro.Agent, client.CurrentAgent)) {
+            if (CheckAccess(bro.Agent, Client.CurrentAgent)) {
                 AllObjects.RemoveAll(x => x.Id == bro.Id);
                 CurrentObjectList.Remove(bro);
-                Operation operation = new Operation(client.CurrentAgent, "", OperationDirection.Realty, OperationType.Remove);
-                //вот тут логика отправки запроса удаления на сервер
+                Operation operation = new Operation(Client.CurrentAgent, bro.Id.ToString(), OperationDirection.Realty, OperationType.Remove);
             }
         }));
         public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj => {
@@ -146,7 +143,6 @@ namespace RealtorObjects.ViewModel
             foreach (List<BaseRealtorObject> ol in lists) {
                 ObjectLists.Add(new ObservableCollection<BaseRealtorObject>(ol));
             }
-            Debug.WriteLine(ObjectLists.Count());
             CurrentObjectList = ObjectLists[0];
         }
         public CustomCommand OpenOrCloseFilterSection => openOrCloseFilterSection ?? (openOrCloseFilterSection = new CustomCommand(obj => {

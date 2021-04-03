@@ -10,9 +10,6 @@
             <DataTemplate DataType="{x:Type vm:HomeViewModel}">
                 <v:Home/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:CustomersViewModel}">
-                <v:Customers/>
-            </DataTemplate>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="View/Dictionaries/ColorsAndBrushes.xaml"/>
                 <ResourceDictionary Source="View/Dictionaries/ControlStylesAndTemplates.xaml"/>

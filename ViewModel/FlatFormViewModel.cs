@@ -98,11 +98,7 @@ namespace RealtorObjects.ViewModel
         #endregion
         public FlatFormViewModel()
         {
-            //перенести в свойство
-            Confirm = new CustomCommand(obj =>
-            {
-                FlatCreated?.Invoke(this, new FlatCreatedEventArgs(this.Flat));
-            });
+            this.Client = ((App)Application.Current).Client;
         }
         public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj =>
         {
@@ -119,7 +115,10 @@ namespace RealtorObjects.ViewModel
             T value = (T)property.GetValue(instance, null);
             property.SetValue(instance, Operator.Add(step, value));
         }
-        public CustomCommand Confirm { get => confirm; set => confirm = value; }
+        public CustomCommand Confirm => confirm ?? (new CustomCommand(obj =>
+        {
+            FlatCreated?.Invoke(this, new FlatCreatedEventArgs(this.Flat));
+        }));
         public LocationOptions LocationOptions
         {
             get => locationOptions;
@@ -144,7 +143,8 @@ namespace RealtorObjects.ViewModel
         }
         public string Title
         {
-            get => title; set => title = value;
+            get => title; 
+            set => title = value;
         }
         public FlatCreatedEventHandler FlatCreated;
     }

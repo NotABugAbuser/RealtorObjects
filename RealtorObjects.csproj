@@ -129,12 +129,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\Client.cs" />
+    <Compile Include="Model\CredentialData.cs" />
     <Compile Include="Model\IdentityContext.cs" />
-    <Compile Include="Model\OperationManager.cs" />
+    <Compile Include="Model\OperationHandler.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
-    <Compile Include="ViewModel\CustomersViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
-    <Compile Include="ViewModel\LocationsViewModel.cs" />
     <Compile Include="ViewModel\LoginFormViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\FlatFormViewModel.cs" />

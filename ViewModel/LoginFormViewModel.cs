@@ -27,18 +27,12 @@ namespace RealtorObjects.ViewModel
         private CustomCommand changeRegistrationVisibility;
         private CustomCommand createNewUser;
         private CustomCommand login;
-
-        private string currentLogin = "";
-        private string currentPassword = "";
-        private string name = "";
-        private string surname = "";
-        private string patronymic = "";
-        private string email = "";
-        private string firstPassword = "";
-        private string secondPassword = "";
+        private CredentialData credentials = new CredentialData();
         private Visibility registrationVisibility = Visibility.Collapsed;
+        
 
         public LoginFormViewModel() {
+            this.Client = ((App)Application.Current).Client;
         }
 
         public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
@@ -55,17 +49,15 @@ namespace RealtorObjects.ViewModel
             }
         }));
         public CustomCommand CreateNewUser => createNewUser ?? (createNewUser = new CustomCommand(obj => {
-            CurrentLogin = $"{Surname}{Name[0]}{Patronymic[0]}";
-            Client client = ((App)Application.Current).Client;
-            Operation operation = new Operation(CurrentLogin, SecondPassword, OperationDirection.Identity, OperationType.Register);
-            client.SendMessage(operation);
+            Operation operation = new Operation(Credentials.CurrentUsername, Credentials.SecondPassword, OperationDirection.Identity, OperationType.Register);
+            Client.SendMessage(operation);
 
             for (byte attempts = 0; attempts <= 30; attempts++) {
-                if (client.IncomingOperations.Count > 0) {
-                    Operation incomingOperation = client.IncomingOperations.Dequeue();
+                if (Client.IncomingOperations.Count > 0) {
+                    Operation incomingOperation = Client.IncomingOperations.Dequeue();
                     bool isRegistrationSuccessful = incomingOperation.OperationParameters.Direction == OperationDirection.Identity
                         && incomingOperation.OperationParameters.Type == OperationType.Register
-                        && incomingOperation.Name == CurrentLogin
+                        && incomingOperation.Name == Credentials.CurrentUsername
                         && incomingOperation.IsSuccessfully;
                     if (isRegistrationSuccessful) {
                         MessageBox.Show("Регистрация прошла успешно");
@@ -76,28 +68,21 @@ namespace RealtorObjects.ViewModel
                 if (attempts == 30) MessageBox.Show("Что-то пошло не так");
                 Thread.Sleep(100);
             }
-        }, obj => { // проверяет поля формы на заполненность НАДО ПЕРЕДЕЛАТЬ!!!
-            return !(String.IsNullOrEmpty(Name)
-            && String.IsNullOrEmpty(Surname)
-            && String.IsNullOrEmpty(Patronymic)
-            && String.IsNullOrEmpty(Email)
-            && String.IsNullOrEmpty(FirstPassword)
-            && String.IsNullOrEmpty(SecondPassword));
-        }));
+        }));//создать тут проверку на заполненность полей
+
         public CustomCommand Login => login ?? (login = new CustomCommand(obj => {
-            Client client = ((App)Application.Current).Client;
-            Operation operation = new Operation(CurrentLogin, CurrentPassword, OperationDirection.Identity, OperationType.Login);
-            client.SendMessage(operation);
+            Operation operation = new Operation(Credentials.CurrentUsername, Credentials.CurrentPassword, OperationDirection.Identity, OperationType.Login);
+            Client.SendMessage(operation);
 
             for (byte attempts = 0; attempts <= 30; attempts++) {
-                if (client.IncomingOperations.Count > 0) {
-                    Operation incomingOperation = client.IncomingOperations.Dequeue();
+                if (Client.IncomingOperations.Count > 0) {
+                    Operation incomingOperation = Client.IncomingOperations.Dequeue();
                     bool isRightAgent = incomingOperation.OperationParameters.Direction == OperationDirection.Identity
                         && incomingOperation.OperationParameters.Type == OperationType.Login
-                        && incomingOperation.Name == CurrentLogin;
+                        && incomingOperation.Name == Credentials.CurrentUsername;
                     if (isRightAgent) {
                         if (incomingOperation.IsSuccessfully) {
-                            client.CurrentAgent = CurrentLogin;
+                            Client.CurrentAgent = Credentials.CurrentUsername;
                             Logged?.Invoke(this, new LoggedEventArgs(obj));
                             break;
                         } else {
@@ -110,20 +95,6 @@ namespace RealtorObjects.ViewModel
                 Thread.Sleep(100);
             }
         }));
-        public string CurrentLogin {
-            get => currentLogin;
-            set {
-                currentLogin = value;
-                OnPropertyChanged();
-            }
-        }
-        public string CurrentPassword {
-            get => currentPassword;
-            set {
-                currentPassword = value;
-                OnPropertyChanged();
-            }
-        }
         public Visibility RegistrationVisibility {
             get => registrationVisibility;
             set {
@@ -131,48 +102,9 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
-        public string Name {
-            get => name;
-            set {
-                name = value;
-                OnPropertyChanged();
-            }
-        }
-        public string Surname {
-            get => surname;
-            set {
-                surname = value;
-                OnPropertyChanged();
-            }
-        }
-        public string Patronymic {
-            get => patronymic;
-            set {
-                patronymic = value;
-                OnPropertyChanged();
-            }
-        }
-        public string Email {
-            get => email;
-            set {
-                email = value;
-                OnPropertyChanged();
-            }
-        }
-        public string FirstPassword {
-            get => firstPassword;
-            set {
-                firstPassword = value;
-                OnPropertyChanged();
-            }
-        }
-        public string SecondPassword {
-            get => secondPassword;
-            set {
-                secondPassword = value;
-                OnPropertyChanged();
-            }
-        }
+
+        public CredentialData Credentials { get => credentials; set => credentials = value; }
+
         public event LoggedEventHandler Logged;
     }
 }

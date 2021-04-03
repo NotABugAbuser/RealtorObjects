@@ -20,51 +20,47 @@ namespace RealtorObjects
     /// </summary>
     public partial class App : Application
     {
+        private FlatFormViewModel flatFormVM;
+        private LoginFormViewModel loginFormVM;
+        private MainWindowViewModel mainWindowVM;
+        private HomeViewModel homeVM;
+        private OperationHandler operationManager;
         private Client client = new Client(Dispatcher.CurrentDispatcher);
-        private FlatFormViewModel flatFormViewModel = new FlatFormViewModel();
-        private LoginFormViewModel loginFormVM = new LoginFormViewModel();
-        private MainWindowViewModel mainWindowVM = new MainWindowViewModel();
-        private HomeViewModel homeVM = new HomeViewModel();
-        private OperationManager operationManager;
 
-        public Client Client
-        {
-            get => client;
-            set => client = value;
-        }
-        public FlatFormViewModel FlatFormViewModel
-        {
-            get => flatFormViewModel;
-            set => flatFormViewModel = value;
-        }
-        public LoginFormViewModel LoginFormVM
-        {
-            get => loginFormVM; 
-            set => loginFormVM = value;
-        }
-        public MainWindowViewModel MainWindowVM
-        {
-            get => mainWindowVM; 
-            set => mainWindowVM = value;
-        }
-        public HomeViewModel HomeVM
-        {
-            get => homeVM; 
-            set => homeVM = value;
-        }
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            Client.ConnectAsync();
-            MainWindow = new MainWindow();
-            MainWindow.DataContext = MainWindowVM;
-            MainWindowVM.ViewModels[0] = HomeVM;
-            //MainWindowVM.WorkAreaViewModel = HomeVM;
-            FlatFormViewModel.FlatCreated = HomeVM.HandleFlat;
-            LoginFormVM.Logged += CloseLoginOpenMain;
+            InitializeViewModels();
+            TryConnectToServer();
+            InitializeMainMembers();
+
+        }
+        private void InitializeViewModels()
+        {
+            //Вььюмодели инициализируются здесь, чтобы они могли получить
+            //экземлпяр клиента из приложения через конструкторы
+            this.FlatFormVM = new FlatFormViewModel();
+            this.LoginFormVM = new LoginFormViewModel();
+            this.MainWindowVM = new MainWindowViewModel();
+            this.HomeVM = new HomeViewModel();
+        }
+        private void InitializeMainMembers()
+        {
+            this.MainWindow = new MainWindow
+            {
+                DataContext = MainWindowVM
+            };
+            this.MainWindowVM.ViewModels[0] = HomeVM;
+            this.MainWindowVM.WorkAreaViewModel = HomeVM;
+            this.FlatFormVM.FlatCreated = HomeVM.HandleFlat;
+            this.LoginFormVM.Logged += CloseLoginOpenMain;
             //operationManager = new OperationManager(Client);
             //operationManager.AwaitOperationAsync();
+        }
+        private void TryConnectToServer()
+        {
+            Client.ConnectAsync();
             for (byte attempts = 0; attempts <= 30; attempts++)
             {
                 if (Client.IsConnected)
@@ -81,10 +77,36 @@ namespace RealtorObjects
                 Thread.Sleep(100);
             }
         }
+
         private void CloseLoginOpenMain(object sender, LoggedEventArgs e)
         {
             ((Window)e.Window).Close();
             MainWindow.Show();
+        }
+        public Client Client
+        {
+            get => client;
+            set => client = value;
+        }
+        public FlatFormViewModel FlatFormVM
+        {
+            get => flatFormVM;
+            set => flatFormVM = value;
+        }
+        public LoginFormViewModel LoginFormVM
+        {
+            get => loginFormVM;
+            set => loginFormVM = value;
+        }
+        public MainWindowViewModel MainWindowVM
+        {
+            get => mainWindowVM;
+            set => mainWindowVM = value;
+        }
+        public HomeViewModel HomeVM
+        {
+            get => homeVM;
+            set => homeVM = value;
         }
     }
 }

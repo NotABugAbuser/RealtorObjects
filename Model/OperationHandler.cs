@@ -12,15 +12,15 @@ using System.Windows;
 
 namespace RealtorObjects.Model
 {
-    public class OperationManager
+    public class OperationHandler
     {
         private Client client = new Client();
 
-        public OperationManager()
+        public OperationHandler()
         {
 
         }
-        public OperationManager(Client client)
+        public OperationHandler(Client client)
         {
             this.client = client;
         }
