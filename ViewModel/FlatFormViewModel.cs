@@ -30,6 +30,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand changePrice;
         private LocationOptions locationOptions = new LocationOptions();
         private Flat flat;
+        private bool isCurrentFlatNew = false;
         private string title;
         private readonly FlatOptions flatOptions = new FlatOptions();
         #region UpDownOperations
@@ -38,23 +39,19 @@ namespace RealtorObjects.ViewModel
         private CustomCommand increaseInteger;
         private CustomCommand decreaseInteger;
         public CustomCommand IncreaseDouble => increaseDouble ??
-            (increaseDouble = new CustomCommand(obj =>
-            {
+            (increaseDouble = new CustomCommand(obj => {
                 ChangeProperty<Single>(obj, 0.05f);
             }));
         public CustomCommand IncreaseInteger => increaseInteger ??
-            (increaseInteger = new CustomCommand(obj =>
-            {
+            (increaseInteger = new CustomCommand(obj => {
                 ChangeProperty<int>(obj, 1);
             }));
         public CustomCommand DecreaseDouble => decreaseDouble ??
-            (decreaseDouble = new CustomCommand(obj =>
-            {
+            (decreaseDouble = new CustomCommand(obj => {
                 ChangeProperty<Single>(obj, -0.05f);
             }));
         public CustomCommand DecreaseInteger => decreaseInteger ??
-            (decreaseInteger = new CustomCommand(obj =>
-            {
+            (decreaseInteger = new CustomCommand(obj => {
                 ChangeProperty<int>(obj, -1);
             }));
         #endregion
@@ -63,51 +60,40 @@ namespace RealtorObjects.ViewModel
         private string testString = "руддщ";
         private int testInt = 20;
         private double testDouble = 21.66123;
-        public double TestDouble
-        {
+        public double TestDouble {
             get => testDouble;
-            set
-            {
+            set {
                 testDouble = value;
                 OnPropertyChanged();
             }
         }
-        public int TestInt
-        {
+        public int TestInt {
             get => testInt;
-            set
-            {
+            set {
                 testInt = value;
                 OnPropertyChanged();
             }
         }
-        public string TestString
-        {
+        public string TestString {
             get => testString;
-            set
-            {
+            set {
                 testString = value;
                 OnPropertyChanged();
             }
         }
         public CustomCommand TestCommand => testCommand ??
-            (testCommand = new CustomCommand(obj =>
-            {
+            (testCommand = new CustomCommand(obj => {
                 MessageBox.Show(JsonSerializer.Serialize(Flat).Replace(',', '\n'));
             }));
         #endregion
-        public FlatFormViewModel()
-        {
-            this.Client = ((App)Application.Current).Client;
+        public FlatFormViewModel() {
         }
-        public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj =>
-        {
+        public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj => {
             var value = Convert.ToInt32(obj);
             Flat.Cost.Price += value;
         }));
         public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
-        public void ChangeProperty<T>(object obj, T step)
-        {
+        public void ChangeProperty<T>(object obj, T step) {
             var objects = obj as object[];
             object instance = objects[0];
             string name = objects[1].ToString();
@@ -115,37 +101,35 @@ namespace RealtorObjects.ViewModel
             T value = (T)property.GetValue(instance, null);
             property.SetValue(instance, Operator.Add(step, value));
         }
-        public CustomCommand Confirm => confirm ?? (new CustomCommand(obj =>
-        {
+        public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj => {
             FlatCreated?.Invoke(this, new FlatCreatedEventArgs(this.Flat));
         }));
-        public LocationOptions LocationOptions
-        {
+        public LocationOptions LocationOptions {
             get => locationOptions;
-            set
-            {
+            set {
                 locationOptions = value;
                 OnPropertyChanged();
             }
         }
-        public Flat Flat
-        {
+        public Flat Flat {
             get => flat;
-            set
-            {
+            set {
                 flat = value;
                 OnPropertyChanged();
             }
         }
-        public FlatOptions FlatOptions
-        {
+        public FlatOptions FlatOptions {
             get => flatOptions;
         }
-        public string Title
-        {
-            get => title; 
+        public string Title {
+            get => title;
             set => title = value;
         }
+        public bool IsCurrentFlatNew {
+            get => isCurrentFlatNew;
+            set => isCurrentFlatNew = value;
+        }
+
         public FlatCreatedEventHandler FlatCreated;
     }
 }

@@ -34,6 +34,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand modify;
         private CustomCommand createRealtorObject;
         private Filter filter = new Filter();
+        private RealtorObjectOperator realtorObjectOperator = new RealtorObjectOperator();
         private ObservableCollection<CheckAndHeightPair> filterAreaSections = new ObservableCollection<CheckAndHeightPair>() {
             new CheckAndHeightPair(true, 143),
             new CheckAndHeightPair(true, 143),
@@ -47,14 +48,22 @@ namespace RealtorObjects.ViewModel
             new CheckAndHeightPair(false, 50),
         };
 
-        public HomeViewModel()
-        {
-            this.Client = ((App)Application.Current).Client;
+        public HomeViewModel() {
+            RealtorObjectOperator.Client = this.Client;
             TestMethod();
         }
-
-        private void TestMethod()
-        {
+        #region Используется для отладки, потом удалить
+        public void HandleFlat(object sender, FlatCreatedEventArgs e) {
+            Operation operation = new Operation(Client.CurrentAgent, JsonSerializer.Serialize(e.Flat), OperationDirection.Realty, OperationType.Add, TargetType.Flat);
+            if (AllObjects.Where(x => x.Id == e.Flat.Id).Count() == 0) {
+                AllObjects.Add(e.Flat);
+                Client.SendMessage(operation);
+            } else {
+                operation.OperationParameters.Type = OperationType.Change;
+            }
+            Client.SendMessage(operation);
+        }
+        private void TestMethod() {
             FlatGenerator flatGenerator = new FlatGenerator();
             Flat flat = flatGenerator.CreateFlat();
             flat.Id = 9999;
@@ -63,48 +72,29 @@ namespace RealtorObjects.ViewModel
             CurrentObjectList.Add(flat);
             AllObjects.Add(flat);
         }
-
-        public void HandleFlat(object sender, FlatCreatedEventArgs e) {
-            Operation operation = new Operation(Client.CurrentAgent, JsonSerializer.Serialize(e.Flat), OperationDirection.Realty, OperationType.Add, TargetType.Flat);
-            if (AllObjects.Where(x => x.Id == e.Flat.Id).Count() == 0) {
-                AllObjects.Add(e.Flat);
-                Client.SendMessage(operation);
-            } else {
-                operation.OperationParameters.Type = OperationType.Change;
-                Client.SendMessage(operation);
-            }
-        }
+        #endregion
+        
+        
         public CustomCommand CreateRealtorObject => createRealtorObject ?? (createRealtorObject = new CustomCommand(obj => {
             string type = (string)obj;
-            if (type == "House") {
-
-            }
-            if (type == "Flat") {
-                Flat flat = new Flat(true) { Agent = Client.CurrentAgent};
-                FlatFormV2 flatForm = new FlatFormV2();
-                FlatFormViewModel flatFormVM = ((App)Application.Current).FlatFormVM;
-                flatFormVM.Title = "[Квартира] — Создание";
-                flatFormVM.Flat = flat;
-                flatFormVM.LocationOptions = new LocationOptions();
-                flatForm.DataContext = flatFormVM;
-                flatForm.Show();
-            }
-            if (type == "Plot") {
-
-            }
+            if (type == "House") RealtorObjectOperator.CreateHouse();
+            if (type == "Flat") RealtorObjectOperator.CreateFlat();
+            if (type == "Plot") RealtorObjectOperator.CreatePlot();
         }));
         public CustomCommand Modify => modify ?? (modify = new CustomCommand(obj => {
             BaseRealtorObject bro = (BaseRealtorObject)obj;
             if (CheckAccess(bro.Agent, Client.CurrentAgent)) {
-                if (bro is Flat flat) {
-                    FlatFormViewModel flatFormVM = ((App)Application.Current).FlatFormVM;
-                    flatFormVM.Title = "[Квартира] — Редактирование";
-                    flatFormVM.Flat = JsonSerializer.Deserialize<Flat>(JsonSerializer.Serialize(flat)); //нужно, чтобы разорвать связь объекта в форме и объекта в списке
-                    flatFormVM.LocationOptions = new LocationOptions();
-                    new FlatFormV2 { DataContext = flatFormVM }.Show();
-                } else if (bro is House) {
-
-                }
+                if (bro is Flat flat) RealtorObjectOperator.ModifyFlat(flat);
+                if (bro is House house) RealtorObjectOperator.ModifyHouse(house);
+                //добавить для Plot
+            }
+        }));
+        public CustomCommand Delete => delete ?? (delete = new CustomCommand(obj => {
+            BaseRealtorObject bro = (BaseRealtorObject)obj;
+            if (CheckAccess(bro.Agent, Client.CurrentAgent)) {
+                AllObjects.RemoveAll(x => x.Id == bro.Id);
+                CurrentObjectList.Remove(bro);
+                Operation operation = new Operation(Client.CurrentAgent, bro.Id.ToString(), OperationDirection.Realty, OperationType.Remove);
             }
         }));
         private bool CheckAccess(string objectAgent, string currentAgent) {
@@ -115,14 +105,6 @@ namespace RealtorObjects.ViewModel
                 return false;
             }
         }
-        public CustomCommand Delete => delete ?? (delete = new CustomCommand(obj => {
-            BaseRealtorObject bro = (BaseRealtorObject)obj;
-            if (CheckAccess(bro.Agent, Client.CurrentAgent)) {
-                AllObjects.RemoveAll(x => x.Id == bro.Id);
-                CurrentObjectList.Remove(bro);
-                Operation operation = new Operation(Client.CurrentAgent, bro.Id.ToString(), OperationDirection.Realty, OperationType.Remove);
-            }
-        }));
         public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj => {
             FlatGenerator flatGenerator = new FlatGenerator();
             foreach (BaseRealtorObject bro in flatGenerator.CreateFlatList(AllObjects.Count, AllObjects.Count + 50)) {
@@ -175,6 +157,10 @@ namespace RealtorObjects.ViewModel
         public Filter Filter {
             get => filter;
             set => filter = value;
+        }
+        public RealtorObjectOperator RealtorObjectOperator {
+            get => realtorObjectOperator;
+            set => realtorObjectOperator = value;
         }
     }
 }

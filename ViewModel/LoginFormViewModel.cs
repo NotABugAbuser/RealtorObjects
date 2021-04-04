@@ -32,7 +32,6 @@ namespace RealtorObjects.ViewModel
         
 
         public LoginFormViewModel() {
-            this.Client = ((App)Application.Current).Client;
         }
 
         public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {

@@ -324,7 +324,7 @@
                     Text="Материал:"/>
                 <ComboBox
                     PreviewTextInput="RussianOnly"
-                    ItemsSource="{Binding Path=DataContext.Materials, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor} }"
+                    ItemsSource="{Binding Path=DataContext.FlatOptions.Materials, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor} }"
                     Text="{Binding Info.Material, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding Info.Material}"
                     Style="{StaticResource GreenComboBox}"
@@ -337,7 +337,7 @@
                     Text="Фонд:"/>
                 <ComboBox
                     PreviewTextInput="RussianOnly"
-                    Text="{Binding Fund, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding Info.Fund, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding Info.Fund}"
                     ItemsSource="{Binding Path=DataContext.FlatOptions.Funds, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor} }"
                     Style="{StaticResource GreenComboBox}"
@@ -365,7 +365,7 @@
                 <ComboBox
                     PreviewTextInput="RussianOnly"
                     Text="{Binding Info.Type, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding Type}"
+                    SelectedItem="{Binding Info.Type}"
                     ItemsSource="{Binding Path=DataContext.FlatOptions.Types, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
                     Style="{StaticResource GreenComboBox}"
                     Grid.Column="3"

@@ -62,7 +62,6 @@ namespace RealtorObjects.ViewModel
         #endregion
 
         public MainWindowViewModel() {
-            this.Client = ((App)Application.Current).Client;
             //StartUpTheClock();
         }
 

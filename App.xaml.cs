@@ -20,57 +20,45 @@ namespace RealtorObjects
     /// </summary>
     public partial class App : Application
     {
-        private FlatFormViewModel flatFormVM;
-        private LoginFormViewModel loginFormVM;
-        private MainWindowViewModel mainWindowVM;
-        private HomeViewModel homeVM;
-        private OperationHandler operationManager;
+        private FlatFormViewModel flatFormVM = new FlatFormViewModel();
+        private LoginFormViewModel loginFormVM = new LoginFormViewModel();
+        private MainWindowViewModel mainWindowVM = new MainWindowViewModel();
+        private HomeViewModel homeVM = new HomeViewModel();
         private Client client = new Client(Dispatcher.CurrentDispatcher);
 
 
-        protected override void OnStartup(StartupEventArgs e)
-        {
+        protected override void OnStartup(StartupEventArgs e) {
             base.OnStartup(e);
-            InitializeViewModels();
-            TryConnectToServer();
             InitializeMainMembers();
+            PassClientToViewModels();
+            TryConnectToServer();
 
         }
-        private void InitializeViewModels()
-        {
-            //Вььюмодели инициализируются здесь, чтобы они могли получить
-            //экземлпяр клиента из приложения через конструкторы
-            this.FlatFormVM = new FlatFormViewModel();
-            this.LoginFormVM = new LoginFormViewModel();
-            this.MainWindowVM = new MainWindowViewModel();
-            this.HomeVM = new HomeViewModel();
+        private void PassClientToViewModels() {
+            this.FlatFormVM.Client = this.Client;
+            this.HomeVM.Client = this.Client;
+            this.MainWindowVM.Client = this.Client;
+            this.LoginFormVM.Client = this.Client;
         }
-        private void InitializeMainMembers()
-        {
-            this.MainWindow = new MainWindow
-            {
-                DataContext = MainWindowVM
-            };
+        private void InitializeMainMembers() {
+            this.MainWindow = new MainWindow { DataContext = MainWindowVM };
             this.MainWindowVM.ViewModels[0] = HomeVM;
             this.MainWindowVM.WorkAreaViewModel = HomeVM;
-            this.FlatFormVM.FlatCreated = HomeVM.HandleFlat;
             this.LoginFormVM.Logged += CloseLoginOpenMain;
-            //operationManager = new OperationManager(Client);
-            //operationManager.AwaitOperationAsync();
+
+            this.FlatFormVM.FlatCreated = HomeVM.HandleFlat; //вариант для тестов и отладки
+            //this.FlatFormVM.FlatCreated = HomeVM.RealtorObjectHandler.HandleFlat; //правильный вариант
+
         }
-        private void TryConnectToServer()
-        {
+        private void TryConnectToServer() {
             Client.ConnectAsync();
-            for (byte attempts = 0; attempts <= 30; attempts++)
-            {
-                if (Client.IsConnected)
-                {
+            for (byte attempts = 0; attempts <= 30; attempts++) {
+                if (Client.IsConnected) {
                     var loginForm = new LoginForm() { DataContext = LoginFormVM };
                     loginForm.Show();
                     break;
                 }
-                if (attempts == 30)
-                {
+                if (attempts == 30) {
                     MessageBox.Show("Сервер недоступен");
                     Application.Current.Shutdown();
                 }
@@ -78,35 +66,29 @@ namespace RealtorObjects
             }
         }
 
-        private void CloseLoginOpenMain(object sender, LoggedEventArgs e)
-        {
+        private void CloseLoginOpenMain(object sender, LoggedEventArgs e) {
             ((Window)e.Window).Close();
             MainWindow.Show();
         }
-        public Client Client
-        {
+        public Client Client {
             get => client;
-            set => client = value;
+            private set => client = value;
         }
-        public FlatFormViewModel FlatFormVM
-        {
+        public FlatFormViewModel FlatFormVM {
             get => flatFormVM;
-            set => flatFormVM = value;
+            private set => flatFormVM = value;
         }
-        public LoginFormViewModel LoginFormVM
-        {
+        public LoginFormViewModel LoginFormVM {
             get => loginFormVM;
-            set => loginFormVM = value;
+            private set => loginFormVM = value;
         }
-        public MainWindowViewModel MainWindowVM
-        {
+        public MainWindowViewModel MainWindowVM {
             get => mainWindowVM;
-            set => mainWindowVM = value;
+            private set => mainWindowVM = value;
         }
-        public HomeViewModel HomeVM
-        {
+        public HomeViewModel HomeVM {
             get => homeVM;
-            set => homeVM = value;
+            private set => homeVM = value;
         }
     }
 }
