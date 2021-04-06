@@ -18,7 +18,8 @@ namespace RealtorObjects.Model
         private Client client;
 
         public Client Client {
-            get => client; set => client = value;
+            get => client; 
+            set => client = value;
         }
 
         public RealtorObjectOperator() {

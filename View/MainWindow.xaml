@@ -117,9 +117,13 @@
                     Grid.Column="3"
                     TextAlignment="Center"/>
                 <Button
-                    Grid.Column="5"
+                    Grid.Column="4"
                     Click="MinimizeApplcation_Click"
                     Style="{StaticResource WhiteMinimizeButton}"/>
+                <Button
+                    Grid.Column="5"
+                    Click="WindowApplication_Click"
+                    Style="{StaticResource WhiteWindowedButton}"/>
                 <Button
                     Grid.Column="6"
                     Click="CloseApplication_Click"

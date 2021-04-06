@@ -162,6 +162,7 @@
                         Foreground="Transparent"
                         Style="{StaticResource fieldTextBox}"/>
                     <TextBox
+                        KeyboardNavigation.TabNavigation="None"
                         Text="{Binding Credentials.CurrentPassword, Converter={StaticResource SymbolToStar}}"
                         Background="Transparent"
                         IsHitTestVisible="False"

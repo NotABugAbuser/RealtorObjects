@@ -36,5 +36,13 @@ namespace RealtorObjects.View
                 this.DragMove();
             }
         }
+
+        private void WindowApplication_Click(object sender, RoutedEventArgs e) {
+            if (this.WindowState == WindowState.Maximized) {
+                this.WindowState = WindowState.Normal;
+            } else {
+                this.WindowState = WindowState.Maximized;
+            }
+        }
     }
 }
