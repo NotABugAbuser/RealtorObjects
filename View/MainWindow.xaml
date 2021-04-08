@@ -14,7 +14,7 @@
         Width="1366" 
         BorderBrush="{StaticResource PrimaryBlue}"
         ResizeMode="CanResize"
-        WindowStyle="none"
+        WindowStyle="None"
         MinHeight="597" 
         Name="ThisMainWindow"
         Background="white">

@@ -12,6 +12,9 @@
     <Color x:Key="PrimaryBlueColor">#2B579A</Color>
     <Color x:Key="DarkPrimaryBlueColor">#002050</Color>
     <Color x:Key="SplitterGrayColor">#B1B1B1</Color>
+    <Color x:Key="PrimaryVioletColor">#6F5CC3</Color>
+    <Color x:Key="LightPrimaryVioletColor">#7D6CC9</Color>
+    <Color x:Key="SecondaryVioletColor">#51438F</Color>
 
     <SolidColorBrush x:Key="SplitterGray" Color="{StaticResource SplitterGrayColor}"/>
     <SolidColorBrush x:Key="MainGray" Color="{StaticResource MainGrayColor}"/>
@@ -21,7 +24,10 @@
     <SolidColorBrush x:Key="GreenFont" Color="{StaticResource GreenFontColor}"/>
     <SolidColorBrush x:Key="BackgroundGray" Color="{StaticResource BackgroundGrayColor}"/>
     <SolidColorBrush x:Key="DarkPrimaryBlue" Color="{StaticResource DarkPrimaryBlueColor}"/>
-    
+    <SolidColorBrush x:Key="PrimaryViolet" Color="{StaticResource PrimaryVioletColor}"/>
+    <SolidColorBrush x:Key="LightPrimaryViolet" Color="{StaticResource LightPrimaryVioletColor}"/>
+    <SolidColorBrush x:Key="SecondaryViolet" Color="{StaticResource SecondaryVioletColor}"/>
+
     <SolidColorBrush x:Key="ScrollBar.Static.Background" Color="#F0F0F0"/>
     <SolidColorBrush x:Key="ScrollBar.Static.Border" Color="#F0F0F0"/>
     <SolidColorBrush x:Key="ScrollBar.Pressed.Glyph" Color="#FFFFFF"/>

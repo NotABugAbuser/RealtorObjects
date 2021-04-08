@@ -24,6 +24,7 @@ namespace RealtorObjects.View
     {
         public MainWindow() {
             InitializeComponent();
+            this.MaxHeight = SystemParameters.VirtualScreenHeight - 15;
         }
         private void CloseApplication_Click(object sender, RoutedEventArgs e) {
             Application.Current.Shutdown();
@@ -31,12 +32,15 @@ namespace RealtorObjects.View
         private void MinimizeApplcation_Click(object sender, RoutedEventArgs e) {
             this.WindowState = WindowState.Minimized;
         }
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e) {
+            base.OnClosing(e);
+            Application.Current.Shutdown();
+        }
         private void ThisMainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             if (e.LeftButton == MouseButtonState.Pressed) {
                 this.DragMove();
             }
         }
-
         private void WindowApplication_Click(object sender, RoutedEventArgs e) {
             if (this.WindowState == WindowState.Maximized) {
                 this.WindowState = WindowState.Normal;

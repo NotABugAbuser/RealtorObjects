@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RealtorObjects.ViewModel
 {
-    public abstract class BaseViewModel : INotifyPropertyChanged
+    public class BaseViewModel : INotifyPropertyChanged
     {
         private Client client = new Client();
         internal Client Client

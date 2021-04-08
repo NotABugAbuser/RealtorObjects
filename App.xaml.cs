@@ -41,7 +41,7 @@ namespace RealtorObjects
             this.LoginFormVM.Client = this.Client;
         }
         private void InitializeMainMembers() {
-            this.MainWindow = new MainWindow { DataContext = MainWindowVM };
+            this.MainWindow = new MainWindowV2 { DataContext = MainWindowVM };
             this.MainWindowVM.ViewModels[0] = HomeVM;
             this.MainWindowVM.WorkAreaViewModel = HomeVM;
             this.LoginFormVM.Logged += CloseLoginOpenMain;

@@ -1,0 +1,185 @@
+﻿<Window x:Class="RealtorObjects.View.MainWindowV2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RealtorObjects.View"
+        xmlns:v="clr-namespace:RealtorObjects.View"
+        xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
+        xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
+        mc:Ignorable="d"
+        MouseLeftButtonDown="ThisMainWindow_MouseLeftButtonDown"
+        Title="MainWindow" 
+        Height="728" 
+        Width="1366" 
+        Background="#f7f7f7"
+        ResizeMode="CanResize"
+        WindowStyle="None"
+        Name="ThisMainWindow"
+        MinHeight="597">
+    <Window.Resources>
+        <Style TargetType="Grid" x:Key="MainGridStyle">
+            <Setter Property="Margin" Value="0"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=ThisMainWindow, Path=WindowState}" Value="Maximized">
+                    <Setter Property="Margin" Value="7"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="ToggleButton" x:Key="LeftBarButton">
+            <Setter Property="Background" Value="{StaticResource PrimaryViolet}"/>
+            <Setter Property="Height" Value="52"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter Grid.Column="0"/>
+                            <Label 
+                                Name="PART_LeftMiniBar"
+                                HorizontalAlignment="Left"
+                                Width="0"
+                                Background="white" />
+                            <ContentPresenter/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="PART_LeftMiniBar" Property="Width" Value="5"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="PART_LeftMiniBar" Property="Width" Value="5"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background" Value="{StaticResource LightPrimaryViolet}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource LightPrimaryViolet}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="fa:ImageAwesome" x:Key="LeftIcon">
+            <Setter Property="Height" Value="15"/>
+            <Setter Property="Width" Value="15"/>
+            <Setter Property="Margin" Value="30,0,0,0"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="LeftText">
+            <Setter Property="FontFamily" Value="{StaticResource VAGWorld}"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Margin" Value="55,0,0,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="LineHeight" Value="21"/>
+            <Setter Property="LineStackingStrategy" Value="BlockLineHeight"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+    </Window.Resources>
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+            NonClientFrameEdges="None"
+            CaptionHeight="0"
+            ResizeBorderThickness="2"/>
+    </WindowChrome.WindowChrome>
+    <Window.DataContext>
+        <vm:MainWindowViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="170"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Border
+            Grid.Row="1"
+            Background="{StaticResource PrimaryViolet}">
+            <StackPanel>
+                <ToggleButton 
+                    Command="{Binding UpdateWorkAreaViewModel}"
+                    CommandParameter="0"
+                    IsChecked="{Binding ToggledButtons[0]}"
+                    Style="{StaticResource LeftBarButton}">
+                    <Grid>
+                        <fa:ImageAwesome
+                            Style="{StaticResource LeftIcon}"
+                            Icon="Home"/>
+                        <TextBlock
+                            Style="{StaticResource LeftText}"
+                            Text="Объекты"/>
+                    </Grid>
+                </ToggleButton>
+                <ToggleButton 
+                    Command="{Binding UpdateWorkAreaViewModel}"
+                    CommandParameter="2"
+                    IsChecked="{Binding ToggledButtons[2]}"
+                    Style="{StaticResource LeftBarButton}">
+                    <Grid>
+                        <fa:ImageAwesome
+                            Style="{StaticResource LeftIcon}"
+                            Icon="AddressBook"/>
+                        <TextBlock
+                            Style="{StaticResource LeftText}"
+                            Text="Клиенты"/>
+                    </Grid>
+                </ToggleButton>
+                <ToggleButton 
+                    Command="{Binding UpdateWorkAreaViewModel}"
+                    CommandParameter="3"
+                    IsChecked="{Binding ToggledButtons[3]}"
+                    Style="{StaticResource LeftBarButton}">
+                    <Grid>
+                        <fa:ImageAwesome
+                            Style="{StaticResource LeftIcon}"
+                            Icon="AddressBook"/>
+                        <TextBlock
+                            Style="{StaticResource LeftText}"
+                            Text="Клиенты"/>
+                    </Grid>
+                </ToggleButton>
+                <ToggleButton 
+                    Command="{Binding UpdateWorkAreaViewModel}"
+                    CommandParameter="4"
+                    IsChecked="{Binding ToggledButtons[4]}"
+                    Style="{StaticResource LeftBarButton}">
+                    <Grid>
+                        <fa:ImageAwesome
+                            Style="{StaticResource LeftIcon}"
+                            Icon="AddressBook"/>
+                        <TextBlock
+                            Style="{StaticResource LeftText}"
+                            Text="Клиенты"/>
+                    </Grid>
+                </ToggleButton>
+                <ToggleButton 
+                    Command="{Binding UpdateWorkAreaViewModel}"
+                    CommandParameter="5"
+                    IsChecked="{Binding ToggledButtons[5]}"
+                    Style="{StaticResource LeftBarButton}">
+                    <Grid>
+                        <fa:ImageAwesome
+                            Style="{StaticResource LeftIcon}"
+                            Icon="AddressBook"/>
+                        <TextBlock
+                            Style="{StaticResource LeftText}"
+                            Text="Клиенты"/>
+                    </Grid>
+                </ToggleButton>
+            </StackPanel>
+        </Border>
+        <Grid
+            Background="{StaticResource SecondaryViolet}"
+            Grid.ColumnSpan="2">
+        </Grid>
+        <ContentControl 
+            Content="{Binding WorkAreaViewModel}" 
+            Grid.Column="1" 
+            Grid.Row="1"
+            Grid.ColumnSpan="2"/>
+    </Grid>
+</Window>

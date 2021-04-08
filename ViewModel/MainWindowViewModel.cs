@@ -64,18 +64,6 @@ namespace RealtorObjects.ViewModel
         public MainWindowViewModel() {
             //StartUpTheClock();
         }
-
-        private void StartUpTheClock() {
-            string dayOfWeek = new CultureInfo("ru-RU").DateTimeFormat.GetShortestDayName(DateTime.Now.DayOfWeek);
-            CurrentTime = $"{DateTime.Now:HH:mm} {dayOfWeek}";
-            Task.Factory.StartNew(() => {
-                while (true) {
-                    Thread.Sleep(5000);
-                    CurrentTime = $"{DateTime.Now:HH:mm} {dayOfWeek}";
-                }
-            });
-        }
-
         
         public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
             Application.Current.Shutdown();
@@ -83,11 +71,9 @@ namespace RealtorObjects.ViewModel
         public CustomCommand UpdateWorkAreaViewModel => updateWorkAreaViewModel ?? (updateWorkAreaViewModel = new CustomCommand(obj => {
             byte index = Convert.ToByte(obj);
             WorkAreaViewModel = ViewModels[index];
-            Header = headers[index];
-            CurrentIcon = icons[index];
-            for (byte i = 0; i < ToggledButtons.Count; i++) {
-                ToggledButtons[i] = false;
-            }
+            Header = headers[index]; //удалить эту строку и лист
+            CurrentIcon = icons[index]; //удалить эту строку и лист
+            ToggledButtons.All(bvm => { bvm = false; return true; });
             ToggledButtons[index] = true;
         }));
         public BaseViewModel WorkAreaViewModel {

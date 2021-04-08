@@ -7,8 +7,23 @@
     <!--StartupUri="View/MainWindow.xaml"-->
     <Application.Resources>
         <ResourceDictionary>
+            <FontFamily x:Key="VAGWorld">pack://application:,,,/View/Font/#VAG World</FontFamily>
+            <FontFamily x:Key="AsapSemiBold">pack://application:,,,/View/Font/#Asap SemiBold</FontFamily>
+            <FontFamily x:Key="AFuturaRound">pack://application:,,,/View/Font/#a_FuturaRound</FontFamily>
             <DataTemplate DataType="{x:Type vm:HomeViewModel}">
                 <v:Home/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:BaseViewModel}">
+                <Border>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Foreground="#666"
+                        FontSize="30"
+                        FontFamily="{StaticResource VAGWorld}"
+                        FontWeight="Bold"
+                        HorizontalAlignment="Center"
+                        Text="Здесь пока ничего нет"/>
+                </Border>
             </DataTemplate>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="View/Dictionaries/ColorsAndBrushes.xaml"/>
