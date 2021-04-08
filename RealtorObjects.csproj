@@ -157,6 +157,9 @@
     <Compile Include="View\Home.xaml.cs">
       <DependentUpon>Home.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\HomeV2.xaml.cs">
+      <DependentUpon>HomeV2.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Locations.xaml.cs">
       <DependentUpon>Locations.xaml</DependentUpon>
     </Compile>
@@ -196,6 +199,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Home.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\HomeV2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

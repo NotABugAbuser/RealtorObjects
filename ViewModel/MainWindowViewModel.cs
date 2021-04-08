@@ -24,14 +24,14 @@ namespace RealtorObjects.ViewModel
 {
     public class MainWindowViewModel : BaseViewModel, INotifyPropertyChanged
     {
-        private BaseViewModel workAreaViewModel;
-        private CustomCommand updateWorkAreaViewModel;
+        private BaseViewModel workArea;
+        private CustomCommand updateWorkArea;
         private CustomCommand closeApp;
         private string header = "Главная";
         private string currentTime;
         private FontAwesomeIcon currentIcon = FontAwesomeIcon.Home;
         private LocationOptions locationOptions = new LocationOptions();
-        private BaseViewModel[] viewModels = new BaseViewModel[5];
+        private BaseViewModel[] viewModels = new BaseViewModel[6];
         private FontAwesomeIcon[] icons = new FontAwesomeIcon[5] {
             FontAwesomeIcon.Home,
             FontAwesomeIcon.Phone,
@@ -41,6 +41,7 @@ namespace RealtorObjects.ViewModel
         };
         readonly ObservableCollection<bool> toggledButtons = new ObservableCollection<bool> {
             true,
+            false,
             false,
             false,
             false,
@@ -68,18 +69,21 @@ namespace RealtorObjects.ViewModel
         public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
             Application.Current.Shutdown();
         }));
-        public CustomCommand UpdateWorkAreaViewModel => updateWorkAreaViewModel ?? (updateWorkAreaViewModel = new CustomCommand(obj => {
+        public CustomCommand UpdateWorkArea => updateWorkArea ?? (updateWorkArea = new CustomCommand(obj => {
             byte index = Convert.ToByte(obj);
-            WorkAreaViewModel = ViewModels[index];
-            Header = headers[index]; //удалить эту строку и лист
-            CurrentIcon = icons[index]; //удалить эту строку и лист
-            ToggledButtons.All(bvm => { bvm = false; return true; });
+            WorkArea = ViewModels[index];
+            //Header = headers[index]; //удалить эту строку и лист
+            //CurrentIcon = icons[index]; //удалить эту строку и лист
+            for (byte i = 0; i < ToggledButtons.Count; i++) {
+                ToggledButtons[i] = false;
+            }
+            //ToggledButtons.All(bvm => { bvm = false; return true; });
             ToggledButtons[index] = true;
         }));
-        public BaseViewModel WorkAreaViewModel {
-            get => workAreaViewModel;
+        public BaseViewModel WorkArea {
+            get => workArea;
             set {
-                workAreaViewModel = value;
+                workArea = value;
                 OnPropertyChanged();
             }
         }

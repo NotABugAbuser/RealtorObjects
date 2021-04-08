@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:RealtorObjects.View"
         xmlns:v="clr-namespace:RealtorObjects.View"
         xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
-        xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
+        xmlns:fa4="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
         mc:Ignorable="d"
         MouseLeftButtonDown="ThisMainWindow_MouseLeftButtonDown"
         Title="MainWindow" 
@@ -61,9 +62,9 @@
             </Setter>
         </Style>
         <Style TargetType="fa:ImageAwesome" x:Key="LeftIcon">
-            <Setter Property="Height" Value="15"/>
-            <Setter Property="Width" Value="15"/>
-            <Setter Property="Margin" Value="30,0,0,0"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Width" Value="20"/>
+            <Setter Property="Margin" Value="25,0,0,0"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Foreground" Value="White"/>
@@ -99,75 +100,91 @@
         <Border
             Grid.Row="1"
             Background="{StaticResource PrimaryViolet}">
-            <StackPanel>
+            <StackPanel
+                Margin="0,15,0,0">
                 <ToggleButton 
-                    Command="{Binding UpdateWorkAreaViewModel}"
+                    Command="{Binding UpdateWorkArea}"
                     CommandParameter="0"
                     IsChecked="{Binding ToggledButtons[0]}"
                     Style="{StaticResource LeftBarButton}">
                     <Grid>
                         <fa:ImageAwesome
                             Style="{StaticResource LeftIcon}"
-                            Icon="Home"/>
+                            Icon="Solid_Home"/>
                         <TextBlock
                             Style="{StaticResource LeftText}"
                             Text="Объекты"/>
                     </Grid>
                 </ToggleButton>
                 <ToggleButton 
-                    Command="{Binding UpdateWorkAreaViewModel}"
+                    Command="{Binding UpdateWorkArea}"
+                    CommandParameter="1"
+                    IsChecked="{Binding ToggledButtons[1]}"
+                    Style="{StaticResource LeftBarButton}">
+                    <Grid>
+                        <fa:ImageAwesome
+                            Style="{StaticResource LeftIcon}"
+                            Icon="Solid_User"/>
+                        <TextBlock
+                            Style="{StaticResource LeftText}"
+                            Text="Клиенты"/>
+                    </Grid>
+                </ToggleButton>
+                <ToggleButton 
+                    Command="{Binding UpdateWorkArea}"
                     CommandParameter="2"
                     IsChecked="{Binding ToggledButtons[2]}"
                     Style="{StaticResource LeftBarButton}">
                     <Grid>
                         <fa:ImageAwesome
                             Style="{StaticResource LeftIcon}"
-                            Icon="AddressBook"/>
+                            Icon="Solid_City"/>
                         <TextBlock
                             Style="{StaticResource LeftText}"
-                            Text="Клиенты"/>
+                            Text="Города"/>
                     </Grid>
                 </ToggleButton>
                 <ToggleButton 
-                    Command="{Binding UpdateWorkAreaViewModel}"
+                    Command="{Binding UpdateWorkArea}"
                     CommandParameter="3"
                     IsChecked="{Binding ToggledButtons[3]}"
                     Style="{StaticResource LeftBarButton}">
                     <Grid>
                         <fa:ImageAwesome
                             Style="{StaticResource LeftIcon}"
-                            Icon="AddressBook"/>
+                            Icon="Solid_MapMarkedAlt"/>
                         <TextBlock
                             Style="{StaticResource LeftText}"
-                            Text="Клиенты"/>
+                            Text="Районы"/>
                     </Grid>
                 </ToggleButton>
                 <ToggleButton 
-                    Command="{Binding UpdateWorkAreaViewModel}"
+                    Command="{Binding UpdateWorkArea}"
                     CommandParameter="4"
                     IsChecked="{Binding ToggledButtons[4]}"
                     Style="{StaticResource LeftBarButton}">
                     <Grid>
                         <fa:ImageAwesome
+                            Height="20"
                             Style="{StaticResource LeftIcon}"
-                            Icon="AddressBook"/>
+                            Icon="Solid_GripVertical"/>
                         <TextBlock
                             Style="{StaticResource LeftText}"
-                            Text="Клиенты"/>
+                            Text="Улицы"/>
                     </Grid>
                 </ToggleButton>
                 <ToggleButton 
-                    Command="{Binding UpdateWorkAreaViewModel}"
+                    Command="{Binding UpdateWorkArea}"
                     CommandParameter="5"
                     IsChecked="{Binding ToggledButtons[5]}"
                     Style="{StaticResource LeftBarButton}">
                     <Grid>
                         <fa:ImageAwesome
                             Style="{StaticResource LeftIcon}"
-                            Icon="AddressBook"/>
+                            Icon="Regular_ChartBar"/>
                         <TextBlock
                             Style="{StaticResource LeftText}"
-                            Text="Клиенты"/>
+                            Text="Статистика"/>
                     </Grid>
                 </ToggleButton>
             </StackPanel>
@@ -177,7 +194,7 @@
             Grid.ColumnSpan="2">
         </Grid>
         <ContentControl 
-            Content="{Binding WorkAreaViewModel}" 
+            Content="{Binding WorkArea}" 
             Grid.Column="1" 
             Grid.Row="1"
             Grid.ColumnSpan="2"/>
