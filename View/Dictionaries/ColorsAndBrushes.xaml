@@ -15,7 +15,9 @@
     <Color x:Key="PrimaryVioletColor">#6F5CC3</Color>
     <Color x:Key="LightPrimaryVioletColor">#7D6CC9</Color>
     <Color x:Key="SecondaryVioletColor">#51438F</Color>
+    <Color x:Key="DarkBlueFontColor">#021d5d</Color>
 
+    <SolidColorBrush x:Key="DarkBlueFont" Color="{StaticResource DarkBlueFontColor}"/>
     <SolidColorBrush x:Key="SplitterGray" Color="{StaticResource SplitterGrayColor}"/>
     <SolidColorBrush x:Key="MainGray" Color="{StaticResource MainGrayColor}"/>
     <SolidColorBrush x:Key="PrimaryBlue" Color="{StaticResource PrimaryBlueColor}"/>

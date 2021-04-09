@@ -70,7 +70,7 @@
             <Setter Property="Foreground" Value="White"/>
         </Style>
         <Style TargetType="TextBlock" x:Key="LeftText">
-            <Setter Property="FontFamily" Value="{StaticResource VAGWorld}"/>
+            <Setter Property="FontFamily" Value="{StaticResource Helvetica}"/>
             <Setter Property="FontSize" Value="15"/>
             <Setter Property="Margin" Value="55,0,0,0"/>
             <Setter Property="VerticalAlignment" Value="Center"/>

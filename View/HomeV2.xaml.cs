@@ -23,5 +23,9 @@ namespace RealtorObjects.View
         public HomeV2() {
             InitializeComponent();
         }
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+
+        }
     }
 }

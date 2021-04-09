@@ -254,11 +254,12 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Resource Include="View\Font\Helvetica.otf" />
+    <Resource Include="View\Font\RoundsBlack.ttf" />
+    <Resource Include="View\Font\20421.ttf" />
     <Resource Include="View\Font\a_futuraround-bold.ttf" />
     <Resource Include="View\Font\asap-semibold.ttf" />
-    <Resource Include="View\Font\vag-world-bold.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="View\Font\vag-world-bold.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -277,6 +278,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Image\BlankImage.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

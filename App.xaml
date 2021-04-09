@@ -7,11 +7,12 @@
     <!--StartupUri="View/MainWindow.xaml"-->
     <Application.Resources>
         <ResourceDictionary>
+            <FontFamily x:Key="Rounds">pack://application:,,,/View/Font/#RoundsBlack</FontFamily>
+            <FontFamily x:Key="Helvetica">pack://application:,,,/View/Font/#Helvetica</FontFamily>
             <FontFamily x:Key="VAGWorld">pack://application:,,,/View/Font/#VAG World</FontFamily>
-            <FontFamily x:Key="AsapSemiBold">pack://application:,,,/View/Font/#Asap SemiBold</FontFamily>
             <FontFamily x:Key="AFuturaRound">pack://application:,,,/View/Font/#a_FuturaRound</FontFamily>
             <DataTemplate DataType="{x:Type vm:HomeViewModel}">
-                <v:Home/>
+                <v:HomeV2/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:BaseViewModel}">
                 <Border>

@@ -5,9 +5,183 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RealtorObjects.View"
              mc:Ignorable="d" 
+             xmlns:fa="http://schemas.fontawesome.com/icons/"
+             xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
+             xmlns:c="clr-namespace:RealtorObjects.View.Converters"
              Background="#f7f7f7"
-             d:DesignHeight="649" d:DesignWidth="1196">
+             d:DesignHeight="648" d:DesignWidth="1196">
+    <UserControl.DataContext>
+        <vm:HomeViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <Style TargetType="TextBlock" x:Key="RegularText">
+            <Setter Property="FontFamily" Value="{StaticResource Helvetica}"/>
+            <Setter Property="Foreground" Value="#59667A"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <ControlTemplate x:Key="ObjectListItemTemplate">
+            <Grid 
+                Height="54">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="110"/>
+                    <ColumnDefinition Width="110"/>
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+                <Image
+                    Source="./Image/BlankImage.png"
+                    Height="40"
+                    HorizontalAlignment="Left"
+                    Width="100"
+                    Margin="30,0,0,0"
+                    VerticalAlignment="Center"/>
+                <Grid
+                    VerticalAlignment="Center"
+                    Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <fa:ImageAwesome
+                        Icon="Solid_Building"
+                        Width="20"
+                        Foreground="{StaticResource PrimaryViolet}"/>
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        Grid.Column="1"
+                        Style="{StaticResource RegularText}"
+                        Text="42кв м"/>
+                </Grid>
+                <TextBlock
+                    Grid.Column="2"
+                    Style="{StaticResource RegularText}"
+                    TextTrimming="WordEllipsis"
+                    Text="Кулаков Валерий"/>
+                <TextBlock
+                    Grid.Column="3"
+                    Style="{StaticResource RegularText}"
+                    TextTrimming="WordEllipsis"
+                    Text="Соколовского 2, к16"/>
+                <TextBlock
+                    Grid.Column="4"
+                    Style="{StaticResource RegularText}"
+                    Text="20 000 000"/>
+                <Border
+                    Height="20"
+                    Width="80"
+                    CornerRadius="10"
+                    HorizontalAlignment="Left"
+                    Background="#D1EAD2"
+                    Grid.Column="5">
+                    <TextBlock 
+                        HorizontalAlignment="Center"
+                        Margin="0,0,0,3"
+                        FontFamily="tahoma"
+                        Style="{StaticResource RegularText}"
+                        Foreground="#6BBE6F"
+                        Text="Активный"/>
+                </Border>
+            </Grid>
+        </ControlTemplate>
+        <Style TargetType="ListBoxItem" x:Key="ObjectItemContainerStyle">
+            <Setter Property="ClipToBounds" Value="True"/>
+            <Setter Property="Template" Value="{StaticResource ObjectListItemTemplate}"/>
+        </Style>
+        
+        <Style TargetType="ListBox" x:Key="ObjectListBox">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="ItemContainerStyle" Value="{StaticResource ObjectItemContainerStyle}"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="HeaderText">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Foreground" Value="#8A94A6"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontFamily" Value="{StaticResource VAGWorld}"/>
+        </Style>
+    </UserControl.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border
+            Margin="15,63"
+            Background="White"
+            CornerRadius="5">
+            <Border.Effect>
+                <DropShadowEffect 
+                    Opacity="0.2"
+                    BlurRadius="10"
+                    ShadowDepth="0"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="110"/>
+                    <ColumnDefinition Width="110"/>
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Margin="30,0,0,0"
+                    Style="{StaticResource HeaderText}"
+                    Grid.Column="0"
+                    Text="Фото"/>
+                <TextBlock
+                    Style="{StaticResource HeaderText}"
+                    Grid.Column="1"
+                    Text="Объект"/>
+                <TextBlock
+                    Style="{StaticResource HeaderText}"
+                    Grid.Column="2"
+                    Text="Клиент"/>
+                <TextBlock
+                    Style="{StaticResource HeaderText}"
+                    Grid.Column="3"
+                    Text="Адрес"/>
+                <TextBlock
+                    Style="{StaticResource HeaderText}"
+                    Grid.Column="4"
+                    Text="Цена"/>
+                <TextBlock
+                    Style="{StaticResource HeaderText}"
+                    Grid.Column="5"
+                    Text="Статус"/>
+                <TextBlock
+                    Style="{StaticResource HeaderText}"
+                    Grid.Column="6"
+                    Text="Действия"/>
+                <ListBox
+                    Grid.Row="1"
+                    Grid.ColumnSpan="8"
+                    Visibility="Visible"
+                    Style="{StaticResource ObjectListBox}"
+                    Background="Transparent" 
+                    ScrollViewer.VerticalScrollBarVisibility="Hidden" 
+                    ItemsSource="{Binding FilterAreaSections}">
+                </ListBox>
+            </Grid>
+        </Border>
+        <Border 
+            Background="{StaticResource PrimaryViolet}"
+            Grid.Column="2">
             
+        </Border>
     </Grid>
 </UserControl>
