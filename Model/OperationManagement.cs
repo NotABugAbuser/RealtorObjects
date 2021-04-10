@@ -9,27 +9,31 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace RealtorObjects.Model
 {
-    public class OperationHandler
+    public class OperationManagement
     {
-        private Client client = new Client();
-
-        public OperationHandler()
+        private Client client = null;
+        private Credential credential = null;
+        public LoggedEventHandler Logged;
+        private Dispatcher dispatcher;
+        public OperationManagement()
         {
 
         }
-        public OperationHandler(Client client)
+        public OperationManagement(Client client, Credential credential, Dispatcher dispatcher)
         {
             this.client = client;
+            this.credential = credential;
+            this.dispatcher = dispatcher;
         }
-
-
 
         public async void AwaitOperationAsync()
         {
-            await Task.Run(() => {
+            await Task.Run(() =>
+            {
                 while (true)
                 {
                     while (client.IncomingOperations.Count > 0)
@@ -38,6 +42,20 @@ namespace RealtorObjects.Model
                 }
             });
         }
+
+        public void Login(String name, String password)
+        {
+            credential.Name = name;
+            credential.Password = password;
+            client.SendMessage(new Operation(name, password, OperationDirection.Identity, OperationType.Login));
+        }
+        public void Register(String name, String password) 
+        {
+            credential.Name = name;
+            credential.Password = password;
+            client.SendMessage(new Operation(name, password, OperationDirection.Identity, OperationType.Register));
+        }
+
         private void HandleOperation(Operation operation)
         {
             try
@@ -62,30 +80,26 @@ namespace RealtorObjects.Model
                 Debug.WriteLine(ex.Message);
             }
         }
-
         private void HandleSuccessfulIdentity(Operation operation)
         {
             switch (operation.OperationParameters.Type)
             {
                 case OperationType.Login:
                     {
-                        //LoginVM.IsLoggedIn = true;
+                        if (operation.Name == credential.Name)
+                            credential.OnLoggedIn();
                         break;
                     }
                 case OperationType.Logout:
                     {
-                        //LoginVM.IsLoggedIn = false;
                         break;
                     }
                 case OperationType.Register:
                     {
-                        //LoginVM.Message = "Регистрация была успешной";
                         break;
                     }
                 case OperationType.ToFire:
                     {
-                        //LoginVM.Message = "Удаление учётки было успешным";
-                        //Выбросить в окно регистрации
                         break;
                     }
             }
@@ -116,33 +130,28 @@ namespace RealtorObjects.Model
                     }
             }
         }
-
         private void HandleSuccessfulRealty(Operation operation)
         {
             switch (operation.OperationParameters.Type)
             {
                 case OperationType.Add:
                     {
-                        //HomeVM.LocationOptions - добавить новые объекты в списки
-                        //LocationVM.LocationOptions - добавить новые объекты в списки
+
                         break;
                     }
                 case OperationType.Change:
                     {
-                        //HomeVM.LocationOptions - обновить по Id необходимые объекты в списках
-                        //LocationVM.LocationOptions - обновить по Id необходимые объекты в списках
+
                         break;
                     }
                 case OperationType.Remove:
                     {
-                        //HomeVM.LocationOptions - удалить по Id необходимые объекты из списков
-                        //LocationVM.LocationOptions - удалить по Id необходимые объекты из списков
+
                         break;
                     }
                 case OperationType.Update:
                     {
-                        //HomeVM.LocationOptions - получение всех списков от сервера
-                        //LocationVM.LocationOptions - получение всех списков от сервера
+
                         break;
                     }
             }
@@ -173,7 +182,5 @@ namespace RealtorObjects.Model
                     }
             }
         }
-
-
     }
 }

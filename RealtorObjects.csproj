@@ -137,10 +137,11 @@
     <Compile Include="Model\Client.cs" />
     <Compile Include="Model\CredentialData.cs" />
     <Compile Include="Model\IdentityContext.cs" />
-    <Compile Include="Model\OperationHandler.cs" />
+    <Compile Include="Model\OperationManagement.cs" />
     <Compile Include="Model\RealtorObjectOperator.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
+    <Compile Include="ViewModel\LoadingFormViewModel.cs" />
     <Compile Include="ViewModel\LoginFormViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\FlatFormViewModel.cs" />
@@ -159,6 +160,9 @@
     </Compile>
     <Compile Include="View\HomeV2.xaml.cs">
       <DependentUpon>HomeV2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\LoadingForm.xaml.cs">
+      <DependentUpon>LoadingForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Locations.xaml.cs">
       <DependentUpon>Locations.xaml</DependentUpon>
@@ -205,6 +209,10 @@
     <Page Include="View\HomeV2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\LoadingForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Locations.xaml">
       <SubType>Designer</SubType>

@@ -29,7 +29,6 @@ namespace RealtorObjects.ViewModel
         private CustomCommand login;
         private CredentialData credentials = new CredentialData();
         private Visibility registrationVisibility = Visibility.Collapsed;
-        
 
         public LoginFormViewModel() {
         }
@@ -70,29 +69,7 @@ namespace RealtorObjects.ViewModel
         }));//создать тут проверку на заполненность полей
 
         public CustomCommand Login => login ?? (login = new CustomCommand(obj => {
-            Operation operation = new Operation(Credentials.CurrentUsername, Credentials.CurrentPassword, OperationDirection.Identity, OperationType.Login);
-            Client.SendMessage(operation);
-
-            for (byte attempts = 0; attempts <= 30; attempts++) {
-                if (Client.IncomingOperations.Count > 0) {
-                    Operation incomingOperation = Client.IncomingOperations.Dequeue();
-                    bool isRightAgent = incomingOperation.OperationParameters.Direction == OperationDirection.Identity
-                        && incomingOperation.OperationParameters.Type == OperationType.Login
-                        && incomingOperation.Name == Credentials.CurrentUsername;
-                    if (isRightAgent) {
-                        if (incomingOperation.IsSuccessfully) {
-                            Client.CurrentAgent = Credentials.CurrentUsername;
-                            Logged?.Invoke(this, new LoggedEventArgs(obj));
-                            break;
-                        } else {
-                            MessageBox.Show("Введены неверные данные");
-                            break;
-                        }
-                    }
-                    if (attempts == 30) MessageBox.Show("Связь с сервером идентификации прервана");
-                }
-                Thread.Sleep(100);
-            }
+            Logging?.Invoke(this, new LoggingEventArgs(credentials.CurrentUsername, credentials.CurrentPassword));
         }));
         public Visibility RegistrationVisibility {
             get => registrationVisibility;
@@ -104,6 +81,6 @@ namespace RealtorObjects.ViewModel
 
         public CredentialData Credentials { get => credentials; set => credentials = value; }
 
-        public event LoggedEventHandler Logged;
+        public event LoggingEventHandler Logging;
     }
 }
