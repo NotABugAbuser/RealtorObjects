@@ -24,14 +24,16 @@ namespace RealtorObjects.ViewModel
 {
     public class MainWindowViewModel : BaseViewModel, INotifyPropertyChanged
     {
-        private BaseViewModel workArea;
-        private CustomCommand updateWorkArea;
-        private CustomCommand closeApp;
-        private string header = "Главная";
         private string currentTime;
+        private string header = "Главная";
+        private readonly string[] headers = new string[2]{
+            "Главная",
+            "Клиенты",
+        };
+        private BaseViewModel workArea;
+        private CustomCommand closeApp;
+        private CustomCommand updateWorkArea;
         private FontAwesomeIcon currentIcon = FontAwesomeIcon.Home;
-        private LocationOptions locationOptions = new LocationOptions();
-        private BaseViewModel[] viewModels = new BaseViewModel[6];
         private FontAwesomeIcon[] icons = new FontAwesomeIcon[5] {
             FontAwesomeIcon.Home,
             FontAwesomeIcon.Phone,
@@ -39,6 +41,8 @@ namespace RealtorObjects.ViewModel
             FontAwesomeIcon.List,
             FontAwesomeIcon.AddressBook,
         };
+        private LocationOptions locationOptions = new LocationOptions();
+        private BaseViewModel[] viewModels = new BaseViewModel[6];
         readonly ObservableCollection<bool> toggledButtons = new ObservableCollection<bool> {
             true,
             false,
@@ -47,77 +51,89 @@ namespace RealtorObjects.ViewModel
             false,
             false
         };
-        private readonly string[] headers = new string[2]{
-            "Главная",
-            "Клиенты",
-        };
         #region TestMethods
         private CustomCommand testCommand;
         private CustomCommand secondTestCommand;
-        public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj => {
+        public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj =>
+        {
             var flatWindow = new FlatFormV2();
             flatWindow.Show();
         }));
-        public CustomCommand SecondTestCommand => secondTestCommand ?? (secondTestCommand = new CustomCommand(obj => {
+        public CustomCommand SecondTestCommand => secondTestCommand ?? (secondTestCommand = new CustomCommand(obj =>
+        {
         }));
         #endregion
 
-        public MainWindowViewModel() {
+        public MainWindowViewModel()
+        {
             //StartUpTheClock();
         }
-        
-        public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
+
+        public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj =>
+        {
             Application.Current.Shutdown();
         }));
-        public CustomCommand UpdateWorkArea => updateWorkArea ?? (updateWorkArea = new CustomCommand(obj => {
+        public CustomCommand UpdateWorkArea => updateWorkArea ?? (updateWorkArea = new CustomCommand(obj =>
+        {
             byte index = Convert.ToByte(obj);
             WorkArea = ViewModels[index];
             //Header = headers[index]; //удалить эту строку и лист
             //CurrentIcon = icons[index]; //удалить эту строку и лист
-            for (byte i = 0; i < ToggledButtons.Count; i++) {
+            for (byte i = 0; i < ToggledButtons.Count; i++)
+            {
                 ToggledButtons[i] = false;
             }
             //ToggledButtons.All(bvm => { bvm = false; return true; });
             ToggledButtons[index] = true;
         }));
-        public BaseViewModel WorkArea {
-            get => workArea;
-            set {
-                workArea = value;
-                OnPropertyChanged();
-            }
-        }
-        public ObservableCollection<bool> ToggledButtons => toggledButtons;
-        public string CurrentTime {
-            get => currentTime;
-            set {
-                currentTime = value;
-                OnPropertyChanged();
-            }
-        }
-        public FontAwesomeIcon CurrentIcon {
-            get => currentIcon;
-            set {
-                currentIcon = value;
-                OnPropertyChanged();
-            }
-        }
-        public string Header {
+        public string Header
+        {
             get => header;
-            set {
+            set
+            {
                 header = value;
                 OnPropertyChanged();
             }
         }
-        public LocationOptions LocationOptions {
+        public string CurrentTime
+        {
+            get => currentTime;
+            set
+            {
+                currentTime = value;
+                OnPropertyChanged();
+            }
+        }
+        public FontAwesomeIcon CurrentIcon
+        {
+            get => currentIcon;
+            set
+            {
+                currentIcon = value;
+                OnPropertyChanged();
+            }
+        }
+        public ObservableCollection<bool> ToggledButtons => toggledButtons;
+        public LocationOptions LocationOptions
+        {
             get => locationOptions;
-            set {
+            set
+            {
                 locationOptions = value;
                 OnPropertyChanged();
             }
         }
-
-        public BaseViewModel[] ViewModels {
+        public BaseViewModel WorkArea
+        {
+            get => workArea;
+            set
+            {
+                workArea = value;
+                OnPropertyChanged();
+            }
+        }
+        public BaseViewModel[] ViewModels
+        {
             get => viewModels;
             set => viewModels = value;
         }

@@ -91,34 +91,28 @@ namespace RealtorObjects.Model
             {
                 IsTryingToConnect = true;
                 IPAddress ipAddress = FindServerIPAddress();
-                if (ipAddress != null)
+                socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                try
                 {
-                    socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                    try
+                    if (ipAddress != null)
                     {
                         IPEndPoint iPEndPoint = new IPEndPoint(ipAddress, 8005);
                         socket.Connect(iPEndPoint);
                         IsTryingToConnect = false;
                         IsConnected = true;
-                        uiDispatcher.BeginInvoke(new Action(() =>
-                        {
-                            Connected?.Invoke();
-                        }));
+                        uiDispatcher.BeginInvoke(new Action(() => { Connected?.Invoke(); }));
                         while (IsConnected) ReceiveMessage();
                     }
-                    catch (Exception)
-                    {
-                        uiDispatcher.BeginInvoke(new Action(() =>
-                        {
-                            LostConnection?.Invoke();
-                        }));
-                    }
-                    finally
-                    {
-                        Disconnect();
-                        socket.Shutdown(SocketShutdown.Both);
-                        socket.Close();
-                    }
+                }
+                catch (Exception)
+                {
+
+                }
+                finally
+                {
+                    Disconnect();
+                    socket.Shutdown(SocketShutdown.Both);
+                    socket.Close();
                 }
             });
         }
@@ -159,22 +153,14 @@ namespace RealtorObjects.Model
                         if (serverIP != null) break;
                         socket.Dispose();
                         socket.Close();
-                        MessageBox.Show("sadfsadf");
                     }
                 }
                 while (serverIP == null && IsTryingToConnect);
                 return serverIP;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"(FindServer) {ex.Message} {ex.StackTrace}");
                 return null;
-            }
-            finally
-            {
-                if (serverIP == null)
-                    Console.WriteLine("server is unreachable");
-                else Console.WriteLine($"server has found on {serverIP}");
             }
         }
         /// <summary>
@@ -226,6 +212,7 @@ namespace RealtorObjects.Model
             {
                 IsTryingToConnect = false;
                 IsConnected = false;
+                LostConnection?.Invoke();
             }));
         }
         /// <summary>
@@ -233,7 +220,7 @@ namespace RealtorObjects.Model
         /// </summary>
         private void ReceiveMessage()
         {
-            if(socket.Poll(10000, SelectMode.SelectError))
+            if (socket.Poll(10000, SelectMode.SelectError))
                 throw new Exception();
             else if (socket.Poll(10000, SelectMode.SelectRead))
             {
@@ -252,6 +239,7 @@ namespace RealtorObjects.Model
                     Operation operation = JsonSerializer.Deserialize<Operation>(message.ToString());
                     IncomingOperations.Enqueue(operation);
                 }
+                else throw new Exception();
             }
         }
 

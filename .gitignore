@@ -132,3 +132,8 @@ $RECYCLE.BIN/
 .DS_Store
 
 _NCrunch*
+.vs/RealtorObjects/v16/.suo
+*.pdb
+*.exe
+*.cache
+*.lref

@@ -25,14 +25,60 @@ namespace RealtorObjects.ViewModel
 {
     public class FlatFormViewModel : BaseViewModel, IDoubleNumericUpDown, IIntegerNumericUpDown
     {
+        public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj => {
+            var value = Convert.ToInt32(obj);
+            Flat.Cost.Price += value;
+        }));
+        public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
+        public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj => {
+            FlatCreated?.Invoke(this, new FlatCreatedEventArgs(this.Flat));
+        }));
+        public void ChangeProperty<T>(object obj, T step)
+        {
+            var objects = obj as object[];
+            object instance = objects[0];
+            string name = objects[1].ToString();
+            PropertyInfo property = instance.GetType().GetProperty(name);
+            T value = (T)property.GetValue(instance, null);
+            property.SetValue(instance, Operator.Add(step, value));
+        }
+
+
+        private Flat flat;
+        private string title;
+        private bool isCurrentFlatNew = false;
         private CustomCommand cancel;
         private CustomCommand confirm;
         private CustomCommand changePrice;
-        private LocationOptions locationOptions = new LocationOptions();
-        private Flat flat;
-        private bool isCurrentFlatNew = false;
-        private string title;
         private readonly FlatOptions flatOptions = new FlatOptions();
+        private LocationOptions locationOptions = new LocationOptions();
+        public FlatCreatedEventHandler FlatCreated;
+
+        public Flat Flat {
+            get => flat;
+            set {
+                flat = value;
+                OnPropertyChanged();
+            }
+        }
+        public FlatOptions FlatOptions {
+            get => flatOptions;
+        }
+        public LocationOptions LocationOptions {
+            get => locationOptions;
+            set {
+                locationOptions = value;
+                OnPropertyChanged();
+            }
+        }
+        public string Title {
+            get => title;
+            set => title = value;
+        }
+        public bool IsCurrentFlatNew {
+            get => isCurrentFlatNew;
+            set => isCurrentFlatNew = value;
+        }
         #region UpDownOperations
         private CustomCommand increaseDouble;
         private CustomCommand decreaseDouble;
@@ -86,50 +132,8 @@ namespace RealtorObjects.ViewModel
                 MessageBox.Show(JsonSerializer.Serialize(Flat).Replace(',', '\n'));
             }));
         #endregion
+        
         public FlatFormViewModel() {
         }
-        public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj => {
-            var value = Convert.ToInt32(obj);
-            Flat.Cost.Price += value;
-        }));
-        public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
-        public void ChangeProperty<T>(object obj, T step) {
-            var objects = obj as object[];
-            object instance = objects[0];
-            string name = objects[1].ToString();
-            PropertyInfo property = instance.GetType().GetProperty(name);
-            T value = (T)property.GetValue(instance, null);
-            property.SetValue(instance, Operator.Add(step, value));
-        }
-        public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj => {
-            FlatCreated?.Invoke(this, new FlatCreatedEventArgs(this.Flat));
-        }));
-        public LocationOptions LocationOptions {
-            get => locationOptions;
-            set {
-                locationOptions = value;
-                OnPropertyChanged();
-            }
-        }
-        public Flat Flat {
-            get => flat;
-            set {
-                flat = value;
-                OnPropertyChanged();
-            }
-        }
-        public FlatOptions FlatOptions {
-            get => flatOptions;
-        }
-        public string Title {
-            get => title;
-            set => title = value;
-        }
-        public bool IsCurrentFlatNew {
-            get => isCurrentFlatNew;
-            set => isCurrentFlatNew = value;
-        }
-
-        public FlatCreatedEventHandler FlatCreated;
     }
 }

@@ -29,6 +29,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand login;
         private CredentialData credentials = new CredentialData();
         private Visibility registrationVisibility = Visibility.Collapsed;
+        public event LoggingInEventHandler LoggingIn;
 
         public LoginFormViewModel() {
         }
@@ -47,29 +48,29 @@ namespace RealtorObjects.ViewModel
             }
         }));
         public CustomCommand CreateNewUser => createNewUser ?? (createNewUser = new CustomCommand(obj => {
-            Operation operation = new Operation(Credentials.CurrentUsername, Credentials.SecondPassword, OperationDirection.Identity, OperationType.Register);
-            Client.SendMessage(operation);
-
-            for (byte attempts = 0; attempts <= 30; attempts++) {
-                if (Client.IncomingOperations.Count > 0) {
-                    Operation incomingOperation = Client.IncomingOperations.Dequeue();
-                    bool isRegistrationSuccessful = incomingOperation.OperationParameters.Direction == OperationDirection.Identity
-                        && incomingOperation.OperationParameters.Type == OperationType.Register
-                        && incomingOperation.Name == Credentials.CurrentUsername
-                        && incomingOperation.IsSuccessfully;
-                    if (isRegistrationSuccessful) {
-                        MessageBox.Show("Регистрация прошла успешно");
-                        RegistrationVisibility = Visibility.Collapsed;
-                        break;
-                    }
-                }
-                if (attempts == 30) MessageBox.Show("Что-то пошло не так");
-                Thread.Sleep(100);
-            }
+            //Operation operation = new Operation(Credentials.CurrentUsername, Credentials.SecondPassword, OperationDirection.Identity, OperationType.Register);
+            //Client.SendMessage(operation);
+            //
+            //for (byte attempts = 0; attempts <= 30; attempts++) {
+            //    if (Client.IncomingOperations.Count > 0) {
+            //        Operation incomingOperation = Client.IncomingOperations.Dequeue();
+            //        bool isRegistrationSuccessful = incomingOperation.OperationParameters.Direction == OperationDirection.Identity
+            //            && incomingOperation.OperationParameters.Type == OperationType.Register
+            //            && incomingOperation.Name == Credentials.CurrentUsername
+            //            && incomingOperation.IsSuccessfully;
+            //        if (isRegistrationSuccessful) {
+            //            MessageBox.Show("Регистрация прошла успешно");
+            //            RegistrationVisibility = Visibility.Collapsed;
+            //            break;
+            //        }
+            //    }
+            //    if (attempts == 30) MessageBox.Show("Что-то пошло не так");
+            //    Thread.Sleep(100);
+            //}
         }));//создать тут проверку на заполненность полей
 
         public CustomCommand Login => login ?? (login = new CustomCommand(obj => {
-            Logging?.Invoke(this, new LoggingEventArgs(credentials.CurrentUsername, credentials.CurrentPassword));
+            LoggingIn?.Invoke(this, new LoggingInEventArgs(credentials.CurrentUsername, credentials.CurrentPassword));
         }));
         public Visibility RegistrationVisibility {
             get => registrationVisibility;
@@ -81,6 +82,5 @@ namespace RealtorObjects.ViewModel
 
         public CredentialData Credentials { get => credentials; set => credentials = value; }
 
-        public event LoggingEventHandler Logging;
     }
 }

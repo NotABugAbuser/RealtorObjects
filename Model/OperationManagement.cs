@@ -20,9 +20,10 @@ namespace RealtorObjects.Model
         private Client client = null;
         private Credential credential = null;
         private Dispatcher dispatcher;
-        public LoggedEventHandler Logged;
-        public UpdateFlatEventHandler UpdateFlat;
-        public DeleteFlatEventHandler DeleteFlat;
+        public event UpdateFlatEventHandler UpdateFlat;
+        public event DeleteFlatEventHandler DeleteFlat;
+        public event UpdateHouseEventHandler UpdateHouse;
+        public event DeleteHouseEventHandler DeleteHouse;
 
         public OperationManagement()
         {
@@ -42,7 +43,7 @@ namespace RealtorObjects.Model
                 while (true)
                 {
                     while (client.IncomingOperations.Count > 0)
-                        HandleOperation(client.IncomingOperations.Dequeue());
+                        HandleResponse(client.IncomingOperations.Dequeue());
                     Thread.Sleep(100);
                 }
             });
@@ -60,28 +61,66 @@ namespace RealtorObjects.Model
             credential.Password = password;
             client.SendMessage(new Operation(name, password, OperationDirection.Identity, OperationType.Register));
         }
-
-        private void HandleOperation(Operation operation)
+        public void SendFlat(Flat flat, OperationType operationType)
         {
-            if (operation.OperationParameters.Direction == OperationDirection.Identity && operation.IsSuccessfully)
+            String json = JsonSerializer.Serialize<Flat>(flat);
+            client.SendMessage(new Operation(credential.Name, json, OperationDirection.Realty, operationType));
+        }
+
+        private void HandleResponse(Operation operation)
+        {
+            if (operation.OperationParameters.Direction == OperationDirection.Identity)
+                HandleIdentityResponse(operation);
+            else if (operation.OperationParameters.Direction == OperationDirection.Realty)
+                HandleRealtyResponse(operation);
+        }
+        private void HandleIdentityResponse(Operation operation)
+        {
+            if (operation.Name == credential.Name && operation.IsSuccessfully)
             {
-                if (operation.OperationParameters.Type == OperationType.Login) HandleLoginResponse(operation);
-                //else if(operation.OperationParameters.Type == OperationType.Logout)
-                //else if(operation.OperationParameters.Type == OperationType.Register)
-                //else if(operation.OperationParameters.Type == OperationType.ToFire)
+                if (operation.OperationParameters.Type == OperationType.Login) credential.OnLoggedIn();
+                else if (operation.OperationParameters.Type == OperationType.Logout) credential.OnLoggedOut();
+                else if (operation.OperationParameters.Type == OperationType.Register) credential.OnRegistered();
             }
-            else if (operation.OperationParameters.Direction == OperationDirection.Realty && !operation.IsSuccessfully)
+            else if (operation.Name != credential.Name)
             {
-                if (operation.OperationParameters.Type == OperationType.Add || operation.OperationParameters.Type == OperationType.Change) 
-                    UpdateFlat?.Invoke(this, new UpdateFlatEventArgs(JsonSerializer.Deserialize<Flat>(operation.Data)));
-                else if(operation.OperationParameters.Type == OperationType.Remove)
-                    DeleteFlat?.Invoke(this, new DeleteFlatEventArgs(JsonSerializer.Deserialize<Flat>(operation.Data)));
+                MessageBox.Show("Неправильное имя пользователя");
+            }
+            else if (!operation.IsSuccessfully)
+            {
+                if (operation.OperationParameters.Type == OperationType.Login)
+                    MessageBox.Show("Операция входа не была успешна");
+                else if (operation.OperationParameters.Type == OperationType.Logout)
+                    MessageBox.Show("Операция выхода не была успешна");
+                else if (operation.OperationParameters.Type == OperationType.Register)
+                    MessageBox.Show("Операция регистрации не была успешна");
+                else if (operation.OperationParameters.Type == OperationType.ToFire)
+                    MessageBox.Show("Операция увольнения не была успешна");
             }
         }
-        private void HandleLoginResponse(Operation operation)
+        private void HandleRealtyResponse(Operation operation)
         {
-            if (operation.Name == credential.Name)
-                credential.OnLoggedIn();
+            try
+            {
+                if (operation.OperationParameters.Target == TargetType.Flat)
+                {
+                    if (operation.OperationParameters.Type == OperationType.Add || operation.OperationParameters.Type == OperationType.Change)
+                        UpdateFlat?.Invoke(this, new UpdateFlatEventArgs(JsonSerializer.Deserialize<Flat>(operation.Data)));
+                    else if (operation.OperationParameters.Type == OperationType.Remove)
+                        DeleteFlat?.Invoke(this, new DeleteFlatEventArgs(JsonSerializer.Deserialize<Flat>(operation.Data)));
+                }
+                else if (operation.OperationParameters.Target == TargetType.House)
+                {
+                    if (operation.OperationParameters.Type == OperationType.Add || operation.OperationParameters.Type == OperationType.Change)
+                        UpdateHouse?.Invoke(this, new UpdateHouseEventArgs(JsonSerializer.Deserialize<House>(operation.Data)));
+                    else if (operation.OperationParameters.Type == OperationType.Remove)
+                        DeleteHouse?.Invoke(this, new DeleteHouseEventArgs(JsonSerializer.Deserialize<House>(operation.Data)));
+                }
+            }
+            catch (Exception)
+            {
+
+            }
         }
     }
 }

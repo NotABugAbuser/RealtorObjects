@@ -21,8 +21,14 @@ namespace RealtorObjects
     /// </summary>
     public partial class App : Application
     {
-        private FlatFormViewModel flatFormVM = new FlatFormViewModel();
-        private LoginFormViewModel loginFormVM = new LoginFormViewModel();
+        //КАНДИДАТЫ НА УДАЛЕНИЕ
+        private void PassClientToViewModels()
+        {
+            //this.HomeVM.Client = this.Client;
+            //this.MainWindowVM.Client = this.Client;
+        }
+        
+        
         private MainWindowViewModel mainWindowVM = new MainWindowViewModel();
         private HomeViewModel homeVM = new HomeViewModel();
         private Credential credential = new Credential(Dispatcher.CurrentDispatcher);
@@ -36,36 +42,31 @@ namespace RealtorObjects
             base.OnStartup(e);
             InitializeMainMembers();
             BindEvents();
-            PassClientToViewModels();
+
             Client.ConnectAsync();
             OpenLoadingForm();
             operationManagement.AwaitOperationAsync();
         }
-        private void PassClientToViewModels()
-        {
-            this.FlatFormVM.Client = this.Client;
-            this.HomeVM.Client = this.Client;
-            this.MainWindowVM.Client = this.Client;
-            this.LoginFormVM.Client = this.Client;
-        }
         private void InitializeMainMembers()
         {
             operationManagement = new OperationManagement(client, credential, Dispatcher);
-            //вариант для тестов и отладки
-            //this.FlatFormVM.FlatCreated = HomeVM.RealtorObjectHandler.HandleFlat; //правильный вариант
             MainWindow = new MainWindowV2 { DataContext = MainWindowVM };
             MainWindowVM.ViewModels[0] = HomeVM;
             MainWindowVM.WorkArea = HomeVM;
         }
         private void BindEvents()
         {
-            FlatFormVM.FlatCreated = HomeVM.HandleFlat;
             Client.Connected += () => { OpenLoginForm(); TestAutoLoginMeth(); };
             Client.LostConnection += () => Reconnect();
-            LoginFormVM.Logging += (s, e) => operationManagement.Login(e.UserName, e.Password);
-            credential.LoggedIn += () => OpenMainWindow();
+
+            credential.LoggedIn += (s, e) => OpenMainWindow();
+            credential.LoggedOut += (s, e) => OpenLoginForm();
+            credential.Registered += (s, e) => MessageBox.Show("Регистрация прошла успешно");
+            
             operationManagement.UpdateFlat += (s, e) => HomeVM.RealtorObjectOperator.UpdateFlat(e.Flat);
             operationManagement.DeleteFlat += (s, e) => HomeVM.RealtorObjectOperator.DeleteFlat(e.Flat);
+            //operationManagement.UpdateHouse += (s, e) => HomeVM.RealtorObjectOperator.UpdateFlat(e.Flat);
+            //operationManagement.DeleteHouse += (s, e) => HomeVM.RealtorObjectOperator.DeleteFlat(e.Flat);
         }
 
         private void TestAutoLoginMeth()
@@ -83,14 +84,15 @@ namespace RealtorObjects
         private void OpenLoginForm()
         {
             loadingForm.Close();
-            loginForm = new LoginForm() { DataContext = LoginFormVM };
+            loginForm = new LoginForm() { DataContext = new LoginFormViewModel() };
+            ((LoginFormViewModel)loginForm.DataContext).LoggingIn += (s, e) => operationManagement.Login(e.UserName, e.Password);
             loginForm.Show();
         }
         private void OpenMainWindow()
         {
-            if (loginForm.IsActive)
+            //if (loginForm.IsActive)
                 loginForm.Close();
-            else if (loadingForm.IsActive)
+            //else if (loadingForm.IsActive)
                 loadingForm.Close();
             Client.Connected += () => OpenMainWindow();
             MainWindow.Show();
@@ -115,16 +117,8 @@ namespace RealtorObjects
             get => client;
             private set => client = value;
         }
-        public FlatFormViewModel FlatFormVM
-        {
-            get => flatFormVM;
-            private set => flatFormVM = value;
-        }
-        public LoginFormViewModel LoginFormVM
-        {
-            get => loginFormVM;
-            private set => loginFormVM = value;
-        }
+        public Credential Credential { get => credential; private set => credential = value; }
+        public OperationManagement OperationManagement { get => operationManagement; private set => operationManagement = value; }
         public MainWindowViewModel MainWindowVM
         {
             get => mainWindowVM;

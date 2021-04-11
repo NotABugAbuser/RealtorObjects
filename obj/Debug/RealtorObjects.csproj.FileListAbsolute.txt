@@ -153,7 +153,6 @@ C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\FontAwesome.WPF.dll
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\Microsoft.Expression.Interactions.dll
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\MiscUtil.dll
-C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\RealtyModel.dll
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Buffers.dll
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Memory.dll
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Numerics.Vectors.dll
@@ -410,3 +409,4 @@ C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\RandomFlatGenerator.pdb
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\RealtyModel.pdb
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\System.Data.SQLite.xml
 C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\HomeV2.baml
+C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\RealtyModel.dll

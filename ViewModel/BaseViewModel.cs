@@ -12,12 +12,12 @@ namespace RealtorObjects.ViewModel
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
-        private Client client = new Client();
-        internal Client Client
-        {
-            get => client;
-            set => client = value;
-        }
+        //private Client client = new Client();
+        //internal Client Client
+        //{
+        //    get => client;
+        //    set => client = value;
+        //}
         public void OnPropertyChanged([CallerMemberName] string property = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
