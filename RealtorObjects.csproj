@@ -73,7 +73,7 @@
     </Reference>
     <Reference Include="RealtyModel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\realtymodel\bin\Debug\RealtyModel.dll</HintPath>
+      <HintPath>..\realtorproject\realtymodel\bin\Debug\RealtyModel.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -147,6 +147,9 @@
     <Compile Include="ViewModel\FlatFormViewModel.cs" />
     <Compile Include="View\Converters\BoolToVisibilityReversedConverter.cs" />
     <Compile Include="View\Converters\ObjectAndPropertyMultiValueConverter.cs" />
+    <Compile Include="View\Converters\StatusEngToRusConverter.cs" />
+    <Compile Include="View\Converters\StatusToBorderColorConverter.cs" />
+    <Compile Include="View\Converters\StatusToColorConverter.cs" />
     <Compile Include="View\Converters\StatusToVisibilityConverter.cs" />
     <Compile Include="View\Converters\SymbolToStarConverter.cs" />
     <Compile Include="View\Customers.xaml.cs">

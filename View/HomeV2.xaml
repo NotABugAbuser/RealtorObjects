@@ -20,11 +20,49 @@
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
+        <ControlTemplate TargetType="Button" x:Key="TrashButtonTemplate">
+            <fa:ImageAwesome 
+                Height="{TemplateBinding Height}"
+                Width="{TemplateBinding Width}"
+                VerticalAlignment="Bottom"
+                Foreground="{TemplateBinding Foreground}"
+                Icon="Regular_TrashAlt"/>
+        </ControlTemplate>
+        <ControlTemplate TargetType="Button" x:Key="ModifyButtonTemplate">
+            <fa:ImageAwesome 
+                Height="{TemplateBinding Height}"
+                Width="{TemplateBinding Width}"
+                VerticalAlignment="Bottom"
+                Foreground="{TemplateBinding Foreground}"
+                Icon="Solid_PencilAlt"/>
+        </ControlTemplate>
+        <Style TargetType="Button" x:Key="ActionButton">
+            <Setter Property="Foreground" Value="{StaticResource PrimaryViolet}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Width" Value="20"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource LightPrimaryViolet}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource ActionButton}" x:Key="TrashButton">
+            <Setter Property="Template" Value="{StaticResource TrashButtonTemplate}"/>
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource ActionButton}" x:Key="ModifyButton">
+            <Setter Property="Template" Value="{StaticResource ModifyButtonTemplate}"/>
+        </Style>
+        <c:StatusToBorderColorConverter x:Key="StatusToBorderColor"/>
+        <c:StatusToColorConverter x:Key="StatusToColor"/>
+        <c:StatusEngToRusConverter x:Key="StatusEngToRus"/>
         <ControlTemplate x:Key="ObjectListItemTemplate">
-            <Grid 
+            <Grid
+                SnapsToDevicePixels="True"
                 Height="54">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="175"/>
                     <ColumnDefinition Width="120"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -32,7 +70,12 @@
                     <ColumnDefinition Width="110"/>
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
+                <TextBlock
+                    Margin="30,0,0,0"
+                    Style="{StaticResource RegularText}"
+                    Text="{Binding Id}"/>
                 <Image
+                    Grid.Column="1"
                     Source="./Image/BlankImage.png"
                     Height="40"
                     HorizontalAlignment="Left"
@@ -41,7 +84,7 @@
                     VerticalAlignment="Center"/>
                 <Grid
                     VerticalAlignment="Center"
-                    Grid.Column="1">
+                    Grid.Column="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="20"/>
                         <ColumnDefinition Width="*"/>
@@ -54,37 +97,58 @@
                         Margin="5,0,0,0"
                         Grid.Column="1"
                         Style="{StaticResource RegularText}"
-                        Text="42кв м"/>
+                        Text="{Binding StringFormat='0 кв м', Path=Cost.Area}"/>
                 </Grid>
-                <TextBlock
-                    Grid.Column="2"
-                    Style="{StaticResource RegularText}"
-                    TextTrimming="WordEllipsis"
-                    Text="Кулаков Валерий"/>
                 <TextBlock
                     Grid.Column="3"
                     Style="{StaticResource RegularText}"
                     TextTrimming="WordEllipsis"
-                    Text="Соколовского 2, к16"/>
+                    Text="{Binding Customer.Name}"/>
                 <TextBlock
                     Grid.Column="4"
                     Style="{StaticResource RegularText}"
-                    Text="20 000 000"/>
+                    TextTrimming="WordEllipsis">
+                    <Run Text="{Binding Location.Street.Name}"/>
+                    <Run Text="{Binding Path=Location.HouseNumber}"/>
+                    <Run Text="{Binding Path=Location.FlatNumber, StringFormat=' Кв 0'}"/>
+                </TextBlock>
+                <TextBlock
+                    Grid.Column="5"
+                    Style="{StaticResource RegularText}"
+                    Text="{Binding Path=Cost.Price, StringFormat=' {0:### ### ##0 ₽}'}"/>
                 <Border
+                    x:Name="PART_StatusBorder"
                     Height="20"
                     Width="80"
                     CornerRadius="10"
                     HorizontalAlignment="Left"
-                    Background="#D1EAD2"
-                    Grid.Column="5">
+                    Background="{Binding Status, Converter={StaticResource StatusToBorderColor}}"
+                    Grid.Column="6">
                     <TextBlock 
+                        x:Name="PART_StatusText"
                         HorizontalAlignment="Center"
                         Margin="0,0,0,3"
                         FontFamily="tahoma"
                         Style="{StaticResource RegularText}"
-                        Foreground="#6BBE6F"
-                        Text="Активный"/>
+                        Foreground="{Binding Status, Converter={StaticResource StatusToColor}}"
+                        Text="{Binding Status, Converter={StaticResource StatusEngToRus}}"/>
                 </Border>
+                <StackPanel
+                    Margin="8,0,0,0"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Grid.Column="7">
+                    <Button
+                        Margin="0,0,15,0"
+                        Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DataContext.Modify}"
+                        CommandParameter="{Binding .}"
+                        Style="{StaticResource ModifyButton}"/>
+                    <Button
+                        Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DataContext.Delete}"
+                        CommandParameter="{Binding .}"
+                        Style="{StaticResource TrashButton}"/>
+                </StackPanel>
             </Grid>
         </ControlTemplate>
         <Style TargetType="ListBoxItem" x:Key="ObjectItemContainerStyle">
@@ -105,11 +169,88 @@
             <Setter Property="FontSize" Value="15"/>
             <Setter Property="FontFamily" Value="{StaticResource VAGWorld}"/>
         </Style>
+        <Style TargetType="Button" x:Key="HeaderButton">
+            <Setter Property="Background" Value="{StaticResource PrimaryViolet}"/>
+            <Setter Property="BorderBrush" Value="#553EB5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Margin" Value="0,0,30,0"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontFamily" Value="{StaticResource Helvetica}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            CornerRadius="5"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            Background="{TemplateBinding Background}">
+                            <ContentPresenter
+                                Margin="0,0,7,0"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightPrimaryViolet}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SecondaryViolet}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <ControlTemplate TargetType="Button" x:Key="FilterVisibilityTemplate">
+            <Border
+                CornerRadius="5"
+                BorderThickness="1"
+                BorderBrush="{StaticResource SecondaryViolet}"
+                Background="{TemplateBinding Background}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="27"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <fa:ImageAwesome
+                        Name="PART_Angle"
+                        Height="8"
+                        Width="8"
+                        Icon="Solid_AngleLeft"
+                        Foreground="White"/>
+                    <TextBlock
+                        Grid.Column="1"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        FontFamily="{StaticResource Helvetica}"
+                        Text="Фильтры"/>
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DataContext.WidthOfFilters}" Value="200">
+                    <Setter TargetName="PART_Angle" Property="RenderTransform">
+                        <Setter.Value>
+                            <RotateTransform Angle="180" CenterX="4" CenterY="4"/>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Style TargetType="Button" x:Key="FilterVisibility" BasedOn="{StaticResource HeaderButton}">
+            <Setter Property="Template" Value="{StaticResource FilterVisibilityTemplate}"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,0,0"/>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="{Binding WidthOfFilters}"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -130,7 +271,8 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="175"/>
                     <ColumnDefinition Width="120"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -140,32 +282,39 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock
                     Margin="30,0,0,0"
+                    FontWeight="Bold"
                     Style="{StaticResource HeaderText}"
-                    Grid.Column="0"
+                    Text="№"/>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Margin="0,0,20,0"
+                    Style="{StaticResource HeaderText}"
+                    Grid.Column="1"
                     Text="Фото"/>
                 <TextBlock
                     Style="{StaticResource HeaderText}"
-                    Grid.Column="1"
+                    Grid.Column="2"
                     Text="Объект"/>
                 <TextBlock
                     Style="{StaticResource HeaderText}"
-                    Grid.Column="2"
+                    Grid.Column="3"
                     Text="Клиент"/>
                 <TextBlock
                     Style="{StaticResource HeaderText}"
-                    Grid.Column="3"
+                    Grid.Column="4"
                     Text="Адрес"/>
                 <TextBlock
                     Style="{StaticResource HeaderText}"
-                    Grid.Column="4"
+                    Grid.Column="5"
                     Text="Цена"/>
                 <TextBlock
+                    Margin="15,0,0,0"
                     Style="{StaticResource HeaderText}"
-                    Grid.Column="5"
+                    Grid.Column="6"
                     Text="Статус"/>
                 <TextBlock
                     Style="{StaticResource HeaderText}"
-                    Grid.Column="6"
+                    Grid.Column="7"
                     Text="Действия"/>
                 <ListBox
                     Grid.Row="1"
@@ -174,14 +323,59 @@
                     Style="{StaticResource ObjectListBox}"
                     Background="Transparent" 
                     ScrollViewer.VerticalScrollBarVisibility="Hidden" 
-                    ItemsSource="{Binding FilterAreaSections}">
+                    ItemsSource="{Binding CurrentObjectList}">
                 </ListBox>
             </Grid>
         </Border>
+        <Grid
+            VerticalAlignment="Top"
+            Margin="15,0"
+            Height="63">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="210"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                VerticalAlignment="Center"
+                HorizontalAlignment="Left"
+                Margin="30,0,0,0"
+                FontFamily="{StaticResource Helvetica}"
+                FontSize="21"
+                Text="Недвижимость"/>
+            <StackPanel 
+                Grid.Column="1"
+                Orientation="Horizontal">
+                <Button
+                    Style="{StaticResource HeaderButton}"
+                    Grid.Column="1"
+                    Command="{Binding CreateRealtorObject}"
+                    CommandParameter="Flat"
+                    Content="+ Квартира"/>
+                <Button
+                    Style="{StaticResource HeaderButton}"
+                    Grid.Column="1"
+                    Command="{Binding FilterCollection}"
+                    Content="+ Дом"/>
+                <Button
+                    Style="{StaticResource HeaderButton}"
+                    Grid.Column="1"
+                    Command="{Binding TestCommand}"
+                    Content="+ Участок"/>
+            </StackPanel>
+            <Button
+                Command="{Binding OpenCloseFilters}"
+                Grid.Column="2"
+                Style="{StaticResource FilterVisibility}"/>
+        </Grid>
         <Border 
             Background="{StaticResource PrimaryViolet}"
             Grid.Column="2">
-            
+            <Border.Resources>
+                <Style TargetType="CheckBox" BasedOn="{StaticResource BlueCheckBoxStyle}" x:Key="VioletCheckBox">
+                    
+                </Style>
+            </Border.Resources>
         </Border>
     </Grid>
 </UserControl>

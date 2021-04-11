@@ -33,6 +33,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand delete;
         private CustomCommand modify;
         private CustomCommand createRealtorObject;
+        private CustomCommand openCloseFilters;
         private Filter filter = new Filter();
         private RealtorObjectOperator realtorObjectOperator = new RealtorObjectOperator();
         private ObservableCollection<CheckAndHeightPair> filterAreaSections = new ObservableCollection<CheckAndHeightPair>() {
@@ -47,7 +48,7 @@ namespace RealtorObjects.ViewModel
             new CheckAndHeightPair(false, 50),
             new CheckAndHeightPair(false, 50),
         };
-
+        private double widthOfFilters = 200;
         public HomeViewModel() {
             RealtorObjectOperator.Client = this.Client;
             TestMethod();
@@ -68,13 +69,19 @@ namespace RealtorObjects.ViewModel
             Flat flat = flatGenerator.CreateFlat();
             flat.Id = 9999;
             flat.Agent = "ГвоздиковЕА";
-            flat.Status = Status.Archived;
+            flat.Status = Status.Planned;
             CurrentObjectList.Add(flat);
             AllObjects.Add(flat);
         }
         #endregion
-        
-        
+
+        public CustomCommand OpenCloseFilters => openCloseFilters ?? (openCloseFilters = new CustomCommand(obj => {
+            if (WidthOfFilters == 200) {
+                WidthOfFilters = 0;
+            } else {
+                WidthOfFilters = 200;
+            }
+        }));
         public CustomCommand CreateRealtorObject => createRealtorObject ?? (createRealtorObject = new CustomCommand(obj => {
             string type = (string)obj;
             if (type == "House") RealtorObjectOperator.CreateHouse();
@@ -161,6 +168,13 @@ namespace RealtorObjects.ViewModel
         public RealtorObjectOperator RealtorObjectOperator {
             get => realtorObjectOperator;
             set => realtorObjectOperator = value;
+        }
+        public double WidthOfFilters {
+            get => widthOfFilters;
+            set {
+                widthOfFilters = value;
+                OnPropertyChanged();
+            }
         }
     }
 }

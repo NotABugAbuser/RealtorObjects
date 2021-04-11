@@ -70,14 +70,15 @@ namespace RealtorObjects
 
         private void TestAutoLoginMeth()
         {
-            credential.Name = "ГриньДВ";
+            credential.Name = "ГвоздиковЕА";
             credential.Password = "123";
-            client.SendMessage(new Operation("ГриньДВ", "123", OperationDirection.Identity, OperationType.Login));
+            client.SendMessage(new Operation("ГвоздиковЕА", "123", OperationDirection.Identity, OperationType.Login));
         }
         private void OpenLoadingForm()
         {
             loadingForm = new LoadingForm() { DataContext = new LoadingFormViewModel() };
             loadingForm.Show();
+            Thread.Sleep(1000);
         }
         private void OpenLoginForm()
         {
