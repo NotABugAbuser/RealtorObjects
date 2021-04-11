@@ -2,6 +2,7 @@
 using RealtorObjects.ViewModel;
 using RealtyModel.Event;
 using RealtyModel.Model;
+using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
 using System;
 using System.Collections.Generic;
@@ -61,6 +62,15 @@ namespace RealtorObjects.Model
         public void CreatePlot() {
         }
         public void ModifyPlot() {
+        }
+
+        public void UpdateFlat(Flat flat)
+        {
+
+        }
+        public void DeleteFlat(Flat flat)
+        {
+
         }
     }
 }

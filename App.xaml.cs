@@ -35,6 +35,7 @@ namespace RealtorObjects
         {
             base.OnStartup(e);
             InitializeMainMembers();
+            BindEvents();
             PassClientToViewModels();
             Client.ConnectAsync();
             OpenLoadingForm();
@@ -55,12 +56,16 @@ namespace RealtorObjects
             MainWindow = new MainWindowV2 { DataContext = MainWindowVM };
             MainWindowVM.ViewModels[0] = HomeVM;
             MainWindowVM.WorkArea = HomeVM;
+        }
+        private void BindEvents()
+        {
             FlatFormVM.FlatCreated = HomeVM.HandleFlat;
-
             Client.Connected += () => { OpenLoginForm(); TestAutoLoginMeth(); };
             Client.LostConnection += () => Reconnect();
             LoginFormVM.Logging += (s, e) => operationManagement.Login(e.UserName, e.Password);
             credential.LoggedIn += () => OpenMainWindow();
+            operationManagement.UpdateFlat += (s, e) => HomeVM.RealtorObjectOperator.UpdateFlat(e.Flat);
+            operationManagement.DeleteFlat += (s, e) => HomeVM.RealtorObjectOperator.DeleteFlat(e.Flat);
         }
 
         private void TestAutoLoginMeth()

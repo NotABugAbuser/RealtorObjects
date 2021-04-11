@@ -1,11 +1,13 @@
 ﻿using RealtorObjects.View;
 using RealtyModel.Event;
 using RealtyModel.Model;
+using RealtyModel.Model.Derived;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,8 +19,11 @@ namespace RealtorObjects.Model
     {
         private Client client = null;
         private Credential credential = null;
-        public LoggedEventHandler Logged;
         private Dispatcher dispatcher;
+        public LoggedEventHandler Logged;
+        public UpdateFlatEventHandler UpdateFlat;
+        public DeleteFlatEventHandler DeleteFlat;
+
         public OperationManagement()
         {
 
@@ -49,7 +54,7 @@ namespace RealtorObjects.Model
             credential.Password = password;
             client.SendMessage(new Operation(name, password, OperationDirection.Identity, OperationType.Login));
         }
-        public void Register(String name, String password) 
+        public void Register(String name, String password)
         {
             credential.Name = name;
             credential.Password = password;
@@ -58,129 +63,25 @@ namespace RealtorObjects.Model
 
         private void HandleOperation(Operation operation)
         {
-            try
+            if (operation.OperationParameters.Direction == OperationDirection.Identity && operation.IsSuccessfully)
             {
-                if (operation.OperationParameters.Direction == OperationDirection.Identity)
-                {
-                    if (operation.IsSuccessfully)
-                        HandleSuccessfulIdentity(operation);
-                    else
-                        HandleUnsuccessfulIdentity(operation);
-                }
-                else if (operation.OperationParameters.Direction == OperationDirection.Realty)
-                {
-                    if (operation.IsSuccessfully)
-                        HandleSuccessfulRealty(operation);
-                    else
-                        HandleSuccessfulRealty(operation);
-                }
+                if (operation.OperationParameters.Type == OperationType.Login) HandleLoginResponse(operation);
+                //else if(operation.OperationParameters.Type == OperationType.Logout)
+                //else if(operation.OperationParameters.Type == OperationType.Register)
+                //else if(operation.OperationParameters.Type == OperationType.ToFire)
             }
-            catch (Exception ex)
+            else if (operation.OperationParameters.Direction == OperationDirection.Realty && !operation.IsSuccessfully)
             {
-                Debug.WriteLine(ex.Message);
+                if (operation.OperationParameters.Type == OperationType.Add || operation.OperationParameters.Type == OperationType.Change) 
+                    UpdateFlat?.Invoke(this, new UpdateFlatEventArgs(JsonSerializer.Deserialize<Flat>(operation.Data)));
+                else if(operation.OperationParameters.Type == OperationType.Remove)
+                    DeleteFlat?.Invoke(this, new DeleteFlatEventArgs(JsonSerializer.Deserialize<Flat>(operation.Data)));
             }
         }
-        private void HandleSuccessfulIdentity(Operation operation)
+        private void HandleLoginResponse(Operation operation)
         {
-            switch (operation.OperationParameters.Type)
-            {
-                case OperationType.Login:
-                    {
-                        if (operation.Name == credential.Name)
-                            credential.OnLoggedIn();
-                        break;
-                    }
-                case OperationType.Logout:
-                    {
-                        break;
-                    }
-                case OperationType.Register:
-                    {
-                        break;
-                    }
-                case OperationType.ToFire:
-                    {
-                        break;
-                    }
-            }
-        }
-        private void HandleUnsuccessfulIdentity(Operation operation)
-        {
-            switch (operation.OperationParameters.Type)
-            {
-                case OperationType.Login:
-                    {
-                        //LoginVM.Message = "Логин не был успешным";
-                        break;
-                    }
-                case OperationType.Logout:
-                    {
-                        //LoginVM.Message = "Логаут не был успешным";
-                        break;
-                    }
-                case OperationType.Register:
-                    {
-                        //LoginVM.Message = "Регистрация не была успешной";
-                        break;
-                    }
-                case OperationType.ToFire:
-                    {
-                        //LoginVM.Message = "Удаление учётки не было успешным";
-                        break;
-                    }
-            }
-        }
-        private void HandleSuccessfulRealty(Operation operation)
-        {
-            switch (operation.OperationParameters.Type)
-            {
-                case OperationType.Add:
-                    {
-
-                        break;
-                    }
-                case OperationType.Change:
-                    {
-
-                        break;
-                    }
-                case OperationType.Remove:
-                    {
-
-                        break;
-                    }
-                case OperationType.Update:
-                    {
-
-                        break;
-                    }
-            }
-        }
-        private void HandleUnsuccessfullReality(Operation operation)
-        {
-            switch (operation.OperationParameters.Type)
-            {
-                case OperationType.Add:
-                    {
-                        //Сообщить о неуспешности
-                        break;
-                    }
-                case OperationType.Change:
-                    {
-                        //Сообщить о неуспешности
-                        break;
-                    }
-                case OperationType.Remove:
-                    {
-                        //Сообщить о неуспешности
-                        break;
-                    }
-                case OperationType.Update:
-                    {
-                        //Сообщить о неуспешности
-                        break;
-                    }
-            }
+            if (operation.Name == credential.Name)
+                credential.OnLoggedIn();
         }
     }
 }
