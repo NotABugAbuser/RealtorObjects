@@ -20,10 +20,6 @@ namespace RealtorObjects.Model
         private string secondPassword = "";
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void SetNewUsername()
-        {
-            CurrentUsername = $"{Surname}{Name[0]}{Patronymic[0]}";
-        }
         public void OnPropertyChanged([CallerMemberName] string property = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
@@ -53,7 +49,6 @@ namespace RealtorObjects.Model
             set
             {
                 name = value;
-                SetNewUsername();
                 OnPropertyChanged();
             }
         }
@@ -63,7 +58,6 @@ namespace RealtorObjects.Model
             set
             {
                 surname = value;
-                SetNewUsername();
                 OnPropertyChanged();
             }
         }
@@ -73,7 +67,6 @@ namespace RealtorObjects.Model
             set
             {
                 patronymic = value;
-                SetNewUsername();
                 OnPropertyChanged();
             }
         }

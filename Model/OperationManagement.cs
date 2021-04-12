@@ -55,11 +55,13 @@ namespace RealtorObjects.Model
             credential.Password = password;
             client.SendMessage(new Operation(name, password, OperationDirection.Identity, OperationType.Login));
         }
-        public void Register(String name, String password)
+        public void Register(String name, String password, String email)
         {
             credential.Name = name;
             credential.Password = password;
-            client.SendMessage(new Operation(name, password, OperationDirection.Identity, OperationType.Register));
+            credential.Email = email;
+            String json = JsonSerializer.Serialize<Credential>(credential);
+            client.SendMessage(new Operation(name, json, OperationDirection.Identity, OperationType.Register));
         }
         public void SendFlat(Flat flat, OperationType operationType)
         {

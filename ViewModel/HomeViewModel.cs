@@ -148,6 +148,7 @@ namespace RealtorObjects.ViewModel
         public HomeViewModel() {
             //RealtorObjectOperator.Client = this.Client;
             TestMethod();
+
         }
 
         public ObservableCollection<BaseRealtorObject> CurrentObjectList {

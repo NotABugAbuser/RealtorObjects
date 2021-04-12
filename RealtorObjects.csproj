@@ -288,9 +288,6 @@
     <Resource Include="View\Image\Plot.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="View\Image\BlankImage.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

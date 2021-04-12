@@ -27,8 +27,8 @@ namespace RealtorObjects
             //this.HomeVM.Client = this.Client;
             //this.MainWindowVM.Client = this.Client;
         }
-        
-        
+
+
         private MainWindowViewModel mainWindowVM = new MainWindowViewModel();
         private HomeViewModel homeVM = new HomeViewModel();
         private Credential credential = new Credential(Dispatcher.CurrentDispatcher);
@@ -56,13 +56,16 @@ namespace RealtorObjects
         }
         private void BindEvents()
         {
-            Client.Connected += () => { OpenLoginForm(); TestAutoLoginMeth(); };
+            Client.Connected += () => OpenLoginForm();
             Client.LostConnection += () => Reconnect();
 
             credential.LoggedIn += (s, e) => OpenMainWindow();
             credential.LoggedOut += (s, e) => OpenLoginForm();
-            credential.Registered += (s, e) => MessageBox.Show("Регистрация прошла успешно");
-            
+            credential.Registered += (s, e) =>
+            {
+                MessageBox.Show("Регистрация прошла успешно");
+                ((LoginFormViewModel)loginForm.DataContext).RegistrationVisibility = Visibility.Collapsed;
+            };
             operationManagement.UpdateFlat += (s, e) => HomeVM.RealtorObjectOperator.UpdateFlat(e.Flat);
             operationManagement.DeleteFlat += (s, e) => HomeVM.RealtorObjectOperator.DeleteFlat(e.Flat);
             //operationManagement.UpdateHouse += (s, e) => HomeVM.RealtorObjectOperator.UpdateFlat(e.Flat);
@@ -86,14 +89,16 @@ namespace RealtorObjects
             loadingForm.Close();
             loginForm = new LoginForm() { DataContext = new LoginFormViewModel() };
             ((LoginFormViewModel)loginForm.DataContext).LoggingIn += (s, e) => operationManagement.Login(e.UserName, e.Password);
+            ((LoginFormViewModel)loginForm.DataContext).Registering += (s, e) => operationManagement.Register(e.UserName, e.Password, e.Email);
             loginForm.Show();
+            //TestAutoLoginMeth();
         }
         private void OpenMainWindow()
         {
             //if (loginForm.IsActive)
-                loginForm.Close();
+            loginForm.Close();
             //else if (loadingForm.IsActive)
-                loadingForm.Close();
+            loadingForm.Close();
             Client.Connected += () => OpenMainWindow();
             MainWindow.Show();
         }
