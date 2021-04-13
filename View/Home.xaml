@@ -725,6 +725,7 @@
                             BorderBrush="#ccc">
                             <StackPanel>
                                 <Border
+                                    Visibility="Collapsed"
                                     Height="{Binding FilterAreaSections[0].Height}"
                                     Style="{StaticResource FilterAreaSection}">
                                     <Grid>
@@ -762,6 +763,7 @@
                                     </Grid>
                                 </Border>
                                 <Border
+                                    Visibility="Collapsed"
                                     Height="{Binding FilterAreaSections[1].Height}"
                                     Style="{StaticResource FilterAreaSection}">
                                     <Grid>
@@ -799,6 +801,7 @@
                                     </Grid>
                                 </Border>
                                 <Border
+                                    Visibility="Collapsed"
                                     Height="{Binding FilterAreaSections[2].Height}"
                                     Style="{StaticResource FilterAreaSection}">
                                     <Grid>
@@ -846,6 +849,7 @@
                                     </Grid>
                                 </Border>
                                 <Border
+                                    Visibility="Collapsed"
                                     Height="{Binding FilterAreaSections[3].Height}"
                                     Style="{StaticResource FilterAreaSection}">
                                     <Grid>
@@ -888,7 +892,8 @@
                                         </StackPanel>
                                     </Grid>
                                 </Border>
-                                <Border
+                                <Border 
+                                    Visibility="Collapsed"
                                     Height="{Binding FilterAreaSections[4].Height}"
                                     Style="{StaticResource FilterAreaSection}">
                                     <Grid>

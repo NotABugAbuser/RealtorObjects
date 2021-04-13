@@ -175,7 +175,7 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Height" Value="40"/>
             <Setter Property="Width" Value="100"/>
-            <Setter Property="Margin" Value="0,0,30,0"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="FontFamily" Value="{StaticResource Helvetica}"/>
             <Setter Property="Foreground" Value="White"/>
@@ -246,6 +246,112 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Margin" Value="0,0,0,0"/>
         </Style>
+        <Style TargetType="CheckBox" BasedOn="{StaticResource BlueCheckBoxStyle}" x:Key="VioletCheckBox">
+            <Setter Property="Foreground" Value="#59667A"/>
+            <Setter Property="Margin" Value="35,3,0,3"/>
+            <Setter Property="FontFamily" Value="{StaticResource Helvetica}"/>
+        </Style>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource HeaderText}" x:Key="FilterHeaderText">
+            <Setter Property="Margin" Value="25, 10"/>
+        </Style>
+        <ControlTemplate x:Key="SliderThumbHorizontalDefault" TargetType="{x:Type Thumb}">
+            <Grid HorizontalAlignment="Center" UseLayoutRounding="True" VerticalAlignment="Center">
+                <Path 
+                    x:Name="grip" 
+                    Data="M 0,0 C0,0 11,0 11,0 11,0 11,18 11,18 11,18 0,18 0,18 0,18 0,0 0,0 z" 
+                    Fill="{StaticResource PrimaryViolet}" 
+                    Stretch="Fill" 
+                    SnapsToDevicePixels="True" 
+                    Stroke="{StaticResource PrimaryViolet}" 
+                    StrokeThickness="1" 
+                    UseLayoutRounding="True" 
+                    VerticalAlignment="Center"/>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Fill" TargetName="grip" Value="{StaticResource LightPrimaryViolet}"/>
+                </Trigger>
+                <Trigger Property="IsDragging" Value="true">
+                    <Setter Property="Fill" TargetName="grip" Value="{StaticResource LightPrimaryViolet}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Style x:Key="RepeatButtonWithColor" TargetType="{x:Type RepeatButton}">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Grid>
+                            <Rectangle Fill="{TemplateBinding Background}" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}"/>
+                            <Rectangle Fill="{StaticResource SecondaryViolet}" VerticalAlignment="Center" Height="4"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <ControlTemplate x:Key="VioletSliderHorizontal" TargetType="{x:Type Slider}">
+            <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TickBar x:Name="TopTick" Fill="{TemplateBinding Foreground}" Height="4" Margin="0,0,0,2" Placement="Top" Grid.Row="0" Visibility="Collapsed"/>
+                    <TickBar x:Name="BottomTick" Fill="{TemplateBinding Foreground}" Height="4" Margin="0,2,0,0" Placement="Bottom" Grid.Row="2" Visibility="Collapsed"/>
+                    <Border x:Name="TrackBackground" BorderBrush="#FFD6D6D6" BorderThickness="1" Background="#FFE7EAEA" Height="4.0" Margin="5,0" Grid.Row="1" VerticalAlignment="center">
+                        <Canvas Margin="-6,-1">
+                            <Rectangle x:Name="PART_SelectionRange" Fill="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Height="4.0" Visibility="Hidden"/>
+                        </Canvas>
+                    </Border>
+                    <Track x:Name="PART_Track" Grid.Row="1">
+                        <Track.DecreaseRepeatButton>
+                            <RepeatButton 
+                                Command="{x:Static Slider.DecreaseLarge}" 
+                                Style="{StaticResource RepeatButtonWithColor}"/>
+                        </Track.DecreaseRepeatButton>
+                        <Track.IncreaseRepeatButton>
+                            <RepeatButton 
+                                Command="{x:Static Slider.IncreaseLarge}" 
+                                Style="{StaticResource RepeatButtonTransparent}"/>
+                        </Track.IncreaseRepeatButton>
+                        <Track.Thumb>
+                            <Thumb 
+                                x:Name="Thumb" 
+                                Focusable="False" 
+                                Height="18" 
+                                OverridesDefaultStyle="True" 
+                                Template="{StaticResource SliderThumbHorizontalDefault}" VerticalAlignment="Center" Width="11"/>
+                        </Track.Thumb>
+                    </Track>
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="TickPlacement" Value="Both">
+                    <Setter Property="Visibility" TargetName="TopTick" Value="Visible"/>
+                    <Setter Property="Visibility" TargetName="BottomTick" Value="Visible"/>
+                </Trigger>
+                <Trigger Property="IsSelectionRangeEnabled" Value="true">
+                    <Setter Property="Visibility" TargetName="PART_SelectionRange" Value="Visible"/>
+                </Trigger>
+                <Trigger Property="IsKeyboardFocused" Value="true">
+                    <Setter Property="Foreground" TargetName="Thumb" Value="Blue"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Style TargetType="Slider" x:Key="FilterAreaSlider">
+            <Setter Property="Template" Value="{StaticResource VioletSliderHorizontal}"/>
+            <Setter Property="IsSnapToTickEnabled" Value="True"/>
+            <Setter Property="Margin" Value="35,5"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource RegularText}" x:Key="RegularFilterText">
+            <Setter Property="Margin" Value="35,0"/>
+        </Style>
+        <c:BoolToVisibilityReversedConverter x:Key="BoolToVisibilityReversed"/>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -328,6 +434,7 @@
             </Grid>
         </Border>
         <Grid
+            Grid.ColumnSpan="2"
             VerticalAlignment="Top"
             Margin="15,0"
             Height="63">
@@ -355,7 +462,6 @@
                 <Button
                     Style="{StaticResource HeaderButton}"
                     Grid.Column="1"
-                    Command="{Binding FilterCollection}"
                     Content="+ Дом"/>
                 <Button
                     Style="{StaticResource HeaderButton}"
@@ -367,15 +473,255 @@
                 Command="{Binding OpenCloseFilters}"
                 Grid.Column="2"
                 Style="{StaticResource FilterVisibility}"/>
+            <Button
+                Command="{Binding FilterCollection}"
+                Grid.Column="2"
+                Style="{StaticResource HeaderButton}"
+                HorizontalAlignment="Right"
+                Content="  Применить"
+                Margin="0,0,110,0"/>
         </Grid>
         <Border 
-            Background="{StaticResource PrimaryViolet}"
+            CornerRadius="5"
+            Background="White"
+            Margin="0,63,15,63"
             Grid.Column="2">
-            <Border.Resources>
-                <Style TargetType="CheckBox" BasedOn="{StaticResource BlueCheckBoxStyle}" x:Key="VioletCheckBox">
-                    
-                </Style>
-            </Border.Resources>
+            <Border.Effect>
+                <DropShadowEffect 
+                    Opacity="0.2"
+                    BlurRadius="10"
+                    ShadowDepth="0"/>
+            </Border.Effect>
+            <ScrollViewer
+                VerticalScrollBarVisibility="Hidden"
+                HorizontalScrollBarVisibility="Disabled">
+                <StackPanel
+                    Orientation="Vertical">
+                    <TextBlock
+                        Style="{StaticResource FilterHeaderText}"
+                        Text="Тип объекта"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsFlat}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Квартира"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsPlot}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Участок"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsHouse}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Частный дом"/>
+                    <TextBlock
+                        Style="{StaticResource FilterHeaderText}"
+                        Text="Статус"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsActive}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Активный"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsPlanned}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Запланирован"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsArchived}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Архивный"/>
+                    <TextBlock
+                        Style="{StaticResource FilterHeaderText}"
+                        Text="Стоимость"/>
+                    <TextBlock
+                        Margin="35,0"
+                        Style="{StaticResource RegularText}"
+                        Text="{Binding StringFormat='От: {0:### ### ##0}', Path=Filter.MinimumPrice}"/>
+                    <Slider
+                        Style="{StaticResource FilterAreaSlider}"
+                        Value="{Binding Filter.MinimumPrice, UpdateSourceTrigger=PropertyChanged}"
+                        Maximum="20000000"
+                        TickFrequency="100000"
+                        LargeChange="1000000"/>
+                    <TextBlock
+                        Style="{StaticResource RegularText}"
+                        Margin="35,0"
+                        Text="{Binding StringFormat='До: {0:### ### ##0}', Path=Filter.MaximumPrice}"/>
+                    <Slider
+                        Style="{StaticResource FilterAreaSlider}"
+                        Value="{Binding Filter.MaximumPrice, UpdateSourceTrigger=PropertyChanged}"
+                        TickFrequency="100000"
+                        Maximum="20000000"
+                        LargeChange="1000000"/>
+                    <CheckBox
+                        Style="{StaticResource VioletCheckBox}"
+                        IsChecked="{Binding Filter.HasMortgage}"
+                        Content="Ипотека"/>
+                    <TextBlock
+                        Style="{StaticResource FilterHeaderText}"
+                        Text="Площадь"/>
+                    <TextBlock
+                        Margin="35,0"
+                        Style="{StaticResource RegularText}"
+                        Text="{Binding StringFormat='От: {0:### ### ##0}', Path=Filter.MinimumArea}"/>
+                    <Slider
+                        Value="{Binding Filter.MinimumArea, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource FilterAreaSlider}"
+                        Maximum="1500"
+                        TickFrequency="10"
+                        LargeChange="10"/>
+                    <TextBlock
+                        Margin="35,0"
+                        Style="{StaticResource RegularText}"
+                        Text="{Binding StringFormat='До: {0:### ### ##0}', Path=Filter.MaximumArea}"/>
+                    <Slider
+                        Value="{Binding Filter.MaximumArea, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource FilterAreaSlider}"
+                        TickFrequency="10"
+                        Maximum="1500"
+                        LargeChange="10"/>
+                    <TextBlock
+                        Style="{StaticResource FilterHeaderText}"
+                        Text="Местоположение"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsAllCities}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Все города"/>
+                    <Grid>
+                        <StackPanel>
+                            <TextBlock
+                                Margin="35,5,35,0"
+                                Style="{StaticResource RegularFilterText}"
+                                Text="Город:"/>
+                            <ComboBox
+                                Text="{Binding Filter.City, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedItem="{Binding Filter.City}"
+                                Margin="35,2,35,0"
+                                Style="{StaticResource GreenComboBox}"/>
+                        </StackPanel>
+                        <Border
+                            Visibility="{Binding Filter.IsAllCities, Converter={StaticResource BoolToVisibilityReversed}}"
+                            Margin="35,21,35,0"
+                            Background="#ccc"
+                            Opacity="0.4"/>
+                    </Grid>
+                    <CheckBox
+                        Margin="35,20,35,5"
+                        IsChecked="{Binding Filter.IsAllDistricts}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Все районы"/>
+                    <Grid>
+                        <StackPanel>
+                            <TextBlock
+                                Style="{StaticResource RegularFilterText}"
+                                Text="Район:"/>
+                            <ComboBox
+                                Text="{Binding Filter.District, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedItem="{Binding Filter.District}"
+                                Margin="35,2,35,0"
+                                Style="{StaticResource GreenComboBox}"/>
+                        </StackPanel>
+                        <Border
+                            Visibility="{Binding Filter.IsAllDistricts, Converter={StaticResource BoolToVisibilityReversed}}"
+                            Margin="35,16,35,0"
+                            Background="#ccc"
+                            Opacity="0.4"/>
+                    </Grid>
+                    <TextBlock
+                        Style="{StaticResource FilterHeaderText}"
+                        Text="Состояние"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsEuro}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Евро"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsExcellent}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Отличное"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsGood}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Хорошее"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsLiving}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Жилое"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsCosmeticRequired}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Треб. косм. ремонт"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsMajorRequired}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Треб. кап. ремонт"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsWithoutDecoration}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Без отделки"/>
+                    <TextBlock
+                        Style="{StaticResource FilterHeaderText}"
+                        Text="Отопление"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsAGV}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="АГВ"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsBoiler}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Котел"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsLocal}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Местное"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsStove}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Печное"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsTPS}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="ТЭЦ"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsNozzle}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Форсунка"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsElectro}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Электро"/>
+                    <TextBlock
+                        Style="{StaticResource FilterHeaderText}"
+                        Text="Горячая вода"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsTPSWater}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="ТЭЦ"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsBoilerRoomWater}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Котельная"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsStandPipe}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Колонка"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsBoilerWater}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Котел"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsTrulyBoilerWater}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Бойлер"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsAGVWater}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="АГВ"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsElectroWater}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Электро"/>
+                    <TextBlock
+                        Style="{StaticResource FilterHeaderText}"
+                        Text="Год постройки"/>
+                </StackPanel>
+            </ScrollViewer>
         </Border>
     </Grid>
 </UserControl>

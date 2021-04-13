@@ -247,7 +247,6 @@ C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Te
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Text.Json.xml
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\System.ValueTuple.xml
-C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\System.Windows.Interactivity.xml
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\obj\Debug\RealtorObjects.csprojAssemblyReference.cache
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\obj\Debug\View\Customers.g.cs
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\obj\Debug\View\FlatFormV2.g.cs
@@ -410,3 +409,15 @@ C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\RealtyModel.pdb
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\System.Data.SQLite.xml
 C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\HomeV2.baml
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\RealtyModel.dll
+C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\bin\Debug\FontAwesome5.dll
+C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\bin\Debug\FontAwesome5.Net.dll
+C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\bin\Debug\FontAwesome5.xml
+C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\bin\Debug\FontAwesome5.Net.xml
+C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\HomeV2.g.cs
+C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\LoadingForm.g.cs
+C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\MainWindowV2.g.cs
+C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\NullDataTemplate.g.cs
+C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\HomeV2.baml
+C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\LoadingForm.baml
+C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\MainWindowV2.baml
+C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\NullDataTemplate.baml
