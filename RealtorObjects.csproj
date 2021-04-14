@@ -141,10 +141,14 @@
     <Compile Include="Model\RealtorObjectOperator.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
+    <Compile Include="ViewModel\HouseFormViewModel.cs" />
     <Compile Include="ViewModel\LoadingFormViewModel.cs" />
     <Compile Include="ViewModel\LoginFormViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\FlatFormViewModel.cs" />
+    <Compile Include="View\CircularProgressBar.xaml.cs">
+      <DependentUpon>CircularProgressBar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Converters\BoolToVisibilityReversedConverter.cs" />
     <Compile Include="View\Converters\ObjectAndPropertyMultiValueConverter.cs" />
     <Compile Include="View\Converters\StatusEngToRusConverter.cs" />
@@ -163,6 +167,9 @@
     </Compile>
     <Compile Include="View\HomeV2.xaml.cs">
       <DependentUpon>HomeV2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\HouseForm.xaml.cs">
+      <DependentUpon>HouseForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\LoadingForm.xaml.cs">
       <DependentUpon>LoadingForm.xaml</DependentUpon>
@@ -189,6 +196,10 @@
     <Compile Include="View\Statistics.xaml.cs">
       <DependentUpon>Statistics.xaml</DependentUpon>
     </Compile>
+    <Page Include="View\CircularProgressBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\Customers.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -210,6 +221,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\HomeV2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\HouseForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -35,14 +35,13 @@ namespace RealtorObjects.ViewModel
             string type = (string)obj;
             if (type == "House") RealtorObjectOperator.CreateHouse();
             if (type == "Flat") RealtorObjectOperator.CreateFlat();
-            if (type == "Plot") RealtorObjectOperator.CreatePlot();
         }));
         public CustomCommand Modify => modify ?? (modify = new CustomCommand(obj => {
             BaseRealtorObject bro = (BaseRealtorObject)obj;
             if (CheckAccess(bro.Agent, ((App)Application.Current).Credential.Name)) {
                 if (bro is Flat flat) RealtorObjectOperator.ModifyFlat(flat);
                 if (bro is House house) RealtorObjectOperator.ModifyHouse(house);
-                //добавить для Plot
+                //добавить для Plot 
             }
         }));
         public CustomCommand Delete => delete ?? (delete = new CustomCommand(obj => {
@@ -89,10 +88,13 @@ namespace RealtorObjects.ViewModel
             Int16 parts = (Int16)Math.Ceiling(filteredObjects.Count / (double)count);
             List<List<BaseRealtorObject>> lists = Enumerable.Range(0, parts).AsParallel().Select(x => filteredObjects.Skip(x * count).Take(count).ToList()).ToList();
             ObjectLists.Clear();
+            CurrentObjectList.Clear();
             foreach (List<BaseRealtorObject> ol in lists) {
                 ObjectLists.Add(new ObservableCollection<BaseRealtorObject>(ol));
             }
-            CurrentObjectList = ObjectLists[0];
+            if (ObjectLists.Count != 0) {
+                CurrentObjectList = ObjectLists[0];
+            }
         }
         public void HandleFlat(object sender, FlatCreatedEventArgs e) {
             //Operation operation = new Operation(Client.CurrentAgent, JsonSerializer.Serialize(e.Flat), OperationDirection.Realty, OperationType.Add, TargetType.Flat);

@@ -64,8 +64,8 @@
                     <ColumnDefinition Width="60"/>
                     <ColumnDefinition Width="175"/>
                     <ColumnDefinition Width="120"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition MinWidth="145" Width="*"/>
+                    <ColumnDefinition MinWidth="145" Width="*"/>
                     <ColumnDefinition Width="110"/>
                     <ColumnDefinition Width="110"/>
                     <ColumnDefinition Width="100"/>
@@ -160,6 +160,8 @@
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
             <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
             <Setter Property="ItemContainerStyle" Value="{StaticResource ObjectItemContainerStyle}"/>
         </Style>
         <Style TargetType="TextBlock" x:Key="HeaderText">
@@ -380,8 +382,8 @@
                     <ColumnDefinition Width="60"/>
                     <ColumnDefinition Width="175"/>
                     <ColumnDefinition Width="120"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition MinWidth="145" Width="*"/>
+                    <ColumnDefinition MinWidth="145" Width="*"/>
                     <ColumnDefinition Width="110"/>
                     <ColumnDefinition Width="110"/>
                     <ColumnDefinition Width="100"/>
@@ -425,10 +427,7 @@
                 <ListBox
                     Grid.Row="1"
                     Grid.ColumnSpan="8"
-                    Visibility="Visible"
                     Style="{StaticResource ObjectListBox}"
-                    Background="Transparent" 
-                    ScrollViewer.VerticalScrollBarVisibility="Hidden" 
                     ItemsSource="{Binding CurrentObjectList}">
                 </ListBox>
             </Grid>
@@ -512,6 +511,10 @@
                         IsChecked="{Binding Filter.IsHouse}"
                         Style="{StaticResource VioletCheckBox}"
                         Content="Частный дом"/>
+                    <CheckBox
+                        IsChecked="{Binding Filter.IsHouse}"
+                        Style="{StaticResource VioletCheckBox}"
+                        Content="Часть дома"/>
                     <TextBlock
                         Style="{StaticResource FilterHeaderText}"
                         Text="Статус"/>
@@ -717,9 +720,6 @@
                         IsChecked="{Binding Filter.IsElectroWater}"
                         Style="{StaticResource VioletCheckBox}"
                         Content="Электро"/>
-                    <TextBlock
-                        Style="{StaticResource FilterHeaderText}"
-                        Text="Год постройки"/>
                 </StackPanel>
             </ScrollViewer>
         </Border>

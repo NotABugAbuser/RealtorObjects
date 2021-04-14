@@ -5,12 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RealtorObjects.View"
         mc:Ignorable="d"
-        Title="LoadingForm" Height="100" Width="400" WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize">
-    <Grid Background="CornflowerBlue">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="80"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <TextBlock Text="{Binding Text}" Grid.Row="1" FontSize="15" TextAlignment="Center"/>
+        Title="LoadingForm" Height="250" Width="400" 
+        WindowStartupLocation="CenterScreen" 
+        WindowStyle="None" 
+        ResizeMode="NoResize">
+    <Grid Background="White">
+        <TextBlock 
+            Text="{Binding Text}" 
+            Grid.Row="1" 
+            Margin="0,70,0,0"
+            FontSize="11"
+            VerticalAlignment="Center"
+            TextAlignment="Center"/>
+        <local:CircularProgressBar/>
+        <Border
+            BorderThickness="1"
+            BorderBrush="Gray"
+            Opacity="0.4"/>
     </Grid>
 </Window>

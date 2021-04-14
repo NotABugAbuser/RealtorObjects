@@ -68,16 +68,6 @@ namespace RealtorObjects.Model
         public void ModifyHouse(House house)
         {
         }
-        public void HandlePlot()
-        {
-        }
-        public void CreatePlot()
-        {
-        }
-        public void ModifyPlot()
-        {
-        }
-
         public void UpdateFlat(Flat flat)
         {
 
