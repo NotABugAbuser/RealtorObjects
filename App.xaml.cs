@@ -52,7 +52,7 @@ namespace RealtorObjects
             //windowManagement.HouseFormVM.HouseCreated = (s, e) => operationManagement.SendFlat(e.House, OperationType.Add);
 
             //operationManagement.ReceivedLists +=(s,e)=> отправить списки
-            //operationManagement.ReceivedObjectDB +=(s,e)=> отправить объекты
+            operationManagement.ReceivedObjectDB += (s, e) => windowManagement.HomeVM.ReceiveUpdate(e);
             operationManagement.UpdateFlat += (s, e) => RealtorObjectOperator.UpdateFlat(e.Flat);
             operationManagement.DeleteFlat += (s, e) => RealtorObjectOperator.DeleteFlat(e.Flat);
             operationManagement.UpdateHouse += (s, e) => RealtorObjectOperator.UpdateHouse(e.House);

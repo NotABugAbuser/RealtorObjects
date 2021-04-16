@@ -137,6 +137,14 @@ namespace RealtorObjects.ViewModel
             CurrentObjectList.Add(flat);
             AllObjects.Add(flat);
         }
+        public void ReceiveUpdate(ReceivedObjectDBEventArgs e)
+        {
+            if(e.TargetType == TargetType.Flat)
+            {
+                Flat[] flats = JsonSerializer.Deserialize<Flat[]>((String)e.UpdateData);
+                allObjects = new List<BaseRealtorObject>(flats);
+            }
+        }
 
         private ObservableCollection<BaseRealtorObject> currentObjectList = new ObservableCollection<BaseRealtorObject>() { };
         private List<ObservableCollection<BaseRealtorObject>> objectLists = new List<ObservableCollection<BaseRealtorObject>>();
@@ -167,7 +175,6 @@ namespace RealtorObjects.ViewModel
         {
             //RealtorObjectOperator.Client = this.Client;
             TestMethod();
-
         }
 
         public ObservableCollection<BaseRealtorObject> CurrentObjectList
