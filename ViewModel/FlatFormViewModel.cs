@@ -43,7 +43,6 @@ namespace RealtorObjects.ViewModel
             property.SetValue(instance, Operator.Add(step, value));
         }
 
-
         private Flat flat;
         private string title;
         private bool isCurrentFlatNew = false;
@@ -53,6 +52,7 @@ namespace RealtorObjects.ViewModel
         private readonly FlatOptions flatOptions = new FlatOptions();
         private LocationOptions locationOptions = new LocationOptions();
         public FlatCreatedEventHandler FlatCreated;
+        public FlatModifiedEventHandler FlatModified;
 
         public Flat Flat {
             get => flat;
@@ -73,7 +73,11 @@ namespace RealtorObjects.ViewModel
         }
         public string Title {
             get => title;
-            set => title = value;
+            set
+            {
+                title = value;
+                OnPropertyChanged();
+            }
         }
         public bool IsCurrentFlatNew {
             get => isCurrentFlatNew;

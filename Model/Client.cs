@@ -23,13 +23,6 @@ namespace RealtorObjects.Model
     /// </summary>
     public class Client : INotifyPropertyChanged
     {
-        private String currentAgent = "";
-        public string CurrentAgent
-        {
-            get => currentAgent;
-            set => currentAgent = value;
-        }
-
         private Boolean isConnected = false;
         private Boolean isTryingToConnect = false;
         private Socket socket = null;

@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\
+C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\
 RealtorObjects
 none
 false
 DEBUG;TRACE
-C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\App.xaml
+C:\Users\Badulundabad\Desktop\RealtorObjects\App.xaml
 15963561238
 
-361897999297
-38-703359989
+37995894265
+38-1081719814
 View\CircularProgressBar.xaml;View\Customers.xaml;View\Dictionaries\ColorsAndBrushes.xaml;View\Dictionaries\ControlStylesAndTemplates.xaml;View\FlatFormV2.xaml;View\Home.xaml;View\HomeV2.xaml;View\HouseForm.xaml;View\LoadingForm.xaml;View\Locations.xaml;View\LoginForm.xaml;View\MainWindow.xaml;View\MainWindowV2.xaml;View\NullDataTemplate.xaml;View\Statistics.xaml;
 
-False
+True
 

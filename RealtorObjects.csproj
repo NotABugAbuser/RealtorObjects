@@ -139,6 +139,7 @@
     <Compile Include="Model\IdentityContext.cs" />
     <Compile Include="Model\OperationManagement.cs" />
     <Compile Include="Model\RealtorObjectOperator.cs" />
+    <Compile Include="Model\WindowManagement.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\HouseFormViewModel.cs" />

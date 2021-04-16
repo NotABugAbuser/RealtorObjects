@@ -24,9 +24,6 @@
             </Style.Triggers>
         </Style>
     </Window.Style>
-    <Window.DataContext>
-        <vm:FlatFormViewModel/>
-    </Window.DataContext>
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="#444"/>

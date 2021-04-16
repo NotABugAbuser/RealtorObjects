@@ -16,63 +16,30 @@ namespace RealtorObjects.Model
 {
     public class RealtorObjectOperator
     {
-        private Client client;
+        private Flat flat;
+        private House house;
+        private FlatFormV2 flatForm;
+        private HouseForm houseForm;
+        private HomeViewModel homeVM; //для изменения коллекций через VM
 
-        public Client Client
+        public RealtorObjectOperator(HomeViewModel homeVM)
         {
-            get => client;
-            set => client = value;
+            this.homeVM = homeVM;
         }
 
-        public RealtorObjectOperator()
-        {
-        }
-        public void HandleFlat(object _, FlatCreatedEventArgs e)
-        {
-            Operation operation = new Operation(Client.CurrentAgent, JsonSerializer.Serialize(e.Flat), OperationDirection.Realty, OperationType.Add, TargetType.Flat);
-            if (!e.IsNew)
-            {
-                operation.OperationParameters.Type = OperationType.Change;
-            }
-            Client.SendMessage(operation);
-        }
-        public void CreateFlat()
-        {
-            Flat flat = new Flat(true) { Agent = Client.CurrentAgent };
-            FlatFormV2 flatForm = new FlatFormV2();
-            FlatFormViewModel flatFormVM = new FlatFormViewModel();
-            flatFormVM.Title = "[Квартира] — Создание";
-            flatFormVM.Flat = flat;
-            flatFormVM.IsCurrentFlatNew = true;
-            flatFormVM.LocationOptions = new LocationOptions();
-            flatFormVM.FlatCreated = (s, e) => ((App)Application.Current).OperationManagement.SendFlat(flat, OperationType.Add);
-            flatForm.DataContext = flatFormVM;
-            flatForm.Show();
-        }
-        public void ModifyFlat(Flat flat)
-        {
-            FlatFormViewModel flatFormVM = new FlatFormViewModel();
-            flatFormVM.Title = "[Квартира] — Редактирование";
-            flatFormVM.Flat = JsonSerializer.Deserialize<Flat>(JsonSerializer.Serialize(flat)); //нужно, чтобы разорвать связь объекта в форме и объекта в списке
-            flatFormVM.IsCurrentFlatNew = false;
-            flatFormVM.LocationOptions = new LocationOptions();
-            flatFormVM.FlatCreated +=(s,e)=> ((App)Application.Current).OperationManagement.SendFlat(flat, OperationType.Change);
-            new FlatFormV2 { DataContext = flatFormVM }.Show();
-        }
-        public void HandleHouse()
-        {
-        }
-        public void CreateHouse()
-        {
-        }
-        public void ModifyHouse(House house)
-        {
-        }
         public void UpdateFlat(Flat flat)
         {
 
         }
         public void DeleteFlat(Flat flat)
+        {
+
+        }
+        public void UpdateHouse(House house)
+        {
+
+        }
+        public void DeleteHouse(House house)
         {
 
         }

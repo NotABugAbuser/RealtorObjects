@@ -10,9 +10,6 @@
              xmlns:c="clr-namespace:RealtorObjects.View.Converters"
              Background="#f7f7f7"
              d:DesignHeight="648" d:DesignWidth="1196">
-    <UserControl.DataContext>
-        <vm:HomeViewModel/>
-    </UserControl.DataContext>
     <UserControl.Resources>
         <Style TargetType="TextBlock" x:Key="RegularText">
             <Setter Property="FontFamily" Value="{StaticResource Helvetica}"/>
@@ -461,6 +458,8 @@
                 <Button
                     Style="{StaticResource HeaderButton}"
                     Grid.Column="1"
+                    Command="{Binding CreateRealtorObject}"
+                    CommandParameter="House"
                     Content="+ Дом"/>
                 <Button
                     Style="{StaticResource HeaderButton}"

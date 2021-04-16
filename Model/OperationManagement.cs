@@ -1,5 +1,6 @@
 ﻿using RealtorObjects.View;
 using RealtyModel.Event;
+using RealtyModel.Event.RealtyEvents;
 using RealtyModel.Model;
 using RealtyModel.Model.Derived;
 using System;
@@ -24,6 +25,8 @@ namespace RealtorObjects.Model
         public event DeleteFlatEventHandler DeleteFlat;
         public event UpdateHouseEventHandler UpdateHouse;
         public event DeleteHouseEventHandler DeleteHouse;
+        public event ReceivedListsEventHandler ReceivedLists;
+        public event ReceivedObjectDBEventHandler ReceivedObjectDB;
 
         public OperationManagement()
         {
@@ -104,19 +107,32 @@ namespace RealtorObjects.Model
         {
             try
             {
-                if (operation.OperationParameters.Target == TargetType.Flat)
+                if (operation.OperationParameters.Type == OperationType.Update)
                 {
-                    if (operation.OperationParameters.Type == OperationType.Add || operation.OperationParameters.Type == OperationType.Change)
-                        UpdateFlat?.Invoke(this, new UpdateFlatEventArgs(JsonSerializer.Deserialize<Flat>(operation.Data)));
-                    else if (operation.OperationParameters.Type == OperationType.Remove)
-                        DeleteFlat?.Invoke(this, new DeleteFlatEventArgs(JsonSerializer.Deserialize<Flat>(operation.Data)));
+                    if (operation.OperationParameters.Target == TargetType.City
+                        || operation.OperationParameters.Target == TargetType.District
+                        || operation.OperationParameters.Target == TargetType.Street
+                        || operation.OperationParameters.Target == TargetType.Customer)
+                        ReceivedLists?.Invoke(this, new ReceivedListsEventArgs(operation.OperationParameters.Target, operation.Data));
+                    else if (operation.OperationParameters.Target == TargetType.Flat || operation.OperationParameters.Target == TargetType.House)
+                        ReceivedObjectDB?.Invoke(this, new ReceivedObjectDBEventArgs(operation.OperationParameters.Target, operation.Data));
                 }
-                else if (operation.OperationParameters.Target == TargetType.House)
+                else
                 {
-                    if (operation.OperationParameters.Type == OperationType.Add || operation.OperationParameters.Type == OperationType.Change)
-                        UpdateHouse?.Invoke(this, new UpdateHouseEventArgs(JsonSerializer.Deserialize<House>(operation.Data)));
-                    else if (operation.OperationParameters.Type == OperationType.Remove)
-                        DeleteHouse?.Invoke(this, new DeleteHouseEventArgs(JsonSerializer.Deserialize<House>(operation.Data)));
+                    if (operation.OperationParameters.Target == TargetType.Flat)
+                    {
+                        if (operation.OperationParameters.Type == OperationType.Add || operation.OperationParameters.Type == OperationType.Change)
+                            UpdateFlat?.Invoke(this, new UpdateFlatEventArgs(JsonSerializer.Deserialize<Flat>(operation.Data)));
+                        else if (operation.OperationParameters.Type == OperationType.Remove)
+                            DeleteFlat?.Invoke(this, new DeleteFlatEventArgs(JsonSerializer.Deserialize<Flat>(operation.Data)));
+                    }
+                    else if (operation.OperationParameters.Target == TargetType.House)
+                    {
+                        if (operation.OperationParameters.Type == OperationType.Add || operation.OperationParameters.Type == OperationType.Change)
+                            UpdateHouse?.Invoke(this, new UpdateHouseEventArgs(JsonSerializer.Deserialize<House>(operation.Data)));
+                        else if (operation.OperationParameters.Type == OperationType.Remove)
+                            DeleteHouse?.Invoke(this, new DeleteHouseEventArgs(JsonSerializer.Deserialize<House>(operation.Data)));
+                    }
                 }
             }
             catch (Exception)
