@@ -152,6 +152,7 @@
     </Compile>
     <Compile Include="View\Converters\BoolToVisibilityReversedConverter.cs" />
     <Compile Include="View\Converters\ObjectAndPropertyMultiValueConverter.cs" />
+    <Compile Include="View\Converters\PageEqualityConverter.cs" />
     <Compile Include="View\Converters\StatusEngToRusConverter.cs" />
     <Compile Include="View\Converters\StatusToBorderColorConverter.cs" />
     <Compile Include="View\Converters\StatusToColorConverter.cs" />

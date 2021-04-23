@@ -10,14 +10,16 @@
         xmlns:fa4="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
         mc:Ignorable="d"
         MouseLeftButtonDown="ThisMainWindow_MouseLeftButtonDown"
-        Title="MainWindow" 
+        Title="Объекты недвижимости" 
         Height="728" 
         Width="1366" 
         Background="#f7f7f7"
         ResizeMode="CanResize"
-        WindowStyle="None"
         Name="ThisMainWindow"
         MinHeight="597">
+    <Window.DataContext>
+        <vm:MainWindowViewModel/>
+    </Window.DataContext>
     <Window.Resources>
         <Style TargetType="Grid" x:Key="MainGridStyle">
             <Setter Property="Margin" Value="0"/>
@@ -79,20 +81,7 @@
             <Setter Property="Foreground" Value="White"/>
         </Style>
     </Window.Resources>
-    <WindowChrome.WindowChrome>
-        <WindowChrome
-            NonClientFrameEdges="None"
-            CaptionHeight="0"
-            ResizeBorderThickness="2"/>
-    </WindowChrome.WindowChrome>
-    <Window.DataContext>
-        <vm:MainWindowViewModel/>
-    </Window.DataContext>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="80"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="170"/>
             <ColumnDefinition Width="*"/>
@@ -189,10 +178,6 @@
                 </ToggleButton>
             </StackPanel>
         </Border>
-        <Grid
-            Background="{StaticResource SecondaryViolet}"
-            Grid.ColumnSpan="2">
-        </Grid>
         <ContentControl 
             Content="{Binding WorkArea}" 
             Grid.Column="1" 

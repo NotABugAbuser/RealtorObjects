@@ -8,7 +8,9 @@
              xmlns:fa="http://schemas.fontawesome.com/icons/"
              xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
              xmlns:c="clr-namespace:RealtorObjects.View.Converters"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              Background="#f7f7f7"
+             Name="HomeVM"
              d:DesignHeight="648" d:DesignWidth="1196">
     <UserControl.Resources>
         <Style TargetType="TextBlock" x:Key="RegularText">
@@ -53,6 +55,7 @@
         <c:StatusToBorderColorConverter x:Key="StatusToBorderColor"/>
         <c:StatusToColorConverter x:Key="StatusToColor"/>
         <c:StatusEngToRusConverter x:Key="StatusEngToRus"/>
+        <c:PageEqualityConverter x:Key="PageEquality"/>
         <ControlTemplate x:Key="ObjectListItemTemplate">
             <Grid
                 SnapsToDevicePixels="True"
@@ -152,7 +155,7 @@
             <Setter Property="ClipToBounds" Value="True"/>
             <Setter Property="Template" Value="{StaticResource ObjectListItemTemplate}"/>
         </Style>
-        
+
         <Style TargetType="ListBox" x:Key="ObjectListBox">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
@@ -351,6 +354,72 @@
             <Setter Property="Margin" Value="35,0"/>
         </Style>
         <c:BoolToVisibilityReversedConverter x:Key="BoolToVisibilityReversed"/>
+        <Style TargetType="Border" x:Key="navigationButton">
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect
+                        Opacity="0.3"
+                        ShadowDepth="0"
+                        BlurRadius="10"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <ControlTemplate TargetType="ListBoxItem" x:Key="navigationListBoxItemTemplate">
+            <Border
+                Name="PART_bd"
+                Style="{StaticResource navigationButton}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                        <i:InvokeCommandAction
+                            Command="{Binding Path=DataContext.GoToPage, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                            CommandParameter="{Binding ElementName=PART_tb, Path=Text}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <TextBlock
+                    Name="PART_tb"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Foreground="#555"
+                    Text="{Binding .}"
+                    FontFamily="{StaticResource Helvetica}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <DataTrigger Value="True">
+                    <DataTrigger.Binding>
+                        <MultiBinding Converter="{StaticResource PageEquality}">
+                            <Binding ElementName="HomeVM" Path="DataContext.CurrentPage"/>
+                            <Binding ElementName="PART_tb" Path="Text"/>
+                        </MultiBinding>
+                    </DataTrigger.Binding>
+                    <Setter TargetName="PART_bd" Property="Background" Value="{StaticResource PrimaryViolet}"/>
+                    <Setter TargetName="PART_tb" Property="Foreground" Value="White"/>
+                </DataTrigger>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter TargetName="PART_bd" Property="Background" Value="{StaticResource PrimaryViolet}"/>
+                    <Setter TargetName="PART_tb" Property="Foreground" Value="White"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Style TargetType="ListBoxItem" x:Key="navigationListBoxItemStyle">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Template" Value="{StaticResource navigationListBoxItemTemplate}"/>
+        </Style>
+        <ItemsPanelTemplate x:Key="navigationListBoxPanelTemplate">
+            <StackPanel Orientation="Horizontal"/>
+        </ItemsPanelTemplate>
+        <Style TargetType="ListBox" x:Key="navigationListBox">
+            <Setter Property="ItemContainerStyle" Value="{StaticResource navigationListBoxItemStyle}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ItemsPanel" Value="{StaticResource navigationListBoxPanelTemplate}"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -425,8 +494,7 @@
                     Grid.Row="1"
                     Grid.ColumnSpan="8"
                     Style="{StaticResource ObjectListBox}"
-                    ItemsSource="{Binding CurrentObjectList}">
-                </ListBox>
+                    ItemsSource="{Binding CurrentObjectList}"/>
             </Grid>
         </Border>
         <Grid
@@ -443,6 +511,7 @@
                 VerticalAlignment="Center"
                 HorizontalAlignment="Left"
                 Margin="30,0,0,0"
+                Foreground="#333"
                 FontFamily="{StaticResource Helvetica}"
                 FontSize="21"
                 Text="Недвижимость"/>
@@ -465,7 +534,7 @@
                     Style="{StaticResource HeaderButton}"
                     Grid.Column="1"
                     Command="{Binding TestCommand}"
-                    Content="+ Участок"/>
+                    Content="+ Тест"/>
             </StackPanel>
             <Button
                 Command="{Binding OpenCloseFilters}"
@@ -722,5 +791,16 @@
                 </StackPanel>
             </ScrollViewer>
         </Border>
+        <StackPanel
+            Orientation="Horizontal"
+            VerticalAlignment="Bottom"
+            HorizontalAlignment="Center"
+            Margin="0,0,9,5">
+            <ListBox
+                Style="{StaticResource navigationListBox}"
+                ItemsSource="{Binding Pages}"
+                Grid.ColumnSpan="2">
+            </ListBox>
+        </StackPanel>
     </Grid>
 </UserControl>

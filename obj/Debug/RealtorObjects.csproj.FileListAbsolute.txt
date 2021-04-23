@@ -394,7 +394,6 @@ C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\FontAwesome.WPF.dll
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\FontAwesome5.dll
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\FontAwesome5.Net.dll
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\Microsoft.Expression.Interactions.dll
-C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\RealtyModel.dll
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\System.Data.SQLite.dll
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\System.Data.SQLite.EF6.dll
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\System.Data.SQLite.Linq.dll
@@ -429,3 +428,7 @@ C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\CircularProgressBar.
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\CircularProgressBar.g.cs
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\HouseForm.g.cs
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\HouseForm.baml
+C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\CircularProgressBar.baml
+C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\CircularProgressBar.g.cs
+C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\HouseForm.g.cs
+C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\HouseForm.baml
