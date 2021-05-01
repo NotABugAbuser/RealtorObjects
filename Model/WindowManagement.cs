@@ -204,11 +204,11 @@ namespace RealtorObjects.Model
                     },
                     Info = new FlatInfo()
                     {
-                        Balcony = "0",
-                        Bath = "0",
-                        Bathroom = "0",
-                        Floor = "0",
-                        Fund = "0",
+                        Balcony = "",
+                        Bath = "",
+                        Bathroom = "",
+                        Floor = "",
+                        Fund = "",
                         HasChute = false,
                         HasElevator = false,
                         HasGarage = false,
