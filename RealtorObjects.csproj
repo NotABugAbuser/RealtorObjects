@@ -136,9 +136,14 @@
     </ApplicationDefinition>
     <Compile Include="Model\Client.cs" />
     <Compile Include="Model\CredentialData.cs" />
+    <Compile Include="Model\DataBaseContext.cs" />
+    <Compile Include="Model\Event\ConnectedEventArgs.cs" />
+    <Compile Include="Model\Event\EventHandlers.cs" />
+    <Compile Include="Model\Event\LostConnectionEventArgs.cs" />
+    <Compile Include="Model\Event\UpdateCompletedEventArgs.cs" />
     <Compile Include="Model\IdentityContext.cs" />
     <Compile Include="Model\OperationManagement.cs" />
-    <Compile Include="Model\RealtorObjectOperator.cs" />
+    <Compile Include="Model\UpdateTime.cs" />
     <Compile Include="Model\WindowManagement.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
@@ -277,6 +282,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="data.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

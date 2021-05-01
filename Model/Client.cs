@@ -23,9 +23,14 @@ namespace RealtorObjects.Model
     /// </summary>
     public class Client : INotifyPropertyChanged
     {
+        #region Fileds
+        private object socketSendLocker = new object();
+        private object streamSendLocker = new object();
         private Boolean isConnected = false;
         private Boolean isTryingToConnect = false;
+        private IPAddress serverIp = null;
         private Socket socket = null;
+        private NetworkStream stream = null;
         private Dispatcher uiDispatcher = null;
         public delegate void ConnectedEventHandler();
         public delegate void LostConnectionEventHandler();
@@ -33,9 +38,6 @@ namespace RealtorObjects.Model
         public event LostConnectionEventHandler LostConnection;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        /// <summary>
-        /// Свойство, которое равно true если клиент подключен к серверу, false если нет.
-        /// </summary>
         public Boolean IsConnected
         {
             get => isConnected;
@@ -54,13 +56,15 @@ namespace RealtorObjects.Model
                 OnPropertyChanged();
             }
         }
-        /// <summary>
-        /// Коллекция приходящих от сервера операций.
-        /// </summary>
-        public Queue<Operation> IncomingOperations
+        public OperationQueue IncomingOperations
         {
             get; private set;
         }
+        public OperationQueue OutcomingOperations
+        {
+            get; private set;
+        }
+        #endregion
 
         public Client()
         {
@@ -69,39 +73,33 @@ namespace RealtorObjects.Model
         public Client(Dispatcher dispatcher)
         {
             uiDispatcher = dispatcher;
-            IncomingOperations = new Queue<Operation>();
+            IncomingOperations = new OperationQueue();
+            OutcomingOperations = new OperationQueue();
+            //OutcomingOperations.Enqueued += (s, e) => SendOverSocket();
+            OutcomingOperations.Enqueued += (s, e) => SendOverStream();
         }
 
-        /// <summary>
-        /// Асинхронный метод подключения к серверу.
-        /// Пока клиент подключен выполняется цикловый метод приёма операций.
-        /// </summary>
-        /// <param name="ipAddress">ipAddress - ip адрес сервера.</param>
-        /// <returns></returns>
-        public async void ConnectAsync()
+        public Task ConnectAsync()
         {
-            await Task.Run(() =>
+            return Task.Run(() =>
             {
                 IsTryingToConnect = true;
-                IPAddress ipAddress = FindServerIPAddress();
+                if (serverIp == null)
+                    FindServerIPAddress();
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 try
                 {
-                    if (ipAddress != null)
+                    if (serverIp != null)
                     {
-                        IPEndPoint iPEndPoint = new IPEndPoint(ipAddress, 8005);
+                        IPEndPoint iPEndPoint = new IPEndPoint(serverIp, 8005);
                         socket.Connect(iPEndPoint);
+                        stream = new NetworkStream(socket);
                         IsTryingToConnect = false;
                         IsConnected = true;
                         uiDispatcher.BeginInvoke(new Action(() => { Connected?.Invoke(); }));
-                        while (IsConnected) ReceiveMessage();
                     }
                 }
                 catch (Exception)
-                {
-
-                }
-                finally
                 {
                     Disconnect();
                     socket.Shutdown(SocketShutdown.Both);
@@ -109,13 +107,8 @@ namespace RealtorObjects.Model
                 }
             });
         }
-        /// <summary>
-        /// Метод поиска адреса сервера при помощи широковещательной UDP рассылки.
-        /// </summary>
-        /// <returns></returns>
-        private IPAddress FindServerIPAddress()
+        private void FindServerIPAddress()
         {
-            IPAddress serverIP = null;
             try
             {
                 Socket socket = null;
@@ -129,7 +122,7 @@ namespace RealtorObjects.Model
                         socket.EnableBroadcast = true;
                         socket.ReceiveTimeout = 1000;
                         socket.Bind(new IPEndPoint(iP, 8080));
-                        for (Int32 attempts = 1; attempts <= 10 && serverIP == null; attempts++)
+                        for (Int32 attempts = 1; attempts <= 10 && serverIp == null; attempts++)
                         {
                             socket.SendTo(new byte[] { 0x10 }, new IPEndPoint(IPAddress.Broadcast, 8080));
                             Int32 byteCount = 0;
@@ -139,27 +132,21 @@ namespace RealtorObjects.Model
                             {
                                 byteCount = socket.ReceiveFrom(buffer, ref endPoint);
                                 if (byteCount == 1 && buffer[0] == 0x20)
-                                    serverIP = (endPoint as IPEndPoint).Address;
+                                    serverIp = (endPoint as IPEndPoint).Address;
                             }
                             Thread.Sleep(200);
                         }
-                        if (serverIP != null) break;
+                        if (serverIp != null) break;
                         socket.Dispose();
                         socket.Close();
                     }
                 }
-                while (serverIP == null && IsTryingToConnect);
-                return serverIP;
+                while (serverIp == null && IsTryingToConnect);
             }
             catch (Exception)
             {
-                return null;
             }
         }
-        /// <summary>
-        /// Метод возвращает массив IPv4 адресов рабочих адаптеров данного ПК, которые используют сетевой протокол IEEE 802.3(Ethernet) или IEEE 802.11(Wi-Fi).
-        /// </summary>
-        /// <returns></returns>
         private IPAddress[] GetLocalIPv4Addresses()
         {
             NetworkInterface[] netInterfaces = NetworkInterface.GetAllNetworkInterfaces().Where(inf =>
@@ -180,26 +167,105 @@ namespace RealtorObjects.Model
             }
             return addresses.ToArray();
         }
-        /// <summary>
-        /// Метод отправки операций серверу. Операция передаётся в виде последовательности байт закодированной в UTF-8 json-строки.
-        /// </summary>
-        /// <param name="operation">operation - операция, которую необходимо отправить серверу.</param>
-        public void SendMessage(Operation operation)
+
+        public Task ReceiveOverSocketAsync()
         {
+            return Task.Run(() =>
+            {
+                try
+                {
+                    while (IsConnected)
+                    {
+                        if (socket.Poll(100000, SelectMode.SelectRead))
+                        {
+                            StringBuilder message = new StringBuilder();
+                            do
+                            {
+                                Byte[] buffer = new Byte[1024];
+                                Int32 byteCount = socket.Receive(buffer);
+                                message.Append(Encoding.UTF8.GetString(buffer), 0, byteCount);
+                            }
+                            while (socket.Available > 0);
+
+                            Operation operation = JsonSerializer.Deserialize<Operation>(message.ToString());
+                            IncomingOperations.Enqueue(operation);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            });
+        }
+        public Task ReceiveOverStreamAsync()
+        {
+            return Task.Run(() =>
+            {
+                try
+                {
+                    while (IsConnected)
+                    {
+                        if (stream.DataAvailable)
+                        {
+                            Byte[] buffer = new Byte[4096];
+                            StringBuilder message = new StringBuilder();
+                            Int32 bytes = 0;
+                            String chunk;
+                            do
+                            {
+                                Int32 byteCount = stream.Read(buffer, 0, buffer.Length);
+                                bytes += byteCount;
+                                chunk = Encoding.UTF8.GetString(buffer);
+                                message.Append(chunk, 0, byteCount);
+                            }
+                            while (stream.DataAvailable);
+                            Debug.WriteLine(bytes);
+                            Operation operation = JsonSerializer.Deserialize<Operation>(message.ToString());
+                            IncomingOperations.Enqueue(operation);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            });
+        }
+        private void SendOverSocket()
+        {
+            lock (socketSendLocker)
+            {
+                try
+                {
+                    Operation operation = OutcomingOperations.Dequeue();
+                    String json = JsonSerializer.Serialize<Operation>(operation);
+                    Byte[] data = Encoding.UTF8.GetBytes(json);
+                    socket.Send(data);
+                }
+                catch (Exception)
+                {
+                }
+            }
+        }
+        private void SendOverStream()
+        {
+            //lock (streamSendLocker)
+            //{
             try
             {
+                Operation operation = OutcomingOperations.Dequeue();
                 String json = JsonSerializer.Serialize<Operation>(operation);
                 Byte[] data = Encoding.UTF8.GetBytes(json);
-                socket.Send(data);
+                stream.Write(data, 0, data.Length);
             }
             catch (Exception)
             {
             }
+            //}
         }
-        /// <summary>
-        /// Метод отключения от сервера.
-        /// </summary>
-        internal void Disconnect()
+
+        public void Disconnect()
         {
             uiDispatcher.BeginInvoke(new Action(() =>
             {
@@ -207,33 +273,6 @@ namespace RealtorObjects.Model
                 IsConnected = false;
                 LostConnection?.Invoke();
             }));
-        }
-        /// <summary>
-        /// Метод приём операции.
-        /// </summary>
-        private void ReceiveMessage()
-        {
-            if (socket.Poll(10000, SelectMode.SelectError))
-                throw new Exception();
-            else if (socket.Poll(10000, SelectMode.SelectRead))
-            {
-                Byte[] buffer = new Byte[256];
-                StringBuilder message = new StringBuilder();
-
-                do
-                {
-                    Int32 byteCount = socket.Receive(buffer);
-                    message.Append(Encoding.UTF8.GetString(buffer), 0, byteCount);
-                }
-                while (socket.Available > 0);
-
-                if (!String.IsNullOrWhiteSpace(message.ToString()))
-                {
-                    Operation operation = JsonSerializer.Deserialize<Operation>(message.ToString());
-                    IncomingOperations.Enqueue(operation);
-                }
-                else throw new Exception();
-            }
         }
 
         private void OnPropertyChanged([CallerMemberName] String prop = "")

@@ -20,13 +20,16 @@ namespace RealtorObjects.Model
     {
         private Client client = null;
         private Credential credential = null;
-        private Dispatcher dispatcher;
-        public event UpdateFlatEventHandler UpdateFlat;
-        public event DeleteFlatEventHandler DeleteFlat;
-        public event UpdateHouseEventHandler UpdateHouse;
-        public event DeleteHouseEventHandler DeleteHouse;
-        public event ReceivedListsEventHandler ReceivedLists;
-        public event ReceivedObjectDBEventHandler ReceivedObjectDB;
+        private Dispatcher dispatcher = null;
+        private object handleLocker = new object();
+
+        public event ReceivedDbUpdateEventHandler ReceivedDbUpdate;
+        public event ReceivedFlatEventHandler ReceivedFlat;
+        public event ReceivedFlatUpdateEventHandler ReceivedFlatUpdate;
+        public event ReceivedFlatDeletionEventHandler ReceivedFlatDeletion;
+        public event ReceivedHouseEventHandler ReceivedHouse;
+        public event ReceivedHouseUpdateEventHandler ReceivedHouseUpdate;
+        public event ReceivedHouseDeletionEventHandler ReceivedHouseDeletion;
 
         public OperationManagement()
         {
@@ -37,26 +40,14 @@ namespace RealtorObjects.Model
             this.client = client;
             this.credential = credential;
             this.dispatcher = dispatcher;
-        }
-
-        public async void AwaitOperationAsync()
-        {
-            await Task.Run(() =>
-            {
-                while (true)
-                {
-                    while (client.IncomingOperations.Count > 0)
-                        HandleResponse(client.IncomingOperations.Dequeue());
-                    Thread.Sleep(100);
-                }
-            });
+            client.IncomingOperations.Enqueued += (s, e) => HandleResponse();
         }
 
         public void Login(String name, String password)
         {
             credential.Name = name;
             credential.Password = password;
-            client.SendMessage(new Operation(name, password, OperationDirection.Identity, OperationType.Login));
+            client.OutcomingOperations.Enqueue(new Operation(name, password, OperationDirection.Identity, OperationType.Login));
         }
         public void Register(String name, String password, String email)
         {
@@ -64,20 +55,24 @@ namespace RealtorObjects.Model
             credential.Password = password;
             credential.Email = email;
             String json = JsonSerializer.Serialize<Credential>(credential);
-            client.SendMessage(new Operation(name, json, OperationDirection.Identity, OperationType.Register));
+            client.OutcomingOperations.Enqueue(new Operation(name, json, OperationDirection.Identity, OperationType.Register));
         }
         public void SendFlat(Flat flat, OperationType operationType)
         {
             String json = JsonSerializer.Serialize<Flat>(flat);
-            client.SendMessage(new Operation(credential.Name, json, OperationDirection.Realty, operationType));
+            client.OutcomingOperations.Enqueue(new Operation(credential.Name, json, OperationDirection.Realty, operationType));
         }
 
-        private void HandleResponse(Operation operation)
+        private void HandleResponse()
         {
-            if (operation.OperationParameters.Direction == OperationDirection.Identity)
-                HandleIdentityResponse(operation);
-            else if (operation.OperationParameters.Direction == OperationDirection.Realty)
-                HandleRealtyResponse(operation);
+            lock (handleLocker)
+            {
+                Operation operation = client.IncomingOperations.Dequeue();
+                if (operation.OperationParameters.Direction == OperationDirection.Identity)
+                    HandleIdentityResponse(operation);
+                else if (operation.OperationParameters.Direction == OperationDirection.Realty)
+                    HandleRealtyResponse(operation);
+            }
         }
         private void HandleIdentityResponse(Operation operation)
         {
@@ -107,37 +102,32 @@ namespace RealtorObjects.Model
         {
             try
             {
-                if (operation.OperationParameters.Type == OperationType.Update)
+                if (operation.OperationParameters.Target == TargetType.All)
+                    ReceivedDbUpdate?.Invoke(this, new ReceivedDbUpdateEventArgs(operation.OperationParameters.Target, operation.Data));
+                else if (operation.OperationParameters.Target == TargetType.Flat)
                 {
-                    if (operation.OperationParameters.Target == TargetType.City
-                        || operation.OperationParameters.Target == TargetType.District
-                        || operation.OperationParameters.Target == TargetType.Street
-                        || operation.OperationParameters.Target == TargetType.Customer)
-                        ReceivedLists?.Invoke(this, new ReceivedListsEventArgs(operation.OperationParameters.Target, operation.Data));
-                    else if (operation.OperationParameters.Target == TargetType.Flat || operation.OperationParameters.Target == TargetType.House)
-                        ReceivedObjectDB?.Invoke(this, new ReceivedObjectDBEventArgs(operation.OperationParameters.Target, operation.Data));
+                    Flat flat = JsonSerializer.Deserialize<Flat>(operation.Data);
+                    if (operation.OperationParameters.Type == OperationType.Add)
+                        ReceivedFlat?.Invoke(this, new ReceivedFlatEventArgs(flat));
+                    else if (operation.OperationParameters.Type == OperationType.Change)
+                        ReceivedFlatUpdate?.Invoke(this, new ReceivedFlatUpdateEventArgs(flat));
+                    else if (operation.OperationParameters.Type == OperationType.Remove)
+                        ReceivedFlatDeletion?.Invoke(this, new ReceivedFlatDeletionEventArgs(flat));
                 }
-                else
+                else if (operation.OperationParameters.Target == TargetType.House)
                 {
-                    if (operation.OperationParameters.Target == TargetType.Flat)
-                    {
-                        if (operation.OperationParameters.Type == OperationType.Add || operation.OperationParameters.Type == OperationType.Change)
-                            UpdateFlat?.Invoke(this, new UpdateFlatEventArgs(JsonSerializer.Deserialize<Flat>(operation.Data)));
-                        else if (operation.OperationParameters.Type == OperationType.Remove)
-                            DeleteFlat?.Invoke(this, new DeleteFlatEventArgs(JsonSerializer.Deserialize<Flat>(operation.Data)));
-                    }
-                    else if (operation.OperationParameters.Target == TargetType.House)
-                    {
-                        if (operation.OperationParameters.Type == OperationType.Add || operation.OperationParameters.Type == OperationType.Change)
-                            UpdateHouse?.Invoke(this, new UpdateHouseEventArgs(JsonSerializer.Deserialize<House>(operation.Data)));
-                        else if (operation.OperationParameters.Type == OperationType.Remove)
-                            DeleteHouse?.Invoke(this, new DeleteHouseEventArgs(JsonSerializer.Deserialize<House>(operation.Data)));
-                    }
+                    House house = JsonSerializer.Deserialize<House>(operation.Data);
+                    if (operation.OperationParameters.Type == OperationType.Add)
+                        ReceivedHouse?.Invoke(this, new ReceivedHouseEventArgs(house));
+                    else if (operation.OperationParameters.Type == OperationType.Change)
+                        ReceivedHouseUpdate?.Invoke(this, new ReceivedHouseUpdateEventArgs(house));
+                    else if (operation.OperationParameters.Type == OperationType.Remove)
+                        ReceivedHouseDeletion?.Invoke(this, new ReceivedHouseDeletionEventArgs(house));
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Debug.WriteLine($"OperationManagement-HandleRealtyResponse {ex.Message}");
             }
         }
     }

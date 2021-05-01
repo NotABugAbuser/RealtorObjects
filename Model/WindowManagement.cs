@@ -2,6 +2,7 @@
 using RealtorObjects.ViewModel;
 using RealtyModel.Event.RealtyEvents;
 using RealtyModel.Model;
+using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
 using System;
 using System.Collections.Generic;
@@ -84,7 +85,8 @@ namespace RealtorObjects.Model
         }
         private void BindEvents()
         {
-            client.Connected += () => OpenLoginForm();
+            client.Connected += () => HomeVM.GetUpdate();
+            HomeVM.UpdateFinished += (s, e) => OpenLoginForm();
             client.LostConnection += () => Reconnect();
             credential.LoggedIn += (s, e) => OpenMainWindow();
             credential.LoggedOut += (s, e) => OpenLoginForm();
@@ -100,27 +102,38 @@ namespace RealtorObjects.Model
         {
             ((App)Application.Current).Credential.Name = "ГвоздиковЕА";
             ((App)Application.Current).Credential.Password = "123";
-            client.SendMessage(new Operation("ГвоздиковЕА", "123", OperationDirection.Identity, OperationType.Login));
+            client.OutcomingOperations.Enqueue(new Operation("ГвоздиковЕА", "123", OperationDirection.Identity, OperationType.Login));
         }
         private void OpenLoadingForm()
         {
-            loadingForm = new LoadingForm() { DataContext = new LoadingFormViewModel() };
-            loadingForm.Show();
-            Thread.Sleep(1000);
+            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
+            {
+                loadingForm = new LoadingForm() { DataContext = new LoadingFormViewModel() };
+                loadingForm.Show();
+                //Thread.Sleep(1000);
+            });
         }
         private void OpenLoginForm()
         {
-            loadingForm.Close();
-            loginForm = new LoginForm() { DataContext = loginFormVM };
-            loginForm.Show();
-            TestAutoLoginMeth();
+            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
+            {
+                loadingForm.Close();
+                loginForm = new LoginForm() { DataContext = loginFormVM };
+                loginForm.Show();
+                TestAutoLoginMeth();
+                Thread.Sleep(1000);
+            });
         }
         private void OpenMainWindow()
         {
-            loginForm.Close();
-            loadingForm.Close();
-            client.Connected += () => OpenMainWindow();
-            mainWindow.Show();
+            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
+            {
+                loginForm.Close();
+                loadingForm.Close();
+                client.Connected += () => OpenMainWindow();
+                HomeVM.FilterCollection?.Execute(new object());
+                mainWindow.Show();
+            });
         }
         private void Reconnect()
         {
@@ -143,9 +156,80 @@ namespace RealtorObjects.Model
             {
                 flatFormVM.Title = "[Квартира] — Создание";
                 flatFormVM.IsCurrentFlatNew = true;
-                flatFormVM.Flat = new Flat();
-                flatFormVM.Flat.Location = new Location();
-                flatFormVM.Flat.Agent = credential.Name;
+                flatFormVM.Flat = new Flat()
+                {
+                    Agent = credential.Name,
+                    Album = new Album()
+                    {
+                        Location = "",
+                        PhotoList = new byte[0],
+                        Preview = new byte[0],
+                    },
+                    Location = new Location()
+                    {
+                        City = new City(),
+                        District = new District(),
+                        Street = new Street(),
+                        HouseNumber = 0,
+                        FlatNumber = 0,
+                        HasBanner = false,
+                        HasExchange = false
+                    },
+                    Cost = new Cost()
+                    {
+                        Area = 0,
+                        HasMortgage = false,
+                        HasPercents = false,
+                        HasVAT = false,
+                        Price = 0
+                    },
+                    Customer = new Customer()
+                    {
+                        Name = "",
+                        PhoneNumbers = ""
+                    },
+                    GeneralInfo = new BaseInfo()
+                    {
+                        Ceiling = 0,
+                        Condition = "",
+                        Convenience = "",
+                        Description = "",
+                        General = 0,
+                        Heating = "asd",
+                        Kitchen = 10,
+                        Living = 10,
+                        RoomCount = 10,
+                        Water = "asd",
+                        Year = 1950
+                    },
+                    Info = new FlatInfo()
+                    {
+                        Balcony = "0",
+                        Bath = "0",
+                        Bathroom = "0",
+                        Floor = "0",
+                        Fund = "0",
+                        HasChute = false,
+                        HasElevator = false,
+                        HasGarage = false,
+                        HasImprovedLayout = false,
+                        HasRenovation = false,
+                        IsCorner = false,
+                        IsPrivatised = false,
+                        IsSeparated = false,
+                        Kvl = 0,
+                        Loggia = "",
+                        Material = "",
+                        Rooms = "",
+                        Type = "",
+                        TypeOfRooms = "",
+                        Windows = ""
+                    },
+                    HasExclusive = false,
+                    IsSold = false,
+                    ObjectType = "",
+                    Status = Status.Active
+                };
             }
             else
             {
