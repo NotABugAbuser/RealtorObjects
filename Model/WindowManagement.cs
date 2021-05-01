@@ -195,11 +195,11 @@ namespace RealtorObjects.Model
                         Convenience = "",
                         Description = "",
                         General = 0,
-                        Heating = "asd",
-                        Kitchen = 10,
-                        Living = 10,
-                        RoomCount = 10,
-                        Water = "asd",
+                        Heating = "",
+                        Kitchen = 0,
+                        Living = 0,
+                        RoomCount = 0,
+                        Water = "",
                         Year = 1950
                     },
                     Info = new FlatInfo()
