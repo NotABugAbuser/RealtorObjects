@@ -156,6 +156,7 @@
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Converters\BoolToVisibilityReversedConverter.cs" />
+    <Compile Include="View\Converters\ByteArrayToBitmapImageConverter.cs" />
     <Compile Include="View\Converters\ObjectAndPropertyMultiValueConverter.cs" />
     <Compile Include="View\Converters\PageEqualityConverter.cs" />
     <Compile Include="View\Converters\StatusEngToRusConverter.cs" />

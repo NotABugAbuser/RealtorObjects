@@ -7,13 +7,15 @@
         mc:Ignorable="d"
         MouseDown="Window_MouseDown"
         xmlns:v="clr-namespace:RealtorObjects.View"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
         xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
         xmlns:c="clr-namespace:RealtorObjects.View.Converters"
         WindowStyle="none"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         BorderBrush="{StaticResource PrimaryViolet}"
         ResizeMode="NoResize"
         Background="#f6f6f6"
-        Height="600" Width="755">
+        Height="640" Width="755">
     <Window.Style>
         <Style TargetType="Window">
             <Setter Property="BorderThickness" Value="0"/>
@@ -25,6 +27,7 @@
         </Style>
     </Window.Style>
     <Window.Resources>
+        <c:ByteArrayToBitmapImageConverter x:Key="ByteArrayToBitmapImage"/>
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="#444"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -87,8 +90,65 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <ControlTemplate TargetType="ListBoxItem" x:Key="ImageListBoxItemTemplate">
+            <Border
+                Height="80"
+                Width="140"
+                Margin="3"
+                BorderThickness="1"
+                BorderBrush="Gray">
+                <Grid>
+                    <Image
+                        Stretch="UniformToFill"
+                        Source="{Binding Converter={StaticResource ByteArrayToBitmapImage}, Path=.}"/>
+                    <Border
+                        Visibility="Collapsed"
+                        Name="PART_BdDelete"
+                        Background="#aaffffff">
+                        <fa:ImageAwesome
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Height="40"
+                            Width="40"
+                            Foreground="Red"
+                            Icon="Regular_WindowClose">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseLeftButtonUp">
+                                    <i:InvokeCommandAction
+                                        Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.RemoveImage}"
+                                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBox}, Path=SelectedIndex}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </fa:ImageAwesome>
+                    </Border>
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Visibility" Value="Visible" TargetName="PART_BdDelete"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Style TargetType="ListBoxItem" x:Key="ImageListBoxItemStyle">
+            <Setter Property="Template" Value="{StaticResource ImageListBoxItemTemplate}"/>
+        </Style>
+        <Style TargetType="ListBox" x:Key="ImageListBox">
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ItemContainerStyle" Value="{StaticResource ImageListBoxItemStyle}"/>
+            <Setter Property="Grid.ColumnSpan" Value="10"/>
+            <Setter Property="Grid.Row" Value="1"/>
+            <Setter Property="Height" Value="90"/>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
-    <Grid DataContext="{Binding Flat}">
+    <Grid>
+        <!--Вот тут поставить биндинг к квартире-->
         <Grid.RowDefinitions>
             <RowDefinition Height="32"/>
             <RowDefinition/>
@@ -905,6 +965,21 @@
                     DataContext="{Binding Cost}"
                     IsChecked="{Binding HasMortgage}"
                     Content="Ипотека"/>
+                <ListBox
+                    Style="{StaticResource ImageListBox}"
+                    ItemsSource="{Binding Test}"/>
+                <Button
+                    Command="{Binding AddImages}"
+                    Height="40"
+                    Width="40"
+                    Style="{StaticResource GreenButton}"
+                    Grid.Row="1"
+                    Grid.Column="10">
+                    <fa:ImageAwesome
+                        Height="20"
+                        Foreground="White"
+                        Icon="Solid_Images"/>
+                </Button>
                 <Grid
                     Width="180"
                     HorizontalAlignment="Right"

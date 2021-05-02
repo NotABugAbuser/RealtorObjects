@@ -1,4 +1,5 @@
-﻿using MiscUtil;
+﻿using Microsoft.Win32;
+using MiscUtil;
 using RandomFlatGenerator;
 using RealtyModel.Event;
 using RealtyModel.Interface;
@@ -7,11 +8,15 @@ using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
 using RealtyModel.Service;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace RealtorObjects.ViewModel
 {
@@ -87,11 +92,29 @@ namespace RealtorObjects.ViewModel
         private CustomCommand cancel;
         private CustomCommand confirm;
         private CustomCommand changePrice;
+        private CustomCommand removeImage;
+        private CustomCommand addImages;
         private readonly FlatOptions flatOptions = new FlatOptions();
         private LocationOptions locationOptions = new LocationOptions();
         public FlatCreatedEventHandler FlatCreated;
         public FlatModifiedEventHandler FlatModified;
-
+        public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj => {
+            Test.RemoveAt(Convert.ToInt32(obj));
+        }));
+        public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj => {
+            OpenFileDialog openFileDialog = new OpenFileDialog() { 
+                Filter = "Файлы изображений (*.BMP; *.JPG; *.JPEG; *.PNG) | *.BMP; *.JPG; *.JPEG; *.PNG",
+                Multiselect = true,
+                Title = "Выбрать фотографии"
+            };
+            if (openFileDialog.ShowDialog() == true){
+                foreach (string fileName in openFileDialog.FileNames){
+                    Test.Add(File.ReadAllBytes(fileName));
+                }
+            }
+        }));
+        private ObservableCollection<byte[]> test = new ObservableCollection<byte[]>{ 
+        };
         public Flat Flat
         {
             get => flat;
@@ -220,6 +243,9 @@ namespace RealtorObjects.ViewModel
             //}
             FlatCreated?.Invoke(this, new FlatCreatedEventArgs(Flat));
         }));
+
+        public ObservableCollection<byte[]> Test { get => test; set => test = value; }
+
         public void ChangeProperty<T>(object obj, T step)
         {
             var objects = obj as object[];
