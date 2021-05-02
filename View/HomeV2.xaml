@@ -530,11 +530,6 @@
                     Command="{Binding CreateRealtorObject}"
                     CommandParameter="House"
                     Content="+ Дом"/>
-                <Button
-                    Style="{StaticResource HeaderButton}"
-                    Grid.Column="1"
-                    Command="{Binding TestCommand}"
-                    Content="+ Тест"/>
             </StackPanel>
             <Button
                 Command="{Binding OpenCloseFilters}"

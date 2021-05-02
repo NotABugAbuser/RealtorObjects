@@ -107,7 +107,7 @@ namespace RealtorObjects.ViewModel
                 Multiselect = true,
                 Title = "Выбрать фотографии"
             };
-            if (openFileDialog.ShowDialog() == true){
+            if (openFileDialog.ShowDialog() == true) {
                 foreach (string fileName in openFileDialog.FileNames){
                     Test.Add(File.ReadAllBytes(fileName));
                 }
@@ -160,87 +160,6 @@ namespace RealtorObjects.ViewModel
         public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
         public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj =>
         {
-            Flat fla = new Flat()
-            {
-                Agent = "asdas",
-                Album = new Album()
-                {
-                    Location = "фывфы",
-                    PhotoList = new byte[100],
-                    Preview = new byte[100],
-                },
-                Location = new Location()
-                {
-                    City = new City() { Name = "asd" },
-                    District = new District() { Name = "asd" },
-                    Street = new Street() { Name = "asd" },
-                    HouseNumber = 15,
-                    FlatNumber = 14,
-                    HasBanner = true,
-                    HasExchange = true
-                },
-                Cost = new Cost()
-                {
-                    Area = 10,
-                    HasMortgage = true,
-                    HasPercents = true,
-                    HasVAT = true,
-                    Price = 1000
-                },
-                Customer = new Customer()
-                {
-                    Name = "выав",
-                    PhoneNumbers = "12312321"
-                },
-                GeneralInfo = new BaseInfo()
-                {
-                    Ceiling = 10,
-                    Condition = "asd",
-                    Convenience = "asd",
-                    Description = "asd",
-                    General = 10,
-                    Heating = "asd",
-                    Kitchen = 10,
-                    Living = 10,
-                    RoomCount = 10,
-                    Water = "asd",
-                    Year = 1950
-                },
-                Info = new FlatInfo()
-                {
-                    Balcony = "asd",
-                    Bath = "asd",
-                    Bathroom = "asd",
-                    Floor = "asd",
-                    Fund = "asd",
-                    HasChute = true,
-                    HasElevator = true,
-                    HasGarage = true,
-                    HasImprovedLayout = true,
-                    HasRenovation = true,
-                    IsCorner = true,
-                    IsPrivatised = true,
-                    IsSeparated = true,
-                    Kvl = 10,
-                    Loggia = "asd",
-                    Material = "asd",
-                    Rooms = "asd",
-                    Type = "asd",
-                    TypeOfRooms = "asd",
-                    Windows = "asd"
-                },
-                HasExclusive = true,
-                IsSold = true,
-                LastUpdateTime = DateTime.Now,
-                ObjectType = "asd",
-                Status = Status.Active
-            };
-            //for (Int32 i = 0; i < 10; i++)
-            //{
-            //    FlatCreated?.Invoke(this, new FlatCreatedEventArgs(fla));
-            //    fla.Location.FlatNumber++;
-            //    Thread.Sleep(500);
-            //}
             FlatCreated?.Invoke(this, new FlatCreatedEventArgs(Flat));
         }));
 

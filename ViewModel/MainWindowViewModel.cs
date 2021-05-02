@@ -33,6 +33,7 @@ namespace RealtorObjects.ViewModel
         private BaseViewModel workArea;
         private CustomCommand closeApp;
         private CustomCommand updateWorkArea;
+        private CustomCommand signOut;
         private FontAwesomeIcon currentIcon = FontAwesomeIcon.Home;
         private FontAwesomeIcon[] icons = new FontAwesomeIcon[5] {
             FontAwesomeIcon.Home,
@@ -54,86 +55,68 @@ namespace RealtorObjects.ViewModel
         #region TestMethods
         private CustomCommand testCommand;
         private CustomCommand secondTestCommand;
-        public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj =>
-        {
+        public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj => {
             var flatWindow = new FlatFormV2();
             flatWindow.Show();
         }));
-        public CustomCommand SecondTestCommand => secondTestCommand ?? (secondTestCommand = new CustomCommand(obj =>
-        {
+        public CustomCommand SecondTestCommand => secondTestCommand ?? (secondTestCommand = new CustomCommand(obj => {
         }));
         #endregion
 
-        public MainWindowViewModel()
-        {
+        public MainWindowViewModel() {
             //StartUpTheClock();
         }
-
-        public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj =>
-        {
+        public CustomCommand SignOut => signOut ?? (signOut = new CustomCommand(obj => { 
+        
+        }));
+        public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
             Application.Current.Shutdown();
         }));
-        public CustomCommand UpdateWorkArea => updateWorkArea ?? (updateWorkArea = new CustomCommand(obj =>
-        {
+        public CustomCommand UpdateWorkArea => updateWorkArea ?? (updateWorkArea = new CustomCommand(obj => {
             byte index = Convert.ToByte(obj);
             WorkArea = ViewModels[index];
-            //Header = headers[index]; //удалить эту строку и лист
-            //CurrentIcon = icons[index]; //удалить эту строку и лист
-            for (byte i = 0; i < ToggledButtons.Count; i++)
-            {
+            for (byte i = 0; i < ToggledButtons.Count; i++) {
                 ToggledButtons[i] = false;
             }
-            //ToggledButtons.All(bvm => { bvm = false; return true; });
             ToggledButtons[index] = true;
         }));
-        public string Header
-        {
+        public string Header {
             get => header;
-            set
-            {
+            set {
                 header = value;
                 OnPropertyChanged();
             }
         }
-        public string CurrentTime
-        {
+        public string CurrentTime {
             get => currentTime;
-            set
-            {
+            set {
                 currentTime = value;
                 OnPropertyChanged();
             }
         }
-        public FontAwesomeIcon CurrentIcon
-        {
+        public FontAwesomeIcon CurrentIcon {
             get => currentIcon;
-            set
-            {
+            set {
                 currentIcon = value;
                 OnPropertyChanged();
             }
         }
         public ObservableCollection<bool> ToggledButtons => toggledButtons;
-        public LocationOptions LocationOptions
-        {
+        public LocationOptions LocationOptions {
             get => locationOptions;
-            set
-            {
+            set {
                 locationOptions = value;
                 OnPropertyChanged();
             }
         }
-        public BaseViewModel WorkArea
-        {
+        public BaseViewModel WorkArea {
             get => workArea;
-            set
-            {
+            set {
                 workArea = value;
                 OnPropertyChanged();
             }
         }
-        public BaseViewModel[] ViewModels
-        {
+        public BaseViewModel[] ViewModels {
             get => viewModels;
             set => viewModels = value;
         }

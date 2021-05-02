@@ -276,7 +276,7 @@
                 <ComboBox
                     PreviewTextInput="RussianOnly"
                     Text="{Binding City.Name, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding City.Name}"
+                    SelectedItem="{Binding City}"
                     ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.LocationOptions.Cities}"
                     Grid.Row="0"
                     Grid.Column="1"

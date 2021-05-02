@@ -63,6 +63,26 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style TargetType="Button" x:Key="ExitButton">
+            <Setter Property="Background" Value="{StaticResource PrimaryViolet}"/>
+            <Setter Property="Height" Value="52"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter Grid.Column="0"/>
+                            <ContentPresenter/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource LightPrimaryViolet}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style TargetType="fa:ImageAwesome" x:Key="LeftIcon">
             <Setter Property="Height" Value="20"/>
             <Setter Property="Width" Value="20"/>
@@ -89,94 +109,117 @@
         <Border
             Grid.Row="1"
             Background="{StaticResource PrimaryViolet}">
-            <StackPanel
-                Margin="0,15,0,0">
-                <ToggleButton 
-                    Command="{Binding UpdateWorkArea}"
-                    CommandParameter="0"
-                    IsChecked="{Binding ToggledButtons[0]}"
-                    Style="{StaticResource LeftBarButton}">
+            <Grid>
+                <StackPanel
+                    Margin="0,15,0,0">
+                    <ToggleButton 
+                        Command="{Binding UpdateWorkArea}"
+                        CommandParameter="0"
+                        IsChecked="{Binding ToggledButtons[0]}"
+                        Style="{StaticResource LeftBarButton}">
+                        <Grid>
+                            <fa:ImageAwesome
+                                Style="{StaticResource LeftIcon}"
+                                Icon="Solid_Home"/>
+                            <TextBlock
+                                Style="{StaticResource LeftText}"
+                                Text="Объекты"/>
+                        </Grid>
+                    </ToggleButton>
+                    <ToggleButton 
+                        Command="{Binding UpdateWorkArea}"
+                        CommandParameter="1"
+                        IsChecked="{Binding ToggledButtons[1]}"
+                        Style="{StaticResource LeftBarButton}">
+                        <Grid>
+                            <fa:ImageAwesome
+                                Style="{StaticResource LeftIcon}"
+                                Icon="Solid_User"/>
+                            <TextBlock
+                                Style="{StaticResource LeftText}"
+                                Text="Клиенты"/>
+                        </Grid>
+                    </ToggleButton>
+                    <ToggleButton 
+                        Command="{Binding UpdateWorkArea}"
+                        CommandParameter="2"
+                        IsChecked="{Binding ToggledButtons[2]}"
+                        Style="{StaticResource LeftBarButton}">
+                        <Grid>
+                            <fa:ImageAwesome
+                                Style="{StaticResource LeftIcon}"
+                                Icon="Solid_City"/>
+                            <TextBlock
+                                Style="{StaticResource LeftText}"
+                                Text="Города"/>
+                        </Grid>
+                    </ToggleButton>
+                    <ToggleButton 
+                        Command="{Binding UpdateWorkArea}"
+                        CommandParameter="3"
+                        IsChecked="{Binding ToggledButtons[3]}"
+                        Style="{StaticResource LeftBarButton}">
+                        <Grid>
+                            <fa:ImageAwesome
+                                Style="{StaticResource LeftIcon}"
+                                Icon="Solid_MapMarkedAlt"/>
+                            <TextBlock
+                                Style="{StaticResource LeftText}"
+                                Text="Районы"/>
+                        </Grid>
+                    </ToggleButton>
+                    <ToggleButton 
+                        Command="{Binding UpdateWorkArea}"
+                        CommandParameter="4"
+                        IsChecked="{Binding ToggledButtons[4]}"
+                        Style="{StaticResource LeftBarButton}">
+                        <Grid>
+                            <fa:ImageAwesome
+                                Height="20"
+                                Style="{StaticResource LeftIcon}"
+                                Icon="Solid_GripVertical"/>
+                            <TextBlock
+                                Style="{StaticResource LeftText}"
+                                Text="Улицы"/>
+                        </Grid>
+                    </ToggleButton>
+                    <ToggleButton 
+                        Command="{Binding UpdateWorkArea}"
+                        CommandParameter="5"
+                        IsChecked="{Binding ToggledButtons[5]}"
+                        Style="{StaticResource LeftBarButton}">
+                        <Grid>
+                            <fa:ImageAwesome
+                                Style="{StaticResource LeftIcon}"
+                                Icon="Regular_ChartBar"/>
+                            <TextBlock
+                                Style="{StaticResource LeftText}"
+                                Text="Статистика"/>
+                        </Grid>
+                    </ToggleButton>
+                </StackPanel>
+                <TextBlock
+                    VerticalAlignment="Bottom"
+                    Margin="0,0,0,52"
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource LeftText}"
+                    Text="ВладимиренкоВВ"/>
+                <Button
+                    Command="{Binding SignOut}"
+                    VerticalAlignment="Bottom"
+                    Style="{StaticResource ExitButton}">
                     <Grid>
                         <fa:ImageAwesome
+                            Margin="100,5,0,0"
                             Style="{StaticResource LeftIcon}"
-                            Icon="Solid_Home"/>
+                            Icon="Solid_SignOutAlt"/>
                         <TextBlock
+                            Margin="45,0,0,0"
                             Style="{StaticResource LeftText}"
-                            Text="Объекты"/>
+                            Text="Выйти"/>
                     </Grid>
-                </ToggleButton>
-                <ToggleButton 
-                    Command="{Binding UpdateWorkArea}"
-                    CommandParameter="1"
-                    IsChecked="{Binding ToggledButtons[1]}"
-                    Style="{StaticResource LeftBarButton}">
-                    <Grid>
-                        <fa:ImageAwesome
-                            Style="{StaticResource LeftIcon}"
-                            Icon="Solid_User"/>
-                        <TextBlock
-                            Style="{StaticResource LeftText}"
-                            Text="Клиенты"/>
-                    </Grid>
-                </ToggleButton>
-                <ToggleButton 
-                    Command="{Binding UpdateWorkArea}"
-                    CommandParameter="2"
-                    IsChecked="{Binding ToggledButtons[2]}"
-                    Style="{StaticResource LeftBarButton}">
-                    <Grid>
-                        <fa:ImageAwesome
-                            Style="{StaticResource LeftIcon}"
-                            Icon="Solid_City"/>
-                        <TextBlock
-                            Style="{StaticResource LeftText}"
-                            Text="Города"/>
-                    </Grid>
-                </ToggleButton>
-                <ToggleButton 
-                    Command="{Binding UpdateWorkArea}"
-                    CommandParameter="3"
-                    IsChecked="{Binding ToggledButtons[3]}"
-                    Style="{StaticResource LeftBarButton}">
-                    <Grid>
-                        <fa:ImageAwesome
-                            Style="{StaticResource LeftIcon}"
-                            Icon="Solid_MapMarkedAlt"/>
-                        <TextBlock
-                            Style="{StaticResource LeftText}"
-                            Text="Районы"/>
-                    </Grid>
-                </ToggleButton>
-                <ToggleButton 
-                    Command="{Binding UpdateWorkArea}"
-                    CommandParameter="4"
-                    IsChecked="{Binding ToggledButtons[4]}"
-                    Style="{StaticResource LeftBarButton}">
-                    <Grid>
-                        <fa:ImageAwesome
-                            Height="20"
-                            Style="{StaticResource LeftIcon}"
-                            Icon="Solid_GripVertical"/>
-                        <TextBlock
-                            Style="{StaticResource LeftText}"
-                            Text="Улицы"/>
-                    </Grid>
-                </ToggleButton>
-                <ToggleButton 
-                    Command="{Binding UpdateWorkArea}"
-                    CommandParameter="5"
-                    IsChecked="{Binding ToggledButtons[5]}"
-                    Style="{StaticResource LeftBarButton}">
-                    <Grid>
-                        <fa:ImageAwesome
-                            Style="{StaticResource LeftIcon}"
-                            Icon="Regular_ChartBar"/>
-                        <TextBlock
-                            Style="{StaticResource LeftText}"
-                            Text="Статистика"/>
-                    </Grid>
-                </ToggleButton>
-            </StackPanel>
+                </Button>
+            </Grid>
         </Border>
         <ContentControl 
             Content="{Binding WorkArea}" 
