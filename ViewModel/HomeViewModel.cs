@@ -1,5 +1,6 @@
 ﻿using RandomFlatGenerator;
 using RealtorObjects.Model;
+using RealtorObjects.View;
 using RealtyModel.Event;
 using RealtyModel.Event.RealtyEvents;
 using RealtyModel.Model;
@@ -12,7 +13,13 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace RealtorObjects.ViewModel
@@ -133,8 +140,10 @@ namespace RealtorObjects.ViewModel
             string type = (string)obj;
             if (type == "Flat")
                 OpeningFlatForm?.Invoke(this, new OpeningFlatFormEventArgs(true, new Flat(), GetLocationOptions()));
+
             //if (type == "House") ;
         }));
+
         public CustomCommand Modify => modify ?? (modify = new CustomCommand(obj =>
         {
             BaseRealtorObject bro = (BaseRealtorObject)obj;
@@ -218,7 +227,6 @@ namespace RealtorObjects.ViewModel
             dataBase.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Flats'");
             dataBase.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Houses'");
             dataBase.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Locations'");
-            dataBase.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'UpdateTime'");
             dataBase.Flats.Local.Clear();
             dataBase.Houses.Local.Clear();
             dataBase.Locations.Local.Clear();
@@ -227,7 +235,6 @@ namespace RealtorObjects.ViewModel
             dataBase.Streets.Local.Clear();
             dataBase.Albums.Local.Clear();
             dataBase.Customers.Local.Clear();
-            dataBase.UpdateTime.Local.Clear();
             dataBase.SaveChanges();
         }
         private void TestMethod()
@@ -283,16 +290,12 @@ namespace RealtorObjects.ViewModel
                 for (int i = 0; i < right + 1; i++) { Pages.Add(currentPage + i + 1); }
             }
         }
-        private LocationOptions GetLocationOptions()
+        private void FilterCollectionMeth()
         {
-            LocationOptions locationOptions = new LocationOptions();
-            foreach (City city in dataBase.Cities.AsNoTracking())
-                locationOptions.Cities.Add(city);
-            foreach (District district in dataBase.Districts.AsNoTracking())
-                locationOptions.Districts.Add(district);
-            foreach (Street street in dataBase.Streets.AsNoTracking())
-                locationOptions.Streets.Add(street);
-            return locationOptions;
+            ((App)Application.Current).Dispatcher.Invoke(() =>
+            {
+                FilterCollection.Execute(new object());
+            });
         }
 
         internal void GetUpdate()
@@ -309,14 +312,12 @@ namespace RealtorObjects.ViewModel
                 {
                     if (!String.IsNullOrWhiteSpace(objects[0]))
                     {
-                        Debug.WriteLine("never flat");
                         Flat[] flats = JsonSerializer.Deserialize<Flat[]>(objects[0]);
                         AllObjects.AddRange(flats);
                         dataBase.Flats.AddRange(flats);
                     }
                     if (!String.IsNullOrWhiteSpace(objects[1]))
                     {
-                        Debug.WriteLine("never house");
                         House[] houses = JsonSerializer.Deserialize<House[]>(objects[1]);
                         AllObjects.AddRange(houses);
                         dataBase.Houses.AddRange(houses);
@@ -326,7 +327,6 @@ namespace RealtorObjects.ViewModel
                 {
                     if (objects[0] != null)
                     {
-                        Debug.WriteLine("ever flat");
                         Flat[] flats = JsonSerializer.Deserialize<Flat[]>(objects[0]);
                         foreach (Flat flat in flats)
                         {
@@ -348,7 +348,6 @@ namespace RealtorObjects.ViewModel
                     }
                     if (objects[1] != null)
                     {
-                        Debug.WriteLine("ever house");
                     }
                 }
                 dataBase.SaveChanges();
@@ -358,7 +357,7 @@ namespace RealtorObjects.ViewModel
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"ReceiveUpdate {ex.Message}");
+                Debug.WriteLine($"{DateTime.Now} ReceiveUpdate {ex.Message}");
                 Debug.WriteLine(ex.InnerException);
                 //Запросить обновление снова
             }
@@ -411,12 +410,16 @@ namespace RealtorObjects.ViewModel
             WriteLastUpdateTime();
         }
 
-        private void FilterCollectionMeth()
+        private LocationOptions GetLocationOptions()
         {
-            ((App)Application.Current).Dispatcher.Invoke(() =>
-            {
-                FilterCollection.Execute(new object());
-            });
+            LocationOptions locationOptions = new LocationOptions();
+            foreach (City city in dataBase.Cities.AsNoTracking())
+                locationOptions.Cities.Add(city);
+            foreach (District district in dataBase.Districts.AsNoTracking())
+                locationOptions.Districts.Add(district);
+            foreach (Street street in dataBase.Streets.AsNoTracking())
+                locationOptions.Streets.Add(street);
+            return locationOptions;
         }
         internal String GetLastUpdateTime()
         {

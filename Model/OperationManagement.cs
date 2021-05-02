@@ -127,7 +127,7 @@ namespace RealtorObjects.Model
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"OperationManagement-HandleRealtyResponse {ex.Message}");
+                Debug.WriteLine($"{DateTime.Now} OperationManagement-HandleRealtyResponse {ex.Message}");
             }
         }
     }
