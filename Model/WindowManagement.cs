@@ -131,7 +131,7 @@ namespace RealtorObjects.Model
                 loginForm.Close();
                 loadingForm.Close();
                 client.Connected += () => OpenMainWindow();
-                HomeVM.FilterCollection?.Execute(new object());
+                //HomeVM.FilterCollection?.Execute(new object());
                 mainWindow.Show();
             });
         }
@@ -237,7 +237,10 @@ namespace RealtorObjects.Model
                 flatFormVM.Flat = JsonSerializer.Deserialize<Flat>(JsonSerializer.Serialize(e.Flat)); //нужно, чтобы разорвать связь объекта в форме и объекта в списке
                 flatFormVM.IsCurrentFlatNew = false;
             }
-            flatFormVM.LocationOptions = new LocationOptions();
+            if (e.LocationOptions != null)
+                flatFormVM.LocationOptions = e.LocationOptions;
+            else
+                flatFormVM.LocationOptions = new LocationOptions();
             new FlatFormV2 { DataContext = flatFormVM }.Show();
         }
     }

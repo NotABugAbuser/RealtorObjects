@@ -102,8 +102,6 @@ namespace RealtorObjects.Model
                 catch (Exception)
                 {
                     Disconnect();
-                    socket.Shutdown(SocketShutdown.Both);
-                    socket.Close();
                 }
             });
         }
@@ -168,6 +166,103 @@ namespace RealtorObjects.Model
             return addresses.ToArray();
         }
 
+        public Task ReceiveOverStreamAsync()
+        {
+            return Task.Run(() =>
+            {
+                try
+                {
+                    while (IsConnected)
+                    {
+                        if (stream.DataAvailable)
+                        {
+                            Byte[] buffer = new Byte[4096];
+                            StringBuilder message = new StringBuilder();
+                            Int32 bytes = 0;
+                            String chunk;
+                            do
+                            {
+                                Int32 byteCount = stream.Read(buffer, 0, buffer.Length);
+                                bytes += byteCount;
+                                chunk = Encoding.UTF8.GetString(buffer);
+                                message.Append(chunk, 0, byteCount);
+                            }
+                            while (stream.DataAvailable);
+                            Operation operation = JsonSerializer.Deserialize<Operation>(message.ToString());
+                            if (operation.Data == "0x00")
+                            {
+                                Debug.WriteLine($"received {bytes}kbytes disconnect");
+                                Disconnect();
+                            }
+                            else
+                            {
+                                Debug.WriteLine($"received {bytes}kbytes {operation.OperationParameters.Direction} {operation.OperationParameters.Type} {operation.OperationParameters.Target} {operation.IsSuccessfully}");
+                                IncomingOperations.Enqueue(operation);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            });
+        }
+        private void SendOverStream()
+        {
+            lock (streamSendLocker)
+            {
+                try
+                {
+                    Operation operation = OutcomingOperations.Dequeue();
+                    String json = JsonSerializer.Serialize<Operation>(operation);
+                    Byte[] data = Encoding.UTF8.GetBytes(json);
+                    stream.Write(data, 0, data.Length);
+                    Debug.WriteLine($"sent {data.Length}kbytes {operation.OperationParameters.Direction} {operation.OperationParameters.Type} {operation.OperationParameters.Target}");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
+        }
+        public void SendOverStream(Operation operation)
+        {
+            try
+            {
+                String json = JsonSerializer.Serialize<Operation>(operation);
+                Byte[] data = Encoding.UTF8.GetBytes(json);
+                stream.Write(data, 0, data.Length);
+                Debug.WriteLine($"sent {data.Length}kbytes {operation.Data}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+        public void Disconnect()
+        {
+            OutcomingOperations.Enqueue(new Operation() { Data = "0x00" });
+            stream.Close();
+            stream.Dispose();
+            socket.Close();
+            socket.Dispose();
+            Debug.WriteLine("has disconnected");
+            IsTryingToConnect = false;
+            IsConnected = false;
+            uiDispatcher.BeginInvoke(new Action(() =>
+            {
+                LostConnection?.Invoke();
+            }));
+        }
+        private void OnPropertyChanged([CallerMemberName] String prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+
+
+
+
         public Task ReceiveOverSocketAsync()
         {
             return Task.Run(() =>
@@ -198,40 +293,6 @@ namespace RealtorObjects.Model
                 }
             });
         }
-        public Task ReceiveOverStreamAsync()
-        {
-            return Task.Run(() =>
-            {
-                try
-                {
-                    while (IsConnected)
-                    {
-                        if (stream.DataAvailable)
-                        {
-                            Byte[] buffer = new Byte[4096];
-                            StringBuilder message = new StringBuilder();
-                            Int32 bytes = 0;
-                            String chunk;
-                            do
-                            {
-                                Int32 byteCount = stream.Read(buffer, 0, buffer.Length);
-                                bytes += byteCount;
-                                chunk = Encoding.UTF8.GetString(buffer);
-                                message.Append(chunk, 0, byteCount);
-                            }
-                            while (stream.DataAvailable);
-                            Debug.WriteLine(bytes);
-                            Operation operation = JsonSerializer.Deserialize<Operation>(message.ToString());
-                            IncomingOperations.Enqueue(operation);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
-            });
-        }
         private void SendOverSocket()
         {
             lock (socketSendLocker)
@@ -247,37 +308,6 @@ namespace RealtorObjects.Model
                 {
                 }
             }
-        }
-        private void SendOverStream()
-        {
-            //lock (streamSendLocker)
-            //{
-            try
-            {
-                Operation operation = OutcomingOperations.Dequeue();
-                String json = JsonSerializer.Serialize<Operation>(operation);
-                Byte[] data = Encoding.UTF8.GetBytes(json);
-                stream.Write(data, 0, data.Length);
-            }
-            catch (Exception)
-            {
-            }
-            //}
-        }
-
-        public void Disconnect()
-        {
-            uiDispatcher.BeginInvoke(new Action(() =>
-            {
-                IsTryingToConnect = false;
-                IsConnected = false;
-                LostConnection?.Invoke();
-            }));
-        }
-
-        private void OnPropertyChanged([CallerMemberName] String prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
     }
 }

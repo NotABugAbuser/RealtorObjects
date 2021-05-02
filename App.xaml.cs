@@ -57,7 +57,7 @@ namespace RealtorObjects
         }
         protected override void OnExit(ExitEventArgs e)
         {
-            Client.OutcomingOperations.Enqueue(new Operation() { Data = "0x00" });
+            Client.Disconnect();
             base.OnExit(e);
         }
         private void InitializeMembers()

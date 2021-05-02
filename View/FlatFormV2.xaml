@@ -966,9 +966,9 @@
                     Content="Ипотека"/>
                 <ListBox
                     Style="{StaticResource ImageListBox}"
-                    ItemsSource="{Binding Test}"/>
+                    ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Test}"/>
                 <Button
-                    Command="{Binding AddImages}"
+                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.AddImages}"
                     Height="40"
                     Width="40"
                     Style="{StaticResource GreenButton}"
