@@ -147,8 +147,7 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Grid>
-        <!--Вот тут поставить биндинг к квартире-->
+    <Grid DataContext="{Binding Flat}">
         <Grid.RowDefinitions>
             <RowDefinition Height="32"/>
             <RowDefinition/>
