@@ -1,4 +1,5 @@
-﻿using RealtorObjects.View;
+﻿using RealtorObjects.Model.Event;
+using RealtorObjects.View;
 using RealtorObjects.ViewModel;
 using RealtyModel.Event.RealtyEvents;
 using RealtyModel.Model;
@@ -6,6 +7,7 @@ using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -17,11 +19,14 @@ namespace RealtorObjects.Model
 {
     public class WindowManagement
     {
+        private Boolean isFirstConnection = true;
+        private Boolean hasUpdate = false;
         private Credential credential;
         private Client client;
         private Window mainWindow;
         private LoginForm loginForm;
         private LoadingForm loadingForm;
+        private FlatFormV2 flatForm;
 
         private HomeViewModel homeVM;
         private FlatFormViewModel flatFormVM;
@@ -85,60 +90,36 @@ namespace RealtorObjects.Model
         }
         private void BindEvents()
         {
-            client.Connected += () => HomeVM.GetUpdate();
-            HomeVM.UpdateFinished += (s, e) => OpenLoginForm();
-            client.LostConnection += () => Reconnect();
-            credential.LoggedIn += (s, e) => OpenMainWindow();
-            credential.LoggedOut += (s, e) => OpenLoginForm();
-            credential.Registered += (s, e) =>
-            {
-                MessageBox.Show("Регистрация прошла успешно");
-                loginFormVM.RegistrationVisibility = Visibility.Collapsed;
-            };
+            client.Connected += () => OnConnected();
+            client.LostConnection += () => OnLostConnection();
+
+            credential.LoggedIn += (s, e) => OnLoggedIn();
+            credential.LoggedOut += (s, e) => OnLoggedOut();
+            credential.Registered += (s, e) => OnRegistered();
+
+            HomeVM.UpdateFinished += (s, e) => OnUpdateFinished();
             HomeVM.OpeningFlatForm += (s, e) => OnOpenFlatForm(e);
+
+            FlatFormVM.FlatCreated = (s, e) => flatForm.Close();
         }
 
-        private void TestAutoLoginMeth()
+        private void OnConnected()
         {
-            ((App)Application.Current).Credential.Name = "ГвоздиковЕА";
-            ((App)Application.Current).Credential.Password = "123";
-            client.OutcomingOperations.Enqueue(new Operation("ГвоздиковЕА", "123", OperationDirection.Identity, OperationType.Login));
-        }
-        private void OpenLoadingForm()
-        {
-            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
+            if (isFirstConnection)
             {
-                loadingForm = new LoadingForm() { DataContext = new LoadingFormViewModel() };
-                loadingForm.Show();
-                //Thread.Sleep(1000);
-            });
-        }
-        private void OpenLoginForm()
-        {
-            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
-            {
-                loadingForm.Close();
-                loginForm = new LoginForm() { DataContext = loginFormVM };
-                loginForm.Show();
+                HomeVM.GetUpdate();
+                isFirstConnection = false;
+            }
+            else
                 TestAutoLoginMeth();
-                Thread.Sleep(1000);
-            });
         }
-        private void OpenMainWindow()
+        private void OnLostConnection()
         {
-            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
+            if (!client.IsTryingToConnect)
             {
-                loginForm.Close();
-                loadingForm.Close();
-                client.Connected += () => OpenMainWindow();
-                //HomeVM.FilterCollection?.Execute(new object());
-                mainWindow.Show();
-            });
-        }
-        private void Reconnect()
-        {
-            mainWindow.Hide();
-            OpenLoadingForm();
+                mainWindow.Hide();
+                OpenLoadingForm();
+            }
             var timer = new System.Timers.Timer(1000);
             timer.AutoReset = false;
             timer.Elapsed += (s, e) =>
@@ -148,6 +129,29 @@ namespace RealtorObjects.Model
                 timer.Dispose();
             };
             timer.Start();
+        }
+        private void OnRegistered()
+        {
+            MessageBox.Show("Регистрация прошла успешно");
+            loginFormVM.RegistrationVisibility = Visibility.Collapsed;
+        }
+        private void OnLoggedIn()
+        {
+            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
+            {
+                loginForm.Close();
+                loadingForm.Close();
+                mainWindow.Show();
+            });
+        }
+        private void OnLoggedOut()
+        {
+            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
+            {
+                mainWindow.Hide();
+                loginForm = new LoginForm() { DataContext = loginFormVM };
+                loginForm.Show();
+            });
         }
 
         public void OnOpenFlatForm(OpeningFlatFormEventArgs e)
@@ -241,7 +245,35 @@ namespace RealtorObjects.Model
                 flatFormVM.LocationOptions = e.LocationOptions;
             else
                 flatFormVM.LocationOptions = new LocationOptions();
-            new FlatFormV2 { DataContext = flatFormVM }.Show();
+            flatForm = new FlatFormV2 { DataContext = flatFormVM };
+            flatForm.Show();
+        }
+        private void OnUpdateFinished()
+        {
+            hasUpdate = true;
+            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
+            {
+                loadingForm.Close();
+                loginForm = new LoginForm() { DataContext = loginFormVM };
+                loginForm.Show();
+                TestAutoLoginMeth();
+                Thread.Sleep(1000);
+            });
+        }
+
+        private void TestAutoLoginMeth()
+        {
+            ((App)Application.Current).Credential.Name = "ГвоздиковЕА";
+            ((App)Application.Current).Credential.Password = "123";
+            client.OutcomingOperations.Enqueue(new Operation("ГвоздиковЕА", "123", OperationDirection.Identity, OperationType.Login));
+        }
+        private void OpenLoadingForm()
+        {
+            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
+            {
+                loadingForm = new LoadingForm() { DataContext = new LoadingFormViewModel() };
+                loadingForm.Show();
+            });
         }
     }
 }

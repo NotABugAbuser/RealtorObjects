@@ -18,9 +18,6 @@ using System.Diagnostics;
 
 namespace RealtorObjects.Model
 {
-    /// <summary>
-    /// Класс клиента в локальной сети.
-    /// </summary>
     public class Client : INotifyPropertyChanged
     {
         #region Fileds
@@ -79,13 +76,13 @@ namespace RealtorObjects.Model
             OutcomingOperations.Enqueued += (s, e) => SendOverStream();
         }
 
-        public Task ConnectAsync()
+        public async void ConnectAsync()
         {
-            return Task.Run(() =>
+            await Task.Run(() =>
             {
+                Debug.WriteLine($"{DateTime.Now} has started to connect");
                 IsTryingToConnect = true;
-                if (serverIp == null)
-                    FindServerIPAddress();
+                FindServerIPAddress();
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 try
                 {
@@ -93,56 +90,99 @@ namespace RealtorObjects.Model
                     {
                         IPEndPoint iPEndPoint = new IPEndPoint(serverIp, 8005);
                         socket.Connect(iPEndPoint);
-                        stream = new NetworkStream(socket);
+                        stream = new NetworkStream(socket, true);
+                        Debug.WriteLine($"{DateTime.Now} has CONNECTED to {serverIp}");
                         IsTryingToConnect = false;
                         IsConnected = true;
                         uiDispatcher.BeginInvoke(new Action(() => { Connected?.Invoke(); }));
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    Disconnect();
+                    Debug.WriteLine($"{DateTime.Now} (ConnectAsync){ex.Message}");
+                    DisconnectAsync();
                 }
             });
+        }
+        public async void CheckConnectionAsync()
+        {
+            await Task.Run(() =>
+            {
+                try
+                {
+                    while (true)
+                    {
+                        if (GetSocketStatus())
+                            Task.Delay(1000).Wait();
+                        else
+                        {
+                            DisconnectAsync();
+                            break;
+                        }
+                    }
+                }
+                catch (ObjectDisposedException objDispEx)
+                {
+                    DisconnectAsync();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"{DateTime.Now} (ConnectAsync){ex.Message}");
+                }
+            });
+            bool GetSocketStatus()
+            {
+                bool part1 = socket.Poll(1000, SelectMode.SelectRead);
+                bool part2 = (socket.Available == 0);
+                if (part1 && part2)
+                    return false;
+                else
+                    return true;
+            }
         }
         private void FindServerIPAddress()
         {
             try
             {
+                Debug.WriteLine($"{DateTime.Now} has started to look for server ip");
                 Socket socket = null;
                 IPAddress[] iPAddresses = GetLocalIPv4Addresses();
                 do
                 {
                     foreach (IPAddress iP in iPAddresses)
                     {
-                        socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-                        socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontRoute, true);
-                        socket.EnableBroadcast = true;
-                        socket.ReceiveTimeout = 1000;
-                        socket.Bind(new IPEndPoint(iP, 8080));
-                        for (Int32 attempts = 1; attempts <= 10 && serverIp == null; attempts++)
+                        using (socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
                         {
-                            socket.SendTo(new byte[] { 0x10 }, new IPEndPoint(IPAddress.Broadcast, 8080));
-                            Int32 byteCount = 0;
-                            byte[] buffer = new byte[socket.ReceiveBufferSize];
-                            EndPoint endPoint = new IPEndPoint(IPAddress.None, 0);
-                            if (socket.Poll(1000000, SelectMode.SelectRead))
+                            socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontRoute, true);
+                            socket.EnableBroadcast = true;
+                            socket.ReceiveTimeout = 1000;
+                            socket.Bind(new IPEndPoint(iP, 8080));
+                            for (Int32 attempts = 1; attempts <= 10 && serverIp == null; attempts++)
                             {
-                                byteCount = socket.ReceiveFrom(buffer, ref endPoint);
-                                if (byteCount == 1 && buffer[0] == 0x20)
-                                    serverIp = (endPoint as IPEndPoint).Address;
+                                socket.SendTo(new byte[] { 0x10 }, new IPEndPoint(IPAddress.Broadcast, 8080));
+                                Int32 byteCount = 0;
+                                byte[] buffer = new byte[socket.ReceiveBufferSize];
+                                EndPoint endPoint = new IPEndPoint(IPAddress.None, 0);
+                                if (socket.Poll(1000000, SelectMode.SelectRead))
+                                {
+                                    byteCount = socket.ReceiveFrom(buffer, ref endPoint);
+                                    if (byteCount == 1 && buffer[0] == 0x20)
+                                        serverIp = (endPoint as IPEndPoint).Address;
+                                }
+                                Thread.Sleep(200);
                             }
-                            Thread.Sleep(200);
+                            if (serverIp != null) break;
+                            socket.Shutdown(SocketShutdown.Both);
+                            socket.Close();
                         }
-                        if (serverIp != null) break;
-                        socket.Dispose();
-                        socket.Close();
                     }
                 }
                 while (serverIp == null && IsTryingToConnect);
+                Debug.WriteLine($"{DateTime.Now} has found server ip at {serverIp}");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine($"{DateTime.Now} (FindServerIPAddress){ex.Message}");
             }
         }
         private IPAddress[] GetLocalIPv4Addresses()
@@ -166,12 +206,13 @@ namespace RealtorObjects.Model
             return addresses.ToArray();
         }
 
-        public Task ReceiveOverStreamAsync()
+        public async void ReceiveOverStreamAsync()
         {
-            return Task.Run(() =>
+            await Task.Run(() =>
             {
                 try
                 {
+                    Debug.WriteLine($"{DateTime.Now} has started to receive operations");
                     while (IsConnected)
                     {
                         if (stream.DataAvailable)
@@ -189,22 +230,14 @@ namespace RealtorObjects.Model
                             }
                             while (stream.DataAvailable);
                             Operation operation = JsonSerializer.Deserialize<Operation>(message.ToString());
-                            if (operation.Data == "0x00")
-                            {
-                                Debug.WriteLine($"received {bytes}kbytes disconnect");
-                                Disconnect();
-                            }
-                            else
-                            {
-                                Debug.WriteLine($"received {bytes}kbytes {operation.OperationParameters.Direction} {operation.OperationParameters.Type} {operation.OperationParameters.Target} {operation.IsSuccessfully}");
-                                IncomingOperations.Enqueue(operation);
-                            }
+                            Debug.WriteLine($"{DateTime.Now} received {bytes}kbytes {operation.OperationParameters.Direction} {operation.OperationParameters.Type} {operation.OperationParameters.Target} {operation.IsSuccessfully}");
+                            IncomingOperations.Enqueue(operation);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine($"{DateTime.Now} {ex.Message}");
                 }
             });
         }
@@ -218,48 +251,56 @@ namespace RealtorObjects.Model
                     String json = JsonSerializer.Serialize<Operation>(operation);
                     Byte[] data = Encoding.UTF8.GetBytes(json);
                     stream.Write(data, 0, data.Length);
-                    Debug.WriteLine($"sent {data.Length}kbytes {operation.OperationParameters.Direction} {operation.OperationParameters.Type} {operation.OperationParameters.Target}");
+                    Debug.WriteLine($"{DateTime.Now} sent {data.Length}kbytes {operation.OperationParameters.Direction} {operation.OperationParameters.Type} {operation.OperationParameters.Target}");
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine($"{DateTime.Now} {ex.Message}");
                 }
             }
         }
-        public void SendOverStream(Operation operation)
+        public void SendDisconnect()
         {
             try
             {
-                String json = JsonSerializer.Serialize<Operation>(operation);
+                String json = JsonSerializer.Serialize<Operation>(new Operation() { Data = "0x00" });
                 Byte[] data = Encoding.UTF8.GetBytes(json);
                 stream.Write(data, 0, data.Length);
-                Debug.WriteLine($"sent {data.Length}kbytes {operation.Data}");
+                Debug.WriteLine($"{DateTime.Now} sent {data.Length}kbytes DISCONNECT");
+                DisconnectAsync();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} {ex.Message}");
             }
         }
-        public void Disconnect()
+        public async void DisconnectAsync()
         {
-            OutcomingOperations.Enqueue(new Operation() { Data = "0x00" });
-            stream.Close();
-            stream.Dispose();
-            socket.Close();
-            socket.Dispose();
-            Debug.WriteLine("has disconnected");
-            IsTryingToConnect = false;
-            IsConnected = false;
-            uiDispatcher.BeginInvoke(new Action(() =>
+            await Task.Run(() =>
             {
-                LostConnection?.Invoke();
-            }));
+                try
+                {
+                    serverIp = null;
+                    IsConnected = false;
+                    Task.Delay(1000).Wait();
+                    socket.Shutdown(SocketShutdown.Both);
+                    socket.Close();
+                    socket.Dispose();
+                    stream.Close();
+                    stream.Dispose();
+                    Debug.WriteLine($"{DateTime.Now} has DISCONNECTED");
+                    uiDispatcher.BeginInvoke(new Action(() => { LostConnection?.Invoke(); }));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"{DateTime.Now} {ex.Message}");
+                }
+            });
         }
         private void OnPropertyChanged([CallerMemberName] String prop = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
-
 
 
 
@@ -289,7 +330,7 @@ namespace RealtorObjects.Model
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine($"{DateTime.Now} {ex.Message}");
                 }
             });
         }

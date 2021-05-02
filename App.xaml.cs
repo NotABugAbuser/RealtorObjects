@@ -1,18 +1,5 @@
 ﻿using RealtorObjects.Model;
-using RealtorObjects.View;
-using RealtorObjects.ViewModel;
-using RealtyModel.Event;
 using RealtyModel.Model;
-using RealtyModel.Model.Derived;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -51,13 +38,11 @@ namespace RealtorObjects
             base.OnStartup(e);
             InitializeMembers();
             BindEvents();
-            Task connection = Client.ConnectAsync();
-            Task receive = connection.ContinueWith((a) => Client.ReceiveOverStreamAsync());
-            receive.Wait();
+            Client.ConnectAsync();
         }
         protected override void OnExit(ExitEventArgs e)
         {
-            Client.Disconnect();
+            Client.SendDisconnect();
             base.OnExit(e);
         }
         private void InitializeMembers()
@@ -68,9 +53,11 @@ namespace RealtorObjects
         }
         private void BindEvents()
         {
+            Client.Connected += () => Client.CheckConnectionAsync();
+            Client.Connected += () => Client.ReceiveOverStreamAsync();
+
             windowManagement.LoginFormVM.LoggingIn += (s, e) => operationManagement.Login(e.UserName, e.Password);
             windowManagement.LoginFormVM.Registering += (s, e) => operationManagement.Register(e.UserName, e.Password, e.Email);
-
             windowManagement.FlatFormVM.FlatCreated = (s, e) => operationManagement.SendFlat(e.Flat, OperationType.Add);
             windowManagement.FlatFormVM.FlatModified = (s, e) => operationManagement.SendFlat(e.Flat, OperationType.Change);
             //windowManagement.HouseFormVM.HouseCreated = (s, e) => operationManagement.SendFlat(e.House, OperationType.Add);
