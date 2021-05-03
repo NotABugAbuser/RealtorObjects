@@ -111,9 +111,8 @@ namespace RealtorObjects.Model
                 HomeVM.GetUpdate();
                 isFirstConnection = false;
             }
-            if (Debugger.IsAttached)
             else if (Debugger.IsAttached)
-                        AutoLogin();
+                AutoLogin();
         }
         private void OnLostConnection()
         {
@@ -259,38 +258,33 @@ namespace RealtorObjects.Model
         //ЗДЕСЬ АВТОЛОГИН УБРАТЬ
         private void OnUpdateFinished()
         {
+            Debug.WriteLine("Update is finished");
             ((App)Application.Current).Dispatcher.Invoke((Action)delegate
             {
-                private void OnUpdateFinished()
-                {
-                    Debug.WriteLine("Update is finished");
-                    ((App)Application.Current).Dispatcher.Invoke((Action)delegate
-                    {
-                        loadingForm.Close();
-                        loginForm = new LoginForm() { DataContext = loginFormVM };
-                        loginForm.Show();
-                        if (Debugger.IsAttached)
-                            AutoLogin();
-                    });
-                }
-
-                private void SetUpTestCredentials()
-                {
-                    credential.Name = "ГвоздиковЕА";
-                    credential.Password = "123";
-                }
-                private void AutoLogin()
-                {
-                    if (credential != null && !String.IsNullOrWhiteSpace(credential.Name) && !String.IsNullOrWhiteSpace(credential.Password))
-                        client.OutcomingOperations.Enqueue(new Operation("ГвоздиковЕА", "123", OperationDirection.Identity, OperationType.Login));
-                }
-                private void OpenLoadingForm()
-                {
-                    ((App)Application.Current).Dispatcher.Invoke((Action)delegate
-                    {
-                        loadingForm = new LoadingForm() { DataContext = new LoadingFormViewModel() };
-                        loadingForm.Show();
-                    });
-                }
-            }
+                loadingForm.Close();
+                loginForm = new LoginForm() { DataContext = loginFormVM };
+                loginForm.Show();
+                if (Debugger.IsAttached)
+                    AutoLogin();
+            });
+        }
+        private void SetUpTestCredentials()
+        {
+            credential.Name = "ГвоздиковЕА";
+            credential.Password = "123";
+        }
+        private void AutoLogin()
+        {
+            if (credential != null && !String.IsNullOrWhiteSpace(credential.Name) && !String.IsNullOrWhiteSpace(credential.Password))
+                client.OutcomingOperations.Enqueue(new Operation("ГвоздиковЕА", "123", OperationDirection.Identity, OperationType.Login));
+        }
+        private void OpenLoadingForm()
+        {
+            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
+            {
+                loadingForm = new LoadingForm() { DataContext = new LoadingFormViewModel() };
+                loadingForm.Show();
+            });
+        }
+    }
 }

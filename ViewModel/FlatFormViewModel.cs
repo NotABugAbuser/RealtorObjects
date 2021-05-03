@@ -28,29 +28,36 @@ namespace RealtorObjects.ViewModel
         private string testString = "руддщ";
         private int testInt = 20;
         private double testDouble = 21.66123;
-        public double TestDouble {
+        public double TestDouble
+        {
             get => testDouble;
-            set {
+            set
+            {
                 testDouble = value;
                 OnPropertyChanged();
             }
         }
-        public int TestInt {
+        public int TestInt
+        {
             get => testInt;
-            set {
+            set
+            {
                 testInt = value;
                 OnPropertyChanged();
             }
         }
-        public string TestString {
+        public string TestString
+        {
             get => testString;
-            set {
+            set
+            {
                 testString = value;
                 OnPropertyChanged();
             }
         }
         public CustomCommand TestCommand => testCommand ??
-            (testCommand = new CustomCommand(obj => {
+            (testCommand = new CustomCommand(obj =>
+            {
                 MessageBox.Show(JsonSerializer.Serialize(Flat).Replace(',', '\n'));
             }));
         #endregion
@@ -60,19 +67,23 @@ namespace RealtorObjects.ViewModel
         private CustomCommand increaseInteger;
         private CustomCommand decreaseInteger;
         public CustomCommand IncreaseDouble => increaseDouble ??
-            (increaseDouble = new CustomCommand(obj => {
+            (increaseDouble = new CustomCommand(obj =>
+            {
                 ChangeProperty<Single>(obj, 0.05f);
             }));
         public CustomCommand IncreaseInteger => increaseInteger ??
-            (increaseInteger = new CustomCommand(obj => {
+            (increaseInteger = new CustomCommand(obj =>
+            {
                 ChangeProperty<int>(obj, 1);
             }));
         public CustomCommand DecreaseDouble => decreaseDouble ??
-            (decreaseDouble = new CustomCommand(obj => {
+            (decreaseDouble = new CustomCommand(obj =>
+            {
                 ChangeProperty<Single>(obj, -0.05f);
             }));
         public CustomCommand DecreaseInteger => decreaseInteger ??
-            (decreaseInteger = new CustomCommand(obj => {
+            (decreaseInteger = new CustomCommand(obj =>
+            {
                 ChangeProperty<int>(obj, -1);
             }));
         #endregion
@@ -88,27 +99,8 @@ namespace RealtorObjects.ViewModel
         private LocationOptions locationOptions = new LocationOptions();
         public FlatCreatedEventHandler FlatCreated;
         public FlatModifiedEventHandler FlatModified;
-        public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj => {
-            Test.RemoveAt(Convert.ToInt32(obj));
-        }));
-        public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj => {
-            OpenFileDialog openFileDialog = new OpenFileDialog() {
-                Filter = "Файлы изображений (*.BMP; *.JPG; *.JPEG; *.PNG) | *.BMP; *.JPG; *.JPEG; *.PNG",
-                Multiselect = true,
-                Title = "Выбрать фотографии"
-            };
-            if (openFileDialog.ShowDialog() == true) {
-                foreach (string fileName in openFileDialog.FileNames) {
-                    Test.Add(File.ReadAllBytes(fileName));
-                }
-            }
-        }));
-        private ObservableCollection<byte[]> test = new ObservableCollection<byte[]> {
-        };
-        public Flat Flat {
-        private ObservableCollection<byte[]> test = new ObservableCollection<byte[]>{ 
-        };
-        
+        private ObservableCollection<byte[]> test = new ObservableCollection<byte[]> { };
+
         public bool IsCurrentFlatNew
         {
             get => isCurrentFlatNew;
@@ -126,55 +118,49 @@ namespace RealtorObjects.ViewModel
         public Flat Flat
         {
             get => flat;
-            set {
+            set
+            {
                 flat = value;
                 OnPropertyChanged();
             }
         }
-        public FlatOptions FlatOptions {
+        public FlatOptions FlatOptions
+        {
             get => flatOptions;
         }
-        public LocationOptions LocationOptions {
+        public LocationOptions LocationOptions
+        {
             get => locationOptions;
-            set {
+            set
+            {
                 locationOptions = value;
                 OnPropertyChanged();
             }
         }
-        public string Title {
-            get => title;
-            set {
-                title = value;
-                OnPropertyChanged();
-            }
-        }
-        public bool IsCurrentFlatNew {
-            get => isCurrentFlatNew;
-            set => isCurrentFlatNew = value;
-        }
 
-        public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj => {
-        public FlatCreatedEventHandler FlatCreated;
-        public FlatModifiedEventHandler FlatModified;
         public ObservableCollection<byte[]> Test { get => test; set => test = value; }
 
         public FlatFormViewModel()
         {
         }
 
-        public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj => {
-            OpenFileDialog openFileDialog = new OpenFileDialog() { 
+        public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj =>
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog()
+            {
                 Filter = "Файлы изображений (*.BMP; *.JPG; *.JPEG; *.PNG) | *.BMP; *.JPG; *.JPEG; *.PNG",
                 Multiselect = true,
                 Title = "Выбрать фотографии"
             };
-            if (openFileDialog.ShowDialog() == true) {
-                foreach (string fileName in openFileDialog.FileNames){
+            if (openFileDialog.ShowDialog() == true)
+            {
+                foreach (string fileName in openFileDialog.FileNames)
+                {
                     Test.Add(File.ReadAllBytes(fileName));
                 }
             }
         }));
-        public CustomCommand AddImagesTest => addImages ?? (addImages = new CustomCommand(obj => 
+        public CustomCommand AddImagesTest => addImages ?? (addImages = new CustomCommand(obj =>
         {
             List<Photo> list = new List<Photo>();
             OpenFileDialog openFileDialog = new OpenFileDialog()
@@ -188,7 +174,8 @@ namespace RealtorObjects.ViewModel
                     list.Add(new Photo() { Data = File.ReadAllBytes(fileName) });
             Flat.Album.Serialize(list);
         }));
-        public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj => {
+        public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj =>
+        {
             Test.RemoveAt(Convert.ToInt32(obj));
         }));
         public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj =>
@@ -197,16 +184,12 @@ namespace RealtorObjects.ViewModel
             Flat.Cost.Price += value;
         }));
         public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
-        public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj => {
+        public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj =>
+        {
             FlatCreated?.Invoke(this, new FlatCreatedEventArgs(Flat));
             (obj as Window).Close();
         }));
 
-        public ObservableCollection<byte[]> Test {
-            get => test; set => test = value;
-        }
-
-        public void ChangeProperty<T>(object obj, T step) {
         public void ChangeProperty<T>(object obj, T step)
         {
             var objects = obj as object[];
@@ -215,9 +198,6 @@ namespace RealtorObjects.ViewModel
             PropertyInfo property = instance.GetType().GetProperty(name);
             T value = (T)property.GetValue(instance, null);
             property.SetValue(instance, Operator.Add(step, value));
-        }
-
-        public FlatFormViewModel() {
         }
     }
 }

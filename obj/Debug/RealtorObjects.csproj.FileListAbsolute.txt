@@ -363,10 +363,8 @@ C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\FontAwesome5.xml
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\FontAwesome5.Net.xml
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\HomeV2.g.cs
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\MainWindowV2.g.cs
-C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\NullDataTemplate.g.cs
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\HomeV2.baml
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\MainWindowV2.baml
-C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\NullDataTemplate.baml
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\LoadingForm.g.cs
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\LoadingForm.baml
 C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\Customers.g.cs
@@ -434,3 +432,4 @@ C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\data.db
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\data.db
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\RealtyModel.dll
 C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\RealtorObjects.exe.config
+C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\RealtorObjects.exe.config
