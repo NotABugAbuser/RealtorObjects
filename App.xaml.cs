@@ -41,11 +41,6 @@ namespace RealtorObjects
             BindEvents();
             Client.ConnectAsync();
         }
-        protected override void OnExit(ExitEventArgs e)
-        {
-            Client.SendDisconnect();
-            base.OnExit(e);
-        }
         private void InitializeMembers()
         {
             operationManagement = new OperationManagement(client, credential, Dispatcher);

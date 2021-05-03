@@ -6,6 +6,7 @@ using RealtyModel.Interface;
 using RealtyModel.Model;
 using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
+using RealtyModel.Model.RealtyObjects;
 using RealtyModel.Service;
 using System;
 using System.Collections.Generic;
@@ -105,6 +106,25 @@ namespace RealtorObjects.ViewModel
         private ObservableCollection<byte[]> test = new ObservableCollection<byte[]> {
         };
         public Flat Flat {
+        private ObservableCollection<byte[]> test = new ObservableCollection<byte[]>{ 
+        };
+        
+        public bool IsCurrentFlatNew
+        {
+            get => isCurrentFlatNew;
+            set => isCurrentFlatNew = value;
+        }
+        public string Title
+        {
+            get => title;
+            set
+            {
+                title = value;
+                OnPropertyChanged();
+            }
+        }
+        public Flat Flat
+        {
             get => flat;
             set {
                 flat = value;
@@ -134,6 +154,45 @@ namespace RealtorObjects.ViewModel
         }
 
         public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj => {
+        public FlatCreatedEventHandler FlatCreated;
+        public FlatModifiedEventHandler FlatModified;
+        public ObservableCollection<byte[]> Test { get => test; set => test = value; }
+
+        public FlatFormViewModel()
+        {
+        }
+
+        public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj => {
+            OpenFileDialog openFileDialog = new OpenFileDialog() { 
+                Filter = "Файлы изображений (*.BMP; *.JPG; *.JPEG; *.PNG) | *.BMP; *.JPG; *.JPEG; *.PNG",
+                Multiselect = true,
+                Title = "Выбрать фотографии"
+            };
+            if (openFileDialog.ShowDialog() == true) {
+                foreach (string fileName in openFileDialog.FileNames){
+                    Test.Add(File.ReadAllBytes(fileName));
+                }
+            }
+        }));
+        public CustomCommand AddImagesTest => addImages ?? (addImages = new CustomCommand(obj => 
+        {
+            List<Photo> list = new List<Photo>();
+            OpenFileDialog openFileDialog = new OpenFileDialog()
+            {
+                Filter = "Файлы изображений (*.BMP; *.JPG; *.JPEG; *.PNG) | *.BMP; *.JPG; *.JPEG; *.PNG",
+                Multiselect = true,
+                Title = "Выбрать фотографии"
+            };
+            if (openFileDialog.ShowDialog() == true)
+                foreach (string fileName in openFileDialog.FileNames)
+                    list.Add(new Photo() { Data = File.ReadAllBytes(fileName) });
+            Flat.Album.Serialize(list);
+        }));
+        public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj => {
+            Test.RemoveAt(Convert.ToInt32(obj));
+        }));
+        public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj =>
+        {
             var value = Convert.ToInt32(obj);
             Flat.Cost.Price += value;
         }));
@@ -148,6 +207,8 @@ namespace RealtorObjects.ViewModel
         }
 
         public void ChangeProperty<T>(object obj, T step) {
+        public void ChangeProperty<T>(object obj, T step)
+        {
             var objects = obj as object[];
             object instance = objects[0];
             string name = objects[1].ToString();

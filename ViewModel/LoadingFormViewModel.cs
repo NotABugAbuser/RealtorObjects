@@ -29,7 +29,7 @@ namespace RealtorObjects.ViewModel
 
         public LoadingFormViewModel()
         {
-            Text = "Загрузка";
+            Text = "Подключение";
         }
 
         public void OnPropertyChanged([CallerMemberName] string property = null)

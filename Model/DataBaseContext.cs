@@ -33,8 +33,6 @@ namespace RealtorObjects.Model
         public DbSet<Street> Streets { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Album> Albums { get; set; }
-        public DbSet<Photo> Photos {
-            get; set;
-        }
+        public DbSet<Photo> Photos { get; set; }
     }
 }
