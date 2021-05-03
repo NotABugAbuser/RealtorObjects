@@ -16,10 +16,8 @@
         Background="#f7f7f7"
         ResizeMode="CanResize"
         Name="ThisMainWindow"
-        MinHeight="597">
-    <Window.DataContext>
-        <vm:MainWindowViewModel/>
-    </Window.DataContext>
+        MinHeight="597"
+        WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <Style TargetType="Grid" x:Key="MainGridStyle">
             <Setter Property="Margin" Value="0"/>

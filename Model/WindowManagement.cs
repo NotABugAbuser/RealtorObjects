@@ -20,7 +20,6 @@ namespace RealtorObjects.Model
     public class WindowManagement
     {
         private Boolean isFirstConnection = true;
-        private Boolean hasUpdate = false;
         private Credential credential;
         private Client client;
         private Window mainWindow;
@@ -60,7 +59,6 @@ namespace RealtorObjects.Model
             private set => mainWindowVM = value;
         }
 
-
         public WindowManagement()
         {
 
@@ -71,11 +69,13 @@ namespace RealtorObjects.Model
             this.credential = credential;
         }
 
+        //ЗДЕСЬ АВТОЛОГИН УБРАТЬ
         public void Run()
         {
             InitializeMembers();
             BindEvents();
             OpenLoadingForm();
+            SetUpTestCredentials();
         }
         private void InitializeMembers()
         {
@@ -83,7 +83,7 @@ namespace RealtorObjects.Model
             HomeVM = new HomeViewModel();
             flatFormVM = new FlatFormViewModel();
             loginFormVM = new LoginFormViewModel();
-            MainWindowVM = new MainWindowViewModel();
+            MainWindowVM = new MainWindowViewModel(credential);
             MainWindowVM.ViewModels[0] = HomeVM;
             MainWindowVM.WorkArea = HomeVM;
             mainWindow = new MainWindowV2 { DataContext = MainWindowVM };
@@ -102,7 +102,7 @@ namespace RealtorObjects.Model
 
             FlatFormVM.FlatCreated = (s, e) => flatForm.Close();
         }
-
+        //ЗДЕСЬ АВТОЛОГИН УБРАТЬ
         private void OnConnected()
         {
             if (isFirstConnection)
@@ -110,8 +110,7 @@ namespace RealtorObjects.Model
                 HomeVM.GetUpdate();
                 isFirstConnection = false;
             }
-            else
-                TestAutoLoginMeth();
+            else AutoLogin();
         }
         private void OnLostConnection()
         {
@@ -153,7 +152,6 @@ namespace RealtorObjects.Model
                 loginForm.Show();
             });
         }
-
         public void OnOpenFlatForm(OpeningFlatFormEventArgs e)
         {
             if (e.IsNewFlat)
@@ -166,7 +164,6 @@ namespace RealtorObjects.Model
                     Album = new Album()
                     {
                         Location = "",
-                        PhotoList = new byte[0],
                         Preview = new byte[0],
                     },
                     Location = new Location()
@@ -248,24 +245,28 @@ namespace RealtorObjects.Model
             flatForm = new FlatFormV2 { DataContext = flatFormVM };
             flatForm.Show();
         }
+        //ЗДЕСЬ АВТОЛОГИН УБРАТЬ
         private void OnUpdateFinished()
         {
-            hasUpdate = true;
             ((App)Application.Current).Dispatcher.Invoke((Action)delegate
             {
                 loadingForm.Close();
                 loginForm = new LoginForm() { DataContext = loginFormVM };
                 loginForm.Show();
-                TestAutoLoginMeth();
-                Thread.Sleep(1000);
+                if (Debugger.IsAttached)
+                    AutoLogin();
             });
         }
 
-        private void TestAutoLoginMeth()
+        private void SetUpTestCredentials()
         {
-            ((App)Application.Current).Credential.Name = "ГвоздиковЕА";
-            ((App)Application.Current).Credential.Password = "123";
-            client.OutcomingOperations.Enqueue(new Operation("ГвоздиковЕА", "123", OperationDirection.Identity, OperationType.Login));
+            credential.Name = "ГвоздиковЕА";
+            credential.Password = "123";
+        }
+        private void AutoLogin()
+        {
+            if (credential != null && !String.IsNullOrWhiteSpace(credential.Name) && !String.IsNullOrWhiteSpace(credential.Password))
+                client.OutcomingOperations.Enqueue(new Operation("ГвоздиковЕА", "123", OperationDirection.Identity, OperationType.Login));
         }
         private void OpenLoadingForm()
         {

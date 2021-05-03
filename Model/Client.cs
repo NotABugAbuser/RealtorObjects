@@ -121,7 +121,7 @@ namespace RealtorObjects.Model
                         }
                     }
                 }
-                catch (ObjectDisposedException objDispEx)
+                catch (ObjectDisposedException)
                 {
                     DisconnectAsync();
                 }
@@ -248,6 +248,7 @@ namespace RealtorObjects.Model
                 try
                 {
                     Operation operation = OutcomingOperations.Dequeue();
+                    operation.OperationNumber = Guid.NewGuid();
                     String json = JsonSerializer.Serialize<Operation>(operation);
                     Byte[] data = Encoding.UTF8.GetBytes(json);
                     stream.Write(data, 0, data.Length);
@@ -263,7 +264,7 @@ namespace RealtorObjects.Model
         {
             try
             {
-                String json = JsonSerializer.Serialize<Operation>(new Operation() { Data = "0x00" });
+                String json = JsonSerializer.Serialize<Operation>(new Operation() { Data = "0x00", OperationNumber = Guid.NewGuid()});
                 Byte[] data = Encoding.UTF8.GetBytes(json);
                 stream.Write(data, 0, data.Length);
                 Debug.WriteLine($"{DateTime.Now} sent {data.Length}kbytes DISCONNECT");

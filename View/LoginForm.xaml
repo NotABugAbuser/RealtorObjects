@@ -19,7 +19,8 @@
         ResizeMode="NoResize"
         BorderBrush="{StaticResource PrimaryBlue}"
         BorderThickness="1"
-        WindowStyle="none">
+        WindowStyle="none"
+        WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <vm:LoginFormViewModel/>
     </Window.DataContext>

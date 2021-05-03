@@ -30,6 +30,7 @@ namespace RealtorObjects.ViewModel
             "Главная",
             "Клиенты",
         };
+        private Credential credential;
         private BaseViewModel workArea;
         private CustomCommand closeApp;
         private CustomCommand updateWorkArea;
@@ -52,34 +53,7 @@ namespace RealtorObjects.ViewModel
             false,
             false
         };
-        #region TestMethods
-        private CustomCommand testCommand;
-        private CustomCommand secondTestCommand;
-        public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj => {
-            var flatWindow = new FlatFormV2();
-            flatWindow.Show();
-        }));
-        public CustomCommand SecondTestCommand => secondTestCommand ?? (secondTestCommand = new CustomCommand(obj => {
-        }));
-        #endregion
 
-        public MainWindowViewModel() {
-            //StartUpTheClock();
-        }
-        public CustomCommand SignOut => signOut ?? (signOut = new CustomCommand(obj => { 
-        
-        }));
-        public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
-            Application.Current.Shutdown();
-        }));
-        public CustomCommand UpdateWorkArea => updateWorkArea ?? (updateWorkArea = new CustomCommand(obj => {
-            byte index = Convert.ToByte(obj);
-            WorkArea = ViewModels[index];
-            for (byte i = 0; i < ToggledButtons.Count; i++) {
-                ToggledButtons[i] = false;
-            }
-            ToggledButtons[index] = true;
-        }));
         public string Header {
             get => header;
             set {
@@ -120,5 +94,34 @@ namespace RealtorObjects.ViewModel
             get => viewModels;
             set => viewModels = value;
         }
+
+        public MainWindowViewModel(Credential credential) {
+            this.credential = credential;
+            //StartUpTheClock();
+        }
+        
+        private CustomCommand testCommand;
+        private CustomCommand secondTestCommand;
+        public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj => {
+            var flatWindow = new FlatFormV2();
+            flatWindow.Show();
+        }));
+        public CustomCommand SecondTestCommand => secondTestCommand ?? (secondTestCommand = new CustomCommand(obj => {
+        }));
+
+        public CustomCommand SignOut => signOut ?? (signOut = new CustomCommand(obj => {
+            credential.OnLoggedOut();
+        }));
+        public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
+            Application.Current.Shutdown();
+        }));
+        public CustomCommand UpdateWorkArea => updateWorkArea ?? (updateWorkArea = new CustomCommand(obj => {
+            byte index = Convert.ToByte(obj);
+            WorkArea = ViewModels[index];
+            for (byte i = 0; i < ToggledButtons.Count; i++) {
+                ToggledButtons[i] = false;
+            }
+            ToggledButtons[index] = true;
+        }));
     }
 }

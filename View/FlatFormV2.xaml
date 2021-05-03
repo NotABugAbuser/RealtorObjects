@@ -15,7 +15,8 @@
         BorderBrush="{StaticResource PrimaryViolet}"
         ResizeMode="NoResize"
         Background="#f6f6f6"
-        Height="640" Width="755">
+        Height="640" Width="755"
+        WindowStartupLocation="CenterScreen">
     <Window.Style>
         <Style TargetType="Window">
             <Setter Property="BorderThickness" Value="0"/>
