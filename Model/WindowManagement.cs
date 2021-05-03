@@ -276,7 +276,7 @@ namespace RealtorObjects.Model
         private void AutoLogin()
         {
             if (credential != null && !String.IsNullOrWhiteSpace(credential.Name) && !String.IsNullOrWhiteSpace(credential.Password))
-                client.OutcomingOperations.Enqueue(new Operation("ГвоздиковЕА", "123", OperationDirection.Identity, OperationType.Login));
+                client.OutcomingOperations.Enqueue(new Operation(credential.Name, credential.Password, OperationDirection.Identity, OperationType.Login));
         }
         private void OpenLoadingForm()
         {
