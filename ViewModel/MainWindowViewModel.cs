@@ -25,11 +25,7 @@ namespace RealtorObjects.ViewModel
     public class MainWindowViewModel : BaseViewModel, INotifyPropertyChanged
     {
         private string currentTime;
-        private string header = "Главная";
-        private readonly string[] headers = new string[2]{
-            "Главная",
-            "Клиенты",
-        };
+        private string currentAgentName = "ПроверкинПП";
         private Credential credential;
         private BaseViewModel workArea;
         private CustomCommand closeApp;
@@ -54,10 +50,10 @@ namespace RealtorObjects.ViewModel
             false
         };
 
-        public string Header {
-            get => header;
+        public string CurrentAgentName {
+            get => currentAgentName;
             set {
-                header = value;
+                currentAgentName = value;
                 OnPropertyChanged();
             }
         }

@@ -105,8 +105,10 @@ namespace RealtorObjects.Model
         private void OnLostConnection() {
             if (!client.IsTryingToConnect) {
                 mainWindow.Hide();
-                foreach () {
-
+                foreach (Window window in Application.Current.Windows) {
+                    if (window is FlatFormV2 flatFormV2){
+                        flatFormV2.Close();
+                    }
                 }
                 OpenLoadingForm();
             }
@@ -128,6 +130,7 @@ namespace RealtorObjects.Model
                 loginForm.Close();
                 loadingForm.Close();
                 mainWindow.Show();
+                MainWindowVM.CurrentAgentName = credential.Name;
             });
         }
         private void OnLoggedOut() {

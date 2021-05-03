@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity;
 using RealtyModel.Model;
 using RealtyModel.Model.Derived;
+using RealtyModel.Model.RealtyObjects;
 
 namespace RealtorObjects.Model
 {
@@ -18,6 +19,7 @@ namespace RealtorObjects.Model
             Streets.Load();
             Customers.Load();
             Albums.Load();
+            Photos.Load();
         }
 
         public DbSet<UpdateTime> UpdateTime { get; set; }
@@ -31,5 +33,8 @@ namespace RealtorObjects.Model
         public DbSet<Street> Streets { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Album> Albums { get; set; }
+        public DbSet<Photo> Photos {
+            get; set;
+        }
     }
 }

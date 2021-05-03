@@ -377,7 +377,6 @@ C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\LoadingForm.g.cs
 C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\Locations.g.cs
 C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\LoginForm.g.cs
 C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\MainWindowV2.g.cs
-C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\NullDataTemplate.g.cs
 C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\Statistics.g.cs
 C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\Customers.baml
 C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\FlatFormV2.baml
@@ -386,7 +385,6 @@ C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\LoadingForm.baml
 C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\Locations.baml
 C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\LoginForm.baml
 C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\MainWindowV2.baml
-C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\NullDataTemplate.baml
 C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\Statistics.baml
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\EntityFramework.dll
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\EntityFramework.SqlServer.dll
@@ -435,3 +433,4 @@ C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\View\HouseForm.baml
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\data.db
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\data.db
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\RealtyModel.dll
+C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\RealtorObjects.exe.config
