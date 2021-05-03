@@ -6,6 +6,7 @@ using RealtyModel.Interface;
 using RealtyModel.Model;
 using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
+using RealtyModel.Model.RealtyObjects;
 using RealtyModel.Service;
 using System;
 using System.Collections.Generic;
@@ -96,25 +97,23 @@ namespace RealtorObjects.ViewModel
         private CustomCommand addImages;
         private readonly FlatOptions flatOptions = new FlatOptions();
         private LocationOptions locationOptions = new LocationOptions();
-        public FlatCreatedEventHandler FlatCreated;
-        public FlatModifiedEventHandler FlatModified;
-        public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj => {
-            Test.RemoveAt(Convert.ToInt32(obj));
-        }));
-        public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj => {
-            OpenFileDialog openFileDialog = new OpenFileDialog() { 
-                Filter = "Файлы изображений (*.BMP; *.JPG; *.JPEG; *.PNG) | *.BMP; *.JPG; *.JPEG; *.PNG",
-                Multiselect = true,
-                Title = "Выбрать фотографии"
-            };
-            if (openFileDialog.ShowDialog() == true) {
-                foreach (string fileName in openFileDialog.FileNames){
-                    Test.Add(File.ReadAllBytes(fileName));
-                }
-            }
-        }));
         private ObservableCollection<byte[]> test = new ObservableCollection<byte[]>{ 
         };
+        
+        public bool IsCurrentFlatNew
+        {
+            get => isCurrentFlatNew;
+            set => isCurrentFlatNew = value;
+        }
+        public string Title
+        {
+            get => title;
+            set
+            {
+                title = value;
+                OnPropertyChanged();
+            }
+        }
         public Flat Flat
         {
             get => flat;
@@ -137,21 +136,43 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
-        public string Title
+        public FlatCreatedEventHandler FlatCreated;
+        public FlatModifiedEventHandler FlatModified;
+        public ObservableCollection<byte[]> Test { get => test; set => test = value; }
+
+        public FlatFormViewModel()
         {
-            get => title;
-            set
-            {
-                title = value;
-                OnPropertyChanged();
-            }
-        }
-        public bool IsCurrentFlatNew
-        {
-            get => isCurrentFlatNew;
-            set => isCurrentFlatNew = value;
         }
 
+        public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj => {
+            OpenFileDialog openFileDialog = new OpenFileDialog() { 
+                Filter = "Файлы изображений (*.BMP; *.JPG; *.JPEG; *.PNG) | *.BMP; *.JPG; *.JPEG; *.PNG",
+                Multiselect = true,
+                Title = "Выбрать фотографии"
+            };
+            if (openFileDialog.ShowDialog() == true) {
+                foreach (string fileName in openFileDialog.FileNames){
+                    Test.Add(File.ReadAllBytes(fileName));
+                }
+            }
+        }));
+        public CustomCommand AddImagesTest => addImages ?? (addImages = new CustomCommand(obj => 
+        {
+            List<Photo> list = new List<Photo>();
+            OpenFileDialog openFileDialog = new OpenFileDialog()
+            {
+                Filter = "Файлы изображений (*.BMP; *.JPG; *.JPEG; *.PNG) | *.BMP; *.JPG; *.JPEG; *.PNG",
+                Multiselect = true,
+                Title = "Выбрать фотографии"
+            };
+            if (openFileDialog.ShowDialog() == true)
+                foreach (string fileName in openFileDialog.FileNames)
+                    list.Add(new Photo() { Data = File.ReadAllBytes(fileName) });
+            Flat.Album.Serialize(list);
+        }));
+        public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj => {
+            Test.RemoveAt(Convert.ToInt32(obj));
+        }));
         public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj =>
         {
             var value = Convert.ToInt32(obj);
@@ -162,9 +183,6 @@ namespace RealtorObjects.ViewModel
         {
             FlatCreated?.Invoke(this, new FlatCreatedEventArgs(Flat));
         }));
-
-        public ObservableCollection<byte[]> Test { get => test; set => test = value; }
-
         public void ChangeProperty<T>(object obj, T step)
         {
             var objects = obj as object[];
@@ -173,10 +191,6 @@ namespace RealtorObjects.ViewModel
             PropertyInfo property = instance.GetType().GetProperty(name);
             T value = (T)property.GetValue(instance, null);
             property.SetValue(instance, Operator.Add(step, value));
-        }
-
-        public FlatFormViewModel()
-        {
         }
     }
 }

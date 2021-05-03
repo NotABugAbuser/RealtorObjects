@@ -111,7 +111,7 @@ namespace RealtorObjects.Model
                 HomeVM.GetUpdate();
                 isFirstConnection = false;
             }
-            if(Debugger.IsAttached)
+            else if (Debugger.IsAttached)
                 AutoLogin();
         }
         private void OnLostConnection()
@@ -250,6 +250,7 @@ namespace RealtorObjects.Model
         //ЗДЕСЬ АВТОЛОГИН УБРАТЬ
         private void OnUpdateFinished()
         {
+            Debug.WriteLine("Update is finished");
             ((App)Application.Current).Dispatcher.Invoke((Action)delegate
             {
                 loadingForm.Close();

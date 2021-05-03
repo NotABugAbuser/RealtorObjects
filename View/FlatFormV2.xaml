@@ -969,7 +969,7 @@
                     Style="{StaticResource ImageListBox}"
                     ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Test}"/>
                 <Button
-                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.AddImages}"
+                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.AddImagesTest}"
                     Height="40"
                     Width="40"
                     Style="{StaticResource GreenButton}"

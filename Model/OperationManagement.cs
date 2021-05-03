@@ -102,7 +102,7 @@ namespace RealtorObjects.Model
         {
             try
             {
-                if (operation.OperationParameters.Target == TargetType.All)
+                if (operation.OperationParameters.Target == TargetType.All || operation.OperationParameters.Target == TargetType.Album || operation.OperationParameters.Target == TargetType.None)
                     ReceivedDbUpdate?.Invoke(this, new ReceivedDbUpdateEventArgs(operation.OperationParameters.Target, operation.Data));
                 else if (operation.OperationParameters.Target == TargetType.Flat)
                 {

@@ -6,6 +6,7 @@ using RealtyModel.Event.RealtyEvents;
 using RealtyModel.Model;
 using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
+using RealtyModel.Model.RealtyObjects;
 using RealtyModel.Service;
 using System;
 using System.Collections.Generic;
@@ -307,9 +308,9 @@ namespace RealtorObjects.ViewModel
         {
             try
             {
-                String[] objects = JsonSerializer.Deserialize<String[]>((String)e.UpdateData);
-                if (GetLastUpdateTime() == "never")
+                if (e.TargetType == TargetType.All)
                 {
+                    String[] objects = JsonSerializer.Deserialize<String[]>((String)e.UpdateData);
                     if (!String.IsNullOrWhiteSpace(objects[0]))
                     {
                         Flat[] flats = JsonSerializer.Deserialize<Flat[]>(objects[0]);
@@ -323,42 +324,56 @@ namespace RealtorObjects.ViewModel
                         dataBase.Houses.AddRange(houses);
                     }
                 }
-                else
+                else if (e.TargetType == TargetType.Album)
                 {
-                    if (objects[0] != null)
-                    {
-                        Flat[] flats = JsonSerializer.Deserialize<Flat[]>(objects[0]);
-                        foreach (Flat flat in flats)
-                        {
-                            Flat dbFlat = dataBase.Flats.Find(flat.Id);
-                            if (dbFlat == null)
-                            {
-                                dataBase.Flats.Add(flat);
-                                AllObjects.Add(flat);
-                            }
-                            else
-                            {
-                                dbFlat = flat;
-                                Flat listFlat = (Flat)AllObjects.FirstOrDefault(fl => fl.Id == flat.Id);
-                                listFlat = flat;
-                            }
-                        }
-                        AllObjects.AddRange(flats);
-                        dataBase.Flats.AddRange(flats);
-                    }
-                    if (objects[1] != null)
-                    {
-                    }
+                    Photo[] photos = JsonSerializer.Deserialize<Photo[]>((String)e.UpdateData);
+                    dataBase.Photos.AddRange(photos);
+                    foreach (BaseRealtorObject bro in AllObjects)
+                        bro.Album.GetPhotosFromDB(dataBase.Photos.Local);
                 }
-                dataBase.SaveChanges();
-                FilterCollectionMeth();
-                WriteLastUpdateTime();
-                UpdateFinished?.Invoke(this, new UpdateFinishedEventArgs());
+                else if (e.TargetType == TargetType.None)
+                {
+                    Debug.WriteLine("Start of update");
+                    dataBase.SaveChanges();
+                    FilterCollectionMeth();
+                    WriteLastUpdateTime();
+                    Debug.WriteLine("End of update");
+                    UpdateFinished?.Invoke(this, new UpdateFinishedEventArgs());
+                }
+                //if (GetLastUpdateTime() == "never")
+                //{
+                //}
+                //else
+                //{
+                //    if (objects[0] != null)
+                //    {
+                //        Flat[] flats = JsonSerializer.Deserialize<Flat[]>(objects[0]);
+                //        foreach (Flat flat in flats)
+                //        {
+                //            Flat dbFlat = dataBase.Flats.Find(flat.Id);
+                //            if (dbFlat == null)
+                //            {
+                //                dataBase.Flats.Add(flat);
+                //                AllObjects.Add(flat);
+                //            }
+                //            else
+                //            {
+                //                dbFlat = flat;
+                //                Flat listFlat = (Flat)AllObjects.FirstOrDefault(fl => fl.Id == flat.Id);
+                //                listFlat = flat;
+                //            }
+                //        }
+                //        AllObjects.AddRange(flats);
+                //        dataBase.Flats.AddRange(flats);
+                //    }
+                //    if (objects[1] != null)
+                //    {
+                //    }
+                //}
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"{DateTime.Now} ReceiveUpdate {ex.Message}");
-                Debug.WriteLine(ex.InnerException);
                 //Запросить обновление снова
             }
         }
