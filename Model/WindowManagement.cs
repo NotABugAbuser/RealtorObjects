@@ -75,7 +75,8 @@ namespace RealtorObjects.Model
             InitializeMembers();
             BindEvents();
             OpenLoadingForm();
-            SetUpTestCredentials();
+            if (Debugger.IsAttached)
+                SetUpTestCredentials();
         }
         private void InitializeMembers()
         {
@@ -110,7 +111,8 @@ namespace RealtorObjects.Model
                 HomeVM.GetUpdate();
                 isFirstConnection = false;
             }
-            else AutoLogin();
+            if(Debugger.IsAttached)
+                AutoLogin();
         }
         private void OnLostConnection()
         {
