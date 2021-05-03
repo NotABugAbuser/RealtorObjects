@@ -22,5 +22,9 @@
             BorderThickness="1"
             BorderBrush="Gray"
             Opacity="0.4"/>
+        <Button
+            Style="{StaticResource WhiteCloseButton}"
+            Command="{Binding CloseApp}">
+        </Button>
     </Grid>
 </Window>

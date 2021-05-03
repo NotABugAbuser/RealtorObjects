@@ -994,6 +994,7 @@
                     <Button
                         Style="{StaticResource GreenButton}"
                         Command="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.Confirm}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
                         Content="Подтвердить"/>
                     <Button
                         Grid.Column="2"

@@ -525,6 +525,7 @@
                     CommandParameter="Flat"
                     Content="+ Квартира"/>
                 <Button
+                    Visibility="Collapsed"
                     Style="{StaticResource HeaderButton}"
                     Grid.Column="1"
                     Command="{Binding CreateRealtorObject}"
