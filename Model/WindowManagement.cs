@@ -75,8 +75,8 @@ namespace RealtorObjects.Model
             InitializeMembers();
             BindEvents();
             OpenLoadingForm();
-            if (Debugger.IsAttached)
-                SetUpTestCredentials();
+            //if (Debugger.IsAttached)
+            //    SetUpTestCredentials();
         }
         private void InitializeMembers()
         {
@@ -111,8 +111,7 @@ namespace RealtorObjects.Model
                 HomeVM.GetUpdate();
                 isFirstConnection = false;
             }
-            else if (Debugger.IsAttached)
-                AutoLogin();
+            else AutoLogin();
         }
         private void OnLostConnection()
         {
@@ -264,8 +263,8 @@ namespace RealtorObjects.Model
                 loadingForm.Close();
                 loginForm = new LoginForm() { DataContext = loginFormVM };
                 loginForm.Show();
-                if (Debugger.IsAttached)
-                    AutoLogin();
+                //if (Debugger.IsAttached)
+                //    AutoLogin();
             });
         }
         private void SetUpTestCredentials()

@@ -217,7 +217,7 @@ namespace RealtorObjects.Model
                     {
                         if (stream.DataAvailable)
                         {
-                            Byte[] buffer = new Byte[4096];
+                            Byte[] buffer = new Byte[8192];
                             StringBuilder message = new StringBuilder();
                             Int32 bytes = 0;
                             String chunk;
@@ -227,10 +227,11 @@ namespace RealtorObjects.Model
                                 bytes += byteCount;
                                 chunk = Encoding.UTF8.GetString(buffer);
                                 message.Append(chunk, 0, byteCount);
+                                Debug.WriteLine($"{DateTime.Now} received {bytes}bytes");
                             }
                             while (stream.DataAvailable);
                             Operation operation = JsonSerializer.Deserialize<Operation>(message.ToString());
-                            Debug.WriteLine($"{DateTime.Now} received {bytes}kbytes {operation.OperationParameters.Direction} {operation.OperationParameters.Type} {operation.OperationParameters.Target} {operation.IsSuccessfully}");
+                            Debug.WriteLine($"{DateTime.Now} received {bytes}bytes {operation.OperationParameters.Direction} {operation.OperationParameters.Type} {operation.OperationParameters.Target} {operation.IsSuccessfully}");
                             IncomingOperations.Enqueue(operation);
                         }
                     }
@@ -264,7 +265,7 @@ namespace RealtorObjects.Model
         {
             try
             {
-                String json = JsonSerializer.Serialize<Operation>(new Operation() { Data = "0x00", OperationNumber = Guid.NewGuid()});
+                String json = JsonSerializer.Serialize<Operation>(new Operation() { Data = "0x00", OperationNumber = Guid.NewGuid() });
                 Byte[] data = Encoding.UTF8.GetBytes(json);
                 stream.Write(data, 0, data.Length);
                 Debug.WriteLine($"{DateTime.Now} sent {data.Length}kbytes DISCONNECT");
