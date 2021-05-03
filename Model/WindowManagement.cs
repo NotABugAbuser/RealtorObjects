@@ -33,53 +33,44 @@ namespace RealtorObjects.Model
         private LoginFormViewModel loginFormVM;
         private MainWindowViewModel mainWindowVM;
 
-        public HomeViewModel HomeVM
-        {
+        public HomeViewModel HomeVM {
             get => homeVM;
             private set => homeVM = value;
         }
-        public FlatFormViewModel FlatFormVM
-        {
+        public FlatFormViewModel FlatFormVM {
             get => flatFormVM;
             set => flatFormVM = value;
         }
-        public HouseFormViewModel HouseFormVM
-        {
+        public HouseFormViewModel HouseFormVM {
             get => houseFormVM;
             set => houseFormVM = value;
         }
-        public LoginFormViewModel LoginFormVM
-        {
+        public LoginFormViewModel LoginFormVM {
             get => loginFormVM;
             set => loginFormVM = value;
         }
-        public MainWindowViewModel MainWindowVM
-        {
+        public MainWindowViewModel MainWindowVM {
             get => mainWindowVM;
             private set => mainWindowVM = value;
         }
 
-        public WindowManagement()
-        {
+        public WindowManagement() {
 
         }
-        public WindowManagement(Client client, Credential credential)
-        {
+        public WindowManagement(Client client, Credential credential) {
             this.client = client;
             this.credential = credential;
         }
 
         //ЗДЕСЬ АВТОЛОГИН УБРАТЬ
-        public void Run()
-        {
+        public void Run() {
             InitializeMembers();
             BindEvents();
             OpenLoadingForm();
             if (Debugger.IsAttached)
                 SetUpTestCredentials();
         }
-        private void InitializeMembers()
-        {
+        private void InitializeMembers() {
             mainWindow = ((App)Application.Current).MainWindow;
             HomeVM = new HomeViewModel();
             flatFormVM = new FlatFormViewModel();
@@ -89,8 +80,7 @@ namespace RealtorObjects.Model
             MainWindowVM.WorkArea = HomeVM;
             mainWindow = new MainWindowV2 { DataContext = MainWindowVM };
         }
-        private void BindEvents()
-        {
+        private void BindEvents() {
             client.Connected += () => OnConnected();
             client.LostConnection += () => OnLostConnection();
 
@@ -104,72 +94,60 @@ namespace RealtorObjects.Model
             FlatFormVM.FlatCreated = (s, e) => flatForm.Close();
         }
         //ЗДЕСЬ АВТОЛОГИН УБРАТЬ
-        private void OnConnected()
-        {
-            if (isFirstConnection)
-            {
+        private void OnConnected() {
+            if (isFirstConnection) {
                 HomeVM.GetUpdate();
                 isFirstConnection = false;
             }
-            if(Debugger.IsAttached)
+            if (Debugger.IsAttached)
                 AutoLogin();
         }
-        private void OnLostConnection()
-        {
-            if (!client.IsTryingToConnect)
-            {
+        private void OnLostConnection() {
+            if (!client.IsTryingToConnect) {
                 mainWindow.Hide();
+                foreach () {
+
+                }
                 OpenLoadingForm();
             }
             var timer = new System.Timers.Timer(1000);
             timer.AutoReset = false;
-            timer.Elapsed += (s, e) =>
-            {
+            timer.Elapsed += (s, e) => {
                 client.ConnectAsync();
                 timer.Stop();
                 timer.Dispose();
             };
             timer.Start();
         }
-        private void OnRegistered()
-        {
+        private void OnRegistered() {
             MessageBox.Show("Регистрация прошла успешно");
             loginFormVM.RegistrationVisibility = Visibility.Collapsed;
         }
-        private void OnLoggedIn()
-        {
-            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
-            {
+        private void OnLoggedIn() {
+            ((App)Application.Current).Dispatcher.Invoke((Action)delegate {
                 loginForm.Close();
                 loadingForm.Close();
                 mainWindow.Show();
             });
         }
-        private void OnLoggedOut()
-        {
-            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
-            {
+        private void OnLoggedOut() {
+            ((App)Application.Current).Dispatcher.Invoke((Action)delegate {
                 mainWindow.Hide();
                 loginForm = new LoginForm() { DataContext = loginFormVM };
                 loginForm.Show();
             });
         }
-        public void OnOpenFlatForm(OpeningFlatFormEventArgs e)
-        {
-            if (e.IsNewFlat)
-            {
+        public void OnOpenFlatForm(OpeningFlatFormEventArgs e) {
+            if (e.IsNewFlat) {
                 flatFormVM.Title = "[Квартира] — Создание";
                 flatFormVM.IsCurrentFlatNew = true;
-                flatFormVM.Flat = new Flat()
-                {
+                flatFormVM.Flat = new Flat() {
                     Agent = credential.Name,
-                    Album = new Album()
-                    {
+                    Album = new Album() {
                         Location = "",
                         Preview = new byte[0],
                     },
-                    Location = new Location()
-                    {
+                    Location = new Location() {
                         City = new City(),
                         District = new District(),
                         Street = new Street(),
@@ -178,21 +156,18 @@ namespace RealtorObjects.Model
                         HasBanner = false,
                         HasExchange = false
                     },
-                    Cost = new Cost()
-                    {
+                    Cost = new Cost() {
                         Area = 0,
                         HasMortgage = false,
                         HasPercents = false,
                         HasVAT = false,
                         Price = 0
                     },
-                    Customer = new Customer()
-                    {
+                    Customer = new Customer() {
                         Name = "",
                         PhoneNumbers = ""
                     },
-                    GeneralInfo = new BaseInfo()
-                    {
+                    GeneralInfo = new BaseInfo() {
                         Ceiling = 0,
                         Condition = "",
                         Convenience = "",
@@ -205,8 +180,7 @@ namespace RealtorObjects.Model
                         Water = "",
                         Year = 1950
                     },
-                    Info = new FlatInfo()
-                    {
+                    Info = new FlatInfo() {
                         Balcony = "",
                         Bath = "",
                         Bathroom = "",
@@ -233,9 +207,7 @@ namespace RealtorObjects.Model
                     ObjectType = "",
                     Status = Status.Active
                 };
-            }
-            else
-            {
+            } else {
                 flatFormVM.Title = "[Квартира] — Редактирование";
                 flatFormVM.Flat = JsonSerializer.Deserialize<Flat>(JsonSerializer.Serialize(e.Flat)); //нужно, чтобы разорвать связь объекта в форме и объекта в списке
                 flatFormVM.IsCurrentFlatNew = false;
@@ -248,10 +220,8 @@ namespace RealtorObjects.Model
             flatForm.Show();
         }
         //ЗДЕСЬ АВТОЛОГИН УБРАТЬ
-        private void OnUpdateFinished()
-        {
-            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
-            {
+        private void OnUpdateFinished() {
+            ((App)Application.Current).Dispatcher.Invoke((Action)delegate {
                 loadingForm.Close();
                 loginForm = new LoginForm() { DataContext = loginFormVM };
                 loginForm.Show();
@@ -260,20 +230,16 @@ namespace RealtorObjects.Model
             });
         }
 
-        private void SetUpTestCredentials()
-        {
+        private void SetUpTestCredentials() {
             credential.Name = "ГвоздиковЕА";
             credential.Password = "123";
         }
-        private void AutoLogin()
-        {
+        private void AutoLogin() {
             if (credential != null && !String.IsNullOrWhiteSpace(credential.Name) && !String.IsNullOrWhiteSpace(credential.Password))
                 client.OutcomingOperations.Enqueue(new Operation("ГвоздиковЕА", "123", OperationDirection.Identity, OperationType.Login));
         }
-        private void OpenLoadingForm()
-        {
-            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
-            {
+        private void OpenLoadingForm() {
+            ((App)Application.Current).Dispatcher.Invoke((Action)delegate {
                 loadingForm = new LoadingForm() { DataContext = new LoadingFormViewModel() };
                 loadingForm.Show();
             });
