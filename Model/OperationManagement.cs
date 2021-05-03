@@ -102,27 +102,34 @@ namespace RealtorObjects.Model
         {
             try
             {
-                if (operation.OperationParameters.Target == TargetType.All || operation.OperationParameters.Target == TargetType.Album || operation.OperationParameters.Target == TargetType.None)
-                    ReceivedDbUpdate?.Invoke(this, new ReceivedDbUpdateEventArgs(operation.OperationParameters.Target, operation.Data));
-                else if (operation.OperationParameters.Target == TargetType.Flat)
+                if (operation.IsSuccessfully)
                 {
-                    Flat flat = JsonSerializer.Deserialize<Flat>(operation.Data);
-                    if (operation.OperationParameters.Type == OperationType.Add)
-                        ReceivedFlat?.Invoke(this, new ReceivedFlatEventArgs(flat));
-                    else if (operation.OperationParameters.Type == OperationType.Change)
-                        ReceivedFlatUpdate?.Invoke(this, new ReceivedFlatUpdateEventArgs(flat));
-                    else if (operation.OperationParameters.Type == OperationType.Remove)
-                        ReceivedFlatDeletion?.Invoke(this, new ReceivedFlatDeletionEventArgs(flat));
+                    if (operation.OperationParameters.Target == TargetType.All || operation.OperationParameters.Target == TargetType.Album || operation.OperationParameters.Target == TargetType.None)
+                        ReceivedDbUpdate?.Invoke(this, new ReceivedDbUpdateEventArgs(operation.OperationParameters.Target, operation.Data));
+                    else if (operation.OperationParameters.Target == TargetType.Flat)
+                    {
+                        Flat flat = JsonSerializer.Deserialize<Flat>(operation.Data);
+                        if (operation.OperationParameters.Type == OperationType.Add)
+                            ReceivedFlat?.Invoke(this, new ReceivedFlatEventArgs(flat));
+                        else if (operation.OperationParameters.Type == OperationType.Change)
+                            ReceivedFlatUpdate?.Invoke(this, new ReceivedFlatUpdateEventArgs(flat));
+                        else if (operation.OperationParameters.Type == OperationType.Remove)
+                            ReceivedFlatDeletion?.Invoke(this, new ReceivedFlatDeletionEventArgs(flat));
+                    }
+                    else if (operation.OperationParameters.Target == TargetType.House)
+                    {
+                        House house = JsonSerializer.Deserialize<House>(operation.Data);
+                        if (operation.OperationParameters.Type == OperationType.Add)
+                            ReceivedHouse?.Invoke(this, new ReceivedHouseEventArgs(house));
+                        else if (operation.OperationParameters.Type == OperationType.Change)
+                            ReceivedHouseUpdate?.Invoke(this, new ReceivedHouseUpdateEventArgs(house));
+                        else if (operation.OperationParameters.Type == OperationType.Remove)
+                            ReceivedHouseDeletion?.Invoke(this, new ReceivedHouseDeletionEventArgs(house));
+                    }
                 }
-                else if (operation.OperationParameters.Target == TargetType.House)
+                else
                 {
-                    House house = JsonSerializer.Deserialize<House>(operation.Data);
-                    if (operation.OperationParameters.Type == OperationType.Add)
-                        ReceivedHouse?.Invoke(this, new ReceivedHouseEventArgs(house));
-                    else if (operation.OperationParameters.Type == OperationType.Change)
-                        ReceivedHouseUpdate?.Invoke(this, new ReceivedHouseUpdateEventArgs(house));
-                    else if (operation.OperationParameters.Type == OperationType.Remove)
-                        ReceivedHouseDeletion?.Invoke(this, new ReceivedHouseDeletionEventArgs(house));
+                    MessageBox.Show("Операция не была успешна");
                 }
             }
             catch (Exception ex)
