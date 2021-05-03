@@ -191,6 +191,7 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <CheckBox
+                    TabIndex="1"
                     Margin="0,2,0,0"
                     Style="{StaticResource HeaderCheckBox}"
                     Content="Экскл"
@@ -201,6 +202,7 @@
                     Grid.Row="2"
                     Style="{StaticResource Border}">
                     <TextBox
+                        TabIndex="2"
                         MaxLength="6"
                         IsEnabled="{Binding HasExclusive}"
                         Style="{StaticResource inputTextBox}"
@@ -215,6 +217,7 @@
                     Grid.Row="2"
                     Style="{StaticResource Border}">
                     <TextBox
+                        TabIndex="3"
                         MaxLength="32"
                         PreviewTextInput="AlphabeticalOnly"
                         Style="{StaticResource inputTextBox}"
@@ -229,6 +232,7 @@
                     Grid.Row="2"
                     Style="{StaticResource Border}">
                     <TextBox
+                        TabIndex="4"
                         MaxLength="39"
                         PreviewTextInput="PhoneNumbers"
                         Style="{StaticResource inputTextBox}"
@@ -275,6 +279,7 @@
                     Style="{StaticResource Header}"
                     Text="Город:"/>
                 <ComboBox
+                    TabIndex="5"
                     PreviewTextInput="RussianOnly"
                     Text="{Binding City.Name, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding City}"
@@ -288,6 +293,7 @@
                     Style="{StaticResource Header}"
                     Text="Район:"/>
                 <ComboBox
+                    TabIndex="10"
                     PreviewTextInput="RussianOnly"
                     Text="{Binding District.Name, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding District.Name}"
@@ -310,6 +316,7 @@
                     Grid.Row="0"
                     Style="{StaticResource Border}">
                     <TextBox
+                        TabIndex="6"
                         PreviewTextInput="NumericOnly"
                         TextAlignment="Center"
                         MaxLength="3"
@@ -322,6 +329,7 @@
                     Grid.Row="0"
                     Style="{StaticResource Border}">
                     <TextBox
+                        TabIndex="7"
                         PreviewTextInput="NumericOnly"
                         TextAlignment="Center"
                         MaxLength="3"
@@ -335,6 +343,7 @@
                     Style="{StaticResource Header}"
                     Text="Улица:"/>
                 <ComboBox
+                    TabIndex="11"
                     PreviewTextInput="RussianOnly"
                     ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.LocationOptions.Streets}"
                     SelectedItem="{Binding Street.Name}"
@@ -344,12 +353,14 @@
                     Grid.ColumnSpan="5"
                     Style="{StaticResource GreenComboBox}"/>
                 <CheckBox
+                    TabIndex="8"
                     Style="{StaticResource OptionCheckBox}"
                     HorizontalAlignment="Right"
                     Grid.Column="6"
                     Grid.Row="0"
                     Content="Растяжка"/>
                 <CheckBox
+                    TabIndex="9"
                     Style="{StaticResource OptionCheckBox}"
                     HorizontalAlignment="Right"
                     Grid.Column="7"
@@ -380,6 +391,7 @@
                     Style="{StaticResource Header}"
                     Text="Материал:"/>
                 <ComboBox
+                    TabIndex="12"
                     PreviewTextInput="RussianOnly"
                     ItemsSource="{Binding Path=DataContext.FlatOptions.Materials, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor} }"
                     Text="{Binding Info.Material, UpdateSourceTrigger=PropertyChanged}"
@@ -393,6 +405,7 @@
                     Style="{StaticResource Header}"
                     Text="Фонд:"/>
                 <ComboBox
+                    TabIndex="17"
                     PreviewTextInput="RussianOnly"
                     Text="{Binding Info.Fund, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding Info.Fund}"
@@ -406,6 +419,7 @@
                         Margin="0,0,77,0"
                         Text="Кол. комнат:"/>
                     <TextBox 
+                        TabIndex="13"
                         DataContext="{Binding GeneralInfo}"
                         PreviewTextInput="NumericOnly"
                         Width="70"
@@ -420,6 +434,7 @@
                     Style="{StaticResource Header}"
                     Text="Тип:"/>
                 <ComboBox
+                    TabIndex="18"
                     PreviewTextInput="RussianOnly"
                     Text="{Binding Info.Type, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding Info.Type}"
@@ -433,6 +448,7 @@
                     Style="{StaticResource Header}"
                     Text="Кв-л:"/>
                 <TextBox 
+                    TabIndex="14"
                     PreviewTextInput="NumericOnly"
                     Grid.Column="5"
                     Grid.Row="0"
@@ -446,6 +462,7 @@
                     Style="{StaticResource Header}"
                     Text="Год:"/>
                 <TextBox 
+                    TabIndex="15"
                     PreviewTextInput="NumericOnly"
                     Grid.Column="7"
                     Grid.Row="0"
@@ -459,6 +476,7 @@
                     Style="{StaticResource Header}"
                     Text="Общая:"/>
                 <TextBox 
+                    TabIndex="19"
                     PreviewTextInput="NumericOnly"
                     Grid.Column="5"
                     Grid.Row="2"
@@ -472,6 +490,7 @@
                     Style="{StaticResource Header}"
                     Text="Жилая:"/>
                 <TextBox 
+                    TabIndex="20"
                     PreviewTextInput="NumericOnly"
                     Grid.Column="7"
                     Grid.Row="2"
@@ -485,6 +504,7 @@
                     Style="{StaticResource Header}"
                     Text="Кухня:"/>
                 <TextBox 
+                    TabIndex="21"
                     PreviewTextInput="NumericOnly"
                     Grid.Column="9"
                     Grid.Row="2"
@@ -493,6 +513,7 @@
                     Tag="Kitchen"
                     Style="{StaticResource DoubleNumericUpDown}"/>
                 <CheckBox 
+                    TabIndex="16"
                     DataContext="{Binding Info}"
                     IsChecked="{Binding IsPrivatised}"
                     HorizontalAlignment="Right"
@@ -549,6 +570,7 @@
                     Text="Лоджия:"
                     Grid.Row="8"/>
                 <ComboBox 
+                    TabIndex="22"
                     PreviewTextInput="RussianOnly"
                     Text="{Binding GeneralInfo.Condition, UpdateSourceTrigger=PropertyChanged}"
                     ItemsSource="{Binding Path=DataContext.FlatOptions.Conditions, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
@@ -557,6 +579,7 @@
                     Grid.Column="1"
                     Grid.Row="0"/>
                 <ComboBox 
+                    TabIndex="23"
                     PreviewTextInput="RussianOnly"
                     Text="{Binding Info.Floor, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding Info.Floor}"
@@ -565,6 +588,7 @@
                     Grid.Column="1"
                     Grid.Row="2"/>
                 <TextBox
+                    TabIndex="24"
                     PreviewTextInput="NumericOnly"
                     DataContext="{Binding GeneralInfo}"
                     Text="{Binding Ceiling, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
@@ -573,6 +597,7 @@
                     Grid.Row="4"
                     Grid.Column="1"/>
                 <ComboBox 
+                    TabIndex="25"
                     PreviewTextInput="RussianOnly"
                     Text="{Binding Info.Balcony, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding Info.Balcony}"
@@ -581,6 +606,7 @@
                     Grid.Column="1"
                     Grid.Row="6"/>
                 <ComboBox 
+                    TabIndex="26"
                     PreviewTextInput="RussianOnly"
                     Text="{Binding Info.Loggia, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding Info.Loggia}"
@@ -614,6 +640,7 @@
                     Grid.Row="8"
                     Grid.Column="2"/>
                 <ComboBox 
+                    TabIndex="27"
                     PreviewTextInput="RussianOnly"
                     Text="{Binding Info.Bathroom, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding Info.Bathroom}"
@@ -622,6 +649,7 @@
                     Grid.Column="3"
                     Grid.Row="0"/>
                 <ComboBox 
+                    TabIndex="28"
                     PreviewTextInput="RussianOnly"
                     Text="{Binding GeneralInfo.Convenience, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding GeneralInfo.Convenience}"
@@ -630,6 +658,7 @@
                     Grid.Column="3"
                     Grid.Row="2"/>
                 <ComboBox 
+                    TabIndex="29"
                     PreviewTextInput="RussianOnly"
                     Text="{Binding GeneralInfo.Heating, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding GeneralInfo.Heating}"
@@ -638,6 +667,7 @@
                     Grid.Column="3"
                     Grid.Row="4"/>
                 <ComboBox 
+                    TabIndex="30"
                     PreviewTextInput="RussianOnly"
                     Text="{Binding GeneralInfo.Water, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding GeneralInfo.Water}"
@@ -646,6 +676,7 @@
                     Grid.Column="3"
                     Grid.Row="6"/>
                 <ComboBox 
+                    TabIndex="31"
                     PreviewTextInput="RussianOnly"
                     Text="{Binding Info.Bath, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding Info.Bath}"
@@ -671,11 +702,13 @@
                             HorizontalAlignment="Left"
                             Style="{StaticResource Header}"/>
                         <RadioButton
+                        TabIndex="32"
                             IsChecked="{Binding Info.IsSeparated}"
                             VerticalAlignment="Center"
                             Content="Раздельные"
                             Grid.Row="1"/>
                         <RadioButton
+                            TabIndex="33"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Right"
                             Content="Смежные"
@@ -684,6 +717,7 @@
                             Grid.Row="2"
                             Style="{StaticResource Border}">
                             <TextBox
+                                TabIndex="34"
                                 PreviewTextInput="AlphabeticalOnly"
                                 MaxLength="24" 
                                 Style="{StaticResource inputTextBox}"
@@ -702,6 +736,7 @@
                     Grid.Row="8"
                     Grid.Column="5">
                     <TextBox
+                        TabIndex="35"
                         PreviewTextInput="AnyLetter"
                         MaxLength="25"
                         Style="{StaticResource inputTextBox}"
@@ -719,30 +754,36 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <CheckBox
+                        TabIndex="36"
                         Style="{StaticResource OptionCheckBox}"
                         Content="Перепланировка"
                         IsChecked="{Binding Info.HasRenovation}"/>
                     <CheckBox
+                        TabIndex="41"
                         Style="{StaticResource OptionCheckBox}"
                         Grid.Row="5"
                         IsChecked="{Binding Info.HasImprovedLayout}"
                         Content="Улуч. планировка"/>
                     <CheckBox
+                        TabIndex="40"
                         Style="{StaticResource OptionCheckBox}"
                         Grid.Row="4"
                         IsChecked="{Binding Info.HasChute}"
                         Content="Мусоропровод"/>
                     <CheckBox
+                        TabIndex="37"
                         Style="{StaticResource OptionCheckBox}"
                         Grid.Row="1"
                         IsChecked="{Binding Info.IsCorner}"
                         Content="Угловая"/>
                     <CheckBox
+                        TabIndex="38"
                         Style="{StaticResource OptionCheckBox}"
                         Grid.Row="2"
                         IsChecked="{Binding Info.HasGarage}"
                         Content="Гараж"/>
                     <CheckBox
+                        TabIndex="39"
                         Style="{StaticResource OptionCheckBox}"
                         Grid.Row="3"
                         IsChecked="{Binding Info.HasElevator}"
@@ -760,6 +801,7 @@
                     Height="46"
                     Grid.ColumnSpan="7">
                     <TextBox
+                        TabIndex="42"
                         PreviewTextInput="AnyLetter"
                         Style="{StaticResource inputTextBox}"
                         Height="46"
@@ -801,6 +843,7 @@
                     Style="{StaticResource Header}"
                     Text="Кв.М:"/>
                 <TextBox
+                    TabIndex="43"
                     DataContext="{Binding Cost}"
                     PreviewTextInput="NumericOnly"
                     MaxLength="7"
@@ -816,6 +859,7 @@
                     Grid.Column="5"
                     Style="{StaticResource Border}">
                     <TextBox
+                        TabIndex="44"
                         DataContext="{Binding Cost}"
                         PreviewTextInput="NumericOnly"
                         MaxLength="9"
@@ -948,18 +992,21 @@
                     </Border>
                 </Grid>
                 <CheckBox
+                    TabIndex="45"
                     Style="{StaticResource OptionCheckBox}"
                     Grid.Column="8"
                     DataContext="{Binding Cost}"
                     IsChecked="{Binding HasPercents}"
                     Content="Проценты"/>
                 <CheckBox
+                    TabIndex="46"
                     Style="{StaticResource OptionCheckBox}"
                     Grid.Column="9"
                     DataContext="{Binding Cost}"
                     IsChecked="{Binding HasVAT}"
                     Content="НДС"/>
                 <CheckBox
+                    TabIndex="47"
                     Style="{StaticResource OptionCheckBox}"
                     Grid.Column="10"
                     DataContext="{Binding Cost}"
@@ -969,6 +1016,7 @@
                     Style="{StaticResource ImageListBox}"
                     ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Test}"/>
                 <Button
+                    TabIndex="48"
                     Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.AddImages}"
                     Height="40"
                     Width="40"
@@ -992,11 +1040,13 @@
                         <ColumnDefinition Width="70"/>
                     </Grid.ColumnDefinitions>
                     <Button
+                        TabIndex="49"
                         Style="{StaticResource GreenButton}"
                         Command="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.Confirm}"
                         CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
                         Content="Подтвердить"/>
                     <Button
+                        TabIndex="50"
                         Grid.Column="2"
                         Command="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.Cancel}"
                         CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"

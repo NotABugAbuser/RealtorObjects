@@ -1,4 +1,5 @@
 ﻿using RealtorObjects.Model;
+using RealtorObjects.View;
 using RealtyModel.Model;
 using System.Windows;
 using System.Windows.Threading;
