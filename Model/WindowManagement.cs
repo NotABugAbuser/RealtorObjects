@@ -19,9 +19,10 @@ namespace RealtorObjects.Model
 {
     public class WindowManagement
     {
-        private Boolean isFirstConnection = true;
+        #region Fileds and Properties
         private Credential credential;
         private Client client;
+
         private Window mainWindow;
         private LoginForm loginForm;
         private LoadingForm loadingForm;
@@ -58,25 +59,19 @@ namespace RealtorObjects.Model
             get => mainWindowVM;
             private set => mainWindowVM = value;
         }
+        #endregion
 
-        public WindowManagement()
-        {
-
-        }
         public WindowManagement(Client client, Credential credential)
         {
             this.client = client;
             this.credential = credential;
         }
 
-        //ЗДЕСЬ АВТОЛОГИН УБРАТЬ
         public void Run()
         {
             InitializeMembers();
             BindEvents();
             OpenLoadingForm();
-            //if (Debugger.IsAttached)
-            //    SetUpTestCredentials();
         }
         private void InitializeMembers()
         {
@@ -84,6 +79,7 @@ namespace RealtorObjects.Model
             HomeVM = new HomeViewModel();
             flatFormVM = new FlatFormViewModel();
             loginFormVM = new LoginFormViewModel();
+            loginForm = new LoginForm() { DataContext = loginFormVM };
             MainWindowVM = new MainWindowViewModel(credential);
             MainWindowVM.ViewModels[0] = HomeVM;
             MainWindowVM.WorkArea = HomeVM;
@@ -91,8 +87,7 @@ namespace RealtorObjects.Model
         }
         private void BindEvents()
         {
-            client.Connected += () => OnConnected();
-            client.LostConnection += () => OnLostConnection();
+            client.Disconnected += (s, e) => OnDisconnected();
 
             credential.LoggedIn += (s, e) => OnLoggedIn();
             credential.LoggedOut += (s, e) => OnLoggedOut();
@@ -103,40 +98,19 @@ namespace RealtorObjects.Model
 
             FlatFormVM.FlatCreated = (s, e) => flatForm.Close();
         }
-        //ЗДЕСЬ АВТОЛОГИН УБРАТЬ
-        private void OnConnected()
+
+        private void OnDisconnected()
         {
-            if (isFirstConnection)
-            {
-                HomeVM.GetUpdate();
-                isFirstConnection = false;
-            }
-            else AutoLogin();
+            ((App)Application.Current).Shutdown();
+            //mainWindow.Hide();
+            //foreach (Window window in Application.Current.Windows)
+            //    if (window is FlatFormV2 flatFormV2)
+            //        flatFormV2.Close();
+            //OpenLoadingForm();
+            //Thread.Sleep(500);
+            //client.ConnectAsync();
         }
-        private void OnLostConnection()
-        {
-            if (!client.IsTryingToConnect)
-            {
-                mainWindow.Hide();
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window is FlatFormV2 flatFormV2)
-                    {
-                        flatFormV2.Close();
-                    }
-                }
-                OpenLoadingForm();
-            }
-            var timer = new System.Timers.Timer(1000);
-            timer.AutoReset = false;
-            timer.Elapsed += (s, e) =>
-            {
-                client.ConnectAsync();
-                timer.Stop();
-                timer.Dispose();
-            };
-            timer.Start();
-        }
+
         private void OnRegistered()
         {
             MessageBox.Show("Регистрация прошла успешно");
@@ -237,7 +211,7 @@ namespace RealtorObjects.Model
                     },
                     HasExclusive = false,
                     IsSold = false,
-                    ObjectType = "",
+                    Type = TargetType.Flat,
                     Status = Status.Active
                 };
             }
@@ -254,28 +228,24 @@ namespace RealtorObjects.Model
             flatForm = new FlatFormV2 { DataContext = flatFormVM };
             flatForm.Show();
         }
-        //ЗДЕСЬ АВТОЛОГИН УБРАТЬ
         private void OnUpdateFinished()
         {
             Debug.WriteLine("Update is finished");
             ((App)Application.Current).Dispatcher.Invoke((Action)delegate
             {
                 loadingForm.Close();
-                loginForm = new LoginForm() { DataContext = loginFormVM };
                 loginForm.Show();
-                //if (Debugger.IsAttached)
-                //    AutoLogin();
             });
         }
+        public void OpenLoginForm()
+        {
+            loginForm.Show();
+        }
+
         private void SetUpTestCredentials()
         {
             credential.Name = "ГвоздиковЕА";
             credential.Password = "123";
-        }
-        private void AutoLogin()
-        {
-            if (credential != null && !String.IsNullOrWhiteSpace(credential.Name) && !String.IsNullOrWhiteSpace(credential.Password))
-                client.OutcomingOperations.Enqueue(new Operation(credential.Name, credential.Password, OperationDirection.Identity, OperationType.Login));
         }
         private void OpenLoadingForm()
         {

@@ -94,6 +94,7 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
+        public Boolean HasUpdate { get; set; }
         public Filter Filter
         {
             get => filter;
@@ -157,25 +158,11 @@ namespace RealtorObjects.ViewModel
         }));
         public CustomCommand Delete => delete ?? (delete = new CustomCommand(obj =>
         {
-            BaseRealtorObject bro = (BaseRealtorObject)obj;
-            if (CheckAccess(bro.Agent, ((App)Application.Current).Credential.Name))
-            {
-                AllObjects.RemoveAll(x => x.Id == bro.Id);
-                CurrentObjectList.Remove(bro);
-                Operation operation = new Operation(((App)Application.Current).Credential.Name, bro.Id.ToString(), OperationDirection.Realty, OperationType.Remove);
-            }
+        BaseRealtorObject bro = (BaseRealtorObject)obj;
+        if (CheckAccess(bro.Agent, ((App)Application.Current).Credential.Name))
+            ((App)Application.Current).OperationManagement.SendRealtyData(bro.Id, OperationType.Remove, bro.Type);
         }));
-        public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj =>
-        {
-            Flat dbFlat = dataBase.Flats.Local.Last<Flat>();
-            dbFlat.Location.FlatNumber++;
-            dbFlat.Agent = "Dima";
-            ((App)Application.Current).Client.OutcomingOperations.Enqueue(new Operation("none", GetLastUpdateTime(), OperationDirection.Realty, OperationType.Add, TargetType.Flat)
-            {
-                Data = JsonSerializer.Serialize(dbFlat)
-            });
-            dbFlat.Location.FlatNumber--;
-        }));
+        public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj =>{}));
         public CustomCommand FilterCollection => filterCollection ?? (filterCollection = new CustomCommand(obj =>
         {
             List<BaseRealtorObject> filteredObjects = Filter.CreateFilteredList(AllObjects);
@@ -299,11 +286,6 @@ namespace RealtorObjects.ViewModel
             });
         }
 
-        internal void GetUpdate()
-        {
-            ((App)Application.Current).Client.OutcomingOperations.Enqueue(new Operation("none", GetLastUpdateTime(), OperationDirection.Realty, OperationType.Update));
-        }
-        //Проверить сохраняет ли в бд под теми же Id или задаёт их по новой
         internal void ReceiveDbUpdate(ReceivedDbUpdateEventArgs e)
         {
             try
@@ -338,6 +320,7 @@ namespace RealtorObjects.ViewModel
                     FilterCollectionMeth();
                     WriteLastUpdateTime();
                     Debug.WriteLine("End of update");
+                    HasUpdate = true;
                     UpdateFinished?.Invoke(this, new UpdateFinishedEventArgs());
                 }
                 //if (GetLastUpdateTime() == "never")
@@ -389,7 +372,7 @@ namespace RealtorObjects.ViewModel
             Flat dbFlat = dataBase.Flats.Find(flat.Id);
             dbFlat = flat;
             dataBase.SaveChanges();
-            Flat listFlat = (Flat)AllObjects.Find(f => f.Id == flat.Id && f.ObjectType == flat.ObjectType);
+            Flat listFlat = (Flat)AllObjects.Find(f => f.Id == flat.Id && f.Type == flat.Type);
             listFlat = flat;
             FilterCollectionMeth();
             WriteLastUpdateTime();
@@ -399,7 +382,7 @@ namespace RealtorObjects.ViewModel
             Flat dbFlat = dataBase.Flats.Find(flat.Id);
             dataBase.Flats.Remove(dbFlat);
             dataBase.SaveChanges();
-            Flat listFlat = (Flat)AllObjects.Find(f => f.Id == flat.Id && f.ObjectType == flat.ObjectType);
+            Flat listFlat = (Flat)AllObjects.Find(f => f.Id == flat.Id && f.Type == flat.Type);
             AllObjects.Remove(listFlat);
             FilterCollectionMeth();
             WriteLastUpdateTime();
@@ -436,6 +419,21 @@ namespace RealtorObjects.ViewModel
                 locationOptions.Streets.Add(street);
             return locationOptions;
         }
+        private bool CheckAccess(string objectAgent, string currentAgent)
+        {
+            if (objectAgent == currentAgent)
+            {
+                return true;
+            }
+            else
+            {
+                MessageBox.Show("У вас нет права на доступ к этому объекту");
+                return false;
+            }
+        }
+
+
+
         internal String GetLastUpdateTime()
         {
             if (dataBase.UpdateTime.Local.Count == 0)
@@ -459,18 +457,6 @@ namespace RealtorObjects.ViewModel
                 lastUpdateTime.DateTime = DateTime.Now.Date;
             }
             dataBase.SaveChanges();
-        }
-        private bool CheckAccess(string objectAgent, string currentAgent)
-        {
-            if (objectAgent == currentAgent)
-            {
-                return true;
-            }
-            else
-            {
-                MessageBox.Show("У вас нет права на доступ к этому объекту");
-                return false;
-            }
         }
     }
 }

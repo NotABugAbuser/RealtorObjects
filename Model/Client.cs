@@ -15,24 +15,23 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Diagnostics;
+using System.IO;
+using RealtyModel.Service;
+using RealtorObjects.Model.Event;
 
 namespace RealtorObjects.Model
 {
     public class Client : INotifyPropertyChanged
     {
         #region Fileds
-        private object socketSendLocker = new object();
         private object streamSendLocker = new object();
         private Boolean isConnected = false;
-        private Boolean isTryingToConnect = false;
         private IPAddress serverIp = null;
         private Socket socket = null;
         private NetworkStream stream = null;
         private Dispatcher uiDispatcher = null;
-        public delegate void ConnectedEventHandler();
-        public delegate void LostConnectionEventHandler();
         public event ConnectedEventHandler Connected;
-        public event LostConnectionEventHandler LostConnection;
+        public event DisconnectedEventHandler Disconnected;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Boolean IsConnected
@@ -44,15 +43,8 @@ namespace RealtorObjects.Model
                 OnPropertyChanged();
             }
         }
-        public Boolean IsTryingToConnect
-        {
-            get => isTryingToConnect;
-            private set
-            {
-                isTryingToConnect = value;
-                OnPropertyChanged();
-            }
-        }
+        public Boolean IsFirstConnection { get; set; }
+        public Boolean IsTryingToConnect { get; set; }
         public OperationQueue IncomingOperations
         {
             get; private set;
@@ -63,26 +55,21 @@ namespace RealtorObjects.Model
         }
         #endregion
 
-        public Client()
-        {
-
-        }
         public Client(Dispatcher dispatcher)
         {
             uiDispatcher = dispatcher;
             IncomingOperations = new OperationQueue();
             OutcomingOperations = new OperationQueue();
-            //OutcomingOperations.Enqueued += (s, e) => SendOverSocket();
-            OutcomingOperations.Enqueued += (s, e) => SendOverStream();
+            OutcomingOperations.Enqueued += (s, e) => SendAsync();
         }
 
         public async void ConnectAsync()
         {
             await Task.Run(() =>
             {
-                Debug.WriteLine($"{DateTime.Now} has started to connect");
+                Debug.WriteLine($"{DateTime.Now} HAS STARTED TO CONNECT");
                 IsTryingToConnect = true;
-                FindServerIPAddress();
+                FindServerIP();
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 try
                 {
@@ -91,15 +78,15 @@ namespace RealtorObjects.Model
                         IPEndPoint iPEndPoint = new IPEndPoint(serverIp, 8005);
                         socket.Connect(iPEndPoint);
                         stream = new NetworkStream(socket, true);
-                        Debug.WriteLine($"{DateTime.Now} has CONNECTED to {serverIp}");
+                        Debug.WriteLine($"{DateTime.Now} HAS CONNECTED TO {serverIp}");
                         IsTryingToConnect = false;
                         IsConnected = true;
-                        uiDispatcher.BeginInvoke(new Action(() => { Connected?.Invoke(); }));
+                        uiDispatcher.BeginInvoke(new Action(() => { Connected?.Invoke(this, new ConnectedEventArgs()); }));
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"{DateTime.Now} (ConnectAsync){ex.Message}");
+                    Debug.WriteLine($"\n{DateTime.Now} ERROR (ConnectAsync) {ex.Message}\n");
                     DisconnectAsync();
                 }
             });
@@ -116,18 +103,20 @@ namespace RealtorObjects.Model
                             Task.Delay(1000).Wait();
                         else
                         {
+                            Debug.WriteLine($"\n{DateTime.Now}SOCKET WAS UNAVAILABLE\n");
                             DisconnectAsync();
                             break;
                         }
                     }
                 }
-                catch (ObjectDisposedException)
+                catch (ObjectDisposedException ex)
                 {
+                    Debug.WriteLine($"\n{DateTime.Now} SOCKET ERROR (CheckConnectionAsync) {ex.Message}\n");
                     DisconnectAsync();
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"{DateTime.Now} (ConnectAsync){ex.Message}");
+                    Debug.WriteLine($"\n{DateTime.Now} ERROR (CheckConnectionAsync) {ex.Message}\n");
                 }
             });
             bool GetSocketStatus()
@@ -140,7 +129,7 @@ namespace RealtorObjects.Model
                     return true;
             }
         }
-        private void FindServerIPAddress()
+        private void FindServerIP()
         {
             try
             {
@@ -182,7 +171,7 @@ namespace RealtorObjects.Model
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"{DateTime.Now} (FindServerIPAddress){ex.Message}");
+                Debug.WriteLine($"\n{DateTime.Now} ERROR (FindServerIP) {ex.Message}\n");
             }
         }
         private IPAddress[] GetLocalIPv4Addresses()
@@ -206,151 +195,117 @@ namespace RealtorObjects.Model
             return addresses.ToArray();
         }
 
-        public async void ReceiveOverStreamAsync()
+        public async void ReceiveAsync()
         {
+            Debug.WriteLine($"{DateTime.Now} HAS STARTED TO RECEIVE BYTES");
             await Task.Run(() =>
             {
                 try
                 {
-                    Debug.WriteLine($"{DateTime.Now} has started to receive operations");
                     while (IsConnected)
                     {
-                        if (stream.DataAvailable)
+                        if (socket.Available > 0)
                         {
-                            Byte[] buffer = new Byte[8192];
-                            StringBuilder message = new StringBuilder();
-                            Int32 bytes = 0;
-                            String chunk;
+                            byte[] buffer = new byte[256];
+                            StringBuilder response = new StringBuilder();
+
                             do
                             {
-                                Int32 byteCount = stream.Read(buffer, 0, buffer.Length);
-                                bytes += byteCount;
-                                chunk = Encoding.UTF8.GetString(buffer);
-                                message.Append(chunk, 0, byteCount);
-                                Debug.WriteLine($"{DateTime.Now} received {bytes}bytes");
+                                socket.Receive(buffer);
+                                String received = Encoding.UTF8.GetString(buffer);
+                                if (received.Contains("<EOF>"))
+                                {
+                                    String[] ar = received.Split(new String[] { "<EOF>" }, StringSplitOptions.None);
+                                    response.Append(ar[0]);
+                                }
+                                else response.Append(received);
                             }
-                            while (stream.DataAvailable);
-                            Operation operation = JsonSerializer.Deserialize<Operation>(message.ToString());
-                            Debug.WriteLine($"{DateTime.Now} received {bytes}bytes {operation.OperationParameters.Direction} {operation.OperationParameters.Type} {operation.OperationParameters.Target} {operation.IsSuccessfully}");
-                            IncomingOperations.Enqueue(operation);
+                            while (socket.Available > 0);
+                            Debug.WriteLine($"{DateTime.Now} has received {response}");
+                            HandleResponseAsync(response.ToString());
                         }
+                        Task.Delay(10).Wait();
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"{DateTime.Now} {ex.Message}");
+                    Debug.WriteLine($"{DateTime.Now} (ReceiveOverStreamAsync) bytes {ex.Message}");
+                }
+                finally
+                {
+                    Debug.WriteLine($"{DateTime.Now} HAS FINISHED TO RECEIVE BYTES");
                 }
             });
         }
-        private void SendOverStream()
+        private async void HandleResponseAsync(String data)
         {
-            lock (streamSendLocker)
+            Debug.WriteLine($"{DateTime.Now} has started to handle response");
+            await Task.Run(() =>
             {
                 try
                 {
-                    Operation operation = OutcomingOperations.Dequeue();
-                    operation.OperationNumber = Guid.NewGuid();
-                    String json = JsonSerializer.Serialize<Operation>(operation);
-                    Byte[] data = Encoding.UTF8.GetBytes(json);
-                    stream.Write(data, 0, data.Length);
-                    Debug.WriteLine($"{DateTime.Now} sent {data.Length}kbytes {operation.OperationParameters.Direction} {operation.OperationParameters.Type} {operation.OperationParameters.Target}");
+                    Operation operation = JsonSerializer.Deserialize<Operation>(data);
+                    Debug.WriteLine($"{DateTime.Now} has finished to handle response");
+                    IncomingOperations.Enqueue(operation);
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"{DateTime.Now} {ex.Message}");
+                    Debug.WriteLine($"\n{DateTime.Now} ERROR (GetOperationAsync) {ex.Message}\n");
                 }
-            }
+            });
         }
-        public void SendDisconnect()
+        private async void SendAsync()
         {
-            try
+            await Task.Run(() =>
             {
-                String json = JsonSerializer.Serialize<Operation>(new Operation() { Data = "0x00", OperationNumber = Guid.NewGuid() });
-                Byte[] data = Encoding.UTF8.GetBytes(json);
-                stream.Write(data, 0, data.Length);
-                Debug.WriteLine($"{DateTime.Now} sent {data.Length}kbytes DISCONNECT");
-                DisconnectAsync();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"{DateTime.Now} {ex.Message}");
-            }
+                lock (streamSendLocker)
+                {
+                    if (OutcomingOperations != null && OutcomingOperations.Count > 0)
+                    {
+                        try
+                        {
+                            Operation operation = OutcomingOperations.Dequeue();
+                            operation.OperationNumber = Guid.NewGuid();
+                            Debug.WriteLine($"{DateTime.Now} has started to send {operation.OperationNumber} {operation.Parameters.Target}");
+                            Byte[] data = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(operation) + "<EOF>");
+                            socket.Send(data);
+                            Debug.WriteLine($"{DateTime.Now} has sent {data.Length} bytes");
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"\n{DateTime.Now} ERROR (SendAsync) {ex.Message}\n");
+                        }
+                        Task.Delay(100).Wait();
+                    }
+                }
+            });
         }
+
         public async void DisconnectAsync()
         {
             await Task.Run(() =>
             {
                 try
                 {
+                    Debug.WriteLine($"{DateTime.Now} has started to disconnect");
                     serverIp = null;
                     IsConnected = false;
                     Task.Delay(1000).Wait();
                     socket.Shutdown(SocketShutdown.Both);
-                    socket.Close();
-                    socket.Dispose();
                     stream.Close();
                     stream.Dispose();
-                    Debug.WriteLine($"{DateTime.Now} has DISCONNECTED");
-                    uiDispatcher.BeginInvoke(new Action(() => { LostConnection?.Invoke(); }));
+                    Debug.WriteLine($"{DateTime.Now} HAS DISCONNECTED");
+                    uiDispatcher.BeginInvoke(new Action(() => { Disconnected?.Invoke(this, new DisconnectedEventArgs()); }));
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"{DateTime.Now} {ex.Message}");
+                    Debug.WriteLine($"\n{DateTime.Now} ERROR (DisconnectAsync) {ex.Message}\n");
                 }
             });
         }
         private void OnPropertyChanged([CallerMemberName] String prop = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-
-
-
-        public Task ReceiveOverSocketAsync()
-        {
-            return Task.Run(() =>
-            {
-                try
-                {
-                    while (IsConnected)
-                    {
-                        if (socket.Poll(100000, SelectMode.SelectRead))
-                        {
-                            StringBuilder message = new StringBuilder();
-                            do
-                            {
-                                Byte[] buffer = new Byte[1024];
-                                Int32 byteCount = socket.Receive(buffer);
-                                message.Append(Encoding.UTF8.GetString(buffer), 0, byteCount);
-                            }
-                            while (socket.Available > 0);
-
-                            Operation operation = JsonSerializer.Deserialize<Operation>(message.ToString());
-                            IncomingOperations.Enqueue(operation);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"{DateTime.Now} {ex.Message}");
-                }
-            });
-        }
-        private void SendOverSocket()
-        {
-            lock (socketSendLocker)
-            {
-                try
-                {
-                    Operation operation = OutcomingOperations.Dequeue();
-                    String json = JsonSerializer.Serialize<Operation>(operation);
-                    Byte[] data = Encoding.UTF8.GetBytes(json);
-                    socket.Send(data);
-                }
-                catch (Exception)
-                {
-                }
-            }
         }
     }
 }

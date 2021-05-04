@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace RealtorObjects.Model.Event
 {
-    public class LostConnectionEventArgs
+    public class DeletingEventArgs
     {
+
     }
 }

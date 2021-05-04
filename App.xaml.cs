@@ -1,6 +1,7 @@
 ﻿using RealtorObjects.Model;
 using RealtorObjects.View;
 using RealtyModel.Model;
+using System;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -49,14 +50,15 @@ namespace RealtorObjects
         }
         private void BindEvents()
         {
-            Client.Connected += () => Client.CheckConnectionAsync();
-            Client.Connected += () => Client.ReceiveOverStreamAsync();
+            Client.Connected += (s, e) => Client.CheckConnectionAsync();
+            Client.Connected += (s, e) => Client.ReceiveAsync();
+            Client.Connected += (s, e) => CheckClientStatus();
 
-            windowManagement.LoginFormVM.LoggingIn += (s, e) => operationManagement.Login(e.UserName, e.Password);
-            windowManagement.LoginFormVM.Registering += (s, e) => operationManagement.Register(e.UserName, e.Password, e.Email);
-            windowManagement.FlatFormVM.FlatCreated = (s, e) => operationManagement.SendFlat(e.Flat, OperationType.Add);
-            windowManagement.FlatFormVM.FlatModified = (s, e) => operationManagement.SendFlat(e.Flat, OperationType.Change);
-            //windowManagement.HouseFormVM.HouseCreated = (s, e) => operationManagement.SendFlat(e.House, OperationType.Add);
+            windowManagement.LoginFormVM.LoggingIn += (s, e) => operationManagement.SendIdentityData(e.UserName, e.Password, OperationType.Login);
+            windowManagement.LoginFormVM.Registering += (s, e) => operationManagement.SendIdentityData(e.UserName, $"{e.Password};{e.Email}", OperationType.Register);
+
+            windowManagement.FlatFormVM.FlatCreated = (s, e) => operationManagement.SendRealtyData(e.Flat, OperationType.Add, TargetType.Flat);
+            windowManagement.FlatFormVM.FlatModified = (s, e) => operationManagement.SendRealtyData(e.Flat, OperationType.Change, TargetType.Flat);
 
             operationManagement.ReceivedDbUpdate += (s, e) => windowManagement.HomeVM.ReceiveDbUpdate(e);
             operationManagement.ReceivedFlat += (s, e) => windowManagement.HomeVM.AddFlat(e.Flat);
@@ -65,6 +67,14 @@ namespace RealtorObjects
             operationManagement.ReceivedHouse += (s, e) => windowManagement.HomeVM.AddHouse(e.House);
             operationManagement.ReceivedHouseUpdate += (s, e) => windowManagement.HomeVM.UpdateHouse(e.House);
             operationManagement.ReceivedHouseDeletion += (s, e) => windowManagement.HomeVM.DeleteHouse(e.House);
+        }
+        private void CheckClientStatus()
+        {
+            if (Client.IsFirstConnection || !windowManagement.HomeVM.HasUpdate)
+                operationManagement.SendRealtyData(null, OperationType.Update, TargetType.All);
+            else if (Credential.IsLoggedIn && !String.IsNullOrWhiteSpace(Credential.Name) && !String.IsNullOrWhiteSpace(Credential.Password))
+                operationManagement.SendIdentityData(Credential.Name, Credential.Password, OperationType.Login);
+            else windowManagement.OpenLoginForm();
         }
     }
 }

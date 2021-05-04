@@ -14,9 +14,8 @@ namespace RealtorObjects.ViewModel
     {
         private String text = "";
         private CustomCommand closeApp;
-        public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
-            Application.Current.Shutdown();
-        }));
+        public event PropertyChangedEventHandler PropertyChanged;
+        
         public String Text
         {
             get => text;
@@ -26,6 +25,9 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
+        public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
+            Application.Current.Shutdown();
+        }));
 
         public LoadingFormViewModel()
         {
@@ -36,6 +38,5 @@ namespace RealtorObjects.ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

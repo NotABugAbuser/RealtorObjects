@@ -138,8 +138,10 @@
     <Compile Include="Model\CredentialData.cs" />
     <Compile Include="Model\DataBaseContext.cs" />
     <Compile Include="Model\Event\ConnectedEventArgs.cs" />
+    <Compile Include="Model\Event\DeletingEventArgs.cs" />
     <Compile Include="Model\Event\EventHandlers.cs" />
-    <Compile Include="Model\Event\LostConnectionEventArgs.cs" />
+    <Compile Include="Model\Event\DisconnectedEventArgs.cs" />
+    <Compile Include="Model\Event\ReconnectedEventArgs.cs" />
     <Compile Include="Model\Event\UpdateCompletedEventArgs.cs" />
     <Compile Include="Model\IdentityContext.cs" />
     <Compile Include="Model\OperationManagement.cs" />
