@@ -2,6 +2,7 @@
 using RealtorObjects.View;
 using RealtyModel.Model;
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -70,11 +71,20 @@ namespace RealtorObjects
         }
         private void CheckClientStatus()
         {
-            if (Client.IsFirstConnection || !windowManagement.HomeVM.HasUpdate)
-                operationManagement.SendRealtyData(null, OperationType.Update, TargetType.All);
-            else if (Credential.IsLoggedIn && !String.IsNullOrWhiteSpace(Credential.Name) && !String.IsNullOrWhiteSpace(Credential.Password))
-                operationManagement.SendIdentityData(Credential.Name, Credential.Password, OperationType.Login);
-            else windowManagement.OpenLoginForm();
+            //Если в режиме дебага - автологин
+            if (Debugger.IsAttached)
+                operationManagement.SendIdentityData("ГриньДВ", "123", OperationType.Login);
+            else
+            {
+                //Если первый раз подключился за запуск программы и не имеет обновления
+                if (Client.IsFirstConnection || !windowManagement.HomeVM.HasUpdate)
+                    operationManagement.SendRealtyData(null, OperationType.Update, TargetType.All);
+                //Если был залогинен и credential дынные не пустые
+                else if (Credential.IsLoggedIn && !String.IsNullOrWhiteSpace(Credential.Name) && !String.IsNullOrWhiteSpace(Credential.Password))
+                    operationManagement.SendIdentityData(Credential.Name, Credential.Password, OperationType.Login);
+                //иначе открыть LoginForm
+                else windowManagement.OpenLoginForm();
+            }
         }
     }
 }

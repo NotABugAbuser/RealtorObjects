@@ -242,11 +242,6 @@ namespace RealtorObjects.Model
             loginForm.Show();
         }
 
-        private void SetUpTestCredentials()
-        {
-            credential.Name = "ГвоздиковЕА";
-            credential.Password = "123";
-        }
         private void OpenLoadingForm()
         {
             ((App)Application.Current).Dispatcher.Invoke((Action)delegate

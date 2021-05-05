@@ -221,9 +221,9 @@ namespace RealtorObjects.Model
                                     expectedSize = Int32.Parse(parts[0]);
                                     response.Append(parts[1]);
                                 }
-                                else if (received.Contains("<EOF>"))
+                                else if (received.Contains("<<<<"))
                                 {
-                                    String[] parts = received.Split(new String[] { "<EOF>" }, StringSplitOptions.None);
+                                    String[] parts = received.Split(new String[] { "<<<<" }, StringSplitOptions.None);
                                     response.Append(parts[0]);
                                 }
                                 else response.Append(received);
@@ -240,7 +240,6 @@ namespace RealtorObjects.Model
                                 Debug.WriteLine($"{DateTime.Now} has received partial data that equals {response.Length} of {expectedSize} bytes");
                                 //ОТПРАВИТЬ НА ПОВТОР ОТПРАВКИ
                             }
-
                         }
                         Task.Delay(10).Wait();
                     }
@@ -286,7 +285,7 @@ namespace RealtorObjects.Model
                             operation.OperationNumber = Guid.NewGuid();
                             Debug.WriteLine($"{DateTime.Now} has started to send {operation.OperationNumber} {operation.Parameters.Target}");
                             String json = JsonSerializer.Serialize(operation);
-                            Byte[] data = Encoding.UTF8.GetBytes($"{json.Length};{json}<EOF>");
+                            Byte[] data = Encoding.UTF8.GetBytes($"{json.Length};{json}<<<<");
 
                             socket.Send(data);
                             Debug.WriteLine($"{DateTime.Now} has sent {json.Length} bytes");
