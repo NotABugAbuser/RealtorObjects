@@ -208,21 +208,39 @@ namespace RealtorObjects.Model
                         {
                             byte[] buffer = new byte[256];
                             StringBuilder response = new StringBuilder();
+                            Int32 expectedSize = 0;
 
                             do
                             {
                                 socket.Receive(buffer);
                                 String received = Encoding.UTF8.GetString(buffer);
-                                if (received.Contains("<EOF>"))
+
+                                if (expectedSize == 0)
                                 {
-                                    String[] ar = received.Split(new String[] { "<EOF>" }, StringSplitOptions.None);
-                                    response.Append(ar[0]);
+                                    String[] parts = received.Split(new String[] { ";" }, StringSplitOptions.None);
+                                    expectedSize = Int32.Parse(parts[0]);
+                                    response.Append(parts[1]);
+                                }
+                                else if (received.Contains("<EOF>"))
+                                {
+                                    String[] parts = received.Split(new String[] { "<EOF>" }, StringSplitOptions.None);
+                                    response.Append(parts[0]);
                                 }
                                 else response.Append(received);
                             }
                             while (socket.Available > 0);
-                            Debug.WriteLine($"{DateTime.Now} has received {response}");
-                            HandleResponseAsync(response.ToString());
+
+                            if (response.Length == expectedSize)
+                            {
+                                Debug.WriteLine($"{DateTime.Now} has received full data that equals {expectedSize} bytes");
+                                HandleResponseAsync(response.ToString());
+                            }
+                            else
+                            {
+                                Debug.WriteLine($"{DateTime.Now} has received partial data that equals {response.Length} of {expectedSize} bytes");
+                                //ОТПРАВИТЬ НА ПОВТОР ОТПРАВКИ
+                            }
+
                         }
                         Task.Delay(10).Wait();
                     }
@@ -267,9 +285,11 @@ namespace RealtorObjects.Model
                             Operation operation = OutcomingOperations.Dequeue();
                             operation.OperationNumber = Guid.NewGuid();
                             Debug.WriteLine($"{DateTime.Now} has started to send {operation.OperationNumber} {operation.Parameters.Target}");
-                            Byte[] data = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(operation) + "<EOF>");
+                            String json = JsonSerializer.Serialize(operation);
+                            Byte[] data = Encoding.UTF8.GetBytes($"{json.Length};{json}<EOF>");
+
                             socket.Send(data);
-                            Debug.WriteLine($"{DateTime.Now} has sent {data.Length} bytes");
+                            Debug.WriteLine($"{DateTime.Now} has sent {json.Length} bytes");
                         }
                         catch (Exception ex)
                         {
