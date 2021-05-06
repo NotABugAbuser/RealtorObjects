@@ -24,7 +24,7 @@ namespace RealtorObjects.Model
     public class Client : INotifyPropertyChanged
     {
         #region Fileds
-        private object streamSendLocker = new object();
+        private object sendLocker = new object();
         private Boolean isConnected = false;
         private IPAddress serverIp = null;
         private Socket socket = null;
@@ -231,13 +231,10 @@ namespace RealtorObjects.Model
                             while (socket.Available > 0);
 
                             if (response.Length == expectedSize)
-                            {
-                                Debug.WriteLine($"{DateTime.Now} has received full data that equals {expectedSize} bytes");
-                                HandleResponseAsync(response.ToString());
-                            }
+                                HandleResponseAsync(response.ToString(), expectedSize);
                             else
                             {
-                                Debug.WriteLine($"{DateTime.Now} has received partial data that equals {response.Length} of {expectedSize} bytes");
+                                Debug.WriteLine($"{DateTime.Now} RECEIVED WRONG BYTE COUNT: {response.Length} OF {expectedSize}");
                                 //ОТПРАВИТЬ НА ПОВТОР ОТПРАВКИ
                             }
                         }
@@ -246,7 +243,7 @@ namespace RealtorObjects.Model
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"{DateTime.Now} (ReceiveOverStreamAsync) bytes {ex.Message}");
+                    Debug.WriteLine($"{DateTime.Now} (ReceiveAsync) {ex.Message}");
                 }
                 finally
                 {
@@ -254,20 +251,19 @@ namespace RealtorObjects.Model
                 }
             });
         }
-        private async void HandleResponseAsync(String data)
+        private async void HandleResponseAsync(String data, int expectedSize)
         {
-            Debug.WriteLine($"{DateTime.Now} has started to handle response");
             await Task.Run(() =>
             {
                 try
                 {
                     Operation operation = JsonSerializer.Deserialize<Operation>(data);
-                    Debug.WriteLine($"{DateTime.Now} has finished to handle response");
+                    Debug.WriteLine($"{DateTime.Now} RECEIVED {expectedSize} BYTES {operation.Number} - {operation.Parameters.Direction} {operation.Parameters.Type} {operation.Parameters.Target}");
                     IncomingOperations.Enqueue(operation);
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"\n{DateTime.Now} ERROR (GetOperationAsync) {ex.Message}\n");
+                    Debug.WriteLine($"\n{DateTime.Now} ERROR (HandleResponseAsync) {ex.Message}\n");
                 }
             });
         }
@@ -275,26 +271,25 @@ namespace RealtorObjects.Model
         {
             await Task.Run(() =>
             {
-                lock (streamSendLocker)
+                lock (sendLocker)
                 {
                     if (OutcomingOperations != null && OutcomingOperations.Count > 0)
                     {
                         try
                         {
                             Operation operation = OutcomingOperations.Dequeue();
-                            operation.OperationNumber = Guid.NewGuid();
-                            Debug.WriteLine($"{DateTime.Now} has started to send {operation.OperationNumber} {operation.Parameters.Target}");
+                            operation.Number = Guid.NewGuid();
                             String json = JsonSerializer.Serialize(operation);
                             Byte[] data = Encoding.UTF8.GetBytes($"{json.Length};{json}<<<<");
 
                             socket.Send(data);
-                            Debug.WriteLine($"{DateTime.Now} has sent {json.Length} bytes");
+                            Debug.WriteLine($"{DateTime.Now} has SENT {json.Length} bytes {operation.Number} - {operation.Parameters.Direction} {operation.Parameters.Type} {operation.Parameters.Target}");
                         }
                         catch (Exception ex)
                         {
                             Debug.WriteLine($"\n{DateTime.Now} ERROR (SendAsync) {ex.Message}\n");
                         }
-                        Task.Delay(100).Wait();
+                        Task.Delay(300).Wait();
                     }
                 }
             });

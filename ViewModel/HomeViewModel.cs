@@ -30,9 +30,6 @@ namespace RealtorObjects.ViewModel
         #region Fields
         private int currentPage = 1;
         private double widthOfFilters = 200;
-        public event UpdateFinishedEventHandler UpdateFinished;
-        public event OpeningFlatFormEventHandler OpeningFlatForm;
-        private DataBaseContext dataBase = new DataBaseContext();
         private Filter filter = new Filter();
         private CustomCommand delete;
         private CustomCommand modify;
@@ -74,6 +71,7 @@ namespace RealtorObjects.ViewModel
             new CheckAndHeightPair(false, 50),
         };
         private List<ObservableCollection<BaseRealtorObject>> objectLists = new List<ObservableCollection<BaseRealtorObject>>();
+        public event OpeningFlatFormEventHandler OpeningFlatForm;
         #endregion
         #region Properties
         public int CurrentPage
@@ -94,7 +92,6 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
-        public Boolean HasUpdate { get; set; }
         public Filter Filter
         {
             get => filter;
@@ -124,6 +121,7 @@ namespace RealtorObjects.ViewModel
             }
         }
         public ObservableCollection<CheckAndHeightPair> FilterAreaSections => filterAreaSections;
+        public LocationOptions LocationOptions { get; set; }
         #endregion
 
         public CustomCommand OpenCloseFilters => openCloseFilters ?? (openCloseFilters = new CustomCommand(obj =>
@@ -141,11 +139,10 @@ namespace RealtorObjects.ViewModel
         {
             string type = (string)obj;
             if (type == "Flat")
-                OpeningFlatForm?.Invoke(this, new OpeningFlatFormEventArgs(true, new Flat(), GetLocationOptions()));
+                OpeningFlatForm?.Invoke(this, new OpeningFlatFormEventArgs(true, new Flat(), LocationOptions));
 
             //if (type == "House") ;
         }));
-
         public CustomCommand Modify => modify ?? (modify = new CustomCommand(obj =>
         {
             BaseRealtorObject bro = (BaseRealtorObject)obj;
@@ -158,11 +155,11 @@ namespace RealtorObjects.ViewModel
         }));
         public CustomCommand Delete => delete ?? (delete = new CustomCommand(obj =>
         {
-        BaseRealtorObject bro = (BaseRealtorObject)obj;
-        if (CheckAccess(bro.Agent, ((App)Application.Current).Credential.Name))
-            ((App)Application.Current).OperationManagement.SendRealtyData(bro.Id, OperationType.Remove, bro.Type);
+            BaseRealtorObject bro = (BaseRealtorObject)obj;
+            if (CheckAccess(bro.Agent, ((App)Application.Current).Credential.Name))
+                ((App)Application.Current).OperationManagement.SendRealtyData(bro.Id, OperationType.Remove, bro.Type);
         }));
-        public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj =>{}));
+        public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj => { }));
         public CustomCommand FilterCollection => filterCollection ?? (filterCollection = new CustomCommand(obj =>
         {
             List<BaseRealtorObject> filteredObjects = Filter.CreateFilteredList(AllObjects);
@@ -200,40 +197,33 @@ namespace RealtorObjects.ViewModel
 
         public HomeViewModel()
         {
-            ClearDB();
-            AllObjects.AddRange(dataBase.Flats);
-            AllObjects.AddRange(dataBase.Houses);
+            using (var context = new DataBaseContext())
+            {
+                ClearDB(context);
+                AllObjects.AddRange(context.Flats);
+                AllObjects.AddRange(context.Houses);
+            }
         }
 
-        internal void ClearDB()
+        internal void ClearDB(DataBaseContext context)
         {
-            dataBase.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Customers'");
-            dataBase.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Albums'");
-            dataBase.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Cities'");
-            dataBase.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Districts'");
-            dataBase.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Streets'");
-            dataBase.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Flats'");
-            dataBase.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Houses'");
-            dataBase.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Locations'");
-            dataBase.Flats.Local.Clear();
-            dataBase.Houses.Local.Clear();
-            dataBase.Locations.Local.Clear();
-            dataBase.Cities.Local.Clear();
-            dataBase.Districts.Local.Clear();
-            dataBase.Streets.Local.Clear();
-            dataBase.Albums.Local.Clear();
-            dataBase.Customers.Local.Clear();
-            dataBase.SaveChanges();
-        }
-        private void TestMethod()
-        {
-            FlatGenerator flatGenerator = new FlatGenerator();
-            Flat flat = flatGenerator.CreateFlat();
-            flat.Id = 9999;
-            flat.Agent = "ГвоздиковЕА";
-            flat.Status = Status.Planned;
-            CurrentObjectList.Add(flat);
-            AllObjects.Add(flat);
+            context.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Customers'");
+            context.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Albums'");
+            context.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Cities'");
+            context.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Districts'");
+            context.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Streets'");
+            context.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Flats'");
+            context.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Houses'");
+            context.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Locations'");
+            context.Flats.Local.Clear();
+            context.Houses.Local.Clear();
+            context.Locations.Local.Clear();
+            context.Cities.Local.Clear();
+            context.Districts.Local.Clear();
+            context.Streets.Local.Clear();
+            context.Albums.Local.Clear();
+            context.Customers.Local.Clear();
+            context.SaveChanges();
         }
         private void SplitFilteredCollection(List<BaseRealtorObject> filteredObjects, byte count)
         {
@@ -278,153 +268,10 @@ namespace RealtorObjects.ViewModel
                 for (int i = 0; i < right + 1; i++) { Pages.Add(currentPage + i + 1); }
             }
         }
-        private void FilterCollectionMeth()
-        {
-            ((App)Application.Current).Dispatcher.Invoke(() =>
-            {
-                FilterCollection.Execute(new object());
-            });
-        }
-
-        internal void ReceiveDbUpdate(ReceivedDbUpdateEventArgs e)
-        {
-            try
-            {
-                if (e.TargetType == TargetType.All)
-                {
-                    String[] objects = JsonSerializer.Deserialize<String[]>((String)e.UpdateData);
-                    if (!String.IsNullOrWhiteSpace(objects[0]))
-                    {
-                        Flat[] flats = JsonSerializer.Deserialize<Flat[]>(objects[0]);
-                        AllObjects.AddRange(flats);
-                        dataBase.Flats.AddRange(flats);
-                    }
-                    if (!String.IsNullOrWhiteSpace(objects[1]))
-                    {
-                        House[] houses = JsonSerializer.Deserialize<House[]>(objects[1]);
-                        AllObjects.AddRange(houses);
-                        dataBase.Houses.AddRange(houses);
-                    }
-                }
-                else if (e.TargetType == TargetType.Album)
-                {
-                    Photo[] photos = JsonSerializer.Deserialize<Photo[]>((String)e.UpdateData);
-                    dataBase.Photos.AddRange(photos);
-                    foreach (BaseRealtorObject bro in AllObjects)
-                        bro.Album.GetPhotosFromDB(dataBase.Photos.Local);
-                }
-                else if (e.TargetType == TargetType.None)
-                {
-                    Debug.WriteLine("Start of update");
-                    dataBase.SaveChanges();
-                    FilterCollectionMeth();
-                    WriteLastUpdateTime();
-                    Debug.WriteLine("End of update");
-                    HasUpdate = true;
-                    UpdateFinished?.Invoke(this, new UpdateFinishedEventArgs());
-                }
-                //if (GetLastUpdateTime() == "never")
-                //{
-                //}
-                //else
-                //{
-                //    if (objects[0] != null)
-                //    {
-                //        Flat[] flats = JsonSerializer.Deserialize<Flat[]>(objects[0]);
-                //        foreach (Flat flat in flats)
-                //        {
-                //            Flat dbFlat = dataBase.Flats.Find(flat.Id);
-                //            if (dbFlat == null)
-                //            {
-                //                dataBase.Flats.Add(flat);
-                //                AllObjects.Add(flat);
-                //            }
-                //            else
-                //            {
-                //                dbFlat = flat;
-                //                Flat listFlat = (Flat)AllObjects.FirstOrDefault(fl => fl.Id == flat.Id);
-                //                listFlat = flat;
-                //            }
-                //        }
-                //        AllObjects.AddRange(flats);
-                //        dataBase.Flats.AddRange(flats);
-                //    }
-                //    if (objects[1] != null)
-                //    {
-                //    }
-                //}
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"{DateTime.Now} ReceiveUpdate {ex.Message}");
-                //Запросить обновление снова
-            }
-        }
-        internal void AddFlat(Flat flat)
-        {
-            dataBase.Flats.Local.Add(flat);
-            dataBase.SaveChanges();
-            AllObjects.Add(flat);
-            FilterCollectionMeth();
-        }
-        internal void UpdateFlat(Flat flat)
-        {
-            Flat dbFlat = dataBase.Flats.Find(flat.Id);
-            dbFlat = flat;
-            dataBase.SaveChanges();
-            Flat listFlat = (Flat)AllObjects.Find(f => f.Id == flat.Id && f.Type == flat.Type);
-            listFlat = flat;
-            FilterCollectionMeth();
-            WriteLastUpdateTime();
-        }
-        internal void DeleteFlat(Flat flat)
-        {
-            Flat dbFlat = dataBase.Flats.Find(flat.Id);
-            dataBase.Flats.Remove(dbFlat);
-            dataBase.SaveChanges();
-            Flat listFlat = (Flat)AllObjects.Find(f => f.Id == flat.Id && f.Type == flat.Type);
-            AllObjects.Remove(listFlat);
-            FilterCollectionMeth();
-            WriteLastUpdateTime();
-        }
-        internal void AddHouse(House house)
-        {
-            dataBase.Houses.Add(house);
-            dataBase.SaveChanges();
-            WriteLastUpdateTime();
-        }
-        internal void UpdateHouse(House house)
-        {
-            House dbHouse = dataBase.Houses.Find(house.Id);
-            dbHouse = house;
-            dataBase.SaveChanges();
-            WriteLastUpdateTime();
-        }
-        internal void DeleteHouse(House house)
-        {
-            House dbHouse = dataBase.Houses.Find(house.Id);
-            dataBase.Houses.Remove(dbHouse);
-            dataBase.SaveChanges();
-            WriteLastUpdateTime();
-        }
-
-        private LocationOptions GetLocationOptions()
-        {
-            LocationOptions locationOptions = new LocationOptions();
-            foreach (City city in dataBase.Cities.AsNoTracking())
-                locationOptions.Cities.Add(city);
-            foreach (District district in dataBase.Districts.AsNoTracking())
-                locationOptions.Districts.Add(district);
-            foreach (Street street in dataBase.Streets.AsNoTracking())
-                locationOptions.Streets.Add(street);
-            return locationOptions;
-        }
         private bool CheckAccess(string objectAgent, string currentAgent)
         {
             if (objectAgent == currentAgent)
-            {
                 return true;
-            }
             else
             {
                 MessageBox.Show("У вас нет права на доступ к этому объекту");
@@ -432,31 +279,15 @@ namespace RealtorObjects.ViewModel
             }
         }
 
-
-
-        internal String GetLastUpdateTime()
+        private void TestMethod()
         {
-            if (dataBase.UpdateTime.Local.Count == 0)
-                return "never";
-            else
-            {
-                DateTime dateTime = dataBase.UpdateTime.Find("LastUpdateTime").DateTime.Date;
-                //return dateTime.ToString();
-                //return dateTime.ToString("M.d.yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
-                return dateTime.Date.ToString("M.d.yyyy", CultureInfo.InvariantCulture);
-            }
-            //return "never";
-        }
-        private void WriteLastUpdateTime()
-        {
-            if (dataBase.UpdateTime.Local.Count == 0)
-                dataBase.UpdateTime.Local.Add(new UpdateTime() { DateTime = DateTime.Now.Date });
-            else
-            {
-                UpdateTime lastUpdateTime = dataBase.UpdateTime.Find("LastUpdateTime");
-                lastUpdateTime.DateTime = DateTime.Now.Date;
-            }
-            dataBase.SaveChanges();
+            FlatGenerator flatGenerator = new FlatGenerator();
+            Flat flat = flatGenerator.CreateFlat();
+            flat.Id = 9999;
+            flat.Agent = "ГвоздиковЕА";
+            flat.Status = Status.Planned;
+            CurrentObjectList.Add(flat);
+            AllObjects.Add(flat);
         }
     }
 }

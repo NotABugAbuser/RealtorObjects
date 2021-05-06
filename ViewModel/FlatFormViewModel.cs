@@ -87,9 +87,10 @@ namespace RealtorObjects.ViewModel
                 ChangeProperty<int>(obj, -1);
             }));
         #endregion
-        private Flat flat;
         private string title;
         private bool isCurrentFlatNew = false;
+
+        private Flat flat;
         private CustomCommand cancel;
         private CustomCommand confirm;
         private CustomCommand changePrice;
@@ -97,6 +98,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand addImages;
         private readonly FlatOptions flatOptions = new FlatOptions();
         private LocationOptions locationOptions = new LocationOptions();
+        
         public FlatCreatedEventHandler FlatCreated;
         public FlatModifiedEventHandler FlatModified;
         private ObservableCollection<byte[]> test = new ObservableCollection<byte[]> { };
@@ -124,6 +126,7 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
+        public Location CurrentLocation { get; set; }
         public FlatOptions FlatOptions
         {
             get => flatOptions;
@@ -186,8 +189,8 @@ namespace RealtorObjects.ViewModel
         public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
         public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj =>
         {
+            CurrentLocation = Flat.Location.GetCopy();
             FlatCreated?.Invoke(this, new FlatCreatedEventArgs(Flat));
-            (obj as Window).Close();
         }));
 
         public void ChangeProperty<T>(object obj, T step)

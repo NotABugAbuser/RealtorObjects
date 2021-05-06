@@ -145,6 +145,7 @@
     <Compile Include="Model\Event\UpdateCompletedEventArgs.cs" />
     <Compile Include="Model\IdentityContext.cs" />
     <Compile Include="Model\OperationManagement.cs" />
+    <Compile Include="Model\RealtyManagement.cs" />
     <Compile Include="Model\UpdateTime.cs" />
     <Compile Include="Model\WindowManagement.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />

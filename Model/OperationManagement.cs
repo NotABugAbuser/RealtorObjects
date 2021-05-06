@@ -48,7 +48,7 @@ namespace RealtorObjects.Model
             {
                 Name = name,
                 Data = JsonSerializer.SerializeToUtf8Bytes(password),
-                OperationNumber = Guid.NewGuid(),
+                Number = Guid.NewGuid(),
                 Parameters = new OperationParameters()
                 {
                     Direction = OperationDirection.Identity,
@@ -63,7 +63,7 @@ namespace RealtorObjects.Model
             {
                 Name = credential.Name,
                 Data = JsonSerializer.SerializeToUtf8Bytes<object>(data),
-                OperationNumber = Guid.NewGuid(),
+                Number = Guid.NewGuid(),
                 Parameters = new OperationParameters()
                 {
                     Direction = OperationDirection.Realty,

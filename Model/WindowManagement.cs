@@ -14,14 +14,16 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace RealtorObjects.Model
 {
     public class WindowManagement
     {
         #region Fileds and Properties
-        private Credential credential;
         private Client client;
+        private Credential credential;
+        private Dispatcher dispatcher;
 
         private Window mainWindow;
         private LoginForm loginForm;
@@ -61,10 +63,11 @@ namespace RealtorObjects.Model
         }
         #endregion
 
-        public WindowManagement(Client client, Credential credential)
+        public WindowManagement(Client client, Credential credential, Dispatcher dispatcher)
         {
             this.client = client;
             this.credential = credential;
+            this.dispatcher = dispatcher;
         }
 
         public void Run()
@@ -92,23 +95,24 @@ namespace RealtorObjects.Model
             credential.LoggedIn += (s, e) => OnLoggedIn();
             credential.LoggedOut += (s, e) => OnLoggedOut();
             credential.Registered += (s, e) => OnRegistered();
-
-            HomeVM.UpdateFinished += (s, e) => OnUpdateFinished();
-            HomeVM.OpeningFlatForm += (s, e) => OnOpenFlatForm(e);
-
-            FlatFormVM.FlatCreated = (s, e) => flatForm.Close();
+            HomeVM.OpeningFlatForm += (s, e) => OpenFlatForm(e);
         }
 
         private void OnDisconnected()
         {
-            ((App)Application.Current).Shutdown();
-            //mainWindow.Hide();
-            //foreach (Window window in Application.Current.Windows)
-            //    if (window is FlatFormV2 flatFormV2)
-            //        flatFormV2.Close();
-            //OpenLoadingForm();
-            //Thread.Sleep(500);
-            //client.ConnectAsync();
+            if (!Debugger.IsAttached)
+                ((App)Application.Current).Shutdown();
+            else
+            {
+                loadingForm.Close();
+                mainWindow.Hide();
+                flatForm?.Hide();
+
+                OpenLoadingForm();
+                Thread.Sleep(500);
+                if (!client.IsTryingToConnect)
+                    client.ConnectAsync();
+            }
         }
 
         private void OnRegistered()
@@ -118,24 +122,45 @@ namespace RealtorObjects.Model
         }
         private void OnLoggedIn()
         {
-            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
+            dispatcher.Invoke(() =>
             {
                 loginForm.Close();
                 loadingForm.Close();
+                if (flatForm != null && flatForm.IsInitialized)
+                    flatForm.Show();
                 mainWindow.Show();
                 MainWindowVM.CurrentAgentName = credential.Name;
             });
         }
         private void OnLoggedOut()
         {
-            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
+            dispatcher.Invoke(() =>
             {
                 mainWindow.Hide();
                 loginForm = new LoginForm() { DataContext = loginFormVM };
                 loginForm.Show();
             });
         }
-        public void OnOpenFlatForm(OpeningFlatFormEventArgs e)
+        public void OnUpdateFinished()
+        {
+            Debug.WriteLine("Update has finished");
+            dispatcher.Invoke(() =>
+            {
+                using (var context = new DataBaseContext())
+                {
+                    HomeVM.AllObjects.AddRange(context.Flats.Local);
+                    HomeVM.AllObjects.AddRange(context.Houses.Local);
+                    foreach (BaseRealtorObject bro in HomeVM.AllObjects)
+                        if (!String.IsNullOrWhiteSpace(bro.Album.PhotoKeys))
+                            bro.Album.GetPhotosFromDB(context.Photos.Local);
+                }
+                HomeVM.FilterCollection.Execute(new object());
+                loadingForm?.Close();
+                loginForm?.Show();
+            });
+        }
+
+        public void OpenFlatForm(OpeningFlatFormEventArgs e)
         {
             if (e.IsNewFlat)
             {
@@ -228,23 +253,17 @@ namespace RealtorObjects.Model
             flatForm = new FlatFormV2 { DataContext = flatFormVM };
             flatForm.Show();
         }
-        private void OnUpdateFinished()
+        internal void CloseFlatForm()
         {
-            Debug.WriteLine("Update is finished");
-            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
-            {
-                loadingForm.Close();
-                loginForm.Show();
-            });
+            dispatcher.Invoke(() => { flatForm.Close(); });
         }
         public void OpenLoginForm()
         {
             loginForm.Show();
         }
-
         private void OpenLoadingForm()
         {
-            ((App)Application.Current).Dispatcher.Invoke((Action)delegate
+            dispatcher.Invoke(() =>
             {
                 loadingForm = new LoadingForm() { DataContext = new LoadingFormViewModel() };
                 loadingForm.Show();
