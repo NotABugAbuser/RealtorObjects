@@ -74,14 +74,18 @@
                     Margin="30,0,0,0"
                     Style="{StaticResource RegularText}"
                     Text="{Binding Id}"/>
-                <Image
-                    Grid.Column="1"
-                    Source="./Image/BlankImage.png"
+                <Grid
                     Height="40"
-                    HorizontalAlignment="Left"
-                    Width="100"
-                    Margin="30,0,0,0"
-                    VerticalAlignment="Center"/>
+                    Grid.Column="1">
+                    <Image
+                        Source="{Binding Album.Preview}"
+                        Height="80"
+                        Stretch="UniformToFill"
+                        HorizontalAlignment="Left"
+                        Width="100"
+                        Margin="30,0,0,0"
+                        VerticalAlignment="Center"/>
+                </Grid>
                 <Grid
                     VerticalAlignment="Center"
                     Grid.Column="2">

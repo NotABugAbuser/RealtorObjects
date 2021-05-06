@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using MiscUtil;
 using RandomFlatGenerator;
+using RealtorObjects.Model;
 using RealtyModel.Event;
 using RealtyModel.Interface;
 using RealtyModel.Model;
@@ -169,10 +170,12 @@ namespace RealtorObjects.ViewModel
                 Multiselect = true,
                 Title = "Выбрать фотографии"
             };
-            if (openFileDialog.ShowDialog() == true)
-                foreach (string fileName in openFileDialog.FileNames)
+            if (openFileDialog.ShowDialog() == true) { 
+                foreach (string fileName in openFileDialog.FileNames) {
                     list.Add(new Photo() { Data = File.ReadAllBytes(fileName) });
-            Flat.Album.Serialize(list);
+                }
+                Flat.Album.Serialize(list);
+            }
         }));
         public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj =>
         {
@@ -186,8 +189,10 @@ namespace RealtorObjects.ViewModel
         public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
         public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj =>
         {
-            FlatCreated?.Invoke(this, new FlatCreatedEventArgs(Flat));
-            (obj as Window).Close();
+            if (new FieldChecking().CheckFieldsOfFlat(Flat)) {
+                FlatCreated?.Invoke(this, new FlatCreatedEventArgs(Flat));
+                (obj as Window).Close();
+            }
         }));
 
         public void ChangeProperty<T>(object obj, T step)

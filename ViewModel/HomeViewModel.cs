@@ -42,23 +42,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand openCloseFilters;
         private CustomCommand createRealtorObject;
         private CustomCommand openOrCloseFilterSection;
-        private ObservableCollection<int> pages = new ObservableCollection<int>() {
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            123
-        };
+        private ObservableCollection<int> pages = new ObservableCollection<int>();
         private List<BaseRealtorObject> allObjects = new List<BaseRealtorObject>();
         private ObservableCollection<BaseRealtorObject> currentObjectList = new ObservableCollection<BaseRealtorObject>() { };
         private ObservableCollection<CheckAndHeightPair> filterAreaSections = new ObservableCollection<CheckAndHeightPair>() {
