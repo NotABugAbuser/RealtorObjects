@@ -409,11 +409,9 @@ C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\bin\Debug\FontAweso
 C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\HomeV2.g.cs
 C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\LoadingForm.g.cs
 C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\MainWindowV2.g.cs
-C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\NullDataTemplate.g.cs
 C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\HomeV2.baml
 C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\LoadingForm.baml
 C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\MainWindowV2.baml
-C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\NullDataTemplate.baml
 C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\CircularProgressBar.baml
 C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\CircularProgressBar.g.cs
 C:\Users\NotABugAbuser\Desktop\realtorproject\realtorobjects\obj\Debug\View\HouseForm.g.cs
@@ -439,3 +437,5 @@ C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\HouseForm.g.
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\LoadingForm.g.cs
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\HouseForm.baml
 C:\Users\Gvozd\Desktop\RealtorProject\realtorobjects\obj\Debug\View\LoadingForm.baml
+C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\data.db
+C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\obj\Debug\RealtorObjects.exe.config

@@ -189,7 +189,7 @@ namespace RealtorObjects.ViewModel
         public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
         public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj =>
         {
-            if (new FieldChecking().CheckFieldsOfFlat(Flat)) {
+            if (new FieldChecking(Flat).CheckFieldsOfFlat()) {
                 FlatCreated?.Invoke(this, new FlatCreatedEventArgs(Flat));
                 (obj as Window).Close();
             }
