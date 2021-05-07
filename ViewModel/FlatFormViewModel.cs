@@ -87,9 +87,9 @@ namespace RealtorObjects.ViewModel
                 ChangeProperty<int>(obj, -1);
             }));
         #endregion
+        #region Fields
         private string title;
         private bool isCurrentFlatNew = false;
-
         private Flat flat;
         private CustomCommand cancel;
         private CustomCommand confirm;
@@ -102,6 +102,7 @@ namespace RealtorObjects.ViewModel
         public FlatCreatedEventHandler FlatCreated;
         public FlatModifiedEventHandler FlatModified;
         private ObservableCollection<byte[]> test = new ObservableCollection<byte[]> { };
+        #endregion
 
         public bool IsCurrentFlatNew
         {
@@ -156,16 +157,11 @@ namespace RealtorObjects.ViewModel
                 Title = "Выбрать фотографии"
             };
             if (openFileDialog.ShowDialog() == true)
-            {
                 foreach (string fileName in openFileDialog.FileNames)
-                {
                     Test.Add(File.ReadAllBytes(fileName));
-                }
-            }
         }));
         public CustomCommand AddImagesTest => addImages ?? (addImages = new CustomCommand(obj =>
         {
-            List<Photo> list = new List<Photo>();
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
                 Filter = "Файлы изображений (*.BMP; *.JPG; *.JPEG; *.PNG) | *.BMP; *.JPG; *.JPEG; *.PNG",
@@ -174,8 +170,9 @@ namespace RealtorObjects.ViewModel
             };
             if (openFileDialog.ShowDialog() == true)
                 foreach (string fileName in openFileDialog.FileNames)
-                    list.Add(new Photo() { Data = File.ReadAllBytes(fileName) });
-            Flat.Album.Serialize(list);
+                    Flat.Album.PhotoCollection.Add(File.ReadAllBytes(fileName));
+            Flat.Album.WriteLocation(Flat.Location);
+            Flat.Album.Preview = Flat.Album.PhotoCollection[0];
         }));
         public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj =>
         {

@@ -204,41 +204,27 @@ namespace RealtorObjects.Model
                 {
                     while (IsConnected)
                     {
-                        if (socket.Available > 0)
+                        if (stream.DataAvailable)
                         {
-                            byte[] buffer = new byte[256];
+                            Byte[] buffer = new Byte[32];
+                            stream.Read(buffer, 0, 4);
+                            Int32 expectedSize = BitConverter.ToInt32(buffer, 0);
+                            Int32 bytesReceived = 0;
                             StringBuilder response = new StringBuilder();
-                            Int32 expectedSize = 0;
 
                             do
                             {
-                                socket.Receive(buffer);
-                                String received = Encoding.UTF8.GetString(buffer);
-
-                                if (expectedSize == 0)
-                                {
-                                    String[] parts = received.Split(new String[] { ";" }, StringSplitOptions.None);
-                                    expectedSize = Int32.Parse(parts[0]);
-                                    response.Append(parts[1]);
-                                }
-                                else if (received.Contains("<<<<"))
-                                {
-                                    String[] parts = received.Split(new String[] { "<<<<" }, StringSplitOptions.None);
-                                    response.Append(parts[0]);
-                                }
-                                else response.Append(received);
+                                bytesReceived += stream.Read(buffer, 0, buffer.Length);
+                                response.Append(Encoding.UTF8.GetString(buffer));
                             }
-                            while (socket.Available > 0);
+                            while (bytesReceived < expectedSize);
 
-                            if (response.Length == expectedSize)
-                                HandleResponseAsync(response.ToString(), expectedSize);
-                            else
-                            {
-                                Debug.WriteLine($"{DateTime.Now} RECEIVED WRONG BYTE COUNT: {response.Length} OF {expectedSize}");
-                                //ОТПРАВИТЬ НА ПОВТОР ОТПРАВКИ
-                            }
+                            HandleResponseAsync(response.ToString(), expectedSize);
+
+                            response.Length = 0;
+                            response.Capacity = 0;
+                            GC.Collect();
                         }
-                        Task.Delay(10).Wait();
                     }
                 }
                 catch (Exception ex)
@@ -257,9 +243,14 @@ namespace RealtorObjects.Model
             {
                 try
                 {
-                    Operation operation = JsonSerializer.Deserialize<Operation>(data);
-                    Debug.WriteLine($"{DateTime.Now} RECEIVED {expectedSize} BYTES {operation.Number} - {operation.Parameters.Direction} {operation.Parameters.Type} {operation.Parameters.Target}");
-                    IncomingOperations.Enqueue(operation);
+                    data = data.Split('#')[1];
+                    if (data.Length + 2 == expectedSize)
+                    {
+                        Operation operation = JsonSerializer.Deserialize<Operation>(data);
+                        Debug.WriteLine($"{DateTime.Now} RECEIVED {expectedSize} BYTES {operation.Number} - {operation.Parameters.Direction} {operation.Parameters.Type} {operation.Parameters.Target}");
+                        IncomingOperations.Enqueue(operation);
+                    }
+                    else Debug.WriteLine($"{DateTime.Now} RECEIVED WRONG BYTE COUNT: {data.Length} OF {expectedSize}");
                 }
                 catch (Exception ex)
                 {
@@ -279,10 +270,12 @@ namespace RealtorObjects.Model
                         {
                             Operation operation = OutcomingOperations.Dequeue();
                             operation.Number = Guid.NewGuid();
-                            String json = JsonSerializer.Serialize(operation);
-                            Byte[] data = Encoding.UTF8.GetBytes($"{json.Length};{json}<<<<");
+                            String json = "#" + JsonSerializer.Serialize(operation) + "#";
+                            Byte[] data = Encoding.UTF8.GetBytes(json);
+                            Byte[] dataSize = BitConverter.GetBytes(data.Length);
 
-                            socket.Send(data);
+                            stream.Write(dataSize, 0, 4);
+                            stream.Write(data, 0, data.Length);
                             Debug.WriteLine($"{DateTime.Now} has SENT {json.Length} bytes {operation.Number} - {operation.Parameters.Direction} {operation.Parameters.Type} {operation.Parameters.Target}");
                         }
                         catch (Exception ex)

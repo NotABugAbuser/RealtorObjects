@@ -152,7 +152,7 @@ namespace RealtorObjects.Model
                     HomeVM.AllObjects.AddRange(context.Houses.Local);
                     foreach (BaseRealtorObject bro in HomeVM.AllObjects)
                         if (!String.IsNullOrWhiteSpace(bro.Album.PhotoKeys))
-                            bro.Album.GetPhotosFromDB(context.Photos.Local);
+                            bro.Album.GetPhotosFromDbByLocation(context.Photos.Local);
                 }
                 HomeVM.FilterCollection.Execute(new object());
                 loadingForm?.Close();
@@ -172,7 +172,6 @@ namespace RealtorObjects.Model
                     Album = new Album()
                     {
                         Location = "",
-                        Preview = new byte[0],
                     },
                     Location = new Location()
                     {

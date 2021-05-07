@@ -3,6 +3,7 @@ using RealtyModel.Event;
 using RealtyModel.Event.RealtyEvents;
 using RealtyModel.Model;
 using RealtyModel.Model.Derived;
+using RealtyModel.Model.RealtyObjects;
 using RealtyModel.Service;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,7 @@ namespace RealtorObjects.Model
         public event ReceivedHouseEventHandler ReceivedHouse;
         public event ReceivedHouseUpdateEventHandler ReceivedHouseUpdate;
         public event ReceivedHouseDeletionEventHandler ReceivedHouseDeletion;
+        public event ReceivedPhotoEventHandler ReceivedPhoto;
 
         public OperationManagement(Client client, Credential credential, Dispatcher dispatcher)
         {
@@ -59,10 +61,9 @@ namespace RealtorObjects.Model
         }
         public void SendRealtyData(object data, OperationType type, TargetType target)
         {
-            client.OutcomingOperations.Enqueue(new Operation()
+            Operation operation = new Operation()
             {
                 Name = credential.Name,
-                Data = JsonSerializer.SerializeToUtf8Bytes<object>(data),
                 Number = Guid.NewGuid(),
                 Parameters = new OperationParameters()
                 {
@@ -70,7 +71,11 @@ namespace RealtorObjects.Model
                     Type = type,
                     Target = target
                 }
-            });
+            };
+            if (target == TargetType.Photo)
+                operation.Data = Encoding.UTF8.GetBytes($"{((Photo)data).Guid}<GUID>{JsonSerializer.Serialize((Photo)data)}");
+            else operation.Data = JsonSerializer.SerializeToUtf8Bytes<Object>(data);
+            client.OutcomingOperations.Enqueue(operation);
         }
 
         private void HandleResponse()
@@ -114,7 +119,7 @@ namespace RealtorObjects.Model
             {
                 if (operation.IsSuccessfully)
                 {
-                    if (operation.Parameters.Target == TargetType.All || operation.Parameters.Target == TargetType.Album || operation.Parameters.Target == TargetType.None)
+                    if (operation.Parameters.Target == TargetType.All || operation.Parameters.Target == TargetType.None)
                         ReceivedDbUpdate?.Invoke(this, new ReceivedDbUpdateEventArgs(operation.Parameters.Target, operation.Data));
                     else if (operation.Parameters.Target == TargetType.Flat)
                     {
@@ -136,6 +141,12 @@ namespace RealtorObjects.Model
                         else if (operation.Parameters.Type == OperationType.Remove)
                             ReceivedHouseDeletion?.Invoke(this, new ReceivedHouseDeletionEventArgs(house));
                     }
+                    else if(operation.Parameters.Target == TargetType.Photo)
+                        ReceivedPhoto?.Invoke(this, new ReceivedPhotoEventArgs(operation.Parameters.Type, operation.Data));    
+                }
+                else if(!operation.IsSuccessfully&&operation.Parameters.Target == TargetType.Photo)
+                {
+                    //Запросить сохранение ещё раз
                 }
                 else
                 {

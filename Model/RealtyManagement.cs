@@ -22,7 +22,6 @@ namespace RealtorObjects.Model
 
         public Boolean HasUpdate { get; set; }
 
-
         public RealtyManagement(Dispatcher dispatcher)
         {
             this.dispatcher = dispatcher;
@@ -57,15 +56,6 @@ namespace RealtorObjects.Model
                                 context.Houses.AddRange(houses);
                                 context.SaveChanges();
                             }
-                        }
-                    }
-                    else if (e.TargetType == TargetType.Album)
-                    {
-                        using (var context = new DataBaseContext())
-                        {
-                            Photo[] photos = JsonSerializer.Deserialize<Photo[]>(data);
-                            context.Photos.AddRange(photos);
-                            context.SaveChanges();
                         }
                     }
                     else if (e.TargetType == TargetType.None)
@@ -162,6 +152,11 @@ namespace RealtorObjects.Model
                 context.Houses.Remove(dbHouse);
                 context.SaveChanges();
             }
+        }
+
+        internal void PullPhoto(Photo photo)
+        {
+
         }
 
         private LocationOptions GetLocationOptions()

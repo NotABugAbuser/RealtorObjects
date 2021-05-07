@@ -3,7 +3,9 @@ using RealtorObjects.View;
 using RealtyModel.Model;
 using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
+using RealtyModel.Model.RealtyObjects;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
@@ -14,6 +16,7 @@ namespace RealtorObjects
 {
     public partial class App : Application
     {
+        #region Fields and Properties
         private Client client = new Client(Dispatcher.CurrentDispatcher);
         private Credential credential = new Credential(Dispatcher.CurrentDispatcher);
         private WindowManagement windowManagement;
@@ -45,6 +48,8 @@ namespace RealtorObjects
             get => realtyManagement;
             set => realtyManagement = value;
         }
+        public List<Photo> UnsavedPhotos { get; set; }
+        #endregion
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -55,6 +60,7 @@ namespace RealtorObjects
         }
         private void InitializeMembers()
         {
+            UnsavedPhotos = new List<Photo>();
             realtyManagement = new RealtyManagement(Dispatcher);
             operationManagement = new OperationManagement(client, credential, Dispatcher);
             windowManagement = new WindowManagement(client, credential, Dispatcher);
@@ -68,7 +74,7 @@ namespace RealtorObjects
 
             windowManagement.LoginFormVM.LoggingIn += (s, e) => operationManagement.SendIdentityData(e.UserName, e.Password, OperationType.Login);
             windowManagement.LoginFormVM.Registering += (s, e) => operationManagement.SendIdentityData(e.UserName, $"{e.Password};{e.Email}", OperationType.Register);
-            windowManagement.FlatFormVM.FlatCreated = (s, e) => operationManagement.SendRealtyData(e.Flat, OperationType.Add, TargetType.Flat);
+            windowManagement.FlatFormVM.FlatCreated = (s, e) => OnFlatCreated(e.Flat);
             windowManagement.FlatFormVM.FlatModified = (s, e) => operationManagement.SendRealtyData(e.Flat, OperationType.Change, TargetType.Flat);
 
             operationManagement.ReceivedDbUpdate += (s, e) => realtyManagement.ReceiveDbUpdate(e);
@@ -79,6 +85,9 @@ namespace RealtorObjects
                 {
                     Dispatcher.Invoke(() =>
                     {
+                        foreach(Photo photo in UnsavedPhotos)
+                            if (photo.Location == e.Flat.Album.Location)
+                                operationManagement.SendRealtyData(photo, OperationType.Add, TargetType.Photo);
                         windowManagement.HomeVM.AllObjects.Add(e.Flat);
                         windowManagement.HomeVM.FilterCollection.Execute(new object());
                         windowManagement.CloseFlatForm();
@@ -104,6 +113,22 @@ namespace RealtorObjects
                     windowManagement.HomeVM.FilterCollection.Execute(new object());
                 }
             };
+            //ЗДЕСЬ НУЖНО ДОДЕЛАТЬ
+            operationManagement.ReceivedPhoto += (s, e) =>
+            {
+                if (e.OperationType == OperationType.Add)
+                {
+                    Guid guid = JsonSerializer.Deserialize<Guid>(Encoding.UTF8.GetString(e.Data));
+                    Photo photo = UnsavedPhotos.Find(ph => ph.Guid == guid);
+                    if (photo != null)
+                        UnsavedPhotos.Remove(photo);
+                }
+                //ЧТО ДАЛЬШЕ?
+                else if (e.OperationType == OperationType.Get)
+                {
+                    Photo photo = JsonSerializer.Deserialize<Photo>(Encoding.UTF8.GetString(e.Data));
+                }
+            };
 
             operationManagement.ReceivedHouse += (s, e) => realtyManagement.AddHouse(e.House);
             operationManagement.ReceivedHouseUpdate += (s, e) => realtyManagement.UpdateHouse(e.House);
@@ -111,6 +136,14 @@ namespace RealtorObjects
 
             realtyManagement.UpdateFinished += (s, e) => windowManagement.OnUpdateFinished();
         }
+
+        private void OnFlatCreated(Flat flat)
+        {
+            operationManagement.SendRealtyData(flat, OperationType.Add, TargetType.Flat);
+            foreach (Byte[] data in flat.Album.PhotoCollection)
+                UnsavedPhotos.Add(new Photo() { Location = flat.Album.Location, ObjectType = TargetType.Flat, Data = data, Guid = Guid.NewGuid()});
+        }
+
         private void CheckClientStatus()
         {
             //Если в режиме дебага - автологин
@@ -131,7 +164,6 @@ namespace RealtorObjects
         }
 
 
-
         private void Test()
         {
             Flat flat = new Flat()
@@ -140,7 +172,6 @@ namespace RealtorObjects
                 Album = new Album()
                 {
                     Location = "asdas",
-                    Preview = new byte[100],
                 },
                 Location = new Location()
                 {
