@@ -162,6 +162,7 @@ namespace RealtorObjects.ViewModel
         }));
         public CustomCommand AddImagesTest => addImages ?? (addImages = new CustomCommand(obj =>
         {
+            Flat.Album.PhotoCollection = new ObservableCollection<byte[]>();
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
                 Filter = "Файлы изображений (*.BMP; *.JPG; *.JPEG; *.PNG) | *.BMP; *.JPG; *.JPEG; *.PNG",
