@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using MiscUtil;
 using RandomFlatGenerator;
+using RealtorObjects.Model;
 using RealtyModel.Event;
 using RealtyModel.Interface;
 using RealtyModel.Model;
@@ -188,7 +189,10 @@ namespace RealtorObjects.ViewModel
         public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj =>
         {
             CurrentLocation = Flat.Location.GetCopy();
-            FlatCreated?.Invoke(this, new FlatCreatedEventArgs(Flat));
+            if (new FieldChecking(Flat).CheckFieldsOfFlat()) {
+                FlatCreated?.Invoke(this, new FlatCreatedEventArgs(Flat));
+                (obj as Window).Close();
+            }
         }));
 
         public void ChangeProperty<T>(object obj, T step)
