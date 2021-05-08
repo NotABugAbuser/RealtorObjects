@@ -7,6 +7,7 @@ using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -174,6 +175,7 @@ namespace RealtorObjects.Model
                     Album = new Album()
                     {
                         Location = "sdsa",
+                        PhotoCollection = new ObservableCollection<byte[]>()
                     },
                     Location = new Location()
                     {
@@ -246,6 +248,7 @@ namespace RealtorObjects.Model
                     Album = new Album()
                     {
                         Location = "",
+                        PhotoCollection = new ObservableCollection<Byte[]>()
                     },
                     Location = new Location()
                     {

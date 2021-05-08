@@ -111,8 +111,7 @@ namespace RealtorObjects.Model
             fields.Add(flat.Info.Windows);
             fields.Add(flat.Cost.Area);
             fields.Add(flat.Cost.Price);
-            //fields.Add(flat.Album.PhotoCollection.Count);
-
+            fields.Add(flat.Album.PhotoCollection.Count);
         }
     }
 }
