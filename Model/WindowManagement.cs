@@ -155,18 +155,92 @@ namespace RealtorObjects.Model
                             bro.Album.GetPhotosFromDbByLocation(context.Photos.Local);
                 }
                 HomeVM.FilterCollection.Execute(new object());
-                loadingForm?.Close();
-                loginForm?.Show();
+                loadingForm.Close();
+                if (loginForm != null)
+                    loginForm.Show();
             });
         }
 
         public void OpenFlatForm(OpeningFlatFormEventArgs e)
         {
+            flatFormVM = new FlatFormViewModel();
             if (e.IsNewFlat)
             {
                 flatFormVM.Title = "[Квартира] — Создание";
                 flatFormVM.IsCurrentFlatNew = true;
                 flatFormVM.Flat = new Flat()
+                {
+                    Agent = credential.Name,
+                    Album = new Album()
+                    {
+                        Location = "sdsa",
+                    },
+                    Location = new Location()
+                    {
+                        City = new City() { Name = "asd" },
+                        District = new District() { Name = "asd" },
+                        Street = new Street() { Name = "asd" },
+                        HouseNumber = 1,
+                        FlatNumber = 1,
+                        HasBanner = false,
+                        HasExchange = false
+                    },
+                    Cost = new Cost()
+                    {
+                        Area = 10,
+                        HasMortgage = false,
+                        HasPercents = false,
+                        HasVAT = false,
+                        Price = 1220
+                    },
+                    Customer = new Customer()
+                    {
+                        Name = "asd",
+                        PhoneNumbers = "123213"
+                    },
+                    GeneralInfo = new BaseInfo()
+                    {
+                        Ceiling = 10,
+                        Condition = "asdsa",
+                        Convenience = "asd",
+                        Description = "asd",
+                        General = 10,
+                        Heating = "asd",
+                        Kitchen = 10,
+                        Living = 10,
+                        RoomCount = 10,
+                        Water = "asdsad",
+                        Year = 1950
+                    },
+                    Info = new FlatInfo()
+                    {
+                        Balcony = "asd",
+                        Bath = "asd",
+                        Bathroom = "asd",
+                        Floor = "asd",
+                        Fund = "asd",
+                        HasChute = false,
+                        HasElevator = false,
+                        HasGarage = false,
+                        HasImprovedLayout = false,
+                        HasRenovation = false,
+                        IsCorner = false,
+                        IsPrivatised = false,
+                        IsSeparated = false,
+                        Kvl = 10,
+                        Loggia = "asd",
+                        Material = "asd",
+                        Rooms = "asdsad",
+                        Type = "asd",
+                        TypeOfRooms = "asdsa",
+                        Windows = "asdsad"
+                    },
+                    HasExclusive = false,
+                    IsSold = false,
+                    Type = TargetType.Flat,
+                    Status = Status.Active
+                };
+                Flat flat = new Flat()
                 {
                     Agent = credential.Name,
                     Album = new Album()

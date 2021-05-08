@@ -99,7 +99,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand addImages;
         private readonly FlatOptions flatOptions = new FlatOptions();
         private LocationOptions locationOptions = new LocationOptions();
-        
+
         public FlatCreatedEventHandler FlatCreated;
         public FlatModifiedEventHandler FlatModified;
         private ObservableCollection<byte[]> test = new ObservableCollection<byte[]> { };
@@ -149,18 +149,6 @@ namespace RealtorObjects.ViewModel
         {
         }
 
-        public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj =>
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog()
-            {
-                Filter = "Файлы изображений (*.BMP; *.JPG; *.JPEG; *.PNG) | *.BMP; *.JPG; *.JPEG; *.PNG",
-                Multiselect = true,
-                Title = "Выбрать фотографии"
-            };
-            if (openFileDialog.ShowDialog() == true)
-                foreach (string fileName in openFileDialog.FileNames)
-                    Test.Add(File.ReadAllBytes(fileName));
-        }));
         public CustomCommand AddImagesTest => addImages ?? (addImages = new CustomCommand(obj =>
         {
             Flat.Album.PhotoCollection = new ObservableCollection<byte[]>();
@@ -172,9 +160,15 @@ namespace RealtorObjects.ViewModel
             };
             if (openFileDialog.ShowDialog() == true)
                 foreach (string fileName in openFileDialog.FileNames)
-                    Flat.Album.PhotoCollection.Add(File.ReadAllBytes(fileName));
+                {
+                    Byte[] data = File.ReadAllBytes(fileName);
+                    Flat.Album.PhotoCollection.Add(data);
+                    Test.Add(data);
+                }
             Flat.Album.WriteLocation(Flat.Location);
-            Flat.Album.Preview = Flat.Album.PhotoCollection[0];
+            if (Flat.Album.PhotoCollection.Count > 0)
+                Flat.Album.PreviewJson = JsonSerializer.Serialize(Flat.Album.PhotoCollection[0]);
+            else Flat.Album.PreviewJson = "";
         }));
         public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj =>
         {
@@ -189,7 +183,8 @@ namespace RealtorObjects.ViewModel
         public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj =>
         {
             CurrentLocation = Flat.Location.GetCopy();
-            if (new FieldChecking(Flat).CheckFieldsOfFlat()) {
+            if (new FieldChecking(Flat).CheckFieldsOfFlat())
+            {
                 FlatCreated?.Invoke(this, new FlatCreatedEventArgs(Flat));
                 (obj as Window).Close();
             }

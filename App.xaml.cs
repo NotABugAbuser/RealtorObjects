@@ -85,9 +85,10 @@ namespace RealtorObjects
                 {
                     Dispatcher.Invoke(() =>
                     {
-                        foreach(Photo photo in UnsavedPhotos)
+                        foreach (Photo photo in UnsavedPhotos)
                             if (photo.Location == e.Flat.Album.Location)
                                 operationManagement.SendRealtyData(photo, OperationType.Add, TargetType.Photo);
+                        e.Flat.Album.Preview = JsonSerializer.Deserialize<Byte[]>(e.Flat.Album.PreviewJson);
                         windowManagement.HomeVM.AllObjects.Add(e.Flat);
                         windowManagement.HomeVM.FilterCollection.Execute(new object());
                         windowManagement.CloseFlatForm();
@@ -118,15 +119,14 @@ namespace RealtorObjects
             {
                 if (e.OperationType == OperationType.Add)
                 {
-                    Guid guid = JsonSerializer.Deserialize<Guid>(Encoding.UTF8.GetString(e.Data));
-                    Photo photo = UnsavedPhotos.Find(ph => ph.Guid == guid);
+                    Photo photo = UnsavedPhotos.Find(ph => ph.Guid == e.Data);
                     if (photo != null)
                         UnsavedPhotos.Remove(photo);
                 }
                 //ЧТО ДАЛЬШЕ?
                 else if (e.OperationType == OperationType.Get)
                 {
-                    Photo photo = JsonSerializer.Deserialize<Photo>(Encoding.UTF8.GetString(e.Data));
+                    Photo photo = JsonSerializer.Deserialize<Photo>(e.Data);
                 }
             };
 
@@ -140,8 +140,9 @@ namespace RealtorObjects
         private void OnFlatCreated(Flat flat)
         {
             operationManagement.SendRealtyData(flat, OperationType.Add, TargetType.Flat);
-            foreach (Byte[] data in flat.Album.PhotoCollection)
-                UnsavedPhotos.Add(new Photo() { Location = flat.Album.Location, ObjectType = TargetType.Flat, Data = data, Guid = Guid.NewGuid()});
+            if (flat.Album.PhotoCollection != null && flat.Album.PhotoCollection.Count > 0)
+                foreach (Byte[] data in flat.Album.PhotoCollection)
+                    UnsavedPhotos.Add(new Photo() { Location = flat.Album.Location, ObjectType = TargetType.Flat, Data = data, Guid = (Guid.NewGuid()).ToString() });
         }
 
         private void CheckClientStatus()

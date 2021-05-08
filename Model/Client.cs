@@ -206,12 +206,13 @@ namespace RealtorObjects.Model
                     {
                         if (stream.DataAvailable)
                         {
-                            Byte[] buffer = new Byte[32];
+                            Byte[] buffer = new Byte[4];
                             stream.Read(buffer, 0, 4);
                             Int32 expectedSize = BitConverter.ToInt32(buffer, 0);
                             Int32 bytesReceived = 0;
                             StringBuilder response = new StringBuilder();
 
+                            buffer = new byte[8];
                             do
                             {
                                 bytesReceived += stream.Read(buffer, 0, buffer.Length);
@@ -219,8 +220,8 @@ namespace RealtorObjects.Model
                             }
                             while (bytesReceived < expectedSize);
 
-                            HandleResponseAsync(response.ToString(), expectedSize);
-
+                            String s = response.ToString().Split('#')[1];
+                            HandleResponseAsync(s, expectedSize);
                             response.Length = 0;
                             response.Capacity = 0;
                             GC.Collect();
@@ -243,14 +244,12 @@ namespace RealtorObjects.Model
             {
                 try
                 {
-                    data = data.Split('#')[1];
-                    if (data.Length + 2 == expectedSize)
-                    {
-                        Operation operation = JsonSerializer.Deserialize<Operation>(data);
-                        Debug.WriteLine($"{DateTime.Now} RECEIVED {expectedSize} BYTES {operation.Number} - {operation.Parameters.Direction} {operation.Parameters.Type} {operation.Parameters.Target}");
-                        IncomingOperations.Enqueue(operation);
-                    }
-                    else Debug.WriteLine($"{DateTime.Now} RECEIVED WRONG BYTE COUNT: {data.Length} OF {expectedSize}");
+                    if (data.Length + 2 != expectedSize)
+                        Debug.WriteLine($"{DateTime.Now} RECEIVED WRONG BYTE COUNT: {data.Length} OF {expectedSize}");
+                    else Debug.WriteLine($"{DateTime.Now} RECEIVED {expectedSize} BYTES");
+                    Operation operation = JsonSerializer.Deserialize<Operation>(data);
+                    Debug.WriteLine($"{DateTime.Now} {operation.Number} - {operation.Parameters.Direction} {operation.Parameters.Type} {operation.Parameters.Target}");
+                    IncomingOperations.Enqueue(operation);
                 }
                 catch (Exception ex)
                 {
@@ -269,7 +268,7 @@ namespace RealtorObjects.Model
                         try
                         {
                             Operation operation = OutcomingOperations.Dequeue();
-                            operation.Number = Guid.NewGuid();
+                            operation.Number = (Guid.NewGuid()).ToString();
                             String json = "#" + JsonSerializer.Serialize(operation) + "#";
                             Byte[] data = Encoding.UTF8.GetBytes(json);
                             Byte[] dataSize = BitConverter.GetBytes(data.Length);

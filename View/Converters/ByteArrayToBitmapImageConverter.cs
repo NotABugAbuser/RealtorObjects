@@ -12,23 +12,29 @@ namespace RealtorObjects.View.Converters
 {
     class ByteArrayToBitmapImageConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
             byte[] rawData = (byte[])value;
             BitmapImage bitmapImage = new BitmapImage();
-            using (MemoryStream memoryStream = new MemoryStream(rawData)) {
-                memoryStream.Position = 0;
-                bitmapImage.BeginInit();
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-                bitmapImage.UriSource = null;
-                bitmapImage.StreamSource = memoryStream;
-                bitmapImage.EndInit();
+            if (rawData != null)
+            {
+                using (MemoryStream memoryStream = new MemoryStream(rawData))
+                {
+                    memoryStream.Position = 0;
+                    bitmapImage.BeginInit();
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+                    bitmapImage.UriSource = null;
+                    bitmapImage.StreamSource = memoryStream;
+                    bitmapImage.EndInit();
+                }
+                bitmapImage.Freeze();
             }
-            bitmapImage.Freeze();
             return bitmapImage;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
             throw new NotImplementedException();
         }
     }

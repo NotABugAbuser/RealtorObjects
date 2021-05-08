@@ -31,7 +31,7 @@ namespace RealtorObjects.Model
         {
             try
             {
-                String data = Encoding.UTF8.GetString((Byte[])e.UpdateData);
+                String data = (String)e.UpdateData;
                 if (!String.IsNullOrWhiteSpace(data))
                 {
                     if (e.TargetType == TargetType.All)
@@ -70,7 +70,7 @@ namespace RealtorObjects.Model
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"{DateTime.Now} ReceiveUpdate {ex.Message}");
+                Debug.WriteLine($"{DateTime.Now} (ReceiveDbUpdate) {ex.Message}");
                 //Запросить обновление снова
             }
         }

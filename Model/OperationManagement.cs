@@ -49,8 +49,8 @@ namespace RealtorObjects.Model
             client.OutcomingOperations.Enqueue(new Operation()
             {
                 Name = name,
-                Data = JsonSerializer.SerializeToUtf8Bytes(password),
-                Number = Guid.NewGuid(),
+                Data = password,
+                Number = (Guid.NewGuid()).ToString(),
                 Parameters = new OperationParameters()
                 {
                     Direction = OperationDirection.Identity,
@@ -64,7 +64,7 @@ namespace RealtorObjects.Model
             Operation operation = new Operation()
             {
                 Name = credential.Name,
-                Number = Guid.NewGuid(),
+                Number = (Guid.NewGuid()).ToString(),
                 Parameters = new OperationParameters()
                 {
                     Direction = OperationDirection.Realty,
@@ -73,8 +73,8 @@ namespace RealtorObjects.Model
                 }
             };
             if (target == TargetType.Photo)
-                operation.Data = Encoding.UTF8.GetBytes($"{((Photo)data).Guid}<GUID>{JsonSerializer.Serialize((Photo)data)}");
-            else operation.Data = JsonSerializer.SerializeToUtf8Bytes<Object>(data);
+                operation.Data = $"{((Photo)data).Guid}<GUID>{JsonSerializer.Serialize((Photo)data)}";
+            else operation.Data = JsonSerializer.Serialize(data);
             client.OutcomingOperations.Enqueue(operation);
         }
 
@@ -155,7 +155,7 @@ namespace RealtorObjects.Model
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"{DateTime.Now} OperationManagement-HandleRealtyResponse {ex.Message}");
+                Debug.WriteLine($"{DateTime.Now} OperationManagement-HandleRealtyResponse {ex.Message}\n{JsonSerializer.Serialize(operation)}");
             }
         }
     }
