@@ -10,15 +10,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Threading;
 using System.Windows;
 using RealtyModel.Model;
 using RealtyModel.Service;
-using System.Windows.Threading;
-using System.Net;
-using RealtorObjects.Model;
-using RealtyModel.Event;
-using System.Diagnostics;
 
 namespace RealtorObjects.ViewModel
 {

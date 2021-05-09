@@ -1,23 +1,8 @@
 ﻿using RealtorObjects.Model;
-using RealtyModel.Model;
-using RealtyModel.Model.Derived;
 using RealtyModel.Service;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
-using RealtyModel.Event;
-using RealtorObjects.View;
-using System.Threading;
-using System.IO;
-using System.Diagnostics;
-using RealtyModel.Event.IdentityEvents;
+using RealtyModel.Events.Identity;
 
 namespace RealtorObjects.ViewModel
 {

@@ -1,18 +1,12 @@
-﻿using RealtorObjects.View;
-using RealtyModel.Event;
-using RealtyModel.Event.RealtyEvents;
+﻿using RealtyModel.Events.Identity;
+using RealtyModel.Events.Realty;
 using RealtyModel.Model;
 using RealtyModel.Model.Derived;
+using RealtyModel.Model.Operations;
 using RealtyModel.Model.RealtyObjects;
-using RealtyModel.Service;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -22,57 +16,52 @@ namespace RealtorObjects.Model
     {
         private Client client = null;
         private Credential credential = null;
-        private Dispatcher dispatcher = null;
         private object handleLocker = new object();
 
-        public event ReceivedDbUpdateEventHandler ReceivedDbUpdate;
         public event ReceivedFlatEventHandler ReceivedFlat;
-        public event ReceivedFlatUpdateEventHandler ReceivedFlatUpdate;
-        public event ReceivedFlatDeletionEventHandler ReceivedFlatDeletion;
-        public event ReceivedHouseEventHandler ReceivedHouse;
-        public event ReceivedHouseUpdateEventHandler ReceivedHouseUpdate;
-        public event ReceivedHouseDeletionEventHandler ReceivedHouseDeletion;
         public event ReceivedPhotoEventHandler ReceivedPhoto;
 
-        public OperationManagement(Client client, Credential credential, Dispatcher dispatcher)
+        public OperationManagement(Client client, Credential credential)
         {
             this.client = client;
             this.credential = credential;
-            this.dispatcher = dispatcher;
             client.IncomingOperations.Enqueued += (s, e) => HandleResponse();
         }
 
-        public void SendIdentityData(String name, String password, OperationType type)
-        {
-            credential.Name = name;
-            credential.Password = password;
-            client.OutcomingOperations.Enqueue(new Operation()
-            {
-                Name = name,
-                Data = password,
-                Number = (Guid.NewGuid()).ToString(),
-                Parameters = new OperationParameters()
-                {
-                    Direction = OperationDirection.Identity,
-                    Type = type,
-                    Target = TargetType.Agent
-                }
-            });
-        }
-        public void SendRealtyData(object data, OperationType type, TargetType target)
+        public void SendRequest(object data, Parameters parameters)
         {
             Operation operation = new Operation()
             {
-                Name = credential.Name,
                 Number = (Guid.NewGuid()).ToString(),
-                Parameters = new OperationParameters()
-                {
-                    Direction = OperationDirection.Realty,
-                    Type = type,
-                    Target = target
-                }
+                Parameters = parameters
             };
-            if (target == TargetType.Photo)
+            operation.Parameters.Initiator = Initiator.User;
+            if (parameters.Direction == Direction.Identity)
+                SendIdentityRequest(data, operation);
+            else SendRealtyRequest(data, operation);
+        }
+        private void SendIdentityRequest(object data, Operation operation)
+        {
+            if (operation.Parameters.Action == Act.Login)
+            {
+                LoggingInEventArgs e = (LoggingInEventArgs)data;
+                credential.Name = e.UserName;
+                credential.Password = e.Password;
+                operation.Name = e.UserName;
+                operation.Data = e.Password;
+            }
+            else if (operation.Parameters.Action == Act.Register)
+            {
+                RegisteringEventArgs e = (RegisteringEventArgs)data;
+                operation.Name = e.UserName;
+                operation.Data = $"{e.Password}^{e.Email}^";
+            }
+            client.OutcomingOperations.Enqueue(operation);
+        }
+        private void SendRealtyRequest(object data, Operation operation)
+        {
+            operation.Name = credential.Name;
+            if (operation.Parameters.Target == Target.Photo)
                 operation.Data = $"{((Photo)data).Guid}<GUID>{JsonSerializer.Serialize((Photo)data)}";
             else operation.Data = JsonSerializer.Serialize(data);
             client.OutcomingOperations.Enqueue(operation);
@@ -83,9 +72,9 @@ namespace RealtorObjects.Model
             lock (handleLocker)
             {
                 Operation operation = client.IncomingOperations.Dequeue();
-                if (operation.Parameters.Direction == OperationDirection.Identity)
+                if (operation.Parameters.Direction == Direction.Identity)
                     HandleIdentityResponse(operation);
-                else if (operation.Parameters.Direction == OperationDirection.Realty)
+                else if (operation.Parameters.Direction == Direction.Realty)
                     HandleRealtyResponse(operation);
             }
         }
@@ -93,9 +82,9 @@ namespace RealtorObjects.Model
         {
             if (operation.Name == credential.Name && operation.IsSuccessfully)
             {
-                if (operation.Parameters.Type == OperationType.Login) credential.OnLoggedIn();
-                else if (operation.Parameters.Type == OperationType.Logout) credential.OnLoggedOut();
-                else if (operation.Parameters.Type == OperationType.Register) credential.OnRegistered();
+                if (operation.Parameters.Action == Act.Login) credential.OnLoggedIn();
+                else if (operation.Parameters.Action == Act.Logout) credential.OnLoggedOut();
+                else if (operation.Parameters.Action == Act.Register) credential.OnRegistered();
             }
             else if (operation.Name != credential.Name)
             {
@@ -103,13 +92,13 @@ namespace RealtorObjects.Model
             }
             else if (!operation.IsSuccessfully)
             {
-                if (operation.Parameters.Type == OperationType.Login)
+                if (operation.Parameters.Action == Act.Login)
                     MessageBox.Show("Операция входа не была успешна");
-                else if (operation.Parameters.Type == OperationType.Logout)
+                else if (operation.Parameters.Action == Act.Logout)
                     MessageBox.Show("Операция выхода не была успешна");
-                else if (operation.Parameters.Type == OperationType.Register)
+                else if (operation.Parameters.Action == Act.Register)
                     MessageBox.Show("Операция регистрации не была успешна");
-                else if (operation.Parameters.Type == OperationType.ToFire)
+                else if (operation.Parameters.Action == Act.Dismiss)
                     MessageBox.Show("Операция увольнения не была успешна");
             }
         }
@@ -119,39 +108,12 @@ namespace RealtorObjects.Model
             {
                 if (operation.IsSuccessfully)
                 {
-                    if (operation.Parameters.Target == TargetType.All || operation.Parameters.Target == TargetType.None)
-                        ReceivedDbUpdate?.Invoke(this, new ReceivedDbUpdateEventArgs(operation.Parameters.Target, operation.Data));
-                    else if (operation.Parameters.Target == TargetType.Flat)
-                    {
-                        Flat flat = JsonSerializer.Deserialize<Flat>(operation.Data);
-                        if (operation.Parameters.Type == OperationType.Add)
-                            ReceivedFlat?.Invoke(this, new ReceivedFlatEventArgs(flat));
-                        else if (operation.Parameters.Type == OperationType.Change)
-                            ReceivedFlatUpdate?.Invoke(this, new ReceivedFlatUpdateEventArgs(flat));
-                        else if (operation.Parameters.Type == OperationType.Remove)
-                            ReceivedFlatDeletion?.Invoke(this, new ReceivedFlatDeletionEventArgs(flat));
-                    }
-                    else if (operation.Parameters.Target == TargetType.House)
-                    {
-                        House house = JsonSerializer.Deserialize<House>(operation.Data);
-                        if (operation.Parameters.Type == OperationType.Add)
-                            ReceivedHouse?.Invoke(this, new ReceivedHouseEventArgs(house));
-                        else if (operation.Parameters.Type == OperationType.Change)
-                            ReceivedHouseUpdate?.Invoke(this, new ReceivedHouseUpdateEventArgs(house));
-                        else if (operation.Parameters.Type == OperationType.Remove)
-                            ReceivedHouseDeletion?.Invoke(this, new ReceivedHouseDeletionEventArgs(house));
-                    }
-                    else if(operation.Parameters.Target == TargetType.Photo)
-                        ReceivedPhoto?.Invoke(this, new ReceivedPhotoEventArgs(operation.Parameters.Type, operation.Data));    
+                    if (operation.Parameters.Target == Target.Flat)
+                        ReceivedFlat?.Invoke(this, new ReceivedFlatEventArgs(JsonSerializer.Deserialize<Flat>(operation.Data), operation.Parameters.Action, operation.Parameters.Initiator));
+                    else if (operation.Parameters.Target == Target.Photo)
+                        ReceivedPhoto?.Invoke(this, new ReceivedPhotoEventArgs(operation.Parameters.Action, operation.Data));
                 }
-                else if(!operation.IsSuccessfully&&operation.Parameters.Target == TargetType.Photo)
-                {
-                    //Запросить сохранение ещё раз
-                }
-                else
-                {
-                    MessageBox.Show("Операция не была успешна");
-                }
+                else MessageBox.Show("Операция не была успешна");
             }
             catch (Exception ex)
             {

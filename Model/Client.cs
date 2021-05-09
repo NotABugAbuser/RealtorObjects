@@ -6,18 +6,15 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Windows.Threading;
-using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using RealtyModel.Model;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Linq;
 using System.Threading;
-using System.Windows;
 using System.Diagnostics;
-using System.IO;
-using RealtyModel.Service;
-using RealtorObjects.Model.Event;
+using RealtyModel.Events.Network;
+using RealtyModel.Model.Operations;
 
 namespace RealtorObjects.Model
 {
@@ -248,7 +245,7 @@ namespace RealtorObjects.Model
                         Debug.WriteLine($"{DateTime.Now} RECEIVED WRONG BYTE COUNT: {data.Length} OF {expectedSize}");
                     else Debug.WriteLine($"{DateTime.Now} RECEIVED {expectedSize} BYTES");
                     Operation operation = JsonSerializer.Deserialize<Operation>(data);
-                    Debug.WriteLine($"{DateTime.Now} {operation.Number} - {operation.Parameters.Direction} {operation.Parameters.Type} {operation.Parameters.Target}");
+                    Debug.WriteLine($"{DateTime.Now} {operation.Number} - {operation.Parameters.Direction} {operation.Parameters.Action} {operation.Parameters.Target}");
                     IncomingOperations.Enqueue(operation);
                 }
                 catch (Exception ex)
@@ -275,7 +272,7 @@ namespace RealtorObjects.Model
 
                             stream.Write(dataSize, 0, 4);
                             stream.Write(data, 0, data.Length);
-                            Debug.WriteLine($"{DateTime.Now} has SENT {json.Length} bytes {operation.Number} - {operation.Parameters.Direction} {operation.Parameters.Type} {operation.Parameters.Target}");
+                            Debug.WriteLine($"{DateTime.Now} has SENT {json.Length} bytes {operation.Number} - {operation.Parameters.Direction} {operation.Parameters.Action} {operation.Parameters.Target}");
                         }
                         catch (Exception ex)
                         {

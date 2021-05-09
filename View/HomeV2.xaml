@@ -541,7 +541,7 @@
                 Grid.Column="2"
                 Style="{StaticResource FilterVisibility}"/>
             <Button
-                Command="{Binding FilterCollection}"
+                Command="{Binding SendQuery}"
                 Grid.Column="2"
                 Style="{StaticResource HeaderButton}"
                 HorizontalAlignment="Right"

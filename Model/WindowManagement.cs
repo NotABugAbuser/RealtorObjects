@@ -1,19 +1,17 @@
-﻿using RealtorObjects.Model.Event;
-using RealtorObjects.View;
+﻿using RealtorObjects.View;
 using RealtorObjects.ViewModel;
-using RealtyModel.Event.RealtyEvents;
+using RealtyModel.Events.Realty;
+using RealtyModel.Events.UI;
 using RealtyModel.Model;
 using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
+using RealtyModel.Model.Operations;
+using RealtyModel.Model.RealtyObjects;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -62,6 +60,7 @@ namespace RealtorObjects.Model
             get => mainWindowVM;
             private set => mainWindowVM = value;
         }
+        public RealtyManagement RealtyManagement { get; set; }
         #endregion
 
         public WindowManagement(Client client, Credential credential, Dispatcher dispatcher)
@@ -71,7 +70,7 @@ namespace RealtorObjects.Model
             this.dispatcher = dispatcher;
         }
 
-        public void Run()
+        internal void Run()
         {
             InitializeMembers();
             BindEvents();
@@ -87,16 +86,18 @@ namespace RealtorObjects.Model
             MainWindowVM = new MainWindowViewModel(credential);
             MainWindowVM.ViewModels[0] = HomeVM;
             MainWindowVM.WorkArea = HomeVM;
+            RealtyManagement = new RealtyManagement(HomeVM.AllObjects);
             mainWindow = new MainWindowV2 { DataContext = MainWindowVM };
         }
         private void BindEvents()
         {
+            client.Connected += (s, e) => OpenLoginForm();
             client.Disconnected += (s, e) => OnDisconnected();
 
             credential.LoggedIn += (s, e) => OnLoggedIn();
             credential.LoggedOut += (s, e) => OnLoggedOut();
             credential.Registered += (s, e) => OnRegistered();
-            HomeVM.OpeningFlatForm += (s, e) => OpenFlatForm(e);
+            HomeVM.FlatButtonPressed += (s, e) => OpenFlatForm(e);
         }
 
         private void OnDisconnected()
@@ -109,11 +110,22 @@ namespace RealtorObjects.Model
                 mainWindow.Hide();
                 flatForm?.Hide();
 
-                OpenLoadingForm();
+                if (loadingForm != null && !loadingForm.IsActive)
+                    OpenLoadingForm();
+
                 Thread.Sleep(500);
                 if (!client.IsTryingToConnect)
                     client.ConnectAsync();
             }
+        }
+        internal void OnReceivedFlat(ReceivedFlatEventArgs e)
+        {
+            if (e.Initiator == Initiator.User)
+            {
+                MessageBox.Show("Квартира успешно добавлена");
+                CloseFlatForm();
+            }
+            else RealtyManagement.Handle(e);
         }
 
         private void OnRegistered()
@@ -142,7 +154,7 @@ namespace RealtorObjects.Model
                 loginForm.Show();
             });
         }
-        public void OnUpdateFinished()
+        internal void OnUpdateFinished()
         {
             Debug.WriteLine("Update has finished");
             dispatcher.Invoke(() =>
@@ -155,14 +167,14 @@ namespace RealtorObjects.Model
                         if (!String.IsNullOrWhiteSpace(bro.Album.PhotoKeys))
                             bro.Album.GetPhotosFromDbByLocation(context.Photos.Local);
                 }
-                HomeVM.FilterCollection.Execute(new object());
+                HomeVM.SendQuery.Execute(new object());
                 loadingForm.Close();
                 if (loginForm != null)
                     loginForm.Show();
             });
         }
 
-        public void OpenFlatForm(OpeningFlatFormEventArgs e)
+        internal void OpenFlatForm(FlatButtonPressedEventArgs e)
         {
             flatFormVM = new FlatFormViewModel();
             if (e.IsNewFlat)
@@ -239,7 +251,7 @@ namespace RealtorObjects.Model
                     },
                     HasExclusive = false,
                     IsSold = false,
-                    Type = TargetType.Flat,
+                    Type = Target.Flat,
                     Status = Status.Active
                 };
                 Flat flat = new Flat()
@@ -312,7 +324,7 @@ namespace RealtorObjects.Model
                     },
                     HasExclusive = false,
                     IsSold = false,
-                    Type = TargetType.Flat,
+                    Type = Target.Flat,
                     Status = Status.Active
                 };
             }
@@ -333,7 +345,7 @@ namespace RealtorObjects.Model
         {
             dispatcher.Invoke(() => { flatForm.Close(); });
         }
-        public void OpenLoginForm()
+        internal void OpenLoginForm()
         {
             loginForm.Show();
         }

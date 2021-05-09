@@ -1,8 +1,11 @@
 ﻿using RealtorObjects.Model;
-using RealtorObjects.View;
+using RealtyModel.Events.Identity;
+using RealtyModel.Events.Realty;
+using RealtyModel.Events.UI;
 using RealtyModel.Model;
 using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
+using RealtyModel.Model.Operations;
 using RealtyModel.Model.RealtyObjects;
 using System;
 using System.Collections.Generic;
@@ -21,7 +24,6 @@ namespace RealtorObjects
         private Credential credential = new Credential(Dispatcher.CurrentDispatcher);
         private WindowManagement windowManagement;
         private OperationManagement operationManagement;
-        private RealtyManagement realtyManagement;
 
         public Client Client
         {
@@ -43,11 +45,6 @@ namespace RealtorObjects
             get => operationManagement;
             private set => operationManagement = value;
         }
-        public RealtyManagement RealtyManagement
-        {
-            get => realtyManagement;
-            set => realtyManagement = value;
-        }
         public List<Photo> UnsavedPhotos { get; set; }
         #endregion
 
@@ -61,189 +58,85 @@ namespace RealtorObjects
         private void InitializeMembers()
         {
             UnsavedPhotos = new List<Photo>();
-            realtyManagement = new RealtyManagement(Dispatcher);
-            operationManagement = new OperationManagement(client, credential, Dispatcher);
+            operationManagement = new OperationManagement(client, credential);
             windowManagement = new WindowManagement(client, credential, Dispatcher);
             windowManagement.Run();
         }
         private void BindEvents()
         {
-            Client.Connected += (s, e) => Client.CheckConnectionAsync();
-            Client.Connected += (s, e) => Client.ReceiveAsync();
-            Client.Connected += (s, e) => CheckClientStatus();
+            Client.Connected += (s, e) => OnConnected();
 
-            windowManagement.LoginFormVM.LoggingIn += (s, e) => operationManagement.SendIdentityData(e.UserName, e.Password, OperationType.Login);
-            windowManagement.LoginFormVM.Registering += (s, e) => operationManagement.SendIdentityData(e.UserName, $"{e.Password};{e.Email}", OperationType.Register);
-            windowManagement.FlatFormVM.FlatCreated = (s, e) => OnFlatCreated(e.Flat);
-            windowManagement.FlatFormVM.FlatModified = (s, e) => operationManagement.SendRealtyData(e.Flat, OperationType.Change, TargetType.Flat);
+            windowManagement.LoginFormVM.LoggingIn += (s, e) => OnLoggingIn(e);
+            windowManagement.LoginFormVM.Registering += (s, e) => OnRegistering(e);
 
-            operationManagement.ReceivedDbUpdate += (s, e) => realtyManagement.ReceiveDbUpdate(e);
+            windowManagement.FlatFormVM.FlatCreating = (s, e) => OnFlatCreating(e);
+            windowManagement.FlatFormVM.FlatChanging = (s, e) => OnFlatChanging(e);
 
-            operationManagement.ReceivedFlat += (s, e) =>
-            {
-                if (realtyManagement.AddFlat(e.Flat) && e.Flat.Location.CompareWith(windowManagement.FlatFormVM.CurrentLocation))
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        foreach (Photo photo in UnsavedPhotos)
-                            if (photo.Location == e.Flat.Album.Location)
-                                operationManagement.SendRealtyData(photo, OperationType.Add, TargetType.Photo);
-                        e.Flat.Album.Preview = JsonSerializer.Deserialize<Byte[]>(e.Flat.Album.PreviewJson);
-                        windowManagement.HomeVM.AllObjects.Add(e.Flat);
-                        windowManagement.HomeVM.FilterCollection.Execute(new object());
-                        windowManagement.CloseFlatForm();
-                    });
-                }
-            };
-            operationManagement.ReceivedFlatUpdate += (s, e) =>
-            {
-                if (realtyManagement.UpdateFlat(e.Flat) && e.Flat.Location.CompareWith(windowManagement.FlatFormVM.CurrentLocation))
-                {
-                    Flat listFlat = (Flat)(windowManagement.HomeVM).AllObjects.Find(f => f.Id == e.Flat.Id && f.Type == e.Flat.Type);
-                    listFlat = e.Flat;
-                    windowManagement.HomeVM.FilterCollection.Execute(new object());
-                    windowManagement.CloseFlatForm();
-                }
-            };
-            operationManagement.ReceivedFlatDeletion += (s, e) =>
-            {
-                if (realtyManagement.DeleteFlat(e.Flat))
-                {
-                    Flat listFlat = (Flat)(windowManagement.HomeVM).AllObjects.Find(f => f.Id == e.Flat.Id && f.Type == e.Flat.Type);
-                    windowManagement.HomeVM.AllObjects.Remove(listFlat);
-                    windowManagement.HomeVM.FilterCollection.Execute(new object());
-                }
-            };
-            //ЗДЕСЬ НУЖНО ДОДЕЛАТЬ
-            operationManagement.ReceivedPhoto += (s, e) =>
-            {
-                if (e.OperationType == OperationType.Add)
-                {
-                    Photo photo = UnsavedPhotos.Find(ph => ph.Guid == e.Data);
-                    if (photo != null)
-                        UnsavedPhotos.Remove(photo);
-                }
-                //ЧТО ДАЛЬШЕ?
-                else if (e.OperationType == OperationType.Get)
-                {
-                    Photo photo = JsonSerializer.Deserialize<Photo>(e.Data);
-                }
-            };
-
-            operationManagement.ReceivedHouse += (s, e) => realtyManagement.AddHouse(e.House);
-            operationManagement.ReceivedHouseUpdate += (s, e) => realtyManagement.UpdateHouse(e.House);
-            operationManagement.ReceivedHouseDeletion += (s, e) => realtyManagement.DeleteHouse(e.House);
-
-            realtyManagement.UpdateFinished += (s, e) => windowManagement.OnUpdateFinished();
+            operationManagement.ReceivedFlat += (s, e) => windowManagement.OnReceivedFlat(e);
+            operationManagement.ReceivedPhoto += (s, e) => OnReceivedPhoto(e);
         }
 
-        private void OnFlatCreated(Flat flat)
+        private void OnConnected()
         {
-            operationManagement.SendRealtyData(flat, OperationType.Add, TargetType.Flat);
-            if (flat.Album.PhotoCollection != null && flat.Album.PhotoCollection.Count > 0)
-                foreach (Byte[] data in flat.Album.PhotoCollection)
-                    UnsavedPhotos.Add(new Photo() { Location = flat.Album.Location, ObjectType = TargetType.Flat, Data = data, Guid = (Guid.NewGuid()).ToString() });
+            Client.CheckConnectionAsync();
+            Client.ReceiveAsync();
         }
-
-        private void CheckClientStatus()
+       
+        private void OnLoggingIn(LoggingInEventArgs e)
         {
-            //Если в режиме дебага - автологин
-            //if (Debugger.IsAttached)
-            //    operationManagement.SendIdentityData("ГриньДВ", "123", OperationType.Login);
-            //else
-            //{
-            //Если первый раз подключился за запуск программы и не имеет обновления
-            if (Client.IsFirstConnection || !realtyManagement.HasUpdate)
-                operationManagement.SendRealtyData(null, OperationType.Update, TargetType.All);
-            //Если был залогинен и credential дынные не пустые
-            else if (Credential.IsLoggedIn && !String.IsNullOrWhiteSpace(Credential.Name) && !String.IsNullOrWhiteSpace(Credential.Password))
-                operationManagement.SendIdentityData(Credential.Name, Credential.Password, OperationType.Login);
-            //иначе открыть LoginForm
-            else windowManagement.OpenLoginForm();
-            operationManagement.SendIdentityData("ГриньДВ", "123", OperationType.Login);
-            //}
-        }
-
-
-        private void Test()
-        {
-            Flat flat = new Flat()
+            Parameters parameters = new Parameters()
             {
-                Agent = "asdasd",
-                Album = new Album()
-                {
-                    Location = "asdas",
-                },
-                Location = new Location()
-                {
-                    City = new City(),
-                    District = new District(),
-                    Street = new Street(),
-                    HouseNumber = 0,
-                    FlatNumber = 0,
-                    HasBanner = false,
-                    HasExchange = false
-                },
-                Cost = new Cost()
-                {
-                    Area = 0,
-                    HasMortgage = false,
-                    HasPercents = false,
-                    HasVAT = false,
-                    Price = 0
-                },
-                Customer = new Customer()
-                {
-                    Name = "",
-                    PhoneNumbers = ""
-                },
-                GeneralInfo = new BaseInfo()
-                {
-                    Ceiling = 0,
-                    Condition = "",
-                    Convenience = "",
-                    Description = "",
-                    General = 0,
-                    Heating = "",
-                    Kitchen = 0,
-                    Living = 0,
-                    RoomCount = 0,
-                    Water = "",
-                    Year = 1950
-                },
-                Info = new FlatInfo()
-                {
-                    Balcony = "asd",
-                    Bath = "asd",
-                    Bathroom = "asd",
-                    Floor = "asd",
-                    Fund = "asd",
-                    HasChute = false,
-                    HasElevator = false,
-                    HasGarage = false,
-                    HasImprovedLayout = false,
-                    HasRenovation = false,
-                    IsCorner = false,
-                    IsPrivatised = false,
-                    IsSeparated = false,
-                    Kvl = 0,
-                    Loggia = "",
-                    Material = "",
-                    Rooms = "",
-                    Type = "",
-                    TypeOfRooms = "",
-                    Windows = "Linux"
-                },
-                HasExclusive = false,
-                IsSold = false,
-                Type = TargetType.Flat,
-                Status = Status.Active
+                Direction = Direction.Identity,
+                Action = Act.Login,
+                Target = Target.Agent
             };
-            String s = JsonSerializer.Serialize((BaseRealtorObject)flat);
-            Byte[] d = Encoding.UTF8.GetBytes(s);
-            s = Encoding.UTF8.GetString(d);
-            flat = JsonSerializer.Deserialize<Flat>(s);
-            Debug.WriteLine($"\n\n{flat.Info.Windows}\n\n");
+            operationManagement.SendRequest(e, parameters);
+        }
+        private void OnRegistering(RegisteringEventArgs e)
+        {
+            Parameters parameters = new Parameters()
+            {
+                Direction = Direction.Identity,
+                Action = Act.Register,
+                Target = Target.Agent
+            };
+            operationManagement.SendRequest(e, parameters);
+        }
+
+        private void OnFlatCreating(FlatCreatingEventArgs e)
+        {
+            Parameters parameters = new Parameters()
+            {
+                Direction = Direction.Realty,
+                Action = Act.Add,
+                Target = Target.Flat
+            };
+            if (e.Flat.Album.PhotoCollection != null && e.Flat.Album.PhotoCollection.Count > 0)
+                foreach (Byte[] data in e.Flat.Album.PhotoCollection)
+                    UnsavedPhotos.Add(new Photo() { Location = e.Flat.Album.Location, ObjectType = Target.Flat, Data = data, Guid = (Guid.NewGuid()).ToString() });
+            operationManagement.SendRequest(e, parameters);
+        }
+        private void OnFlatChanging(FlatChangingEventArgs e)
+        {
+            Parameters parameters = new Parameters()
+            {
+                Direction = Direction.Realty,
+                Action = Act.Change,
+                Target = Target.Flat
+            };
+            operationManagement.SendRequest(e.Flat, parameters);
+        }
+        private void OnReceivedPhoto(ReceivedPhotoEventArgs e)
+        {
+            if (e.Act == Act.Add)
+            {
+                Photo photo = UnsavedPhotos.Find(ph => ph.Guid == e.Data);
+                if (photo != null)
+                    UnsavedPhotos.Remove(photo);
+            }
+            else if (e.Act == Act.Request)
+            {
+            }
         }
     }
 }

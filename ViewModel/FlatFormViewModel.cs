@@ -1,24 +1,18 @@
 ﻿using Microsoft.Win32;
 using MiscUtil;
-using RandomFlatGenerator;
 using RealtorObjects.Model;
-using RealtyModel.Event;
+using RealtyModel.Events.Realty;
+using RealtyModel.Events.UI;
 using RealtyModel.Interface;
 using RealtyModel.Model;
-using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
-using RealtyModel.Model.RealtyObjects;
 using RealtyModel.Service;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
-using System.Threading;
 using System.Windows;
-using System.Windows.Media.Imaging;
 
 namespace RealtorObjects.ViewModel
 {
@@ -100,8 +94,8 @@ namespace RealtorObjects.ViewModel
         private readonly FlatOptions flatOptions = new FlatOptions();
         private LocationOptions locationOptions = new LocationOptions();
 
-        public FlatCreatedEventHandler FlatCreated;
-        public FlatModifiedEventHandler FlatModified;
+        public FlatCreatingEventHandler FlatCreating;
+        public FlatChangingEventHandler FlatChanging;
         private ObservableCollection<byte[]> test = new ObservableCollection<byte[]> { };
         #endregion
 
@@ -142,7 +136,6 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
-
         public ObservableCollection<byte[]> Test { get => test; set => test = value; }
 
         public FlatFormViewModel()
@@ -172,7 +165,9 @@ namespace RealtorObjects.ViewModel
         }));
         public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj =>
         {
-            Test.RemoveAt(Convert.ToInt32(obj));
+            Int32 number = Convert.ToInt32(obj);
+            Test.RemoveAt(number);
+            Flat.Album.PhotoCollection.RemoveAt(number);
         }));
         public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj =>
         {
@@ -185,7 +180,7 @@ namespace RealtorObjects.ViewModel
             CurrentLocation = Flat.Location.GetCopy();
             if (new FieldChecking(Flat).CheckFieldsOfFlat())
             {
-                FlatCreated?.Invoke(this, new FlatCreatedEventArgs(Flat));
+                FlatCreating?.Invoke(this, new FlatCreatingEventArgs(Flat));
                 (obj as Window).Close();
             }
         }));

@@ -1,26 +1,16 @@
 ﻿using RandomFlatGenerator;
 using RealtorObjects.Model;
-using RealtorObjects.View;
-using RealtyModel.Event;
-using RealtyModel.Event.RealtyEvents;
+using RealtyModel.Events.Realty;
+using RealtyModel.Events.UI;
 using RealtyModel.Model;
 using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
-using RealtyModel.Model.RealtyObjects;
 using RealtyModel.Service;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.Unicode;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace RealtorObjects.ViewModel
@@ -35,7 +25,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand modify;
         private CustomCommand goToPage;
         private CustomCommand testCommand;
-        private CustomCommand filterCollection;
+        private CustomCommand sendQuery;
         private CustomCommand openCloseFilters;
         private CustomCommand createRealtorObject;
         private CustomCommand openOrCloseFilterSection;
@@ -55,7 +45,9 @@ namespace RealtorObjects.ViewModel
             new CheckAndHeightPair(false, 50),
         };
         private List<ObservableCollection<BaseRealtorObject>> objectLists = new List<ObservableCollection<BaseRealtorObject>>();
-        public event OpeningFlatFormEventHandler OpeningFlatForm;
+        public event FlatButtonPressedEventHandler FlatButtonPressed;
+        public event DeleteButtonPressedEventHandler DeleteButtonPressed;
+        public event QueryCreatedEventHandler QueryCreated;
         #endregion
         #region Properties
         public int CurrentPage
@@ -123,38 +115,23 @@ namespace RealtorObjects.ViewModel
         {
             string type = (string)obj;
             if (type == "Flat")
-                OpeningFlatForm?.Invoke(this, new OpeningFlatFormEventArgs(true, new Flat(), LocationOptions));
-
-            //if (type == "House") ;
+                FlatButtonPressed?.Invoke(this, new FlatButtonPressedEventArgs(true, new Flat(), LocationOptions));
         }));
         public CustomCommand Modify => modify ?? (modify = new CustomCommand(obj =>
         {
             BaseRealtorObject bro = (BaseRealtorObject)obj;
             if (CheckAccess(bro.Agent, ((App)Application.Current).Credential.Name))
-            {
                 if (bro is Flat flat)
-                    OpeningFlatForm?.Invoke(this, new OpeningFlatFormEventArgs(false, flat));
-                //    if (bro is House house) RealtorObjectOperator.ModifyHouse(house);
-            }
+                    FlatButtonPressed?.Invoke(this, new FlatButtonPressedEventArgs(false, flat));
         }));
         public CustomCommand Delete => delete ?? (delete = new CustomCommand(obj =>
         {
             BaseRealtorObject bro = (BaseRealtorObject)obj;
             if (CheckAccess(bro.Agent, ((App)Application.Current).Credential.Name))
-                ((App)Application.Current).OperationManagement.SendRealtyData(bro.Id, OperationType.Remove, bro.Type);
+                DeleteButtonPressed?.Invoke(this, new DeleteButtonPressedEventArgs(bro));
         }));
         public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj => { }));
-        public CustomCommand FilterCollection => filterCollection ?? (filterCollection = new CustomCommand(obj =>
-        {
-            List<BaseRealtorObject> filteredObjects = Filter.CreateFilteredList(AllObjects);
-            Debug.WriteLine($"Фильтрованная: {filteredObjects.Count}");
-            SplitFilteredCollection(filteredObjects, 25);
-            Pages.Clear();
-            CalculatePages(1);
-            CurrentPage = 1;
-            Debug.WriteLine($"Фильтрованная {filteredObjects.Count} и листов {ObjectLists.Count}");
-            GC.Collect();
-        }));
+        public CustomCommand SendQuery => sendQuery ?? (sendQuery = new CustomCommand(obj => QueryCreated?.Invoke(this, new QueryCreatedEventArgs(Filter))));
         public CustomCommand OpenOrCloseFilterSection => openOrCloseFilterSection ?? (openOrCloseFilterSection = new CustomCommand(obj =>
         {
             object[] objects = obj as object[];
@@ -181,34 +158,8 @@ namespace RealtorObjects.ViewModel
 
         public HomeViewModel()
         {
-            using (var context = new DataBaseContext())
-            {
-                ClearDB(context);
-                AllObjects.AddRange(context.Flats);
-                AllObjects.AddRange(context.Houses);
-            }
         }
 
-        internal void ClearDB(DataBaseContext context)
-        {
-            context.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Customers'");
-            context.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Albums'");
-            context.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Cities'");
-            context.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Districts'");
-            context.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Streets'");
-            context.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Flats'");
-            context.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Houses'");
-            context.Database.ExecuteSqlCommand("update sqlite_sequence set seq = 0 where name = 'Locations'");
-            context.Flats.Local.Clear();
-            context.Houses.Local.Clear();
-            context.Locations.Local.Clear();
-            context.Cities.Local.Clear();
-            context.Districts.Local.Clear();
-            context.Streets.Local.Clear();
-            context.Albums.Local.Clear();
-            context.Customers.Local.Clear();
-            context.SaveChanges();
-        }
         private void SplitFilteredCollection(List<BaseRealtorObject> filteredObjects, byte count)
         {
             //разбиение фильтрованной коллекции на parts частей по count объектов
@@ -261,17 +212,6 @@ namespace RealtorObjects.ViewModel
                 MessageBox.Show("У вас нет права на доступ к этому объекту");
                 return false;
             }
-        }
-
-        private void TestMethod()
-        {
-            FlatGenerator flatGenerator = new FlatGenerator();
-            Flat flat = flatGenerator.CreateFlat();
-            flat.Id = 9999;
-            flat.Agent = "ГвоздиковЕА";
-            flat.Status = Status.Planned;
-            CurrentObjectList.Add(flat);
-            AllObjects.Add(flat);
         }
     }
 }

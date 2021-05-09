@@ -1,4 +1,5 @@
 ﻿using RealtyModel.Model.Base;
+using RealtyModel.Model.RealtyObjects;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
