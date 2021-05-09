@@ -74,7 +74,6 @@ namespace RealtorObjects.Model
         {
             InitializeMembers();
             BindEvents();
-            OpenLoadingForm();
         }
         private void InitializeMembers()
         {
@@ -91,7 +90,9 @@ namespace RealtorObjects.Model
         }
         private void BindEvents()
         {
-            client.Connected += (s, e) => OpenLoginForm();
+            client.Connecting += (s, e) => OpenLoadingForm();
+            client.Connected += (s, e) => loadingForm.Close();
+            client.Connected += (s, e) => loginForm.Show();
             client.Disconnected += (s, e) => OnDisconnected();
 
             credential.LoggedIn += (s, e) => OnLoggedIn();
@@ -109,13 +110,8 @@ namespace RealtorObjects.Model
                 loadingForm.Close();
                 mainWindow.Hide();
                 flatForm?.Hide();
-
-                if (loadingForm != null && !loadingForm.IsActive)
-                    OpenLoadingForm();
-
-                Thread.Sleep(500);
-                if (!client.IsTryingToConnect)
-                    client.ConnectAsync();
+                while (client.IsConnected) { }
+                client.ConnectAsync();
             }
         }
         internal void OnReceivedFlat(ReceivedFlatEventArgs e)
@@ -138,7 +134,6 @@ namespace RealtorObjects.Model
             dispatcher.Invoke(() =>
             {
                 loginForm.Close();
-                loadingForm.Close();
                 if (flatForm != null && flatForm.IsInitialized)
                     flatForm.Show();
                 mainWindow.Show();
@@ -152,25 +147,6 @@ namespace RealtorObjects.Model
                 mainWindow.Hide();
                 loginForm = new LoginForm() { DataContext = loginFormVM };
                 loginForm.Show();
-            });
-        }
-        internal void OnUpdateFinished()
-        {
-            Debug.WriteLine("Update has finished");
-            dispatcher.Invoke(() =>
-            {
-                using (var context = new DataBaseContext())
-                {
-                    HomeVM.AllObjects.AddRange(context.Flats.Local);
-                    HomeVM.AllObjects.AddRange(context.Houses.Local);
-                    foreach (BaseRealtorObject bro in HomeVM.AllObjects)
-                        if (!String.IsNullOrWhiteSpace(bro.Album.PhotoKeys))
-                            bro.Album.GetPhotosFromDbByLocation(context.Photos.Local);
-                }
-                HomeVM.SendQuery.Execute(new object());
-                loadingForm.Close();
-                if (loginForm != null)
-                    loginForm.Show();
             });
         }
 
@@ -344,10 +320,6 @@ namespace RealtorObjects.Model
         internal void CloseFlatForm()
         {
             dispatcher.Invoke(() => { flatForm.Close(); });
-        }
-        internal void OpenLoginForm()
-        {
-            loginForm.Show();
         }
         private void OpenLoadingForm()
         {

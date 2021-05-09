@@ -22,25 +22,26 @@ namespace RealtorObjects.Model
     {
         #region Fileds
         private object sendLocker = new object();
-        private Boolean isConnected = false;
+        private Boolean isReceiving = false;
         private IPAddress serverIp = null;
         private Socket socket = null;
         private NetworkStream stream = null;
         private Dispatcher uiDispatcher = null;
+        public event ConnectingEventHandler Connecting;
         public event ConnectedEventHandler Connected;
         public event DisconnectedEventHandler Disconnected;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Boolean IsConnected
+        public Boolean IsReceiveng
         {
-            get => isConnected;
+            get => isReceiving;
             private set
             {
-                isConnected = value;
+                isReceiving = value;
                 OnPropertyChanged();
             }
         }
-        public Boolean IsFirstConnection { get; set; }
+        public Boolean IsConnected { get; set; }
         public Boolean IsTryingToConnect { get; set; }
         public OperationQueue IncomingOperations
         {
@@ -64,6 +65,7 @@ namespace RealtorObjects.Model
         {
             await Task.Run(() =>
             {
+                Connecting?.Invoke(this, new ConnectingEventArgs());
                 Debug.WriteLine($"{DateTime.Now} HAS STARTED TO CONNECT");
                 IsTryingToConnect = true;
                 FindServerIP();
@@ -199,7 +201,7 @@ namespace RealtorObjects.Model
             {
                 try
                 {
-                    while (IsConnected)
+                    while (IsReceiveng)
                     {
                         if (stream.DataAvailable)
                         {
@@ -292,11 +294,12 @@ namespace RealtorObjects.Model
                 {
                     Debug.WriteLine($"{DateTime.Now} has started to disconnect");
                     serverIp = null;
-                    IsConnected = false;
+                    IsReceiveng = false;
                     Task.Delay(1000).Wait();
                     socket.Shutdown(SocketShutdown.Both);
                     stream.Close();
                     stream.Dispose();
+                    IsConnected = false;
                     Debug.WriteLine($"{DateTime.Now} HAS DISCONNECTED");
                     uiDispatcher.BeginInvoke(new Action(() => { Disconnected?.Invoke(this, new DisconnectedEventArgs()); }));
                 }
