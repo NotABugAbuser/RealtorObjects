@@ -72,16 +72,19 @@ namespace RealtorObjects
             windowManagement.FlatFormVM.FlatCreating = (s, e) => OnFlatCreating(e);
             windowManagement.FlatFormVM.FlatChanging = (s, e) => OnFlatChanging(e);
 
-            operationManagement.ReceivedFlat += (s, e) => windowManagement.OnReceivedFlat(e);
+            windowManagement.HomeVM.QueryCreated += (s, e) => OnQueryCreated(e);
+
+              operationManagement.ReceivedFlat += (s, e) => windowManagement.OnReceivedFlat(e);
             operationManagement.ReceivedPhoto += (s, e) => OnReceivedPhoto(e);
         }
+
 
         private void OnConnected()
         {
             Client.CheckConnectionAsync();
             Client.ReceiveAsync();
         }
-       
+
         private void OnLoggingIn(LoggingInEventArgs e)
         {
             Parameters parameters = new Parameters()
@@ -103,6 +106,16 @@ namespace RealtorObjects
             operationManagement.SendRequest(e, parameters);
         }
 
+        private void OnQueryCreated(QueryCreatedEventArgs e)
+        {
+            Parameters parameters = new Parameters()
+            {
+                Direction = Direction.Realty,
+                Action = Act.Request,
+                Target = Target.All
+            };
+            operationManagement.SendRequest(e, parameters);
+        }
         private void OnFlatCreating(FlatCreatingEventArgs e)
         {
             Parameters parameters = new Parameters()

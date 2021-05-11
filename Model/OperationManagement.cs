@@ -54,7 +54,7 @@ namespace RealtorObjects.Model
             {
                 RegisteringEventArgs e = (RegisteringEventArgs)data;
                 operation.Name = e.UserName;
-                operation.Data = $"{e.Password}^{e.Email}^";
+                operation.Data = JsonSerializer.Serialize(new Credential() { Name = e.UserName, Password = e.Password, Email = e.Email });
             }
             client.OutcomingOperations.Enqueue(operation);
         }
