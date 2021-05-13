@@ -114,16 +114,17 @@ namespace RealtorObjects.Model
                 client.ConnectAsync();
             }
         }
-        internal void OnReceivedFlat(ReceivedFlatEventArgs e)
+        internal void OnResultReceived(FlatRegisteredEventArgs e)
         {
-            if (e.Initiator == Initiator.User)
-            {
-                MessageBox.Show("Квартира успешно добавлена");
-                CloseFlatForm();
-            }
-            else RealtyManagement.Handle(e);
+            MessageBox.Show($"Квартира добавлена");
+            CloseFlatForm();
         }
-
+        internal void OnResultReceived(FlatModificationRegisteredEventArgs e)
+        {
+            MessageBox.Show($"Квартира изменена");
+            CloseFlatForm();
+        }
+        
         private void OnRegistered()
         {
             MessageBox.Show("Регистрация прошла успешно");

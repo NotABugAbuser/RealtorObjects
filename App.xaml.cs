@@ -1,17 +1,11 @@
 ﻿using RealtorObjects.Model;
 using RealtyModel.Events.Identity;
 using RealtyModel.Events.Realty;
-using RealtyModel.Events.UI;
 using RealtyModel.Model;
-using RealtyModel.Model.Base;
-using RealtyModel.Model.Derived;
 using RealtyModel.Model.Operations;
 using RealtyModel.Model.RealtyObjects;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Text.Json;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -70,21 +64,23 @@ namespace RealtorObjects
             windowManagement.LoginFormVM.Registering += (s, e) => OnRegistering(e);
 
             windowManagement.FlatFormVM.FlatCreating = (s, e) => OnFlatCreating(e);
-            windowManagement.FlatFormVM.FlatChanging = (s, e) => OnFlatChanging(e);
+            windowManagement.FlatFormVM.FlatModifying = (s, e) => OnFlatModifying(e);
 
             windowManagement.HomeVM.QueryCreated += (s, e) => OnQueryCreated(e);
 
-              operationManagement.ReceivedFlat += (s, e) => windowManagement.OnReceivedFlat(e);
-            operationManagement.ReceivedPhoto += (s, e) => OnReceivedPhoto(e);
-        }
+            operationManagement.FlatRegistered += (s, e) => windowManagement.OnResultReceived(e);
+            operationManagement.FlatModificationRegistered += (s, e) => windowManagement.OnResultReceived(e);
+            operationManagement.PhotoSaved += (s, e) => OnPhotoSaved(e);
 
+            //operationManagement.QueryResultReceived +=(s,e)=>
+            //operationManagement.PhotoReceived +=(s,e)=>wind
+        }
 
         private void OnConnected()
         {
             Client.CheckConnectionAsync();
             Client.ReceiveAsync();
         }
-
         private void OnLoggingIn(LoggingInEventArgs e)
         {
             Parameters parameters = new Parameters()
@@ -112,7 +108,7 @@ namespace RealtorObjects
             {
                 Direction = Direction.Realty,
                 Action = Act.Request,
-                Target = Target.All
+                Target = Target.Query
             };
             operationManagement.SendRequest(e, parameters);
         }
@@ -129,7 +125,7 @@ namespace RealtorObjects
                     UnsavedPhotos.Add(new Photo() { Location = e.Flat.Album.Location, ObjectType = Target.Flat, Data = data, Guid = (Guid.NewGuid()).ToString() });
             operationManagement.SendRequest(e, parameters);
         }
-        private void OnFlatChanging(FlatChangingEventArgs e)
+        private void OnFlatModifying(FlatModifyingEventArgs e)
         {
             Parameters parameters = new Parameters()
             {
@@ -139,17 +135,11 @@ namespace RealtorObjects
             };
             operationManagement.SendRequest(e.Flat, parameters);
         }
-        private void OnReceivedPhoto(ReceivedPhotoEventArgs e)
+        private void OnPhotoSaved(PhotoSavedEventArgs e)
         {
-            if (e.Act == Act.Add)
-            {
-                Photo photo = UnsavedPhotos.Find(ph => ph.Guid == e.Data);
-                if (photo != null)
-                    UnsavedPhotos.Remove(photo);
-            }
-            else if (e.Act == Act.Request)
-            {
-            }
+            Photo photo = UnsavedPhotos.Find(ph => ph.Guid == e.Guid);
+            if (photo != null)
+                UnsavedPhotos.Remove(photo);
         }
     }
 }

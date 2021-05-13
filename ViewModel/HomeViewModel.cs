@@ -29,6 +29,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand openCloseFilters;
         private CustomCommand createRealtorObject;
         private CustomCommand openOrCloseFilterSection;
+        
         private ObservableCollection<int> pages = new ObservableCollection<int>();
         private List<BaseRealtorObject> allObjects = new List<BaseRealtorObject>();
         private ObservableCollection<BaseRealtorObject> currentObjectList = new ObservableCollection<BaseRealtorObject>() { };
@@ -45,6 +46,7 @@ namespace RealtorObjects.ViewModel
             new CheckAndHeightPair(false, 50),
         };
         private List<ObservableCollection<BaseRealtorObject>> objectLists = new List<ObservableCollection<BaseRealtorObject>>();
+        
         public event FlatButtonPressedEventHandler FlatButtonPressed;
         public event DeleteButtonPressedEventHandler DeleteButtonPressed;
         public event QueryCreatedEventHandler QueryCreated;

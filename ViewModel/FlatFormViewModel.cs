@@ -95,7 +95,7 @@ namespace RealtorObjects.ViewModel
         private LocationOptions locationOptions = new LocationOptions();
 
         public FlatCreatingEventHandler FlatCreating;
-        public FlatChangingEventHandler FlatChanging;
+        public FlatModifyingEventHandler FlatModifying;
         private ObservableCollection<byte[]> test = new ObservableCollection<byte[]> { };
         #endregion
 

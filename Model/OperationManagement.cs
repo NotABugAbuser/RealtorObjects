@@ -1,10 +1,12 @@
 ﻿using RealtyModel.Events.Identity;
 using RealtyModel.Events.Realty;
 using RealtyModel.Model;
+using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
 using RealtyModel.Model.Operations;
 using RealtyModel.Model.RealtyObjects;
 using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Windows;
@@ -18,8 +20,11 @@ namespace RealtorObjects.Model
         private Credential credential = null;
         private object handleLocker = new object();
 
-        public event ReceivedFlatEventHandler ReceivedFlat;
-        public event ReceivedPhotoEventHandler ReceivedPhoto;
+        public event FlatRegisteredEventHandler FlatRegistered;
+        public event FlatModificationRegisteredEventHandler FlatModificationRegistered;
+        public event PhotoSavedEventHandler PhotoSaved;
+        public event PhotoReceivedEventHandler PhotoReceived;
+        public event QueryResultReceivedEventHandler QueryResultReceived;
 
         public OperationManagement(Client client, Credential credential)
         {
@@ -108,10 +113,36 @@ namespace RealtorObjects.Model
             {
                 if (operation.IsSuccessfully)
                 {
-                    if (operation.Parameters.Target == Target.Flat)
-                        ReceivedFlat?.Invoke(this, new ReceivedFlatEventArgs(JsonSerializer.Deserialize<Flat>(operation.Data), operation.Parameters.Action, operation.Parameters.Initiator));
+                    if (operation.Parameters.Target == Target.Query)
+                    {
+                        //ObservableCollection<BaseRealtorObject> objects = operation.Data
+                        //QueryResultReceived?.Invoke(this, new QueryResultReceivedEventArgs(objects));
+                    }
+                    else if (operation.Parameters.Target == Target.Flat)
+                    {
+                        if (operation.Parameters.Initiator == Initiator.User)
+                        {
+                            //Location location = operation.Data
+                            //if(operation.Parameters.Action == Act.Add)
+                            //FlatRegistered?.Invoke(this, new FlatRegisteredEventArgs(location));
+                            //else if (operation.Parameters.Action == Act.Change)
+                            //    FlatModificationRegistered?.Invoke(this, new FlatModificationRegisteredEventArgs(location));
+                        }
+                        
+                    }
                     else if (operation.Parameters.Target == Target.Photo)
-                        ReceivedPhoto?.Invoke(this, new ReceivedPhotoEventArgs(operation.Parameters.Action, operation.Data));
+                    {
+                        //ФОТО
+                        if(operation.Parameters.Action == Act.Request)
+                        {
+                            //Photo photo = operation.Data
+                            //PhotoReceived?.Invoke(this, new PhotoReceivedEventArgs(photo));
+                        }
+                        else if(operation.Parameters.Action == Act.Add)
+                        {
+                            PhotoSaved?.Invoke(this, new PhotoSavedEventArgs(operation.Data));
+                        }
+                    }
                 }
                 else MessageBox.Show("Операция не была успешна");
             }
