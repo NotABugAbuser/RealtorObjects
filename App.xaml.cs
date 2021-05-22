@@ -80,6 +80,13 @@ namespace RealtorObjects
         {
             Client.CheckConnectionAsync();
             Client.ReceiveAsync();
+            OperationManagement.SendRequest(null, new Parameters()
+            {
+                Action = Act.Request,
+                Direction = Direction.Realty,
+                Initiator = Initiator.User,
+                Target = Target.Lists
+            });
         }
         private void OnLoggingIn(LoggingInEventArgs e)
         {

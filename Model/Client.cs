@@ -205,25 +205,10 @@ namespace RealtorObjects.Model
                     {
                         if (stream.DataAvailable)
                         {
-                            Byte[] buffer = new Byte[4];
-                            stream.Read(buffer, 0, 4);
-                            Int32 expectedSize = BitConverter.ToInt32(buffer, 0);
-                            Int32 bytesReceived = 0;
-                            StringBuilder response = new StringBuilder();
-
-                            buffer = new byte[8];
-                            do
-                            {
-                                bytesReceived += stream.Read(buffer, 0, buffer.Length);
-                                response.Append(Encoding.UTF8.GetString(buffer));
-                            }
-                            while (bytesReceived < expectedSize);
-
-                            String s = response.ToString().Split('#')[1];
-                            HandleResponseAsync(s, expectedSize);
-                            response.Length = 0;
-                            response.Capacity = 0;
-                            GC.Collect();
+                            List<byte> byteList = new List<byte>();
+                            int size = GetSize();
+                            bool isSuccessful = ReceiveData(byteList, size);
+                            HandleResponseAsync(byteList.ToArray(), size);
                         }
                     }
                 }
@@ -237,16 +222,44 @@ namespace RealtorObjects.Model
                 }
             });
         }
-        private async void HandleResponseAsync(String data, int expectedSize)
+        private bool ReceiveData(List<byte> byteList, int size)
+        {
+            try
+            {
+                while (byteList.Count < size)
+                {
+                    byte[] buffer = new byte[8192];
+                    int bytes = stream.Read(buffer, 0, buffer.Length);
+                    Debug.WriteLine($"Receive {bytes} bytes");
+                    byte[] receivedData = new byte[bytes];
+                    Array.Copy(buffer, receivedData, bytes);
+                    byteList.AddRange(receivedData);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"(ReceiveData) {ex.Message}");
+                return false;
+            }
+        }
+        private int GetSize()
+        {
+            byte[] buffer = new byte[4];
+            stream.Read(buffer, 0, buffer.Length);
+            return BitConverter.ToInt32(buffer, 0);
+        }
+        private async void HandleResponseAsync(Byte[] data, int expectedSize)
         {
             await Task.Run(() =>
             {
                 try
                 {
-                    if (data.Length + 2 != expectedSize)
-                        Debug.WriteLine($"{DateTime.Now} RECEIVED WRONG BYTE COUNT: {data.Length} OF {expectedSize}");
-                    else Debug.WriteLine($"{DateTime.Now} RECEIVED {expectedSize} BYTES");
-                    Operation operation = JsonSerializer.Deserialize<Operation>(data);
+                    Operation operation = BinarySerializer.Deserialize<Operation>(data);
+                    if (data.Length == expectedSize)
+                        Debug.WriteLine($"{DateTime.Now}RECEIVED {expectedSize} BYTES {operation.Number} - {operation.Parameters.Direction} {operation.Parameters.Action} {operation.Parameters.Target}");
+                    else
+                        Debug.WriteLine($"{DateTime.Now}RECEIVED WRONG BYTE COUNT: data - {data.Length} OF {expectedSize}");
                     Debug.WriteLine($"{DateTime.Now} {operation.Number} - {operation.Parameters.Direction} {operation.Parameters.Action} {operation.Parameters.Target}");
                     IncomingOperations.Enqueue(operation);
                 }
@@ -268,19 +281,18 @@ namespace RealtorObjects.Model
                         {
                             Operation operation = OutcomingOperations.Dequeue();
                             operation.Number = (Guid.NewGuid()).ToString();
-                            String json = "#" + JsonSerializer.Serialize(operation) + "#";
-                            Byte[] data = Encoding.UTF8.GetBytes(json);
+                            Byte[] data = BinarySerializer.Serialize(operation);
                             Byte[] dataSize = BitConverter.GetBytes(data.Length);
 
                             stream.Write(dataSize, 0, 4);
                             stream.Write(data, 0, data.Length);
-                            Debug.WriteLine($"{DateTime.Now} has SENT {json.Length} bytes {operation.Number} - {operation.Parameters.Direction} {operation.Parameters.Action} {operation.Parameters.Target}");
+                            Debug.WriteLine($"{DateTime.Now} has SENT {data.Length} bytes {operation.Number} - {operation.Parameters.Direction} {operation.Parameters.Action} {operation.Parameters.Target}");
                         }
                         catch (Exception ex)
                         {
                             Debug.WriteLine($"\n{DateTime.Now} ERROR (SendAsync) {ex.Message}\n");
                         }
-                        Task.Delay(300).Wait();
+                        Task.Delay(100).Wait();
                     }
                 }
             });

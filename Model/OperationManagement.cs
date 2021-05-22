@@ -143,6 +143,10 @@ namespace RealtorObjects.Model
                             PhotoSaved?.Invoke(this, new PhotoSavedEventArgs(operation.Data));
                         }
                     }
+                    else if(operation.Parameters.Target == Target.Lists)
+                    {
+                        //Запустить событие
+                    }
                 }
                 else MessageBox.Show("Операция не была успешна");
             }
