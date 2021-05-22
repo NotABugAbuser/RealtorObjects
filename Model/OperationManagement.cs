@@ -53,13 +53,13 @@ namespace RealtorObjects.Model
                 credential.Name = e.UserName;
                 credential.Password = e.Password;
                 operation.Name = e.UserName;
-                operation.Data = e.Password;
+                operation.Data = BinarySerializer.Serialize(e.Password);
             }
             else if (operation.Parameters.Action == Act.Register)
             {
                 RegisteringEventArgs e = (RegisteringEventArgs)data;
                 operation.Name = e.UserName;
-                operation.Data = JsonSerializer.Serialize(new Credential() { Name = e.UserName, Password = e.Password, Email = e.Email });
+                operation.Data = BinarySerializer.Serialize(new Credential() { Name = e.UserName, Password = e.Password, Email = e.Email });
             }
             client.OutcomingOperations.Enqueue(operation);
         }
@@ -67,8 +67,9 @@ namespace RealtorObjects.Model
         {
             operation.Name = credential.Name;
             if (operation.Parameters.Target == Target.Photo)
+                //вот тут надо посидеть-подумать
                 operation.Data = $"{((Photo)data).Guid}<GUID>{JsonSerializer.Serialize((Photo)data)}";
-            else operation.Data = JsonSerializer.Serialize(data);
+            else operation.Data = BinarySerializer.Serialize(data);
             client.OutcomingOperations.Enqueue(operation);
         }
 
@@ -140,7 +141,8 @@ namespace RealtorObjects.Model
                         }
                         else if(operation.Parameters.Action == Act.Add)
                         {
-                            PhotoSaved?.Invoke(this, new PhotoSavedEventArgs(operation.Data));
+                            //хз зачем
+                            //PhotoSaved?.Invoke(this, new PhotoSavedEventArgs(operation.Data));
                         }
                     }
                     else if(operation.Parameters.Target == Target.Lists)

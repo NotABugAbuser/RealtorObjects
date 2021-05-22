@@ -39,7 +39,6 @@ namespace RealtorObjects
             get => operationManagement;
             private set => operationManagement = value;
         }
-        public List<Photo> UnsavedPhotos { get; set; }
         #endregion
 
         protected override void OnStartup(StartupEventArgs e)
@@ -51,7 +50,6 @@ namespace RealtorObjects
         }
         private void InitializeMembers()
         {
-            UnsavedPhotos = new List<Photo>();
             operationManagement = new OperationManagement(client, credential);
             windowManagement = new WindowManagement(client, credential, Dispatcher);
             windowManagement.Run();
@@ -70,7 +68,6 @@ namespace RealtorObjects
 
             operationManagement.FlatRegistered += (s, e) => windowManagement.OnResultReceived(e);
             operationManagement.FlatModificationRegistered += (s, e) => windowManagement.OnResultReceived(e);
-            operationManagement.PhotoSaved += (s, e) => OnPhotoSaved(e);
 
             //operationManagement.QueryResultReceived +=(s,e)=>
             //operationManagement.PhotoReceived +=(s,e)=>wind
@@ -78,7 +75,6 @@ namespace RealtorObjects
 
         private void OnConnected()
         {
-            Client.CheckConnectionAsync();
             Client.ReceiveAsync();
             OperationManagement.SendRequest(null, new Parameters()
             {
@@ -127,9 +123,6 @@ namespace RealtorObjects
                 Action = Act.Add,
                 Target = Target.Flat
             };
-            if (e.Flat.Album.PhotoCollection != null && e.Flat.Album.PhotoCollection.Count > 0)
-                foreach (Byte[] data in e.Flat.Album.PhotoCollection)
-                    UnsavedPhotos.Add(new Photo() { Location = e.Flat.Album.Location, ObjectType = Target.Flat, Data = data, Guid = (Guid.NewGuid()).ToString() });
             operationManagement.SendRequest(e, parameters);
         }
         private void OnFlatModifying(FlatModifyingEventArgs e)
@@ -141,12 +134,6 @@ namespace RealtorObjects
                 Target = Target.Flat
             };
             operationManagement.SendRequest(e.Flat, parameters);
-        }
-        private void OnPhotoSaved(PhotoSavedEventArgs e)
-        {
-            Photo photo = UnsavedPhotos.Find(ph => ph.Guid == e.Guid);
-            if (photo != null)
-                UnsavedPhotos.Remove(photo);
         }
     }
 }

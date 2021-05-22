@@ -24,7 +24,7 @@ namespace RealtorObjects.Model
         private object sendLocker = new object();
         private Boolean isReceiving = false;
         private IPAddress serverIp = null;
-        private Socket socket = null;
+        private TcpClient client = new TcpClient();
         private NetworkStream stream = null;
         private Dispatcher uiDispatcher = null;
         public event ConnectingEventHandler Connecting;
@@ -32,7 +32,7 @@ namespace RealtorObjects.Model
         public event DisconnectedEventHandler Disconnected;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Boolean IsReceiveng
+        public Boolean IsReceiving
         {
             get => isReceiving;
             private set
@@ -69,14 +69,12 @@ namespace RealtorObjects.Model
                 Debug.WriteLine($"{DateTime.Now} HAS STARTED TO CONNECT");
                 IsTryingToConnect = true;
                 FindServerIP();
-                socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 try
                 {
                     if (serverIp != null)
                     {
-                        IPEndPoint iPEndPoint = new IPEndPoint(serverIp, 8005);
-                        socket.Connect(iPEndPoint);
-                        stream = new NetworkStream(socket, true);
+                        client.Connect(serverIp, 15000);
+                        stream = client.GetStream();
                         Debug.WriteLine($"{DateTime.Now} HAS CONNECTED TO {serverIp}");
                         IsTryingToConnect = false;
                         IsConnected = true;
@@ -89,44 +87,6 @@ namespace RealtorObjects.Model
                     DisconnectAsync();
                 }
             });
-        }
-        public async void CheckConnectionAsync()
-        {
-            await Task.Run(() =>
-            {
-                try
-                {
-                    while (true)
-                    {
-                        if (GetSocketStatus())
-                            Task.Delay(1000).Wait();
-                        else
-                        {
-                            Debug.WriteLine($"\n{DateTime.Now}SOCKET WAS UNAVAILABLE\n");
-                            DisconnectAsync();
-                            break;
-                        }
-                    }
-                }
-                catch (ObjectDisposedException ex)
-                {
-                    Debug.WriteLine($"\n{DateTime.Now} SOCKET ERROR (CheckConnectionAsync) {ex.Message}\n");
-                    DisconnectAsync();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"\n{DateTime.Now} ERROR (CheckConnectionAsync) {ex.Message}\n");
-                }
-            });
-            bool GetSocketStatus()
-            {
-                bool part1 = socket.Poll(1000, SelectMode.SelectRead);
-                bool part2 = (socket.Available == 0);
-                if (part1 && part2)
-                    return false;
-                else
-                    return true;
-            }
         }
         private void FindServerIP()
         {
@@ -196,12 +156,13 @@ namespace RealtorObjects.Model
 
         public async void ReceiveAsync()
         {
+            IsReceiving = true;
             Debug.WriteLine($"{DateTime.Now} HAS STARTED TO RECEIVE BYTES");
             await Task.Run(() =>
             {
                 try
                 {
-                    while (IsReceiveng)
+                    while (IsReceiving)
                     {
                         if (stream.DataAvailable)
                         {
@@ -306,11 +267,11 @@ namespace RealtorObjects.Model
                 {
                     Debug.WriteLine($"{DateTime.Now} has started to disconnect");
                     serverIp = null;
-                    IsReceiveng = false;
+                    IsReceiving = false;
                     Task.Delay(1000).Wait();
-                    socket.Shutdown(SocketShutdown.Both);
                     stream.Close();
                     stream.Dispose();
+                    client.Close();
                     IsConnected = false;
                     Debug.WriteLine($"{DateTime.Now} HAS DISCONNECTED");
                     uiDispatcher.BeginInvoke(new Action(() => { Disconnected?.Invoke(this, new DisconnectedEventArgs()); }));
