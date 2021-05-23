@@ -79,13 +79,13 @@ namespace RealtorObjects.Model
         {
             mainWindow = ((App)Application.Current).MainWindow;
             HomeVM = new HomeViewModel();
+            HomeVM.DispatcherTest = this.dispatcher;
             flatFormVM = new FlatFormViewModel();
             loginFormVM = new LoginFormViewModel();
             loginForm = new LoginForm() { DataContext = loginFormVM };
             MainWindowVM = new MainWindowViewModel(credential);
             MainWindowVM.ViewModels[0] = HomeVM;
             MainWindowVM.WorkArea = HomeVM;
-            RealtyManagement = new RealtyManagement(HomeVM.AllObjects);
             mainWindow = new MainWindowV2 { DataContext = MainWindowVM };
         }
         private void BindEvents()
@@ -100,6 +100,7 @@ namespace RealtorObjects.Model
             credential.Registered += (s, e) => OnRegistered();
             HomeVM.FlatButtonPressed += (s, e) => OpenFlatForm(e);
         }
+
 
         private void OnDisconnected()
         {
@@ -124,7 +125,7 @@ namespace RealtorObjects.Model
             MessageBox.Show($"Квартира изменена");
             CloseFlatForm();
         }
-        
+
         private void OnRegistered()
         {
             MessageBox.Show("Регистрация прошла успешно");
@@ -151,9 +152,12 @@ namespace RealtorObjects.Model
             });
         }
 
+        public void OnListsArrived(ListsArrivedEventArgs e)
+        {
+            HomeVM.LocationOptions = e.LocationOptions;
+        }
         internal void OpenFlatForm(FlatButtonPressedEventArgs e)
         {
-            flatFormVM = new FlatFormViewModel();
             if (e.IsNewFlat)
             {
                 flatFormVM.Title = "[Квартира] — Создание";
@@ -311,10 +315,7 @@ namespace RealtorObjects.Model
                 flatFormVM.Flat = JsonSerializer.Deserialize<Flat>(JsonSerializer.Serialize(e.Flat)); //нужно, чтобы разорвать связь объекта в форме и объекта в списке
                 flatFormVM.IsCurrentFlatNew = false;
             }
-            if (e.LocationOptions != null)
-                flatFormVM.LocationOptions = e.LocationOptions;
-            else
-                flatFormVM.LocationOptions = new LocationOptions();
+            flatFormVM.LocationOptions = this.HomeVM.LocationOptions;
             flatForm = new FlatFormV2 { DataContext = flatFormVM };
             flatForm.Show();
         }

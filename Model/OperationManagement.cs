@@ -6,6 +6,7 @@ using RealtyModel.Model.Derived;
 using RealtyModel.Model.Operations;
 using RealtyModel.Model.RealtyObjects;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text.Json;
@@ -25,6 +26,8 @@ namespace RealtorObjects.Model
         public event PhotoSavedEventHandler PhotoSaved;
         public event PhotoReceivedEventHandler PhotoReceived;
         public event QueryResultReceivedEventHandler QueryResultReceived;
+
+        public event ListsArrivedEventHandler ListsArrived;
 
         public OperationManagement(Client client, Credential credential)
         {
@@ -66,10 +69,7 @@ namespace RealtorObjects.Model
         private void SendRealtyRequest(object data, Operation operation)
         {
             operation.Name = credential.Name;
-            if (operation.Parameters.Target == Target.Photo)
-                //вот тут надо посидеть-подумать
-                operation.Data = $"{((Photo)data).Guid}<GUID>{JsonSerializer.Serialize((Photo)data)}";
-            else operation.Data = BinarySerializer.Serialize(data);
+            operation.Data = BinarySerializer.Serialize(data);
             client.OutcomingOperations.Enqueue(operation);
         }
 
@@ -116,38 +116,44 @@ namespace RealtorObjects.Model
                 {
                     if (operation.Parameters.Target == Target.Query)
                     {
-                        //ObservableCollection<BaseRealtorObject> objects = operation.Data
-                        //QueryResultReceived?.Invoke(this, new QueryResultReceivedEventArgs(objects));
+                        Debug.WriteLine("Received objects");
+
+                        List<BaseRealtorObject> objects = new List<BaseRealtorObject>();
+                        try
+                        {
+                            objects.AddRange(BinarySerializer.Deserialize<Flat[]>(operation.Data));
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("Первый вариант не сработал");
+                        }
+                        try
+                        {
+                            objects.AddRange(BinarySerializer.Deserialize<House[]>(operation.Data));
+                        }
+                        catch
+                        {
+                            Debug.WriteLine("Второй вариант не сработал");
+
+                        }
+                        QueryResultReceived?.Invoke(this, new QueryResultReceivedEventArgs(new ObservableCollection<BaseRealtorObject>(objects)));
                     }
                     else if (operation.Parameters.Target == Target.Flat)
                     {
-                        if (operation.Parameters.Initiator == Initiator.User)
-                        {
-                            //Location location = operation.Data
-                            //if(operation.Parameters.Action == Act.Add)
-                            //FlatRegistered?.Invoke(this, new FlatRegisteredEventArgs(location));
-                            //else if (operation.Parameters.Action == Act.Change)
-                            //    FlatModificationRegistered?.Invoke(this, new FlatModificationRegisteredEventArgs(location));
-                        }
-                        
+                        FlatRegistered?.Invoke(this, new FlatRegisteredEventArgs(null));
                     }
                     else if (operation.Parameters.Target == Target.Photo)
                     {
                         //ФОТО
-                        if(operation.Parameters.Action == Act.Request)
+                        if (operation.Parameters.Action == Act.Request)
                         {
                             //Photo photo = operation.Data
                             //PhotoReceived?.Invoke(this, new PhotoReceivedEventArgs(photo));
                         }
-                        else if(operation.Parameters.Action == Act.Add)
-                        {
-                            //хз зачем
-                            //PhotoSaved?.Invoke(this, new PhotoSavedEventArgs(operation.Data));
-                        }
                     }
-                    else if(operation.Parameters.Target == Target.Lists)
+                    else if (operation.Parameters.Target == Target.Lists)
                     {
-                        //Запустить событие
+                        ListsArrived?.Invoke(this, new ListsArrivedEventArgs(BinarySerializer.Deserialize<LocationOptions>(operation.Data)));
                     }
                 }
                 else MessageBox.Show("Операция не была успешна");

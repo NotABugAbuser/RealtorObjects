@@ -9,10 +9,12 @@ using RealtyModel.Model.Derived;
 using RealtyModel.Service;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace RealtorObjects.ViewModel
 {
@@ -20,36 +22,6 @@ namespace RealtorObjects.ViewModel
     {
         #region TestProperties
         private CustomCommand testCommand;
-        private string testString = "руддщ";
-        private int testInt = 20;
-        private double testDouble = 21.66123;
-        public double TestDouble
-        {
-            get => testDouble;
-            set
-            {
-                testDouble = value;
-                OnPropertyChanged();
-            }
-        }
-        public int TestInt
-        {
-            get => testInt;
-            set
-            {
-                testInt = value;
-                OnPropertyChanged();
-            }
-        }
-        public string TestString
-        {
-            get => testString;
-            set
-            {
-                testString = value;
-                OnPropertyChanged();
-            }
-        }
         public CustomCommand TestCommand => testCommand ??
             (testCommand = new CustomCommand(obj =>
             {
@@ -94,7 +66,7 @@ namespace RealtorObjects.ViewModel
         private readonly FlatOptions flatOptions = new FlatOptions();
         private LocationOptions locationOptions = new LocationOptions();
 
-        public FlatCreatingEventHandler FlatCreating;
+        public event FlatCreatingEventHandler FlatCreating;
         public FlatModifyingEventHandler FlatModifying;
         private ObservableCollection<byte[]> test = new ObservableCollection<byte[]> { };
         #endregion
@@ -136,7 +108,7 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<byte[]> Test { get => test; set => test = value; }
+        public ObservableCollection<byte[]> Photos { get => test; set => test = value; }
 
         public FlatFormViewModel()
         {
@@ -156,33 +128,32 @@ namespace RealtorObjects.ViewModel
                 {
                     Byte[] data = File.ReadAllBytes(fileName);
                     Flat.Album.PhotoCollection.Add(data);
-                    Test.Add(data);
+                    Photos.Add(data);
                 }
             Flat.Album.WriteLocation(Flat.Location);
             if (Flat.Album.PhotoCollection.Count > 0)
-                Flat.Album.PreviewJson = JsonSerializer.Serialize(Flat.Album.PhotoCollection[0]);
-            else Flat.Album.PreviewJson = "";
+                Flat.Album.Preview = Flat.Album.PhotoCollection[0];
+            else Flat.Album.Preview = Array.Empty<byte>();
         }));
         public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj =>
         {
             Int32 number = Convert.ToInt32(obj);
-            Test.RemoveAt(number);
+            Photos.RemoveAt(number);
             Flat.Album.PhotoCollection.RemoveAt(number);
         }));
+        public Dispatcher DispatcherTest { get; set; }
         public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj =>
         {
             var value = Convert.ToInt32(obj);
             Flat.Cost.Price += value;
         }));
         public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
+
         public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj =>
         {
             CurrentLocation = Flat.Location.GetCopy();
             if (new FieldChecking(Flat).CheckFieldsOfFlat())
-            {
                 FlatCreating?.Invoke(this, new FlatCreatingEventArgs(Flat));
-                (obj as Window).Close();
-            }
         }));
 
         public void ChangeProperty<T>(object obj, T step)

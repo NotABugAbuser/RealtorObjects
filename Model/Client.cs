@@ -73,6 +73,7 @@ namespace RealtorObjects.Model
                 {
                     if (serverIp != null)
                     {
+                        client = new TcpClient();
                         client.Connect(serverIp, 15000);
                         stream = client.GetStream();
                         Debug.WriteLine($"{DateTime.Now} HAS CONNECTED TO {serverIp}");

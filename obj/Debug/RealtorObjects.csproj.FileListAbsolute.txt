@@ -432,4 +432,3 @@ C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\data.db
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\data.db
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\RealtyModel.dll
 C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\RealtorObjects.exe.config
-C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\RealtorObjects.exe.config
