@@ -68,7 +68,8 @@ namespace RealtorObjects.Model
                 Connecting?.Invoke(this, new ConnectingEventArgs());
                 Debug.WriteLine($"{DateTime.Now} HAS STARTED TO CONNECT");
                 IsTryingToConnect = true;
-                FindServerIP();
+                //FindServerIP();
+                serverIp = IPAddress.Parse("192.168.1.250"); 
                 try
                 {
                     if (serverIp != null)
