@@ -66,14 +66,18 @@ namespace RealtorObjects.ViewModel
         private CustomCommand changePrice;
         private CustomCommand removeImage;
         private CustomCommand addImages;
+        private CustomCommand edit;
         private readonly FlatOptions flatOptions = new FlatOptions();
         private LocationOptions locationOptions = new LocationOptions();
+        private Visibility editBorderVisibility = Visibility.Visible;
 
         public event FlatCreatingEventHandler FlatCreating;
         public FlatModifyingEventHandler FlatModifying;
         private ObservableCollection<byte[]> test = new ObservableCollection<byte[]> { };
         #endregion
-
+        public CustomCommand Edit => edit ?? (edit = new CustomCommand(obj => {
+            EditBorderVisibility = Visibility.Collapsed;
+        }));
         public bool IsCurrentFlatNew
         {
             get => isCurrentFlatNew;
@@ -158,6 +162,14 @@ namespace RealtorObjects.ViewModel
             if (new FieldChecking(Flat).CheckFieldsOfFlat())
                 FlatCreating?.Invoke(this, new FlatCreatingEventArgs(Flat));
         }));
+
+        public Visibility EditBorderVisibility { 
+            get => editBorderVisibility;
+            set {
+                editBorderVisibility = value;
+                OnPropertyChanged();
+            } 
+        }
 
         public void ChangeProperty<T>(object obj, T step)
         {

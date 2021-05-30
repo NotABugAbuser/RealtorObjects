@@ -1078,5 +1078,28 @@
                 BorderThickness="0,2,0,2"
                 Grid.Row="3"/>
         </Grid>
+        <Grid
+            Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.EditBorderVisibility}"
+            IsHitTestVisible="True"
+            Background="Transparent"
+            Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <Border
+                Background="#f6f6f6"
+                Grid.Row="1">
+                <Button
+                    HorizontalAlignment="Right"
+                    Margin="0,0,10,3"
+                    Width="120"
+                    TabIndex="50"
+                    Grid.Column="2"
+                    Command="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.Edit}"
+                    Style="{StaticResource GreenButton}"
+                    Content="Редактировать"/>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

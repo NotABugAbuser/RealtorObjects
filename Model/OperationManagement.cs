@@ -63,7 +63,7 @@ namespace RealtorObjects.Model
             {
                 RegisteringEventArgs e = (RegisteringEventArgs)data;
                 operation.Name = e.UserName;
-                operation.Data = BinarySerializer.Serialize(new Credential() { Name = e.UserName, Password = e.Password, Email = e.Email, AdminPassword = credential.Password });
+                operation.Data = BinarySerializer.Serialize(new Credential() { Name = e.UserName, Password = e.Password, Email = e.Email});
             }
             client.OutcomingOperations.Enqueue(operation);
         }
