@@ -29,7 +29,6 @@ namespace RealtorObjects.ViewModel
         private CustomCommand sendQuery;
         private CustomCommand openCloseFilters;
         private CustomCommand createRealtorObject;
-        private CustomCommand openOrCloseFilterSection;
 
         private ObservableCollection<int> pages = new ObservableCollection<int>();
         private ObservableCollection<BaseRealtorObject> currentObjectList = new ObservableCollection<BaseRealtorObject>() { };
@@ -40,75 +39,62 @@ namespace RealtorObjects.ViewModel
         public event QueryCreatedEventHandler QueryCreated;
         #endregion
         #region Properties
-        public int CurrentPage
-        {
+        public int CurrentPage {
             get => currentPage;
-            set
-            {
+            set {
                 currentPage = value;
                 OnPropertyChanged();
             }
         }
-        public double WidthOfFilters
-        {
+        public double WidthOfFilters {
             get => widthOfFilters;
-            set
-            {
+            set {
                 widthOfFilters = value;
                 OnPropertyChanged();
             }
         }
-        public Filter Filter
-        {
+        public Filter Filter {
             get => filter;
             set => filter = value;
         }
-        public List<ObservableCollection<BaseRealtorObject>> ObjectLists
-        {
+        public List<ObservableCollection<BaseRealtorObject>> ObjectLists {
             get => objectLists;
             set => objectLists = value;
         }
-        public ObservableCollection<int> Pages
-        {
+        public ObservableCollection<int> Pages {
             get => pages; set => pages = value;
         }
-        public ObservableCollection<BaseRealtorObject> CurrentObjectList
-        {
+        public ObservableCollection<BaseRealtorObject> CurrentObjectList {
             get => currentObjectList;
-            set
-            {
+            set {
                 currentObjectList = value;
                 OnPropertyChanged();
             }
         }
-        public LocationOptions LocationOptions { get; set; }
+        public LocationOptions LocationOptions {
+            get; set;
+        }
         #endregion
 
-        public Dispatcher DispatcherTest { get; set; }
-
-        public CustomCommand CreateRealtorObject => createRealtorObject ?? (createRealtorObject = new CustomCommand(obj =>
-        {
+        public CustomCommand CreateRealtorObject => createRealtorObject ?? (createRealtorObject = new CustomCommand(obj => {
             string type = (string)obj;
             if (type == "Flat")
                 FlatButtonPressed?.Invoke(this, new FlatButtonPressedEventArgs(true, new Flat(), LocationOptions));
         }));
-        public CustomCommand Modify => modify ?? (modify = new CustomCommand(obj =>
-        {
+        public CustomCommand Modify => modify ?? (modify = new CustomCommand(obj => {
             BaseRealtorObject bro = (BaseRealtorObject)obj;
             if (CheckAccess(bro.Agent, ((App)Application.Current).Credential.Name))
                 if (bro is Flat flat)
                     FlatButtonPressed?.Invoke(this, new FlatButtonPressedEventArgs(false, flat));
         }));
-        public CustomCommand Delete => delete ?? (delete = new CustomCommand(obj =>
-        {
+        public CustomCommand Delete => delete ?? (delete = new CustomCommand(obj => {
             BaseRealtorObject bro = (BaseRealtorObject)obj;
             if (CheckAccess(bro.Agent, ((App)Application.Current).Credential.Name))
                 DeleteButtonPressed?.Invoke(this, new DeleteButtonPressedEventArgs(bro));
         }));
         public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj => { }));
         public CustomCommand SendQuery => sendQuery ?? (sendQuery = new CustomCommand(obj => QueryCreated?.Invoke(this, new QueryCreatedEventArgs(Filter))));
-        public CustomCommand GoToPage => goToPage ?? (goToPage = new CustomCommand(obj =>
-        {
+        public CustomCommand GoToPage => goToPage ?? (goToPage = new CustomCommand(obj => {
             Int16 index = (Int16)(Convert.ToInt16(obj) - 1);
             Pages.Clear();
             CalculatePages(index);
@@ -116,38 +102,27 @@ namespace RealtorObjects.ViewModel
             CurrentObjectList = ObjectLists[index];
         }));
 
-        public HomeViewModel()
-        {
+        public HomeViewModel() {
         }
-        public void OnQueryResultReceived(QueryResultReceivedEventArgs e)
-        {
-            DispatcherTest.Invoke(() =>
-            {
-                ObjectLists.Add(e.QueryObjects);
-                GoToPage.Execute(1);
-                Debug.WriteLine(ObjectLists.Count);
-                Debug.WriteLine(ObjectLists[0].Count);
-            });
+        public void OnQueryResultReceived(QueryResultReceivedEventArgs e) {
+            ObjectLists.Add(e.QueryObjects);
+            GoToPage.Execute(1);
+            Debug.WriteLine(ObjectLists.Count);
+            Debug.WriteLine(ObjectLists[0].Count);
         }
-        private void CalculatePages(short currentPage)
-        {
+        private void CalculatePages(short currentPage) {
             int count = ObjectLists.Count;
-            if (count < 15)
-            {
+            if (count < 15) {
                 for (int i = 0; i < count; i++) { Pages.Add(i + 1); }
-            }
-            else
-            {
+            } else {
                 int left = 7;
                 int right = 7;
-                if (currentPage + 8 > count)
-                {
+                if (currentPage + 8 > count) {
                     int difference = -(count - 8 - currentPage);
                     left += difference;
                     right -= difference;
                 }
-                if (currentPage - 7 < 0)
-                {
+                if (currentPage - 7 < 0) {
                     int difference = -(currentPage - 7);
                     left -= difference;
                     right += difference;
@@ -156,12 +131,10 @@ namespace RealtorObjects.ViewModel
                 for (int i = 0; i < right + 1; i++) { Pages.Add(currentPage + i + 1); }
             }
         }
-        private bool CheckAccess(string objectAgent, string currentAgent)
-        {
+        private bool CheckAccess(string objectAgent, string currentAgent) {
             if (objectAgent == currentAgent)
                 return true;
-            else
-            {
+            else {
                 MessageBox.Show("У вас нет права на доступ к этому объекту");
                 return false;
             }

@@ -100,7 +100,6 @@ namespace RealtorObjects.ViewModel
         }));
 
         public CustomCommand SignOut => signOut ?? (signOut = new CustomCommand(obj => {
-            credential.OnLoggedOut();
         }));
         public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
             Application.Current.Shutdown();

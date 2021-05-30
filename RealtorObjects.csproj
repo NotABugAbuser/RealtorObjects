@@ -136,13 +136,7 @@
     </ApplicationDefinition>
     <Compile Include="Model\Client.cs" />
     <Compile Include="Model\CredentialData.cs" />
-    <Compile Include="Model\DataBaseContext.cs" />
     <Compile Include="Model\FieldChecking.cs" />
-    <Compile Include="Model\IdentityContext.cs" />
-    <Compile Include="Model\OperationManagement.cs" />
-    <Compile Include="Model\RealtyManagement.cs" />
-    <Compile Include="Model\UpdateTime.cs" />
-    <Compile Include="Model\WindowManagement.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\HouseFormViewModel.cs" />
