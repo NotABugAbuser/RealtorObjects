@@ -157,3 +157,16 @@ bin/Debug/RealtyModel.pdb
 bin/Debug/RealtyModel.dll
 bin/Debug/RealtorObjects.pdb
 .vs/RealtorObjects/v16/.suo
+bin/Debug/RealtorObjects.exe
+bin/Debug/RealtorObjects.pdb
+bin/Debug/RealtyModel.pdb
+obj/Debug/RealtorObjects.csproj.CoreCompileInputs.cache
+obj/Debug/RealtorObjects.csproj.FileListAbsolute.txt
+obj/Debug/RealtorObjects.csproj.GenerateResource.cache
+obj/Debug/RealtorObjects.exe
+obj/Debug/RealtorObjects.g.resources
+obj/Debug/RealtorObjects.pdb
+obj/Debug/View/FlatFormV2.g.cs
+obj/Debug/View/FlatFormV2.g.i.cs
+obj/Debug/View/HomeV2.g.cs
+obj/Debug/View/HomeV2.g.i.cs

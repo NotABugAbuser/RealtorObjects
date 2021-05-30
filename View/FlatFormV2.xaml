@@ -28,6 +28,48 @@
         </Style>
     </Window.Style>
     <Window.Resources>
+        <Style TargetType="Button" x:Key="LeftGalleryButton">
+            <Setter Property="Background" Value="#66ffffff"/>
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <fa:ImageAwesome
+                            Foreground="{TemplateBinding Background}"
+                            Icon="Solid_AngleLeft"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource LeftGalleryButton}" x:Key="RightGalleryButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <fa:ImageAwesome
+                            Foreground="{TemplateBinding Background}"
+                            Icon="Solid_AngleRight"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource LeftGalleryButton}" x:Key="CloseGalleryButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <fa:ImageAwesome
+                            Foreground="{TemplateBinding Background}"
+                            Icon="Solid_WindowClose"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <c:ByteArrayToBitmapImageConverter x:Key="ByteArrayToBitmapImage"/>
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="#444"/>
@@ -1016,6 +1058,7 @@
                     Style="{StaticResource ImageListBox}"
                     ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Photos}"/>
                 <Button
+                    Margin="0,0,0,50"
                     TabIndex="48"
                     Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.AddImages}"
                     Height="40"
@@ -1024,9 +1067,23 @@
                     Grid.Row="1"
                     Grid.Column="10">
                     <fa:ImageAwesome
+                        Height="25"
+                        Foreground="White"
+                        Icon="Regular_FileImage"/>
+                </Button>
+                <Button
+                    Margin="0,50,0,0"
+                    TabIndex="49"
+                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.ShowHideSlider}"
+                    Height="40"
+                    Width="40"
+                    Style="{StaticResource GreenButton}"
+                    Grid.Row="1"
+                    Grid.Column="10">
+                    <fa:ImageAwesome
                         Height="20"
                         Foreground="White"
-                        Icon="Solid_Images"/>
+                        Icon="Regular_Images"/>
                 </Button>
                 <Grid
                     Width="180"
@@ -1100,6 +1157,32 @@
                     Style="{StaticResource GreenButton}"
                     Content="Редактировать"/>
             </Border>
+        </Grid>
+        <Grid
+            Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.SliderVisibility}"
+            Background="Black"
+            Grid.Row="1">
+            <Image
+                Source="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.CurrentImage}"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Stretch="Uniform"/>
+            <StackPanel 
+                Margin="0,0,0,10"
+                Width="150"
+                Orientation="Horizontal"
+                VerticalAlignment="Bottom">
+                <Button
+                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.GoLeft}"
+                    Style="{StaticResource LeftGalleryButton}"/>
+                <Button
+                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.ShowHideSlider}"
+                    Style="{StaticResource CloseGalleryButton}"/>
+                <Button
+                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.GoRight}"
+                    Style="{StaticResource RightGalleryButton}"/>
+            </StackPanel>
+
         </Grid>
     </Grid>
 </Window>
