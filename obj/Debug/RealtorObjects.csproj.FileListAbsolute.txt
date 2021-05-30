@@ -175,7 +175,6 @@ C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Text.Encodings.Web
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Text.Json.xml
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.ValueTuple.xml
-C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\RealtorObjects.csprojAssemblyReference.cache
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\Customers.g.cs
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\FlatFormV2.g.cs
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\Home.g.cs
@@ -432,3 +431,4 @@ C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\data.db
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\data.db
 C:\Users\NotABugAbuser\Desktop\realtorobjects\bin\Debug\RealtyModel.dll
 C:\Users\NotABugAbuser\Desktop\realtorobjects\obj\Debug\RealtorObjects.exe.config
+C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\RealtorObjects.csproj.AssemblyReference.cache

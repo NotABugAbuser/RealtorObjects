@@ -209,7 +209,7 @@
                         Text="AH2906"/>
                 </Border>
                 <TextBlock
-                    Text="Заказчик:"
+                    Text="Клиент:"
                     Grid.Column="2"
                     Style="{StaticResource LeftHeader}"/>
                 <Border
@@ -1017,7 +1017,7 @@
                     ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Photos}"/>
                 <Button
                     TabIndex="48"
-                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.AddImagesTest}"
+                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.AddImages}"
                     Height="40"
                     Width="40"
                     Style="{StaticResource GreenButton}"

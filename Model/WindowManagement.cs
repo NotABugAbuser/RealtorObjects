@@ -79,7 +79,7 @@ namespace RealtorObjects.Model
         {
             mainWindow = ((App)Application.Current).MainWindow;
             HomeVM = new HomeViewModel();
-            HomeVM.DispatcherTest = this.dispatcher;
+            HomeVM.Dispatcher = this.dispatcher;
             flatFormVM = new FlatFormViewModel();
             loginFormVM = new LoginFormViewModel();
             loginForm = new LoginForm() { DataContext = loginFormVM };
@@ -100,7 +100,6 @@ namespace RealtorObjects.Model
             credential.Registered += (s, e) => OnRegistered();
             HomeVM.FlatButtonPressed += (s, e) => OpenFlatForm(e);
         }
-
 
         private void OnDisconnected()
         {
@@ -161,80 +160,6 @@ namespace RealtorObjects.Model
             if (e.IsNewFlat)
             {
                 flatFormVM.Title = "[Квартира] — Создание";
-                flatFormVM.IsCurrentFlatNew = true;
-                flatFormVM.Flat = new Flat()
-                {
-                    Agent = credential.Name,
-                    Album = new Album()
-                    {
-                        Location = "sdsa",
-                        PhotoCollection = new ObservableCollection<byte[]>()
-                    },
-                    Location = new Location()
-                    {
-                        City = new City() { Name = "asd" },
-                        District = new District() { Name = "asd" },
-                        Street = new Street() { Name = "asd" },
-                        HouseNumber = 1,
-                        FlatNumber = 1,
-                        HasBanner = false,
-                        HasExchange = false
-                    },
-                    Cost = new Cost()
-                    {
-                        Area = 10,
-                        HasMortgage = false,
-                        HasPercents = false,
-                        HasVAT = false,
-                        Price = 1220
-                    },
-                    Customer = new Customer()
-                    {
-                        Name = "asd",
-                        PhoneNumbers = "123213"
-                    },
-                    GeneralInfo = new BaseInfo()
-                    {
-                        Ceiling = 10,
-                        Condition = "asdsa",
-                        Convenience = "asd",
-                        Description = "asd",
-                        General = 10,
-                        Heating = "asd",
-                        Kitchen = 10,
-                        Living = 10,
-                        RoomCount = 10,
-                        Water = "asdsad",
-                        Year = 1950
-                    },
-                    Info = new FlatInfo()
-                    {
-                        Balcony = "asd",
-                        Bath = "asd",
-                        Bathroom = "asd",
-                        Floor = "asd",
-                        Fund = "asd",
-                        HasChute = false,
-                        HasElevator = false,
-                        HasGarage = false,
-                        HasImprovedLayout = false,
-                        HasRenovation = false,
-                        IsCorner = false,
-                        IsPrivatised = false,
-                        IsSeparated = false,
-                        Kvl = 10,
-                        Loggia = "asd",
-                        Material = "asd",
-                        Rooms = "asdsad",
-                        Type = "asd",
-                        TypeOfRooms = "asdsa",
-                        Windows = "asdsad"
-                    },
-                    HasExclusive = false,
-                    IsSold = false,
-                    Type = Target.Flat,
-                    Status = Status.Active
-                };
                 Flat flat = new Flat()
                 {
                     Agent = credential.Name,
@@ -308,12 +233,89 @@ namespace RealtorObjects.Model
                     Type = Target.Flat,
                     Status = Status.Active
                 };
+                Flat testFlat = new Flat()
+                {
+                    Agent = credential.Name,
+                    Album = new Album()
+                    {
+                        Location = "sdsa",
+                        PhotoCollection = new ObservableCollection<byte[]>()
+                    },
+                    Location = new Location()
+                    {
+                        City = new City() { Name = "asd" },
+                        District = new District() { Name = "asd" },
+                        Street = new Street() { Name = "asd" },
+                        HouseNumber = 1,
+                        FlatNumber = 1,
+                        HasBanner = false,
+                        HasExchange = false
+                    },
+                    Cost = new Cost()
+                    {
+                        Area = 10,
+                        HasMortgage = false,
+                        HasPercents = false,
+                        HasVAT = false,
+                        Price = 1220
+                    },
+                    Customer = new Customer()
+                    {
+                        Name = "asd",
+                        PhoneNumbers = "123213"
+                    },
+                    GeneralInfo = new BaseInfo()
+                    {
+                        Ceiling = 10,
+                        Condition = "asdsa",
+                        Convenience = "asd",
+                        Description = "asd",
+                        General = 10,
+                        Heating = "asd",
+                        Kitchen = 10,
+                        Living = 10,
+                        RoomCount = 10,
+                        Water = "asdsad",
+                        Year = 1950
+                    },
+                    Info = new FlatInfo()
+                    {
+                        Balcony = "asd",
+                        Bath = "asd",
+                        Bathroom = "asd",
+                        Floor = "asd",
+                        Fund = "asd",
+                        HasChute = false,
+                        HasElevator = false,
+                        HasGarage = false,
+                        HasImprovedLayout = false,
+                        HasRenovation = false,
+                        IsCorner = false,
+                        IsPrivatised = false,
+                        IsSeparated = false,
+                        Kvl = 10,
+                        Loggia = "asd",
+                        Material = "asd",
+                        Rooms = "asdsad",
+                        Type = "asd",
+                        TypeOfRooms = "asdsa",
+                        Windows = "asdsad"
+                    },
+                    HasExclusive = false,
+                    IsSold = false,
+                    Type = Target.Flat,
+                    Status = Status.Active
+                };
+                flatFormVM.Flat = testFlat;
+                flatFormVM.IsCurrentFlatNew = true;
+                flatFormVM.Photos = new ObservableCollection<byte[]>();
             }
             else
             {
                 flatFormVM.Title = "[Квартира] — Редактирование";
                 flatFormVM.Flat = JsonSerializer.Deserialize<Flat>(JsonSerializer.Serialize(e.Flat)); //нужно, чтобы разорвать связь объекта в форме и объекта в списке
                 flatFormVM.IsCurrentFlatNew = false;
+                flatFormVM.Photos = new ObservableCollection<byte[]>() { e.Flat.Album.Preview };
             }
             flatFormVM.LocationOptions = this.HomeVM.LocationOptions;
             flatForm = new FlatFormV2 { DataContext = flatFormVM };

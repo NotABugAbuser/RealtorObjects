@@ -5,7 +5,10 @@ using RealtyModel.Events.Realty;
 using RealtyModel.Events.UI;
 using RealtyModel.Interface;
 using RealtyModel.Model;
+using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
+using RealtyModel.Model.Operations;
+using RealtyModel.Model.RealtyObjects;
 using RealtyModel.Service;
 using System;
 using System.Collections.ObjectModel;
@@ -112,11 +115,11 @@ namespace RealtorObjects.ViewModel
 
         public FlatFormViewModel()
         {
+            
         }
 
-        public CustomCommand AddImagesTest => addImages ?? (addImages = new CustomCommand(obj =>
+        public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj =>
         {
-            Flat.Album.PhotoCollection = new ObservableCollection<byte[]>();
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
                 Filter = "Файлы изображений (*.BMP; *.JPG; *.JPEG; *.PNG) | *.BMP; *.JPG; *.JPEG; *.PNG",

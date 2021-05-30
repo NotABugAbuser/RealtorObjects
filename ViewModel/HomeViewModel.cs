@@ -27,9 +27,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand goToPage;
         private CustomCommand testCommand;
         private CustomCommand sendQuery;
-        private CustomCommand openCloseFilters;
         private CustomCommand createRealtorObject;
-        private CustomCommand openOrCloseFilterSection;
 
         private ObservableCollection<int> pages = new ObservableCollection<int>();
         private ObservableCollection<BaseRealtorObject> currentObjectList = new ObservableCollection<BaseRealtorObject>() { };
@@ -82,9 +80,8 @@ namespace RealtorObjects.ViewModel
             }
         }
         public LocationOptions LocationOptions { get; set; }
+        public Dispatcher Dispatcher { get; set; }
         #endregion
-
-        public Dispatcher DispatcherTest { get; set; }
 
         public CustomCommand CreateRealtorObject => createRealtorObject ?? (createRealtorObject = new CustomCommand(obj =>
         {
@@ -106,7 +103,7 @@ namespace RealtorObjects.ViewModel
                 DeleteButtonPressed?.Invoke(this, new DeleteButtonPressedEventArgs(bro));
         }));
         public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj => { }));
-        public CustomCommand SendQuery => sendQuery ?? (sendQuery = new CustomCommand(obj => QueryCreated?.Invoke(this, new QueryCreatedEventArgs(Filter))));
+        public CustomCommand SendQuery => sendQuery ?? (sendQuery = new CustomCommand(obj => RequestQuery()));
         public CustomCommand GoToPage => goToPage ?? (goToPage = new CustomCommand(obj =>
         {
             Int16 index = (Int16)(Convert.ToInt16(obj) - 1);
@@ -119,15 +116,31 @@ namespace RealtorObjects.ViewModel
         public HomeViewModel()
         {
         }
-        public void OnQueryResultReceived(QueryResultReceivedEventArgs e)
+
+        public void OnNewQueryResultReceived(QueryResultReceivedEventArgs e)
         {
-            DispatcherTest.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 ObjectLists.Add(e.QueryObjects);
                 GoToPage.Execute(1);
-                Debug.WriteLine(ObjectLists.Count);
-                Debug.WriteLine(ObjectLists[0].Count);
             });
+        }
+        public void OnQueryResultReceived(QueryResultReceivedEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                ObjectLists.Add(e.QueryObjects);
+            });
+        }
+        private void RequestQuery()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                Pages.Clear();
+                ObjectLists.Clear();
+                CurrentObjectList.Clear();
+            });
+            QueryCreated?.Invoke(this, new QueryCreatedEventArgs(Filter));
         }
         private void CalculatePages(short currentPage)
         {

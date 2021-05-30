@@ -70,6 +70,7 @@ namespace RealtorObjects
             operationManagement.ListsArrived += (s, e) => windowManagement.OnListsArrived(e);
             operationManagement.FlatRegistered += (s, e) => windowManagement.OnResultReceived(e);
             operationManagement.FlatModificationRegistered += (s, e) => windowManagement.OnResultReceived(e);
+            operationManagement.NewQueryResultReceived += (s, e) => WindowManagement.HomeVM.OnNewQueryResultReceived(e);
             operationManagement.QueryResultReceived += (s, e) => WindowManagement.HomeVM.OnQueryResultReceived(e);
             //operationManagement.QueryResultReceived +=(s,e)=>
             //operationManagement.PhotoReceived +=(s,e)=>wind
@@ -115,7 +116,7 @@ namespace RealtorObjects
                 Action = Act.Request,
                 Target = Target.Query
             };
-            operationManagement.SendRequest(e.Filter, parameters);
+            OperationManagement.SendRequest(e.Filter, parameters);
         }
         private void OnFlatCreating(FlatCreatingEventArgs e)
         {
@@ -125,7 +126,7 @@ namespace RealtorObjects
                 Action = Act.Add,
                 Target = Target.Flat
             };
-            operationManagement.SendRequest(e.Flat, parameters);
+            OperationManagement.SendRequest(e.Flat, parameters);
         }
         private void OnFlatModifying(FlatModifyingEventArgs e)
         {

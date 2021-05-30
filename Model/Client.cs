@@ -69,7 +69,8 @@ namespace RealtorObjects.Model
                 Debug.WriteLine($"{DateTime.Now} HAS STARTED TO CONNECT");
                 IsTryingToConnect = true;
                 //FindServerIP();
-                serverIp = IPAddress.Parse("192.168.1.250"); 
+                serverIp = IPAddress.Loopback;
+                serverIp = IPAddress.Parse("192.168.1.250");
                 try
                 {
                     if (serverIp != null)
@@ -193,7 +194,6 @@ namespace RealtorObjects.Model
                 {
                     byte[] buffer = new byte[8192];
                     int bytes = stream.Read(buffer, 0, buffer.Length);
-                    Debug.WriteLine($"Receive {bytes} bytes");
                     byte[] receivedData = new byte[bytes];
                     Array.Copy(buffer, receivedData, bytes);
                     byteList.AddRange(receivedData);

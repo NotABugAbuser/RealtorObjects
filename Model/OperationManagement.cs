@@ -25,6 +25,7 @@ namespace RealtorObjects.Model
         public event FlatModificationRegisteredEventHandler FlatModificationRegistered;
         public event PhotoSavedEventHandler PhotoSaved;
         public event PhotoReceivedEventHandler PhotoReceived;
+        public event QueryResultReceivedEventHandler NewQueryResultReceived;
         public event QueryResultReceivedEventHandler QueryResultReceived;
 
         public event ListsArrivedEventHandler ListsArrived;
@@ -62,7 +63,7 @@ namespace RealtorObjects.Model
             {
                 RegisteringEventArgs e = (RegisteringEventArgs)data;
                 operation.Name = e.UserName;
-                operation.Data = BinarySerializer.Serialize(new Credential() { Name = e.UserName, Password = e.Password, Email = e.Email });
+                operation.Data = BinarySerializer.Serialize(new Credential() { Name = e.UserName, Password = e.Password, Email = e.Email, AdminPassword = credential.Password });
             }
             client.OutcomingOperations.Enqueue(operation);
         }
@@ -123,20 +124,15 @@ namespace RealtorObjects.Model
                         {
                             objects.AddRange(BinarySerializer.Deserialize<Flat[]>(operation.Data));
                         }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine("Первый вариант не сработал");
-                        }
-                        try
+                        catch
                         {
                             objects.AddRange(BinarySerializer.Deserialize<House[]>(operation.Data));
                         }
-                        catch
-                        {
-                            Debug.WriteLine("Второй вариант не сработал");
 
-                        }
-                        QueryResultReceived?.Invoke(this, new QueryResultReceivedEventArgs(new ObservableCollection<BaseRealtorObject>(objects)));
+                        if (operation.Parameters.Part == 1)
+                            NewQueryResultReceived?.Invoke(this, new QueryResultReceivedEventArgs(new ObservableCollection<BaseRealtorObject>(objects)));
+                        else
+                            QueryResultReceived?.Invoke(this, new QueryResultReceivedEventArgs(new ObservableCollection<BaseRealtorObject>(objects)));
                     }
                     else if (operation.Parameters.Target == Target.Flat)
                     {
@@ -156,6 +152,7 @@ namespace RealtorObjects.Model
                         ListsArrived?.Invoke(this, new ListsArrivedEventArgs(BinarySerializer.Deserialize<LocationOptions>(operation.Data)));
                     }
                 }
+                else if(!operation.IsSuccessfully && operation.Parameters.Target == Target.Query) MessageBox.Show("Подходящих объектов нет");
                 else MessageBox.Show("Операция не была успешна");
             }
             catch (Exception ex)
