@@ -15,7 +15,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand sendPassword;
         private CustomCommand createNewUser;
         private CustomCommand changeRegistrationVisibility;
-        private CredentialData credentials = new CredentialData();
+        private CredentialData credentialData = new CredentialData();
         private Visibility registrationVisibility = Visibility.Collapsed;
         public event RegisteringEventHandler Registering;
 
@@ -23,9 +23,10 @@ namespace RealtorObjects.ViewModel
         }
 
         public CustomCommand Login => login ?? (login = new CustomCommand(obj => {
-            Credential credential = new Credential() { Password = credentials.CurrentPassword, Name = credentials.CurrentUsername };
+            Credential credential = new Credential() { Password = credentialData.CurrentPassword, Name = credentialData.CurrentUsername };
             if (Client.Login(credential)) {
                 new MainWindowV2() { DataContext = new MainWindowViewModel(credential) }.Show();
+                (obj as LoginForm).Close();
             }
         }));
         public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
@@ -35,23 +36,23 @@ namespace RealtorObjects.ViewModel
 
         }));
         public CustomCommand CreateNewUser => createNewUser ?? (createNewUser = new CustomCommand(obj => {
-            if (String.IsNullOrWhiteSpace(Credentials.Name))
+            if (String.IsNullOrWhiteSpace(CredentialData.Name))
                 MessageBox.Show("Введите имя");
-            else if (String.IsNullOrWhiteSpace(Credentials.Surname))
+            else if (String.IsNullOrWhiteSpace(CredentialData.Surname))
                 MessageBox.Show("Введите фамилию");
-            else if (String.IsNullOrWhiteSpace(Credentials.Patronymic))
+            else if (String.IsNullOrWhiteSpace(CredentialData.Patronymic))
                 MessageBox.Show("Введите отчество");
-            else if (String.IsNullOrWhiteSpace(Credentials.FirstPassword))
+            else if (String.IsNullOrWhiteSpace(CredentialData.FirstPassword))
                 MessageBox.Show("Введите пароль");
-            else if (String.IsNullOrWhiteSpace(Credentials.SecondPassword))
+            else if (String.IsNullOrWhiteSpace(CredentialData.SecondPassword))
                 MessageBox.Show("Подтвердите пароль");
-            else if (String.IsNullOrWhiteSpace(Credentials.Email))
+            else if (String.IsNullOrWhiteSpace(CredentialData.Email))
                 MessageBox.Show("Введите электронную почту");
-            else if (Credentials.FirstPassword != Credentials.SecondPassword)
+            else if (CredentialData.FirstPassword != CredentialData.SecondPassword)
                 MessageBox.Show("Пароли должны совпадать");
             else {
                 GetUsername();
-                Registering?.Invoke(this, new RegisteringEventArgs(credentials.CurrentUsername, credentials.SecondPassword, credentials.Email));
+                Registering?.Invoke(this, new RegisteringEventArgs(credentialData.CurrentUsername, credentialData.SecondPassword, credentialData.Email));
             }
         }));//создать тут проверку на заполненность полей
         public CustomCommand ChangeRegistrationVisibility => changeRegistrationVisibility ?? (changeRegistrationVisibility = new CustomCommand(obj => {
@@ -68,11 +69,12 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
-        public CredentialData Credentials {
-            get => credentials; set => credentials = value;
+        public CredentialData CredentialData {
+            get => credentialData; 
+            set => credentialData = value;
         }
         private void GetUsername() {
-            Credentials.CurrentUsername = $"{Credentials.Surname}{Credentials.Name[0]}{Credentials.Patronymic[0]}";
+            CredentialData.CurrentUsername = $"{CredentialData.Surname}{CredentialData.Name[0]}{CredentialData.Patronymic[0]}";
         }
     }
 }

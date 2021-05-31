@@ -78,14 +78,10 @@ namespace RealtorObjects.ViewModel
 
         public CustomCommand CreateRealtorObject => createRealtorObject ?? (createRealtorObject = new CustomCommand(obj => {
             string type = (string)obj;
-            if (type == "Flat")
-                FlatButtonPressed?.Invoke(this, new FlatButtonPressedEventArgs(true, new Flat(), LocationOptions));
         }));
         public CustomCommand Modify => modify ?? (modify = new CustomCommand(obj => {
             BaseRealtorObject bro = (BaseRealtorObject)obj;
-            if (CheckAccess(bro.Agent, ((App)Application.Current).Credential.Name))
-                if (bro is Flat flat)
-                    FlatButtonPressed?.Invoke(this, new FlatButtonPressedEventArgs(false, flat));
+        
         }));
         public CustomCommand Delete => delete ?? (delete = new CustomCommand(obj => {
             BaseRealtorObject bro = (BaseRealtorObject)obj;
@@ -103,12 +99,7 @@ namespace RealtorObjects.ViewModel
         }));
 
         public HomeViewModel() {
-        }
-        public void OnQueryResultReceived(QueryResultReceivedEventArgs e) {
-            ObjectLists.Add(e.QueryObjects);
-            GoToPage.Execute(1);
-            Debug.WriteLine(ObjectLists.Count);
-            Debug.WriteLine(ObjectLists[0].Count);
+            CurrentObjectList.Add(new Flat());
         }
         private void CalculatePages(short currentPage) {
             int count = ObjectLists.Count;

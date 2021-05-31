@@ -17,6 +17,7 @@ using RealtyModel.Events.Network;
 using RealtyModel.Model.Operations;
 using Action = RealtyModel.Model.Operations.Action;
 using RealtyModel.Service;
+using System.Windows;
 
 namespace RealtorObjects.Model
 {
@@ -31,11 +32,14 @@ namespace RealtorObjects.Model
             TcpClient client = new TcpClient();
             client.Connect(serverIp, 15000);
             NetworkStream network = client.GetStream();
+
             Operation operation = new Operation(Action.Login);
             operation.Data = BinarySerializer.Serialize(credential);
-            NetworkTransfer.SendData(BinarySerializer.Serialize(operation), network);
-            byte[] response = NetworkTransfer.ReceiveData(network);
-            bool isSuccessful = BinarySerializer.Deserialize<bool>(response);
+            NetworkTransfer.SendOperation(operation, network);
+            
+            Response response = NetworkTransfer.ReceiveResponse(network);
+            bool isSuccessful = BinarySerializer.Deserialize<bool>(response.Data);
+            OperationNotification.Notify(response.Code);
             return isSuccessful;
         }
         public static LocationOptions GetLocationOptions() {
@@ -43,9 +47,9 @@ namespace RealtorObjects.Model
             client.Connect(serverIp, 15000);
             NetworkStream network = client.GetStream();
             Operation operation = new Operation(Action.Request, Target.Locations);
-            NetworkTransfer.SendData(BinarySerializer.Serialize(operation), network);
-            byte[] response = NetworkTransfer.ReceiveData(network);
-            LocationOptions locationOptions = BinarySerializer.Deserialize<LocationOptions>(response);
+            NetworkTransfer.SendOperation(operation, network);
+            Response response = NetworkTransfer.ReceiveResponse(network);
+            LocationOptions locationOptions = BinarySerializer.Deserialize<LocationOptions>(response.Data);
             return locationOptions;
         }
     }

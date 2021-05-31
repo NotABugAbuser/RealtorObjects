@@ -12,6 +12,9 @@
              Background="#f7f7f7"
              Name="HomeVM"
              d:DesignHeight="648" d:DesignWidth="1196">
+    <UserControl.DataContext>
+        <vm:HomeViewModel/>
+    </UserControl.DataContext>
     <UserControl.Resources>
         <Style TargetType="TextBlock" x:Key="RegularText">
             <Setter Property="FontFamily" Value="{StaticResource Helvetica}"/>
@@ -19,107 +22,157 @@
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
-        <ControlTemplate TargetType="Button" x:Key="TrashButtonTemplate">
-            <fa:ImageAwesome 
-                Height="{TemplateBinding Height}"
-                Width="{TemplateBinding Width}"
-                VerticalAlignment="Bottom"
-                Foreground="{TemplateBinding Foreground}"
-                Icon="Regular_TrashAlt"/>
-        </ControlTemplate>
-        <ControlTemplate TargetType="Button" x:Key="ModifyButtonTemplate">
-            <fa:ImageAwesome 
-                Height="{TemplateBinding Height}"
-                Width="{TemplateBinding Width}"
-                VerticalAlignment="Bottom"
-                Foreground="{TemplateBinding Foreground}"
-                Icon="Solid_PencilAlt"/>
-        </ControlTemplate>
-        <Style TargetType="Button" x:Key="ActionButton">
-            <Setter Property="Foreground" Value="{StaticResource PrimaryViolet}"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Height" Value="20"/>
-            <Setter Property="Width" Value="20"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource LightPrimaryViolet}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="Button" BasedOn="{StaticResource ActionButton}" x:Key="TrashButton">
-            <Setter Property="Template" Value="{StaticResource TrashButtonTemplate}"/>
-        </Style>
-        <Style TargetType="Button" BasedOn="{StaticResource ActionButton}" x:Key="ModifyButton">
-            <Setter Property="Template" Value="{StaticResource ModifyButtonTemplate}"/>
-        </Style>
         <c:StatusToBorderColorConverter x:Key="StatusToBorderColor"/>
         <c:StatusToColorConverter x:Key="StatusToColor"/>
         <c:StatusEngToRusConverter x:Key="StatusEngToRus"/>
         <c:PageEqualityConverter x:Key="PageEquality"/>
+        <Style TargetType="Button" x:Key="ModifyButton">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Grid.ColumnSpan" Value="12"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            Background="{TemplateBinding Background}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="Transparent"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Background" Value="#0a000000"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <ControlTemplate x:Key="ObjectListItemTemplate">
             <Grid
                 SnapsToDevicePixels="True"
-                Height="54">
+                Height="100">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="175"/>
                     <ColumnDefinition Width="120"/>
-                    <ColumnDefinition MinWidth="145" Width="*"/>
-                    <ColumnDefinition MinWidth="145" Width="*"/>
-                    <ColumnDefinition Width="110"/>
-                    <ColumnDefinition Width="110"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition MinWidth="145"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition MinWidth="90"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="40"/>
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock
-                    Margin="30,0,0,0"
+                    HorizontalAlignment="Center"
                     Style="{StaticResource RegularText}"
                     Text="{Binding Id}"/>
                 <Grid
-                    Height="40"
+                    Grid.RowSpan="3"
+                    Background="green"
+                    Height="90"
+                    Width="120"
                     Grid.Column="1">
                     <Image
                         Source="{Binding Album.Preview}"
-                        Height="80"
+                        Height="180"
                         Stretch="UniformToFill"
                         HorizontalAlignment="Left"
                         Width="100"
                         Margin="30,0,0,0"
                         VerticalAlignment="Center"/>
                 </Grid>
-                <Grid
+                <StackPanel
                     VerticalAlignment="Center"
-                    Grid.Column="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <fa:ImageAwesome
-                        Icon="Solid_Building"
-                        Width="20"
-                        Foreground="{StaticResource PrimaryViolet}"/>
+                    Margin="0,3"
+                    Grid.Column="3">
                     <TextBlock
-                        Margin="5,0,0,0"
-                        Grid.Column="1"
+                        FontWeight="Bold"
+                        Grid.Column="2"
+                        FontSize="14"
                         Style="{StaticResource RegularText}"
-                        Text="{Binding StringFormat='0 кв м', Path=Cost.Area}"/>
-                </Grid>
-                <TextBlock
-                    Grid.Column="3"
-                    Style="{StaticResource RegularText}"
-                    TextTrimming="WordEllipsis"
-                    Text="{Binding Customer.Name}"/>
-                <TextBlock
-                    Grid.Column="4"
-                    Style="{StaticResource RegularText}"
-                    TextTrimming="WordEllipsis">
-                    <Run Text="{Binding Location.Street.Name}"/>
-                    <Run Text="{Binding Path=Location.HouseNumber}"/>
-                    <Run Text="{Binding Path=Location.FlatNumber, StringFormat=' Кв 0'}"/>
-                </TextBlock>
-                <TextBlock
-                    Grid.Column="5"
-                    Style="{StaticResource RegularText}"
-                    Text="{Binding Path=Cost.Price, StringFormat=' {0:### ### ##0 ₽}'}"/>
+                        Text="Участок"/>
+                    <TextBlock
+                        Margin="0,15,0,0"
+                        Grid.Column="2"
+                        Grid.Row="1"
+                        Style="{StaticResource RegularText}"
+                        Text="{Binding StringFormat='Комнаты: 0', Path=GeneralInfo.RoomCount}"/>
+                    <TextBlock
+                        Margin="0,15,0,0"
+                        Grid.Column="2"
+                        Grid.Row="1"
+                        Style="{StaticResource RegularText}"
+                        Text="{Binding StringFormat='Площадь: 0', Path=Cost.Area}"/>
+                </StackPanel>
+                <StackPanel
+                    VerticalAlignment="Center"
+                    Margin="0,3"
+                    Grid.Column="5">
+                    <TextBlock
+                        FontWeight="Bold"
+                        Grid.Column="2"
+                        FontSize="14"
+                        TextTrimming="WordEllipsis"
+                        Style="{StaticResource RegularText}"
+                        Text="{Binding Customer.Name}"/>
+                    <TextBlock
+                        Margin="0,15,0,0"
+                        Grid.Column="2"
+                        Grid.Row="1"
+                        Style="{StaticResource RegularText}"
+                        Text="{Binding Customer.PhoneNumberList[0]}"/>
+                    <TextBlock
+                        Margin="0,15,0,0"
+                        Grid.Column="2"
+                        Grid.Row="1"
+                        Style="{StaticResource RegularText}"
+                        Text="{Binding Customer.PhoneNumberList[1]}"/>
+                </StackPanel>
+                <StackPanel
+                    VerticalAlignment="Center"
+                    Margin="0,3"
+                    Grid.Column="7">
+                    <TextBlock
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Grid.Column="2"
+                        Grid.Row="1"
+                        Style="{StaticResource RegularText}"
+                        Text="{Binding Location.Street.Name}"/>
+                    <TextBlock
+                        Margin="0,15,0,0"
+                        Grid.Column="2"
+                        Grid.Row="1"
+                        Style="{StaticResource RegularText}"
+                        Text="{Binding Path=Location.HouseNumber, StringFormat='Дом 0'}"/>
+                    <TextBlock
+                        Margin="0,15,0,0"
+                        Grid.Column="2"
+                        Grid.Row="1"
+                        Style="{StaticResource RegularText}"
+                        Text="{Binding Path=Location.FlatNumber, StringFormat='Квартира 0'}"/>
+                </StackPanel>
+                <StackPanel
+                    VerticalAlignment="Center"
+                    Margin="0,3"
+                    Grid.Column="9">
+                    <TextBlock
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Grid.Column="2"
+                        Grid.Row="1"
+                        Style="{StaticResource RegularText}"
+                        Text="{Binding Path=Cost.Price, StringFormat=' {0:### ### ##0 ₽}'}"/>
+                    <TextBlock
+                        Margin="0,15,0,0"
+                        Grid.Column="2"
+                        Grid.Row="1"
+                        Style="{StaticResource RegularText}"
+                        Text="Есть НДС"/>
+                </StackPanel>
                 <Border
                     x:Name="PART_StatusBorder"
                     Height="20"
@@ -127,7 +180,7 @@
                     CornerRadius="10"
                     HorizontalAlignment="Left"
                     Background="{Binding Status, Converter={StaticResource StatusToBorderColor}}"
-                    Grid.Column="6">
+                    Grid.Column="11">
                     <TextBlock 
                         x:Name="PART_StatusText"
                         HorizontalAlignment="Center"
@@ -137,22 +190,10 @@
                         Foreground="{Binding Status, Converter={StaticResource StatusToColor}}"
                         Text="{Binding Status, Converter={StaticResource StatusEngToRus}}"/>
                 </Border>
-                <StackPanel
-                    Margin="8,0,0,0"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Grid.Column="7">
-                    <Button
-                        Margin="0,0,15,0"
-                        Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DataContext.Modify}"
-                        CommandParameter="{Binding .}"
-                        Style="{StaticResource ModifyButton}"/>
-                    <Button
-                        Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DataContext.Delete}"
-                        CommandParameter="{Binding .}"
-                        Style="{StaticResource TrashButton}"/>
-                </StackPanel>
+                <Button
+                    CommandParameter="{Binding .}"
+                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DataContext.Modify}"
+                    Style="{StaticResource ModifyButton}"/>
             </Grid>
         </ControlTemplate>
         <Style TargetType="ListBoxItem" x:Key="ObjectItemContainerStyle">
@@ -450,53 +491,52 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="175"/>
                     <ColumnDefinition Width="120"/>
-                    <ColumnDefinition MinWidth="145" Width="*"/>
-                    <ColumnDefinition MinWidth="145" Width="*"/>
-                    <ColumnDefinition Width="110"/>
-                    <ColumnDefinition Width="110"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition MinWidth="145"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition MinWidth="90"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="40"/>
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock
-                    Margin="30,0,0,0"
+                    Margin="25,0,0,0"
                     FontWeight="Bold"
                     Style="{StaticResource HeaderText}"
                     Text="№"/>
                 <TextBlock
                     HorizontalAlignment="Center"
-                    Margin="0,0,20,0"
                     Style="{StaticResource HeaderText}"
                     Grid.Column="1"
                     Text="Фото"/>
                 <TextBlock
                     Style="{StaticResource HeaderText}"
-                    Grid.Column="2"
+                    Grid.Column="3"
                     Text="Объект"/>
                 <TextBlock
                     Style="{StaticResource HeaderText}"
-                    Grid.Column="3"
+                    Grid.Column="5"
                     Text="Клиент"/>
                 <TextBlock
                     Style="{StaticResource HeaderText}"
-                    Grid.Column="4"
+                    Grid.Column="7"
                     Text="Адрес"/>
                 <TextBlock
                     Style="{StaticResource HeaderText}"
-                    Grid.Column="5"
+                    Grid.Column="9"
                     Text="Цена"/>
                 <TextBlock
                     Margin="15,0,0,0"
                     Style="{StaticResource HeaderText}"
-                    Grid.Column="6"
+                    Grid.Column="11"
                     Text="Статус"/>
-                <TextBlock
-                    Style="{StaticResource HeaderText}"
-                    Grid.Column="7"
-                    Text="Действия"/>
                 <ListBox
                     Grid.Row="1"
-                    Grid.ColumnSpan="8"
+                    Grid.ColumnSpan="20"
                     Style="{StaticResource ObjectListBox}"
                     ItemsSource="{Binding CurrentObjectList}"/>
             </Grid>

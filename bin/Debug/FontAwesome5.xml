@@ -9691,46 +9691,6 @@
              </summary>
             <see href="http://fontawesome.com/icons/zhihu?style=brands" />
         </member>
-        <member name="T:FontAwesome5.FontAwesomeInformationAttribute">
-            <summary>
-            FontAwesome Information Attribute
-            </summary>
-        </member>
-        <member name="P:FontAwesome5.FontAwesomeInformationAttribute.Style">
-            <summary>
-            FontAwesome Style
-            </summary>
-        </member>
-        <member name="P:FontAwesome5.FontAwesomeInformationAttribute.Label">
-            <summary>
-            FontAwesome Label
-            </summary>
-        </member>
-        <member name="P:FontAwesome5.FontAwesomeInformationAttribute.Unicode">
-            <summary>
-            FontAwesome Unicode
-            </summary>
-        </member>
-        <member name="T:FontAwesome5.FontAwesomeSvgInformationAttribute">
-            <summary>
-            FontAwesome SVG Information Attribute
-            </summary>
-        </member>
-        <member name="P:FontAwesome5.FontAwesomeSvgInformationAttribute.Path">
-            <summary>
-            FontAwesome SVG Path
-            </summary>
-        </member>
-        <member name="P:FontAwesome5.FontAwesomeSvgInformationAttribute.Width">
-            <summary>
-            FontAwesome SVG Width
-            </summary>
-        </member>
-        <member name="P:FontAwesome5.FontAwesomeSvgInformationAttribute.Height">
-            <summary>
-            FontAwesome SVG Height
-            </summary>
-        </member>
         <member name="T:FontAwesome5.Extensions.EFontAwesomeIconExtensions">
             <summary>
             EFontAwesomeIcon extensions

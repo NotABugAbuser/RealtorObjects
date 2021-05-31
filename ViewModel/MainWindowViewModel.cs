@@ -34,7 +34,14 @@ namespace RealtorObjects.ViewModel
             FontAwesomeIcon.AddressBook,
         };
         private LocationOptions locationOptions = new LocationOptions();
-        private BaseViewModel[] viewModels = new BaseViewModel[6];
+        private BaseViewModel[] viewModels = new BaseViewModel[6] {
+            new HomeViewModel(),
+            new BaseViewModel(),
+            new BaseViewModel(),
+            new BaseViewModel(),
+            new BaseViewModel(),
+            new BaseViewModel(),
+        };
         readonly ObservableCollection<bool> toggledButtons = new ObservableCollection<bool> {
             true,
             false,
@@ -43,7 +50,8 @@ namespace RealtorObjects.ViewModel
             false,
             false
         };
-
+        public MainWindowViewModel() {
+        }
         public string CurrentAgentName {
             get => currentAgentName;
             set {
@@ -87,6 +95,7 @@ namespace RealtorObjects.ViewModel
 
         public MainWindowViewModel(Credential credential) {
             this.credential = credential;
+            WorkArea = viewModels[0];
             //StartUpTheClock();
         }
         

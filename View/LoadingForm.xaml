@@ -23,6 +23,7 @@
             BorderBrush="Gray"
             Opacity="0.4"/>
         <Button
+            Margin="0,1,1,0"
             Style="{StaticResource WhiteCloseButton}"
             Command="{Binding CloseApp}">
         </Button>
