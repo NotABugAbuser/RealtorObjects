@@ -19,7 +19,8 @@ namespace RealtorObjects.Model
             [ErrorCode.Unknown] = new NotificationInfo("Операция не завершена", CodeType.Error),
             [ErrorCode.WrongData] = new NotificationInfo("Введены неверные данные", CodeType.Exclamation),
             [ErrorCode.NoRequiredData] = new NotificationInfo("Запрошенная информация отсутствует в базе данных", CodeType.Exclamation),
-            [ErrorCode.FlatAddedSuccessfuly] = new NotificationInfo("Квартира добавлена успешно", CodeType.Successful)
+            [ErrorCode.FlatAddedSuccessfuly] = new NotificationInfo("Квартира добавлена успешно", CodeType.Successful),
+            [ErrorCode.NoLocations] = new NotificationInfo("В базе данных нет локаций", CodeType.Exclamation)
         };
         public static void Notify(ErrorCode code) {
             if (code != ErrorCode.NoCode) {

@@ -26,10 +26,11 @@
     </Window.DataContext>
     <Window.Resources>
         <c:SymbolToStarConverter x:Key="SymbolToStar"/>
-        <Style TargetType="Button" x:Key="SubmitButton">
+        <Style TargetType="Button" x:Key="ConfirmButton">
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Background" Value="{StaticResource PrimaryViolet}"/>
+            <Setter Property="IsDefault" Value="True"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -48,17 +49,12 @@
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource LightPrimaryViolet}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="Button" BasedOn="{StaticResource SubmitButton}" x:Key="ConfirmButton">
-            <Setter Property="IsDefault" Value="True"/>
-            <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="False">
                     <Setter Property="Background" Value="{StaticResource SecondaryViolet}"/>
                     <Setter Property="Foreground" Value="{StaticResource LightBackgroundGray}"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightPrimaryViolet}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -82,34 +78,6 @@
             <Setter Property="FontSize" Value="17"/>
             <Setter Property="FontFamily" Value="Courier New"/>
             <Setter Property="Foreground" Value="#444"/>
-        </Style>
-        <Style x:Key="WhiteReturnButton" TargetType="Button">
-            <Setter Property="Width" Value="45"/>
-            <Setter Property="Height" Value="32"/>
-            <Setter Property="HorizontalAlignment" Value="Right"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
-            <Setter Property="Background" Value="white"/>
-            <Setter Property="BorderBrush" Value="Gray"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid Background="{TemplateBinding Background}">
-                            <Line Width="45" Height="32" Margin="0" X1="15" Y1="15" X2="28" Y2="15" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/>
-                            <Line Width="45" Height="32" Margin="0" X1="15" Y1="15" X2="20" Y2="10" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/>
-                            <Line Width="45" Height="32" Margin="0" X1="15" Y1="15" X2="20" Y2="20" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource LightBackgroundGray}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="{StaticResource BackgroundGray}"/>
-                    <Setter Property="BorderBrush" Value="gray"/>
-                </Trigger>
-            </Style.Triggers>
         </Style>
         <Style TargetType="TextBlock" x:Key="header">
             <Setter Property="Margin" Value="0"/>
@@ -174,17 +142,6 @@
                         <i:InvokeCommandAction Command="{Binding SendPassword}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>-
-            </TextBlock>
-            <TextBlock
-                Grid.Row="5"
-                HorizontalAlignment="Right"
-                Text="Новый пользователь"
-                Style="{StaticResource LinkButton}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseLeftButtonDown">
-                        <i:InvokeCommandAction Command="{Binding ChangeRegistrationVisibility}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
             </TextBlock>
             <Button
                 Grid.Row="6"

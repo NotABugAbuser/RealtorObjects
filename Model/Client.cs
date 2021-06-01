@@ -32,7 +32,6 @@ namespace RealtorObjects.Model
             TcpClient client = new TcpClient();
             client.Connect(serverIp, 15000);
             NetworkStream network = client.GetStream();
-
             Operation operation = new Operation(Action.Login);
             operation.Data = BinarySerializer.Serialize(credential);
             NetworkTransfer.SendOperation(operation, network);
@@ -42,14 +41,16 @@ namespace RealtorObjects.Model
             OperationNotification.Notify(response.Code);
             return isSuccessful;
         }
-        public static LocationOptions GetLocationOptions() {
+        public static LocationOptions RequestLocationOptions() {
             TcpClient client = new TcpClient();
             client.Connect(serverIp, 15000);
             NetworkStream network = client.GetStream();
             Operation operation = new Operation(Action.Request, Target.Locations);
             NetworkTransfer.SendOperation(operation, network);
+
             Response response = NetworkTransfer.ReceiveResponse(network);
             LocationOptions locationOptions = BinarySerializer.Deserialize<LocationOptions>(response.Data);
+            OperationNotification.Notify(response.Code);
             return locationOptions;
         }
     }

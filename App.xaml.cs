@@ -35,7 +35,9 @@ namespace RealtorObjects
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            new LoginForm() {DataContext = new LoginFormViewModel() }.Show();
+            LocationOptions locationOptions = Client.RequestLocationOptions();
+            Debug.WriteLine($"Г{locationOptions.Cities.Count} Р{locationOptions.Districts.Count} У{locationOptions.Streets.Count}");
+            //new LoginForm() {DataContext = new LoginFormViewModel() }.Show();
         }
     }
 }

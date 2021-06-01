@@ -10,7 +10,7 @@
         xmlns:fa4="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
         mc:Ignorable="d"
         MouseLeftButtonDown="ThisMainWindow_MouseLeftButtonDown"
-        Title="Объекты недвижимости" 
+        Title="Риелторские объекты" 
         Height="728" 
         Width="1366" 
         Background="#f7f7f7"

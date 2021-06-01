@@ -39,7 +39,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Letter_C_gold_35041.ico</ApplicationIcon>
+    <ApplicationIcon>Иконка продукта.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -312,6 +312,9 @@
   <ItemGroup>
     <Resource Include="View\Image\errorCircle.png" />
     <Resource Include="View\Image\exclamationTriangle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Иконка продукта.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
