@@ -27,16 +27,6 @@ namespace RealtorObjects.View
             InitializeComponent();
             this.DataContext = mainWindowVM;
         }
-        private void CloseApplication_Click(object sender, RoutedEventArgs e) {
-            Application.Current.Shutdown();
-        }
-        private void MinimizeApplcation_Click(object sender, RoutedEventArgs e) {
-            this.WindowState = WindowState.Minimized;
-        }
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e) {
-            base.OnClosing(e);
-            Application.Current.Shutdown();
-        }
         private void ThisMainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             if (e.LeftButton == MouseButtonState.Pressed) {
                 this.DragMove();

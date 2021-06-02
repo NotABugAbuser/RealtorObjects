@@ -43,6 +43,16 @@ namespace RealtorObjects.Model
                 OperationNotification.Notify(ErrorCode.ServerUnavailable);
             }
         }
+        public static void UpdateFlat(Flat flat) {
+            try {
+                NetworkStream network = Connect();
+                Operation operation = new Operation(Action.Update, Target.Flat, BinarySerializer.Serialize(flat));
+                Transfer.SendOperation(operation, network);
+                OperationNotification.Notify(Transfer.ReceiveResponse(network).Code);
+            } catch (SocketException) {
+                OperationNotification.Notify(ErrorCode.ServerUnavailable);
+            }
+        }
         public static bool Login(Credential credential) {
             try {
                 NetworkStream network = Connect();

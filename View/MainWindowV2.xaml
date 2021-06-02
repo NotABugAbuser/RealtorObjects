@@ -204,6 +204,7 @@
                     Text="{Binding CurrentAgentName}"/>
                 <Button
                     Command="{Binding SignOut}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
                     VerticalAlignment="Bottom"
                     Style="{StaticResource ExitButton}">
                     <Grid>

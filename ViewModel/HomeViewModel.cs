@@ -91,7 +91,7 @@ namespace RealtorObjects.ViewModel
             CurrentObjectList = ObjectLists[0];
         }));
         public CustomCommand CreateFlat => createFlat ?? (createFlat = new CustomCommand(obj => {
-            new FlatFormV2(new FlatFormViewModel(true, CurrentAgentName)).Show();
+            new FlatFormV2(new FlatFormViewModel(CurrentAgentName)).Show();
         }));
         public CustomCommand OpenCloseFilters => openCloseFilters ?? (openCloseFilters = new CustomCommand(obj => {
             if (WidthOfFilters == 200) {
@@ -102,8 +102,8 @@ namespace RealtorObjects.ViewModel
         }));
         public CustomCommand Modify => modify ?? (modify = new CustomCommand(obj => {
             BaseRealtorObject bro = (BaseRealtorObject)obj;
-            if (bro is Flat) {
-                new FlatFormV2(new FlatFormViewModel(false, CurrentAgentName)).Show();
+            if (bro is Flat flat) {
+                new FlatFormV2(new FlatFormViewModel(flat, CurrentAgentName)).Show();
             }
         }));
         public CustomCommand GoToPage => goToPage ?? (goToPage = new CustomCommand(obj => {
@@ -143,14 +143,6 @@ namespace RealtorObjects.ViewModel
                 }
                 for (int i = left; i > 0; i--) { Pages.Add(currentPage - i + 1); }
                 for (int i = 0; i < right + 1; i++) { Pages.Add(currentPage + i + 1); }
-            }
-        }
-        private bool CheckAccess(string objectAgent, string currentAgent) {
-            if (objectAgent == currentAgent)
-                return true;
-            else {
-                MessageBox.Show("У вас нет права на доступ к этому объекту");
-                return false;
             }
         }
     }

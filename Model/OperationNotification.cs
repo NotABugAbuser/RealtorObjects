@@ -22,7 +22,9 @@ namespace RealtorObjects.Model
             [ErrorCode.FlatAddedSuccessfuly] = new NotificationInfo("Квартира добавлена успешно", CodeType.Successful),
             [ErrorCode.NoLocations] = new NotificationInfo("В базе данных нет локаций", CodeType.Exclamation),
             [ErrorCode.ServerUnavailable] = new NotificationInfo("Связь с сервером отсутствует", CodeType.Error),
-            [ErrorCode.NoRealtorObjects] = new NotificationInfo("В базе данных нет объектов", CodeType.Exclamation)
+            [ErrorCode.NoRealtorObjects] = new NotificationInfo("В базе данных нет объектов", CodeType.Exclamation),
+            [ErrorCode.WrongAgent] = new NotificationInfo("У вас нет прав на редактирование этого объекта.", CodeType.Exclamation),
+            [ErrorCode.FlatUpdatedSuccessfuly] = new NotificationInfo("Изменения квартиры успешно занесены в базу данных", CodeType.Successful)
         };
         public static void Notify(ErrorCode code) {
             if (code != ErrorCode.NoCode) {

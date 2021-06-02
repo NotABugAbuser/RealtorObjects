@@ -49,6 +49,7 @@ namespace RealtorObjects.ViewModel
         #region Fields
         private string title = "[Квартира] — Изменение";
         private Flat flat = new Flat();
+        private string currentAgent = "";
         private CustomCommand cancel;
         private CustomCommand confirm;
         private CustomCommand changePrice;
@@ -58,6 +59,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand goLeft;
         private CustomCommand goRight;
         private CustomCommand showHideSlider;
+        private bool isNew = false;
         private readonly FlatOptions flatOptions = new FlatOptions();
         private LocationOptions locationOptions = new LocationOptions();
         private Visibility editBorderVisibility = Visibility.Visible;
@@ -68,13 +70,19 @@ namespace RealtorObjects.ViewModel
         public FlatFormViewModel() {
 
         }
-        public FlatFormViewModel(bool isNew, string agentName) {
-            if (isNew) {
-                Title = "[Квартира] — Добавление";
-                EditBorderVisibility = Visibility.Collapsed;
-                Flat = Flat.CreateTestFlat();
-                Flat.Agent = agentName;
-            }
+        public FlatFormViewModel(string agentName) {
+            Title = "[Квартира] — Добавление";
+            EditBorderVisibility = Visibility.Collapsed;
+            Flat = Flat.CreateTestFlat();
+            Flat.RegistrationDate = DateTime.Now;
+            currentAgent = agentName;
+            isNew = true;
+        }
+        public FlatFormViewModel(Flat flat, string agentName) {
+            Title = "[Квартира] — Просмотр";
+            Flat = flat;
+            currentAgent = agentName;
+            Flat.Album.PhotoCollection = BinarySerializer.Deserialize<ObservableCollection<byte[]>>(Flat.Album.RawImages);
         }
         #region Slider
         public CustomCommand GoLeft => goLeft ?? (goLeft = new CustomCommand(obj => {
@@ -102,7 +110,10 @@ namespace RealtorObjects.ViewModel
         }));
         #endregion
         public CustomCommand Edit => edit ?? (edit = new CustomCommand(obj => {
-            EditBorderVisibility = Visibility.Collapsed;
+            if (CheckAccess(Flat.Agent, currentAgent)) {
+                EditBorderVisibility = Visibility.Collapsed;
+                Title = "[Квартира]— Редактирование";
+            }
         }));
         public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj => {
             OpenFileDialog openFileDialog = new OpenFileDialog() {
@@ -110,15 +121,19 @@ namespace RealtorObjects.ViewModel
                 Multiselect = true,
                 Title = "Выбрать фотографии"
             };
-            if (openFileDialog.ShowDialog() == true && openFileDialog.FileNames.Length != 0)
+            if (openFileDialog.ShowDialog() == true && openFileDialog.FileNames.Length != 0) {
                 foreach (string fileName in openFileDialog.FileNames) {
                     Byte[] data = File.ReadAllBytes(fileName);
                     Flat.Album.PhotoCollection.Add(data);
                 }
+                Flat.Album.RawImages = BinarySerializer.Serialize(Flat.Album.PhotoCollection);
+                Flat.Album.Preview = Flat.Album.PhotoCollection[0];
+            }
         }));
         public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj => {
             Int32 number = Convert.ToInt32(obj);
             Flat.Album.PhotoCollection.RemoveAt(number);
+            Flat.Album.RawImages = BinarySerializer.Serialize(Flat.Album.PhotoCollection);
         }));
         public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj => {
             var value = Convert.ToInt32(obj);
@@ -128,12 +143,21 @@ namespace RealtorObjects.ViewModel
 
         public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj => {
             if (new FieldChecking(Flat).CheckFieldsOfFlat()) {
-               for (int i = 0; i < 98; i++) {
+                if (isNew) {
                     Client.AddFlat(Flat);
-
+                } else {
+                    Client.UpdateFlat(Flat);
                 }
             }
         }));
+        private bool CheckAccess(string objectAgent, string currentAgent) {
+            if (objectAgent == currentAgent)
+                return true;
+            else {
+                OperationNotification.Notify(ErrorCode.WrongAgent);
+                return false;
+            }
+        }
         public void ChangeProperty<T>(object obj, T step) {
             var objects = obj as object[];
             object instance = objects[0];
