@@ -565,7 +565,7 @@
                 <Button
                     Style="{StaticResource HeaderButton}"
                     Grid.Column="1"
-                    Command="{Binding CreateRealtorObject}"
+                    Command="{Binding CreateFlat}"
                     CommandParameter="Flat"
                     Content="+ Квартира"/>
                 <Button
@@ -705,6 +705,7 @@
                                 Text="{Binding Filter.City, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedItem="{Binding Filter.City}"
                                 Margin="35,2,35,0"
+                                ItemsSource="{Binding LocationOptions.Cities}"
                                 Style="{StaticResource GreenComboBox}"/>
                         </StackPanel>
                         <Border
@@ -726,6 +727,7 @@
                             <ComboBox
                                 Text="{Binding Filter.District, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedItem="{Binding Filter.District}"
+                                ItemsSource="{Binding LocationOptions.Districts}"
                                 Margin="35,2,35,0"
                                 Style="{StaticResource GreenComboBox}"/>
                         </StackPanel>

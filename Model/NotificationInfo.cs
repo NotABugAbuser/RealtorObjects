@@ -35,18 +35,19 @@ namespace RealtorObjects.Model
 
         public EFontAwesomeIcon Icon {
             get => icon;
-            set => icon = value;
+            private set => icon = value;
         }
         public string Message {
             get => message;
-            set => message = value;
+            private set => message = value;
         }
         public SolidColorBrush Brush {
             get => brush;
-            set => brush = value;
+            private set => brush = value;
         }
         public string Header {
-            get => header; set => header = value;
+            get => header; 
+            private set => header = value;
         }
     }
 }

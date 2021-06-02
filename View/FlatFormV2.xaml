@@ -17,6 +17,9 @@
         Background="#f6f6f6"
         Height="640" Width="755"
         WindowStartupLocation="CenterScreen">
+    <Window.DataContext>
+        <vm:FlatFormViewModel/>
+    </Window.DataContext>
     <Window.Style>
         <Style TargetType="Window">
             <Setter Property="BorderThickness" Value="0"/>
@@ -29,6 +32,48 @@
     </Window.Style>
     <Window.Resources>
         <c:ByteArrayToBitmapImageConverter x:Key="ByteArrayToBitmapImage"/>
+        <Style TargetType="Button" x:Key="LeftGalleryButton">
+            <Setter Property="Background" Value="#66ffffff"/>
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <fa:ImageAwesome
+                            Foreground="{TemplateBinding Background}"
+                            Icon="Solid_AngleLeft"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource LeftGalleryButton}" x:Key="RightGalleryButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <fa:ImageAwesome
+                            Foreground="{TemplateBinding Background}"
+                            Icon="Solid_AngleRight"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource LeftGalleryButton}" x:Key="CloseGalleryButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <fa:ImageAwesome
+                            Foreground="{TemplateBinding Background}"
+                            Icon="Solid_DoorOpen"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="#444"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -209,7 +254,7 @@
                         Text="AH2906"/>
                 </Border>
                 <TextBlock
-                    Text="Заказчик:"
+                    Text="Клиент:"
                     Grid.Column="2"
                     Style="{StaticResource LeftHeader}"/>
                 <Border
@@ -1013,11 +1058,27 @@
                     IsChecked="{Binding HasMortgage}"
                     Content="Ипотека"/>
                 <ListBox
+                    DataContext="{Binding Album}"
                     Style="{StaticResource ImageListBox}"
-                    ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Photos}"/>
+                    ItemsSource="{Binding PhotoCollection}"/>
                 <Button
+                    Margin="0,0,0,50"
                     TabIndex="48"
-                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.AddImagesTest}"
+                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.AddImages}"
+                    Height="40"
+                    Width="40"
+                    Style="{StaticResource GreenButton}"
+                    Grid.Row="1"
+                    Grid.Column="10">
+                    <fa:ImageAwesome
+                        Height="25"
+                        Foreground="White"
+                        Icon="Regular_FileImage"/>
+                </Button>
+                <Button
+                    Margin="0,50,0,0"
+                    TabIndex="49"
+                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.ShowHideSlider}"
                     Height="40"
                     Width="40"
                     Style="{StaticResource GreenButton}"
@@ -1026,7 +1087,7 @@
                     <fa:ImageAwesome
                         Height="20"
                         Foreground="White"
-                        Icon="Solid_Images"/>
+                        Icon="Regular_Images"/>
                 </Button>
                 <Grid
                     Width="180"
@@ -1077,6 +1138,55 @@
                 BorderBrush="{StaticResource SplitterGray}"
                 BorderThickness="0,2,0,2"
                 Grid.Row="3"/>
+        </Grid>
+        <Grid
+            Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.EditBorderVisibility}"
+            IsHitTestVisible="True"
+            Background="Transparent"
+            Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <Border
+                Background="#f6f6f6"
+                Grid.Row="1">
+                <Button
+                    HorizontalAlignment="Right"
+                    Margin="0,0,10,3"
+                    Width="120"
+                    TabIndex="50"
+                    Grid.Column="2"
+                    Command="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.Edit}"
+                    Style="{StaticResource GreenButton}"
+                    Content="Редактировать"/>
+            </Border>
+        </Grid>
+        <Grid
+            Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.SliderVisibility}"
+            Background="Black"
+            Grid.Row="1">
+            <Image
+                Source="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.CurrentImage}"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Stretch="Uniform"/>
+            <StackPanel 
+                Margin="0,0,0,10"
+                Width="150"
+                Orientation="Horizontal"
+                VerticalAlignment="Bottom">
+                <Button
+                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.GoLeft}"
+                    Style="{StaticResource LeftGalleryButton}"/>
+                <Button
+                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.ShowHideSlider}"
+                    Style="{StaticResource CloseGalleryButton}"/>
+                <Button
+                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.GoRight}"
+                    Style="{StaticResource RightGalleryButton}"/>
+            </StackPanel>
+
         </Grid>
     </Grid>
 </Window>

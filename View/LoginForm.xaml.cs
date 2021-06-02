@@ -24,6 +24,10 @@ namespace RealtorObjects.View
         public LoginForm() {
             InitializeComponent();
         }
+        public LoginForm(LoginFormViewModel loginFormVM) {
+            InitializeComponent();
+            this.DataContext = loginFormVM;
+        }
         private void Window_MouseDown(object sender, MouseButtonEventArgs e) {
             if (e.LeftButton == MouseButtonState.Pressed) {
                 this.DragMove();

@@ -18,37 +18,63 @@ using RealtyModel.Model.Operations;
 using Action = RealtyModel.Model.Operations.Action;
 using RealtyModel.Service;
 using System.Windows;
+using RealtyModel.Model.Derived;
+using System.Collections.ObjectModel;
+using RealtyModel.Model.Base;
 
 namespace RealtorObjects.Model
 {
     public class Client
     {
-        private static IPAddress serverIp = IPAddress.Parse("127.0.0.1");
-        private Dispatcher uiDispatcher = null;
-        public Client(Dispatcher dispatcher) {
-            uiDispatcher = dispatcher;
+        private static readonly IPAddress serverIp = IPAddress.Parse("127.0.0.1");
+        private static NetworkStream Connect() {
+            TcpClient client = new TcpClient();
+            client.Connect(serverIp, 15000);
+            NetworkStream network = client.GetStream();
+            return network;
+        }
+        public static void AddFlat(Flat flat) {
+            try {
+                NetworkStream network = Connect();
+                Operation operation = new Operation(Action.Add, Target.Flat, BinarySerializer.Serialize(flat));
+                Transfer.SendOperation(operation, network);
+                OperationNotification.Notify(Transfer.ReceiveResponse(network).Code);
+            } catch (SocketException) {
+                OperationNotification.Notify(ErrorCode.ServerUnavailable);
+            }
         }
         public static bool Login(Credential credential) {
-            TcpClient client = new TcpClient();
-            client.Connect(serverIp, 15000);
-            NetworkStream network = client.GetStream();
-            Operation operation = new Operation(Action.Login);
-            operation.Data = BinarySerializer.Serialize(credential);
-            NetworkTransfer.SendOperation(operation, network);
-            
-            Response response = NetworkTransfer.ReceiveResponse(network);
-            bool isSuccessful = BinarySerializer.Deserialize<bool>(response.Data);
+            try {
+                NetworkStream network = Connect();
+                Operation operation = new Operation(Action.Login, BinarySerializer.Serialize(credential));
+                Transfer.SendOperation(operation, network);
+
+                Response response = Transfer.ReceiveResponse(network);
+                bool isSuccessful = BinarySerializer.Deserialize<bool>(response.Data);
+                OperationNotification.Notify(response.Code);
+                return isSuccessful;
+            } catch (SocketException) {
+                OperationNotification.Notify(ErrorCode.ServerUnavailable);
+                return false;
+            }
+        }
+        public static ObservableCollection<BaseRealtorObject> RequestRealtorObjects(Filter filter) {
+            NetworkStream network = Connect();
+            Operation operation = new Operation(Action.Request, Target.RealtorObjects, BinarySerializer.Serialize(filter));
+            Transfer.SendOperation(operation, network);
+
+            Response response = Transfer.ReceiveResponse(network);
+            Tuple<Flat[], House[]> objects = BinarySerializer.Deserialize<Tuple<Flat[], House[]>>(response.Data);
+            ObservableCollection<BaseRealtorObject> bros = new ObservableCollection<BaseRealtorObject>(objects.Item1);
             OperationNotification.Notify(response.Code);
-            return isSuccessful;
+            return bros;
         }
         public static LocationOptions RequestLocationOptions() {
-            TcpClient client = new TcpClient();
-            client.Connect(serverIp, 15000);
-            NetworkStream network = client.GetStream();
+            NetworkStream network = Connect();
             Operation operation = new Operation(Action.Request, Target.Locations);
-            NetworkTransfer.SendOperation(operation, network);
+            Transfer.SendOperation(operation, network);
 
-            Response response = NetworkTransfer.ReceiveResponse(network);
+            Response response = Transfer.ReceiveResponse(network);
             LocationOptions locationOptions = BinarySerializer.Deserialize<LocationOptions>(response.Data);
             OperationNotification.Notify(response.Code);
             return locationOptions;

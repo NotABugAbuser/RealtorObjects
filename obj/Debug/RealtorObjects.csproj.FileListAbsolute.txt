@@ -477,7 +477,6 @@ C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\CircularProgressBa
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\CircularProgressBar.g.cs
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\Customers.g.cs
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\FlatFormV2.g.cs
-C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\Home.g.cs
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\HomeV2.g.cs
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\HouseForm.g.cs
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\LoadingForm.g.cs
@@ -495,7 +494,6 @@ C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\Customers.baml
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\Dictionaries\ColorsAndBrushes.baml
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\Dictionaries\ControlStylesAndTemplates.baml
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\FlatFormV2.baml
-C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\Home.baml
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\HomeV2.baml
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\HouseForm.baml
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\LoadingForm.baml

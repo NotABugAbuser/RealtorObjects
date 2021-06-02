@@ -46,7 +46,7 @@ namespace RealtorObjects.Model
             " — Фотографии",
         };
         public bool CheckFieldsOfFlat() {
-            StringBuilder message = new StringBuilder("Для продолжения требуется заполнить следуюшие поля:");
+            StringBuilder message = new StringBuilder("Для продолжения требуется заполнить следующие поля:");
             isEveryFieldFilled = true;
             for (int i = 0; i < fields.Count; i++) {
                 if (fields[i] is string str) {

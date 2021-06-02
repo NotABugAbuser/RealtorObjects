@@ -16,28 +16,18 @@ namespace RealtorObjects
 {
     public partial class App : Application
     {
-        #region Fields and Properties
-        private Client client = new Client(Dispatcher.CurrentDispatcher);
         private Credential credential = new Credential();
-
-        public Client Client
-        {
-            get => client;
-            private set => client = value;
+        private string agentName = "";
+        protected override void OnStartup(StartupEventArgs e) {
+            base.OnStartup(e);
+            new LoginForm(new LoginFormViewModel()).Show();
         }
-        public Credential Credential
-        {
+        public Credential Credential {
             get => credential;
             private set => credential = value;
         }
-        #endregion
-
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
-            LocationOptions locationOptions = Client.RequestLocationOptions();
-            Debug.WriteLine($"Г{locationOptions.Cities.Count} Р{locationOptions.Districts.Count} У{locationOptions.Streets.Count}");
-            //new LoginForm() {DataContext = new LoginFormViewModel() }.Show();
+        public string AgentName {
+            get => agentName; set => agentName = value;
         }
     }
 }

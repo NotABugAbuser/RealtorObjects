@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RealtorObjects.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,8 +21,13 @@ namespace RealtorObjects.View
     /// </summary>
     public partial class FlatFormV2 : Window
     {
+
         public FlatFormV2() {
             InitializeComponent();
+        }
+        public FlatFormV2(FlatFormViewModel flatFormVM) {
+            InitializeComponent();
+            this.DataContext = flatFormVM;
         }
         private void CloseApplication_Click(object sender, RoutedEventArgs e) {
             Application.Current.Shutdown();

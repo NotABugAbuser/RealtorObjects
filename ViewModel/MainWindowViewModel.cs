@@ -13,26 +13,17 @@ using System.Threading.Tasks;
 using System.Windows;
 using RealtyModel.Model;
 using RealtyModel.Service;
+using RealtorObjects.Model;
 
 namespace RealtorObjects.ViewModel
 {
     public class MainWindowViewModel : BaseViewModel, INotifyPropertyChanged
     {
-        private string currentTime;
-        private string currentAgentName = "ПроверкинПП";
-        private Credential credential;
+        private string currentAgentName = "Пользователь 0";
         private BaseViewModel workArea;
         private CustomCommand closeApp;
         private CustomCommand updateWorkArea;
         private CustomCommand signOut;
-        private FontAwesomeIcon currentIcon = FontAwesomeIcon.Home;
-        private FontAwesomeIcon[] icons = new FontAwesomeIcon[5] {
-            FontAwesomeIcon.Home,
-            FontAwesomeIcon.Phone,
-            FontAwesomeIcon.BarChart,
-            FontAwesomeIcon.List,
-            FontAwesomeIcon.AddressBook,
-        };
         private LocationOptions locationOptions = new LocationOptions();
         private BaseViewModel[] viewModels = new BaseViewModel[6] {
             new HomeViewModel(),
@@ -51,25 +42,13 @@ namespace RealtorObjects.ViewModel
             false
         };
         public MainWindowViewModel() {
+            CurrentAgentName = (Application.Current as App).AgentName;
+            WorkArea = viewModels[0];
         }
         public string CurrentAgentName {
             get => currentAgentName;
             set {
                 currentAgentName = value;
-                OnPropertyChanged();
-            }
-        }
-        public string CurrentTime {
-            get => currentTime;
-            set {
-                currentTime = value;
-                OnPropertyChanged();
-            }
-        }
-        public FontAwesomeIcon CurrentIcon {
-            get => currentIcon;
-            set {
-                currentIcon = value;
                 OnPropertyChanged();
             }
         }
@@ -93,22 +72,10 @@ namespace RealtorObjects.ViewModel
             set => viewModels = value;
         }
 
-        public MainWindowViewModel(Credential credential) {
-            this.credential = credential;
-            WorkArea = viewModels[0];
-            //StartUpTheClock();
-        }
-        
-        private CustomCommand testCommand;
-        private CustomCommand secondTestCommand;
-        public CustomCommand TestCommand => testCommand ?? (testCommand = new CustomCommand(obj => {
-            var flatWindow = new FlatFormV2();
-            flatWindow.Show();
-        }));
-        public CustomCommand SecondTestCommand => secondTestCommand ?? (secondTestCommand = new CustomCommand(obj => {
-        }));
-
         public CustomCommand SignOut => signOut ?? (signOut = new CustomCommand(obj => {
+            Window window = obj as Window;
+            window.Close();
+            new LoginForm() { DataContext = new LoginFormViewModel() }.Show();
         }));
         public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
             Application.Current.Shutdown();

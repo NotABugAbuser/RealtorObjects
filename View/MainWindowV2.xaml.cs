@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RealtorObjects.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,10 @@ namespace RealtorObjects.View
     {
         public MainWindowV2() {
             InitializeComponent();
+        }
+        public MainWindowV2(MainWindowViewModel mainWindowVM) {
+            InitializeComponent();
+            this.DataContext = mainWindowVM;
         }
         private void CloseApplication_Click(object sender, RoutedEventArgs e) {
             Application.Current.Shutdown();
