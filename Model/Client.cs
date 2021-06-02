@@ -58,14 +58,15 @@ namespace RealtorObjects.Model
                 return false;
             }
         }
-        public static ObservableCollection<BaseRealtorObject> RequestRealtorObjects(Filter filter) {
+        public static List<BaseRealtorObject> RequestRealtorObjects(Filter filter) {
             NetworkStream network = Connect();
             Operation operation = new Operation(Action.Request, Target.RealtorObjects, BinarySerializer.Serialize(filter));
             Transfer.SendOperation(operation, network);
 
             Response response = Transfer.ReceiveResponse(network);
             Tuple<Flat[], House[]> objects = BinarySerializer.Deserialize<Tuple<Flat[], House[]>>(response.Data);
-            ObservableCollection<BaseRealtorObject> bros = new ObservableCollection<BaseRealtorObject>(objects.Item1);
+            List<BaseRealtorObject> bros = new List<BaseRealtorObject>(objects.Item1);
+            Debug.WriteLine(bros.Count);
             OperationNotification.Notify(response.Code);
             return bros;
         }

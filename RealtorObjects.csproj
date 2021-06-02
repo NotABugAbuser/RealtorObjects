@@ -130,6 +130,7 @@
     <Compile Include="Model\Client.cs" />
     <Compile Include="Model\CodeType.cs" />
     <Compile Include="Model\CredentialData.cs" />
+    <Compile Include="Model\LINQExtension.cs" />
     <Compile Include="Model\NotificationInfo.cs" />
     <Compile Include="Model\OperationNotification.cs" />
     <Compile Include="Model\FieldChecking.cs" />

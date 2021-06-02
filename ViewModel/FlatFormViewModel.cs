@@ -128,7 +128,7 @@ namespace RealtorObjects.ViewModel
 
         public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj => {
             if (new FieldChecking(Flat).CheckFieldsOfFlat()) {
-                for (int i = 0; i < 100; i++) {
+               for (int i = 0; i < 98; i++) {
                     Client.AddFlat(Flat);
 
                 }

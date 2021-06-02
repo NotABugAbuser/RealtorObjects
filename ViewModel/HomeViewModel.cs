@@ -18,7 +18,8 @@ using System.Windows.Threading;
 
 namespace RealtorObjects.ViewModel
 {
-    public class HomeViewModel : BaseViewModel {
+    public class HomeViewModel : BaseViewModel
+    {
         #region Fields
         private string currentAgentName = "";
         private int currentPage = 1;
@@ -30,8 +31,8 @@ namespace RealtorObjects.ViewModel
         private CustomCommand openCloseFilters;
         private CustomCommand sendQuery;
         private ObservableCollection<int> pages = new ObservableCollection<int>();
-        private ObservableCollection<BaseRealtorObject> currentObjectList = new ObservableCollection<BaseRealtorObject>() { };
-        private List<ObservableCollection<BaseRealtorObject>> objectLists = new List<ObservableCollection<BaseRealtorObject>>();
+        private List<BaseRealtorObject> currentObjectList = new List<BaseRealtorObject>() { };
+        private List<List<BaseRealtorObject>> objectLists = new List<List<BaseRealtorObject>>();
         private CustomCommand createFlat;
         #endregion
         #region Properties
@@ -53,14 +54,14 @@ namespace RealtorObjects.ViewModel
             get => filter;
             set => filter = value;
         }
-        public List<ObservableCollection<BaseRealtorObject>> ObjectLists {
+        public List<List<BaseRealtorObject>> ObjectLists {
             get => objectLists;
             set => objectLists = value;
         }
         public ObservableCollection<int> Pages {
             get => pages; set => pages = value;
         }
-        public ObservableCollection<BaseRealtorObject> CurrentObjectList {
+        public List<BaseRealtorObject> CurrentObjectList {
             get => currentObjectList;
             set {
                 currentObjectList = value;
@@ -72,9 +73,22 @@ namespace RealtorObjects.ViewModel
         public HomeViewModel() {
             this.LocationOptions = Client.RequestLocationOptions();
         }
+        private void SplitBy(List<BaseRealtorObject> filteredList, byte pageSize) {
+            ObjectLists.Clear();
+            if (filteredList.Count > pageSize) {
+                foreach (var batch in filteredList.Batch(25)) {
+                    ObjectLists.Add(batch.ToList());
+                }
+                CalculatePages(0);
+                CurrentPage = 1;
+            } else {
+                ObjectLists.Add(new List<BaseRealtorObject>(filteredList));
+            }
+        }
         public CustomCommand SendQuery => sendQuery ?? (sendQuery = new CustomCommand(obj => {
             CurrentObjectList.Clear();
-            CurrentObjectList = Client.RequestRealtorObjects(Filter);
+            SplitBy(Client.RequestRealtorObjects(Filter), 25);
+            CurrentObjectList = ObjectLists[0];
         }));
         public CustomCommand CreateFlat => createFlat ?? (createFlat = new CustomCommand(obj => {
             new FlatFormV2(new FlatFormViewModel(true, CurrentAgentName)).Show();
@@ -104,9 +118,8 @@ namespace RealtorObjects.ViewModel
             get => currentAgentName; set => currentAgentName = value;
         }
         public LocationOptions LocationOptions {
-            get => locationOptions; 
-            set 
-            {
+            get => locationOptions;
+            set {
                 locationOptions = value;
                 OnPropertyChanged();
             }
