@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using BitmapImageDecoding;
+using Microsoft.Win32;
 using MiscUtil;
 using RealtorObjects.Model;
 using RealtyModel.Events.Realty;
@@ -16,6 +17,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Linq;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Threading;
@@ -66,6 +68,7 @@ namespace RealtorObjects.ViewModel
         private Visibility sliderVisibility = Visibility.Collapsed;
         private byte[] currentImage;
         private int index = 0;
+        private ObservableCollection<byte[]> photos = new ObservableCollection<byte[]>();
         #endregion
         public FlatFormViewModel() {
 
@@ -76,28 +79,29 @@ namespace RealtorObjects.ViewModel
             Flat = Flat.CreateTestFlat();
             Flat.RegistrationDate = DateTime.Now;
             currentAgent = agentName;
+            Flat.Album.PhotoCollection = Array.Empty<byte>();
             isNew = true;
         }
         public FlatFormViewModel(Flat flat, string agentName) {
             Title = "[Квартира] — Просмотр";
             Flat = flat;
+            Photos = Client.RequestAlbum(Flat.AlbumId);
             currentAgent = agentName;
-            Flat.Album.PhotoCollection = BinarySerializer.Deserialize<ObservableCollection<byte[]>>(Flat.Album.RawImages);
         }
         #region Slider
         public CustomCommand GoLeft => goLeft ?? (goLeft = new CustomCommand(obj => {
             index--;
             if (index == -1) {
-                index = Flat.Album.PhotoCollection.Count - 1;
+                index = Photos.Count - 1;
             }
-            CurrentImage = Flat.Album.PhotoCollection[index];
+            CurrentImage = Photos[index];
         }));
         public CustomCommand GoRight => goRight ?? (goRight = new CustomCommand(obj => {
             index++;
-            if (index == Flat.Album.PhotoCollection.Count) {
+            if (index == Photos.Count) {
                 index = 0;
             }
-            CurrentImage = Flat.Album.PhotoCollection[index];
+            CurrentImage = Photos[index];
         }));
         public CustomCommand ShowHideSlider => showHideSlider ?? (showHideSlider = new CustomCommand(obj => {
             if (SliderVisibility == Visibility.Visible) {
@@ -106,7 +110,7 @@ namespace RealtorObjects.ViewModel
                 SliderVisibility = Visibility.Visible;
                 index = 0;
             }
-            CurrentImage = Flat.Album.PhotoCollection[index];
+            CurrentImage = Photos[index];
         }));
         #endregion
         public CustomCommand Edit => edit ?? (edit = new CustomCommand(obj => {
@@ -123,17 +127,16 @@ namespace RealtorObjects.ViewModel
             };
             if (openFileDialog.ShowDialog() == true && openFileDialog.FileNames.Length != 0) {
                 foreach (string fileName in openFileDialog.FileNames) {
-                    Byte[] data = File.ReadAllBytes(fileName);
-                    Flat.Album.PhotoCollection.Add(data);
+                    Photos.Add(BitmapImageDecoder.GetDecodedBytes(File.ReadAllBytes(fileName), 50, 0));
                 }
-                Flat.Album.RawImages = BinarySerializer.Serialize(Flat.Album.PhotoCollection);
-                Flat.Album.Preview = Flat.Album.PhotoCollection[0];
+                Flat.Preview = BitmapImageDecoder.GetDecodedBytes(File.ReadAllBytes(openFileDialog.FileNames[0]), 0, 100);
+                Flat.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
             }
         }));
         public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj => {
             Int32 number = Convert.ToInt32(obj);
-            Flat.Album.PhotoCollection.RemoveAt(number);
-            Flat.Album.RawImages = BinarySerializer.Serialize(Flat.Album.PhotoCollection);
+            Photos.RemoveAt(number);
+            //Flat.Album.RawImages = BinarySerializer.Serialize(Flat.Album.PhotoCollection);
         }));
         public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj => {
             var value = Convert.ToInt32(obj);
@@ -211,6 +214,14 @@ namespace RealtorObjects.ViewModel
             get => currentImage;
             set {
                 currentImage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<byte[]> Photos {
+            get => photos;
+            set {
+                photos = value;
                 OnPropertyChanged();
             }
         }

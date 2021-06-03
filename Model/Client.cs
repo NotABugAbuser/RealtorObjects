@@ -26,12 +26,21 @@ namespace RealtorObjects.Model
 {
     public class Client
     {
-        private static readonly IPAddress serverIp = IPAddress.Parse("127.0.0.1");
+        private static readonly IPAddress serverIp = IPAddress.Parse("192.168.8.102");
         private static NetworkStream Connect() {
             TcpClient client = new TcpClient();
             client.Connect(serverIp, 15000);
             NetworkStream network = client.GetStream();
             return network;
+        }
+        public static ObservableCollection<byte[]> RequestAlbum(int id) {
+            NetworkStream network = Connect();
+            Operation operation = new Operation(Action.Request, Target.Photo, BinarySerializer.Serialize(id));
+            Transfer.SendOperation(operation, network);
+
+            Response response = Transfer.ReceiveResponse(network);
+            OperationNotification.Notify(response.Code);
+            return BinarySerializer.Deserialize<ObservableCollection<byte[]>>(response.Data);
         }
         public static void AddFlat(Flat flat) {
             try {

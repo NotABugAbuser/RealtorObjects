@@ -24,7 +24,8 @@ namespace RealtorObjects.Model
             [ErrorCode.ServerUnavailable] = new NotificationInfo("Связь с сервером отсутствует", CodeType.Error),
             [ErrorCode.NoRealtorObjects] = new NotificationInfo("В базе данных нет объектов", CodeType.Exclamation),
             [ErrorCode.WrongAgent] = new NotificationInfo("У вас нет прав на редактирование этого объекта.", CodeType.Exclamation),
-            [ErrorCode.FlatUpdatedSuccessfuly] = new NotificationInfo("Изменения квартиры успешно занесены в базу данных", CodeType.Successful)
+            [ErrorCode.FlatUpdatedSuccessfuly] = new NotificationInfo("Изменения квартиры успешно занесены в базу данных", CodeType.Successful),
+            [ErrorCode.FlatDuplicate] = new NotificationInfo("Квартира с данным адресом уже существует в базе данных", CodeType.Exclamation)
         };
         public static void Notify(ErrorCode code) {
             if (code != ErrorCode.NoCode) {

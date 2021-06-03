@@ -76,7 +76,7 @@
                     Width="120"
                     Grid.Column="1">
                     <Image
-                        Source="{Binding Album.Preview, Converter={StaticResource ByteArrayToBitmapImage}}"
+                        Source="{Binding Preview, Converter={StaticResource ByteArrayToBitmapImage}}"
                         Height="90"
                         Stretch="Uniform"
                         HorizontalAlignment="Center"

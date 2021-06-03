@@ -513,3 +513,6 @@ C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\NotificationWindow
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\NotificationWindow.baml
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\RegistrationForm.g.cs
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\RegistrationForm.baml
+C:\Users\Gvozd\Documents\GitHub\RealtorObjects\bin\Debug\NLog.dll
+C:\Users\Gvozd\Documents\GitHub\RealtorObjects\bin\Debug\NLog.xml
+C:\Users\Gvozd\Documents\GitHub\RealtorObjects\bin\Debug\ExifLib.dll
