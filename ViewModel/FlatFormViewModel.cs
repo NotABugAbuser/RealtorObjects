@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using BitmapImageDecoding;
+using Microsoft.Win32;
 using MiscUtil;
 using RealtorObjects.Model;
 using RealtyModel.Events.Realty;
@@ -27,7 +28,8 @@ namespace RealtorObjects.ViewModel
         #region TestProperties
         private CustomCommand testCommand;
         public CustomCommand TestCommand => testCommand ??
-            (testCommand = new CustomCommand(obj => {
+            (testCommand = new CustomCommand(obj =>
+            {
                 MessageBox.Show(JsonSerializer.Serialize(Flat).Replace(',', '\n'));
             }));
         #endregion
@@ -37,25 +39,31 @@ namespace RealtorObjects.ViewModel
         private CustomCommand increaseInteger;
         private CustomCommand decreaseInteger;
         public CustomCommand IncreaseDouble => increaseDouble ??
-            (increaseDouble = new CustomCommand(obj => {
+            (increaseDouble = new CustomCommand(obj =>
+            {
                 ChangeProperty<Single>(obj, 0.05f);
             }));
         public CustomCommand IncreaseInteger => increaseInteger ??
-            (increaseInteger = new CustomCommand(obj => {
+            (increaseInteger = new CustomCommand(obj =>
+            {
                 ChangeProperty<int>(obj, 1);
             }));
         public CustomCommand DecreaseDouble => decreaseDouble ??
-            (decreaseDouble = new CustomCommand(obj => {
+            (decreaseDouble = new CustomCommand(obj =>
+            {
                 ChangeProperty<Single>(obj, -0.05f);
             }));
         public CustomCommand DecreaseInteger => decreaseInteger ??
-            (decreaseInteger = new CustomCommand(obj => {
+            (decreaseInteger = new CustomCommand(obj =>
+            {
                 ChangeProperty<int>(obj, -1);
             }));
         #endregion
         #region Fields
+        private int index = 0;
         private string title;
         private bool isCurrentFlatNew = false;
+        private byte[] currentImage;
         private Flat flat;
         private CustomCommand cancel;
         private CustomCommand confirm;
@@ -70,148 +78,190 @@ namespace RealtorObjects.ViewModel
         private LocationOptions locationOptions = new LocationOptions();
         private Visibility editBorderVisibility = Visibility.Visible;
         private Visibility sliderVisibility = Visibility.Collapsed;
-        private byte[] currentImage;
-        private List<byte[]> fullResolutionImages = new List<byte[]>();
-        private int index = 0;
-
-        public event FlatCreatingEventHandler FlatCreating;
-        public FlatModifyingEventHandler FlatModifying;
         private ObservableCollection<byte[]> test = new ObservableCollection<byte[]> { };
-        #endregion
-        public CustomCommand GoLeft => goLeft ?? (goLeft = new CustomCommand(obj => {
-            index--;
-            if (index == -1) {
-                index = fullResolutionImages.Count - 1;
-            }
-            CurrentImage = fullResolutionImages[index];
-        }));
-        public CustomCommand GoRight => goRight ?? (goRight = new CustomCommand(obj => {
-            index++;
-            if (index == fullResolutionImages.Count) {
-                index = 0;
-            }
-            CurrentImage = fullResolutionImages[index];
-        }));
-        public CustomCommand ShowHideSlider => showHideSlider ?? (showHideSlider = new CustomCommand(obj => {
-            if (fullResolutionImages.Count == 0) {
-                //вот тут идет запрос на получение фото из базы
-                //этот цикл удалить
-                foreach(byte[] b in Photos) {
-                    fullResolutionImages.Add(b);
-                }
-            }
-            if (SliderVisibility == Visibility.Visible) {
-                SliderVisibility = Visibility.Collapsed;
-            } else {
-                SliderVisibility = Visibility.Visible;
-                index = 0;
-            }
-            CurrentImage = fullResolutionImages[index];
-        }));
-        public CustomCommand Edit => edit ?? (edit = new CustomCommand(obj => {
-            EditBorderVisibility = Visibility.Collapsed;
-        }));
-        public bool IsCurrentFlatNew {
-            get => isCurrentFlatNew;
-            set => isCurrentFlatNew = value;
-        }
-        public string Title {
+        public event FlatCreatingEventHandler FlatCreating;
+
+        public string Title
+        {
             get => title;
-            set {
+            set
+            {
                 title = value;
                 OnPropertyChanged();
             }
         }
-        public Flat Flat {
+        public byte[] CurrentImage
+        {
+            get => currentImage;
+            set
+            {
+                currentImage = value;
+                OnPropertyChanged();
+            }
+        }
+        public bool IsCurrentFlatNew
+        {
+            get => isCurrentFlatNew;
+            set => isCurrentFlatNew = value;
+        }
+        public Visibility EditBorderVisibility
+        {
+            get => editBorderVisibility;
+            set
+            {
+                editBorderVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+        public Visibility SliderVisibility
+        {
+            get => sliderVisibility;
+            set
+            {
+                sliderVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+        public Flat Flat
+        {
             get => flat;
-            set {
+            set
+            {
                 flat = value;
                 OnPropertyChanged();
             }
         }
-        public Location CurrentLocation {
+        public Location CurrentLocation
+        {
             get; set;
         }
-        public FlatOptions FlatOptions {
+        public FlatOptions FlatOptions
+        {
             get => flatOptions;
         }
-        public LocationOptions LocationOptions {
+        public Dispatcher DispatcherTest
+        {
+            get; set;
+        }
+        public LocationOptions LocationOptions
+        {
             get => locationOptions;
-            set {
+            set
+            {
                 locationOptions = value;
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<byte[]> Photos {
+        public ObservableCollection<byte[]> Photos
+        {
             get => test; set => test = value;
         }
+        public FlatModifyingEventHandler FlatModifying;
+        //public List<byte[]> FullResolutionImages { get; set; }
+        #endregion
 
-        public FlatFormViewModel() {
-
+        public FlatFormViewModel()
+        {
+            //FullResolutionImages = new List<byte[]>();
         }
 
-        public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj => {
-            OpenFileDialog openFileDialog = new OpenFileDialog() {
+        public CustomCommand GoLeft => goLeft ?? (goLeft = new CustomCommand(obj =>
+        {
+            index--;
+            if (index == -1)
+            {
+                index = Photos.Count - 1;
+            }
+            CurrentImage = Photos[index];
+        }));
+        public CustomCommand GoRight => goRight ?? (goRight = new CustomCommand(obj =>
+        {
+            index++;
+            if (index == Photos.Count)
+            {
+                index = 0;
+            }
+            CurrentImage = Photos[index];
+        }));
+        public CustomCommand ShowHideSlider => showHideSlider ?? (showHideSlider = new CustomCommand(obj =>
+        {
+            if (SliderVisibility == Visibility.Visible)
+                SliderVisibility = Visibility.Collapsed;
+            else
+            {
+                if (Photos.Count > 0)
+                {
+                    CurrentImage = Photos[0];
+                    SliderVisibility = Visibility.Visible;
+                    index = 0;
+                }
+                else MessageBox.Show("Нет фотографий для просмотра");
+            }
+            //if (FullResolutionImages.Count == 0)
+            //{
+            //    //вот тут идет запрос на получение фото из базы
+            //    //этот цикл удалить
+            //    foreach (byte[] b in Photos)
+            //    {
+            //        FullResolutionImages.Add(b);
+            //    }
+            //}
+            //if (SliderVisibility == Visibility.Visible)
+            //{
+            //    SliderVisibility = Visibility.Collapsed;
+            //}
+            //else
+            //{
+            //    SliderVisibility = Visibility.Visible;
+            //    index = 0;
+            //}
+            //CurrentImage = FullResolutionImages?[index] ?? new Byte[0];
+        }));
+        public CustomCommand Edit => edit ?? (edit = new CustomCommand(obj =>
+        {
+            EditBorderVisibility = Visibility.Collapsed;
+        }));
+        public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj =>
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog()
+            {
                 Filter = "Файлы изображений (*.BMP; *.JPG; *.JPEG; *.PNG) | *.BMP; *.JPG; *.JPEG; *.PNG",
                 Multiselect = true,
                 Title = "Выбрать фотографии"
             };
             if (openFileDialog.ShowDialog() == true)
-                foreach (string fileName in openFileDialog.FileNames) {
-                    Byte[] data = File.ReadAllBytes(fileName);
-                    //Flat.Album.PhotoCollection.Add(data);
+            {
+                for (Int32 number = 0; number < openFileDialog.FileNames.Length; number++)
+                {
+                    Byte[] data = BitmapImageDecoder.GetDecodedBytes(openFileDialog.FileNames[number], 50, 0);
+                    if (number == 0)
+                        Flat.Preview = BitmapImageDecoder.GetDecodedBytes(openFileDialog.FileNames[number], 0, 100);
                     Photos.Add(data);
                 }
-            //Flat.Album.WriteLocation(Flat.Location);
-            //if (Flat.Album.PhotoCollection.Count > 0)
-            //    Flat.Album.Preview = Flat.Album.PhotoCollection[0];
-            //else Flat.Album.Preview = Array.Empty<byte>();
+                Flat.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
+                Flat.Album.WriteLocation(Flat.Location);
+            }
         }));
-        public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj => {
+        public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj =>
+        {
             Int32 number = Convert.ToInt32(obj);
             Photos.RemoveAt(number);
-            Flat.Album.PhotoCollection.RemoveAt(number);
+            //Flat.Album.PhotoCollection.RemoveAt(number);
         }));
-        public Dispatcher DispatcherTest {
-            get; set;
-        }
-        public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj => {
+        public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj =>
+        {
             var value = Convert.ToInt32(obj);
             Flat.Cost.Price += value;
         }));
         public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
-
-        public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj => {
+        public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj =>
+        {
             CurrentLocation = Flat.Location.GetCopy();
             if (new FieldChecking(Flat).CheckFieldsOfFlat())
                 FlatCreating?.Invoke(this, new FlatCreatingEventArgs(Flat));
         }));
-
-        public Visibility EditBorderVisibility {
-            get => editBorderVisibility;
-            set {
-                editBorderVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public Visibility SliderVisibility {
-            get => sliderVisibility;
-            set {
-                sliderVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public byte[] CurrentImage {
-            get => currentImage;
-            set {
-                currentImage = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public void ChangeProperty<T>(object obj, T step) {
+        public void ChangeProperty<T>(object obj, T step)
+        {
             var objects = obj as object[];
             object instance = objects[0];
             string name = objects[1].ToString();

@@ -7,7 +7,9 @@ using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
 using RealtyModel.Model.Operations;
 using RealtyModel.Model.RealtyObjects;
+using RealtyModel.Service;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text.Json;
@@ -166,7 +168,7 @@ namespace RealtorObjects.Model
                     Album = new Album()
                     {
                         Location = "",
-                        PhotoCollection = new ObservableCollection<Byte[]>()
+                        PhotoCollection = Array.Empty<byte>()
                     },
                     Location = new Location()
                     {
@@ -239,7 +241,7 @@ namespace RealtorObjects.Model
                     Album = new Album()
                     {
                         Location = "sdsa",
-                        PhotoCollection = new ObservableCollection<byte[]>()
+                        PhotoCollection = Array.Empty<byte>()
                     },
                     Location = new Location()
                     {
@@ -309,13 +311,17 @@ namespace RealtorObjects.Model
                 flatFormVM.Flat = testFlat;
                 flatFormVM.IsCurrentFlatNew = true;
                 flatFormVM.Photos = new ObservableCollection<byte[]>();
+                flatFormVM.EditBorderVisibility = Visibility.Collapsed;
+                //flatFormVM.FullResolutionImages = new List<byte[]>();
             }
             else
             {
+                Parameters parameters = new Parameters(Initiator.User, Direction.Realty, Act.Request, Target.Photo);
+                ((App)Application.Current).OperationManagement.SendRequest(e.Flat.AlbumId, parameters);
                 flatFormVM.Title = "[Квартира] — Редактирование";
                 flatFormVM.Flat = JsonSerializer.Deserialize<Flat>(JsonSerializer.Serialize(e.Flat)); //нужно, чтобы разорвать связь объекта в форме и объекта в списке
                 flatFormVM.IsCurrentFlatNew = false;
-                flatFormVM.Photos = new ObservableCollection<byte[]>() { e.Flat.Album.Preview };
+                flatFormVM.Photos = new ObservableCollection<Byte[]>();
             }
             flatFormVM.LocationOptions = this.HomeVM.LocationOptions;
             flatForm = new FlatFormV2 { DataContext = flatFormVM };

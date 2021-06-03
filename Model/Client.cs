@@ -15,6 +15,7 @@ using System.Threading;
 using System.Diagnostics;
 using RealtyModel.Events.Network;
 using RealtyModel.Model.Operations;
+using RealtyModel.Service;
 
 namespace RealtorObjects.Model
 {
@@ -69,8 +70,8 @@ namespace RealtorObjects.Model
                 Debug.WriteLine($"{DateTime.Now} HAS STARTED TO CONNECT");
                 IsTryingToConnect = true;
                 //FindServerIP();
+                serverIp = IPAddress.Parse("192.168.1.53");
                 serverIp = IPAddress.Loopback;
-                serverIp = IPAddress.Parse("192.168.1.250");
                 try
                 {
                     if (serverIp != null)
@@ -271,8 +272,11 @@ namespace RealtorObjects.Model
                     serverIp = null;
                     IsReceiving = false;
                     Task.Delay(1000).Wait();
-                    stream.Close();
-                    stream.Dispose();
+                    if (stream != null)
+                    {
+                        stream.Close();
+                        stream.Dispose();
+                    }
                     client.Close();
                     IsConnected = false;
                     Debug.WriteLine($"{DateTime.Now} HAS DISCONNECTED");

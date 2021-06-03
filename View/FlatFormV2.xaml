@@ -1086,14 +1086,13 @@
                         Icon="Regular_Images"/>
                 </Button>
                 <Grid
-                    Width="180"
                     HorizontalAlignment="Right"
                     Grid.Column="8"
                     Grid.ColumnSpan="3"
                     Grid.Row="2">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="5"/>
                         <ColumnDefinition Width="70"/>
                     </Grid.ColumnDefinitions>
                     <Button
@@ -1103,7 +1102,8 @@
                         CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
                         Content="Подтвердить"/>
                     <Button
-                        TabIndex="50"
+                        Width="70"
+                        HorizontalAlignment="Right"
                         Grid.Column="2"
                         Command="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.Cancel}"
                         CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
@@ -1136,29 +1136,41 @@
                 Grid.Row="3"/>
         </Grid>
         <Grid
-            Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.EditBorderVisibility}"
-            IsHitTestVisible="True"
-            Background="Transparent"
-            Grid.Row="1">
-            <Grid.RowDefinitions>
+              Margin="0,0,1,0"
+              Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.EditBorderVisibility}"
+              IsHitTestVisible="True"
+              Background="Transparent"
+              Grid.Row="1">
+              <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
-            <Border
+              <Border
                 Background="#f6f6f6"
                 Grid.Row="1">
-                <Button
-                    HorizontalAlignment="Right"
-                    Margin="0,0,10,3"
-                    Width="120"
-                    TabIndex="50"
-                    Grid.Column="2"
-                    Command="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.Edit}"
-                    Style="{StaticResource GreenButton}"
-                    Content="Редактировать"/>
+                <Grid>
+                    <Button
+                        HorizontalAlignment="Right"
+                        Margin="0,0,85,3"
+                        Width="120"
+                        TabIndex="50"
+                        Grid.Column="2"
+                        Command="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.Edit}"
+                        Style="{StaticResource GreenButton}"
+                        Content="Редактировать"/>
+                    <Button
+                        Margin="0,0,10,3"
+                        Width="70"
+                        HorizontalAlignment="Right"
+                        Grid.Column="2"
+                        Command="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.Cancel}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                        Style="{StaticResource GreenButton}"
+                        Content="Отмена"/>
+                </Grid>
             </Border>
         </Grid>
-        <Grid
+        <Grid Name="ImageSlider"
             Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.SliderVisibility}"
             Background="Black"
             Grid.Row="1">
@@ -1182,7 +1194,6 @@
                     Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.GoRight}"
                     Style="{StaticResource RightGalleryButton}"/>
             </StackPanel>
-
         </Grid>
     </Grid>
 </Window>

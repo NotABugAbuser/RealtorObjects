@@ -5,6 +5,7 @@ using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
 using RealtyModel.Model.Operations;
 using RealtyModel.Model.RealtyObjects;
+using RealtyModel.Service;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,6 +21,7 @@ namespace RealtorObjects.Model
         private Client client = null;
         private Credential credential = null;
         private object handleLocker = new object();
+        private Dispatcher dispatcher;
 
         public event FlatRegisteredEventHandler FlatRegistered;
         public event FlatModificationRegisteredEventHandler FlatModificationRegistered;
@@ -30,10 +32,11 @@ namespace RealtorObjects.Model
 
         public event ListsArrivedEventHandler ListsArrived;
 
-        public OperationManagement(Client client, Credential credential)
+        public OperationManagement(Dispatcher dispatcher, Client client, Credential credential)
         {
             this.client = client;
             this.credential = credential;
+            this.dispatcher = dispatcher;
             client.IncomingOperations.Enqueued += (s, e) => HandleResponse();
         }
 
@@ -63,7 +66,7 @@ namespace RealtorObjects.Model
             {
                 RegisteringEventArgs e = (RegisteringEventArgs)data;
                 operation.Name = e.UserName;
-                operation.Data = BinarySerializer.Serialize(new Credential() { Name = e.UserName, Password = e.Password, Email = e.Email});
+                operation.Data = BinarySerializer.Serialize(new Credential() { Name = e.UserName, Password = e.Password, Email = e.Email });
             }
             client.OutcomingOperations.Enqueue(operation);
         }
@@ -140,9 +143,14 @@ namespace RealtorObjects.Model
                     }
                     else if (operation.Parameters.Target == Target.Photo)
                     {
-                        //ФОТО
                         if (operation.Parameters.Action == Act.Request)
                         {
+                            ObservableCollection<Byte[]> photoCollection = BinarySerializer.Deserialize<ObservableCollection<Byte[]>>(operation.Data);
+                            dispatcher.Invoke(() =>
+                            {
+                                foreach (Byte[] array in photoCollection)
+                                    ((App)Application.Current).WindowManagement.FlatFormVM.Photos.Add(array);
+                            });
                             //Photo photo = operation.Data
                             //PhotoReceived?.Invoke(this, new PhotoReceivedEventArgs(photo));
                         }
@@ -152,7 +160,8 @@ namespace RealtorObjects.Model
                         ListsArrived?.Invoke(this, new ListsArrivedEventArgs(BinarySerializer.Deserialize<LocationOptions>(operation.Data)));
                     }
                 }
-                else if(!operation.IsSuccessfully && operation.Parameters.Target == Target.Query) MessageBox.Show("Подходящих объектов нет");
+                else if (!operation.IsSuccessfully && operation.Parameters.Target == Target.Query) MessageBox.Show("Подходящих объектов нет");
+                else if (!operation.IsSuccessfully && operation.Parameters.Target == Target.Lists) { }
                 else MessageBox.Show("Операция не была успешна");
             }
             catch (Exception ex)

@@ -51,7 +51,7 @@ namespace RealtorObjects
         }
         private void InitializeMembers()
         {
-            operationManagement = new OperationManagement(client, credential);
+            operationManagement = new OperationManagement(Dispatcher, client, credential);
             windowManagement = new WindowManagement(client, credential, Dispatcher);
             windowManagement.Run();
         }
