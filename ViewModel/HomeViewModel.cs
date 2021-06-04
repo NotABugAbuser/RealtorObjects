@@ -36,77 +36,106 @@ namespace RealtorObjects.ViewModel
         private CustomCommand createFlat;
         #endregion
         #region Properties
-        public int CurrentPage {
+        public int CurrentPage
+        {
             get => currentPage;
-            set {
+            set
+            {
                 currentPage = value;
                 OnPropertyChanged();
             }
         }
-        public double WidthOfFilters {
+        public double WidthOfFilters
+        {
             get => widthOfFilters;
-            set {
+            set
+            {
                 widthOfFilters = value;
                 OnPropertyChanged();
             }
         }
-        public Filter Filter {
+        public Filter Filter
+        {
             get => filter;
             set => filter = value;
         }
-        public List<List<BaseRealtorObject>> ObjectLists {
+        public List<List<BaseRealtorObject>> ObjectLists
+        {
             get => objectLists;
             set => objectLists = value;
         }
-        public ObservableCollection<int> Pages {
+        public ObservableCollection<int> Pages
+        {
             get => pages; set => pages = value;
         }
-        public List<BaseRealtorObject> CurrentObjectList {
+        public List<BaseRealtorObject> CurrentObjectList
+        {
             get => currentObjectList;
-            set {
+            set
+            {
                 currentObjectList = value;
                 OnPropertyChanged();
             }
         }
 
         #endregion
-        public HomeViewModel() {
+        public HomeViewModel()
+        {
             this.LocationOptions = Client.RequestLocationOptions();
         }
-        private void SplitBy(List<BaseRealtorObject> filteredList, byte pageSize) {
+        private void SplitBy(List<BaseRealtorObject> filteredList, byte pageSize)
+        {
             ObjectLists.Clear();
-            if (filteredList.Count > pageSize) {
-                foreach (var batch in filteredList.Batch(25)) {
+            if (filteredList.Count > pageSize)
+            {
+                foreach (var batch in filteredList.Batch(25))
+                {
                     ObjectLists.Add(batch.ToList());
                 }
                 CalculatePages(0);
                 CurrentPage = 1;
-            } else {
+            }
+            else
+            {
                 ObjectLists.Add(new List<BaseRealtorObject>(filteredList));
             }
         }
-        public CustomCommand SendQuery => sendQuery ?? (sendQuery = new CustomCommand(obj => {
+        public CustomCommand SendQuery => sendQuery ?? (sendQuery = new CustomCommand(obj =>
+        {
             CurrentObjectList.Clear();
             SplitBy(Client.RequestRealtorObjects(Filter), 25);
             CurrentObjectList = ObjectLists[0];
         }));
-        public CustomCommand CreateFlat => createFlat ?? (createFlat = new CustomCommand(obj => {
-            new FlatFormV2(new FlatFormViewModel(CurrentAgentName)).Show();
+        public CustomCommand CreateFlat => createFlat ?? (createFlat = new CustomCommand(obj =>
+        {
+            FlatFormViewModel flatFormVM = new FlatFormViewModel(CurrentAgentName);
+            flatFormVM.LocationOptions = this.LocationOptions;
+            new FlatFormV2(flatFormVM).Show();
+
         }));
-        public CustomCommand OpenCloseFilters => openCloseFilters ?? (openCloseFilters = new CustomCommand(obj => {
-            if (WidthOfFilters == 200) {
+        public CustomCommand OpenCloseFilters => openCloseFilters ?? (openCloseFilters = new CustomCommand(obj =>
+        {
+            if (WidthOfFilters == 200)
+            {
                 WidthOfFilters = 0;
-            } else {
+            }
+            else
+            {
                 WidthOfFilters = 200;
             }
         }));
-        public CustomCommand Modify => modify ?? (modify = new CustomCommand(obj => {
+        public CustomCommand Modify => modify ?? (modify = new CustomCommand(obj =>
+        {
             BaseRealtorObject bro = (BaseRealtorObject)obj;
-            if (bro is Flat flat) {
-                new FlatFormV2(new FlatFormViewModel(flat, CurrentAgentName)).Show();
+            if (bro is Flat flat)
+            {
+                FlatFormViewModel flatFormVM = new FlatFormViewModel(flat, CurrentAgentName);
+                flatFormVM.LocationOptions = this.LocationOptions;
+                new FlatFormV2(flatFormVM).Show();
             }
         }));
-        public CustomCommand GoToPage => goToPage ?? (goToPage = new CustomCommand(obj => {
+        public CustomCommand GoToPage => goToPage ?? (goToPage = new CustomCommand(obj =>
+        {
             Int16 index = (Int16)(Convert.ToInt16(obj) - 1);
             Pages.Clear();
             CalculatePages(index);
@@ -114,29 +143,38 @@ namespace RealtorObjects.ViewModel
             CurrentObjectList = ObjectLists[index];
         }));
 
-        public string CurrentAgentName {
+        public string CurrentAgentName
+        {
             get => currentAgentName; set => currentAgentName = value;
         }
-        public LocationOptions LocationOptions {
+        public LocationOptions LocationOptions
+        {
             get => locationOptions;
-            set {
+            set
+            {
                 locationOptions = value;
                 OnPropertyChanged();
             }
         }
-        private void CalculatePages(short currentPage) {
+        private void CalculatePages(short currentPage)
+        {
             int count = ObjectLists.Count;
-            if (count < 15) {
+            if (count < 15)
+            {
                 for (int i = 0; i < count; i++) { Pages.Add(i + 1); }
-            } else {
+            }
+            else
+            {
                 int left = 7;
                 int right = 7;
-                if (currentPage + 8 > count) {
+                if (currentPage + 8 > count)
+                {
                     int difference = -(count - 8 - currentPage);
                     left += difference;
                     right -= difference;
                 }
-                if (currentPage - 7 < 0) {
+                if (currentPage - 7 < 0)
+                {
                     int difference = -(currentPage - 7);
                     left -= difference;
                     right += difference;

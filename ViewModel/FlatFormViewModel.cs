@@ -2,25 +2,17 @@
 using Microsoft.Win32;
 using MiscUtil;
 using RealtorObjects.Model;
-using RealtyModel.Events.Realty;
-using RealtyModel.Events.UI;
 using RealtyModel.Interface;
 using RealtyModel.Model;
-using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
 using RealtyModel.Model.Operations;
-using RealtyModel.Model.RealtyObjects;
 using RealtyModel.Service;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Linq;
-using System.Text.Json;
 using System.Windows;
-using System.Windows.Threading;
 
 namespace RealtorObjects.ViewModel
 {
@@ -32,19 +24,23 @@ namespace RealtorObjects.ViewModel
         private CustomCommand increaseInteger;
         private CustomCommand decreaseInteger;
         public CustomCommand IncreaseDouble => increaseDouble ??
-            (increaseDouble = new CustomCommand(obj => {
+            (increaseDouble = new CustomCommand(obj =>
+            {
                 ChangeProperty<Single>(obj, 0.05f);
             }));
         public CustomCommand IncreaseInteger => increaseInteger ??
-            (increaseInteger = new CustomCommand(obj => {
+            (increaseInteger = new CustomCommand(obj =>
+            {
                 ChangeProperty<int>(obj, 1);
             }));
         public CustomCommand DecreaseDouble => decreaseDouble ??
-            (decreaseDouble = new CustomCommand(obj => {
+            (decreaseDouble = new CustomCommand(obj =>
+            {
                 ChangeProperty<Single>(obj, -0.05f);
             }));
         public CustomCommand DecreaseInteger => decreaseInteger ??
-            (decreaseInteger = new CustomCommand(obj => {
+            (decreaseInteger = new CustomCommand(obj =>
+            {
                 ChangeProperty<int>(obj, -1);
             }));
         #endregion
@@ -70,98 +66,127 @@ namespace RealtorObjects.ViewModel
         private int index = 0;
         private ObservableCollection<byte[]> photos = new ObservableCollection<byte[]>();
         #endregion
-        public FlatFormViewModel() {
+        public FlatFormViewModel()
+        {
 
         }
-        public FlatFormViewModel(string agentName) {
+        public FlatFormViewModel(string agentName)
+        {
             Title = "[Квартира] — Добавление";
             EditBorderVisibility = Visibility.Collapsed;
-            Flat = Flat.CreateTestFlat();
+            if (Debugger.IsAttached)
+                Flat = Flat.CreateTestFlat();
+            else Flat = Flat.GetEmptyInstance();
             Flat.RegistrationDate = DateTime.Now;
             currentAgent = agentName;
             Flat.Album.PhotoCollection = Array.Empty<byte>();
             isNew = true;
         }
-        public FlatFormViewModel(Flat flat, string agentName) {
+        public FlatFormViewModel(Flat flat, string agentName)
+        {
             Title = "[Квартира] — Просмотр";
             Flat = flat;
             Photos = Client.RequestAlbum(Flat.AlbumId);
             currentAgent = agentName;
         }
         #region Slider
-        public CustomCommand GoLeft => goLeft ?? (goLeft = new CustomCommand(obj => {
+        public CustomCommand GoLeft => goLeft ?? (goLeft = new CustomCommand(obj =>
+        {
             index--;
-            if (index == -1) {
+            if (index == -1)
+            {
                 index = Photos.Count - 1;
             }
             CurrentImage = Photos[index];
         }));
-        public CustomCommand GoRight => goRight ?? (goRight = new CustomCommand(obj => {
+        public CustomCommand GoRight => goRight ?? (goRight = new CustomCommand(obj =>
+        {
             index++;
-            if (index == Photos.Count) {
+            if (index == Photos.Count)
+            {
                 index = 0;
             }
             CurrentImage = Photos[index];
         }));
-        public CustomCommand ShowHideSlider => showHideSlider ?? (showHideSlider = new CustomCommand(obj => {
-            if (SliderVisibility == Visibility.Visible) {
+        public CustomCommand ShowHideSlider => showHideSlider ?? (showHideSlider = new CustomCommand(obj =>
+        {
+            if (SliderVisibility == Visibility.Visible)
+            {
                 SliderVisibility = Visibility.Collapsed;
-            } else {
+            }
+            else
+            {
                 SliderVisibility = Visibility.Visible;
                 index = 0;
             }
             CurrentImage = Photos[index];
         }));
         #endregion
-        public CustomCommand Edit => edit ?? (edit = new CustomCommand(obj => {
-            if (CheckAccess(Flat.Agent, currentAgent)) {
+        public CustomCommand Edit => edit ?? (edit = new CustomCommand(obj =>
+        {
+            if (CheckAccess(Flat.Agent, currentAgent))
+            {
                 EditBorderVisibility = Visibility.Collapsed;
                 Title = "[Квартира]— Редактирование";
             }
         }));
-        public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj => {
-            OpenFileDialog openFileDialog = new OpenFileDialog() {
+        public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj =>
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog()
+            {
                 Filter = "Файлы изображений (*.BMP; *.JPG; *.JPEG; *.PNG) | *.BMP; *.JPG; *.JPEG; *.PNG",
                 Multiselect = true,
                 Title = "Выбрать фотографии"
             };
-            if (openFileDialog.ShowDialog() == true && openFileDialog.FileNames.Length != 0) {
-                foreach (string fileName in openFileDialog.FileNames) {
-                    Photos.Add(BitmapImageDecoder.GetDecodedBytes(File.ReadAllBytes(fileName), 50, 0));
+            if (openFileDialog.ShowDialog() == true && openFileDialog.FileNames.Length != 0)
+            {
+                foreach (string fileName in openFileDialog.FileNames)
+                {
+                    Photos.Add(BitmapImageDecoder.GetDecodedBytes(fileName, 30, 0));
                 }
-                Flat.Preview = BitmapImageDecoder.GetDecodedBytes(File.ReadAllBytes(openFileDialog.FileNames[0]), 0, 100);
+                Flat.Preview = BitmapImageDecoder.GetDecodedBytes(openFileDialog.FileNames[0], 0, 100);
                 Flat.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
             }
         }));
-        public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj => {
+        public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj =>
+        {
             Int32 number = Convert.ToInt32(obj);
             Photos.RemoveAt(number);
             //Flat.Album.RawImages = BinarySerializer.Serialize(Flat.Album.PhotoCollection);
         }));
-        public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj => {
+        public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj =>
+        {
             var value = Convert.ToInt32(obj);
             Flat.Cost.Price += value;
         }));
         public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
 
-        public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj => {
-            if (new FieldChecking(Flat).CheckFieldsOfFlat()) {
-                if (isNew) {
+        public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj =>
+        {
+            if (new FieldChecking(Flat).CheckFieldsOfFlat())
+            {
+                if (isNew)
+                {
                     Client.AddFlat(Flat);
-                } else {
+                }
+                else
+                {
                     Client.UpdateFlat(Flat);
                 }
             }
         }));
-        private bool CheckAccess(string objectAgent, string currentAgent) {
+        private bool CheckAccess(string objectAgent, string currentAgent)
+        {
             if (objectAgent == currentAgent)
                 return true;
-            else {
+            else
+            {
                 OperationNotification.Notify(ErrorCode.WrongAgent);
                 return false;
             }
         }
-        public void ChangeProperty<T>(object obj, T step) {
+        public void ChangeProperty<T>(object obj, T step)
+        {
             var objects = obj as object[];
             object instance = objects[0];
             string name = objects[1].ToString();
@@ -170,57 +195,72 @@ namespace RealtorObjects.ViewModel
             property.SetValue(instance, Operator.Add(step, value));
         }
         #region Properties
-        public string Title {
+        public string Title
+        {
             get => title;
-            set {
+            set
+            {
                 title = value;
                 OnPropertyChanged();
             }
         }
-        public Flat Flat {
+        public Flat Flat
+        {
             get => flat;
-            set {
+            set
+            {
                 flat = value;
                 OnPropertyChanged();
             }
         }
-        public FlatOptions FlatOptions {
+        public FlatOptions FlatOptions
+        {
             get => flatOptions;
         }
-        public LocationOptions LocationOptions {
+        public LocationOptions LocationOptions
+        {
             get => locationOptions;
-            set {
+            set
+            {
                 locationOptions = value;
                 OnPropertyChanged();
             }
         }
-        public Visibility EditBorderVisibility {
+        public Visibility EditBorderVisibility
+        {
             get => editBorderVisibility;
-            set {
+            set
+            {
                 editBorderVisibility = value;
                 OnPropertyChanged();
             }
         }
 
-        public Visibility SliderVisibility {
+        public Visibility SliderVisibility
+        {
             get => sliderVisibility;
-            set {
+            set
+            {
                 sliderVisibility = value;
                 OnPropertyChanged();
             }
         }
 
-        public byte[] CurrentImage {
+        public byte[] CurrentImage
+        {
             get => currentImage;
-            set {
+            set
+            {
                 currentImage = value;
                 OnPropertyChanged();
             }
         }
 
-        public ObservableCollection<byte[]> Photos {
+        public ObservableCollection<byte[]> Photos
+        {
             get => photos;
-            set {
+            set
+            {
                 photos = value;
                 OnPropertyChanged();
             }

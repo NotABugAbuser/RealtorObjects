@@ -175,10 +175,8 @@ C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Text.Encodings.Web
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Text.Json.xml
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.ValueTuple.xml
-C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\RealtorObjects.csprojAssemblyReference.cache
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\Customers.g.cs
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\FlatFormV2.g.cs
-C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\Home.g.cs
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\LoginForm.g.cs
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\MainWindow.g.cs
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\Statistics.g.cs
@@ -191,7 +189,6 @@ C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\Customers.baml
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\Dictionaries\ColorsAndBrushes.baml
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\Dictionaries\ControlStylesAndTemplates.baml
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\FlatFormV2.baml
-C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\Home.baml
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\LoginForm.baml
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\MainWindow.baml
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\Statistics.baml
@@ -204,12 +201,8 @@ C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\RealtorObjects.exe
 C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\RealtorObjects.pdb
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\EntityFramework.dll
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\EntityFramework.SqlServer.dll
-C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Data.SQLite.dll
-C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Data.SQLite.EF6.dll
-C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Data.SQLite.Linq.dll
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\EntityFramework.xml
 C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\EntityFramework.SqlServer.xml
-C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\System.Data.SQLite.xml
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\RealtorObjects.exe.config
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\RealtorObjects.exe
 C:\Users\NotABugAbuser\Desktop\RealtorProject\realtorobjects\bin\Debug\RealtorObjects.pdb
@@ -516,3 +509,10 @@ C:\Users\Gvozd\Documents\GitHub\RealtorObjects\obj\Debug\View\RegistrationForm.b
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\bin\Debug\NLog.dll
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\bin\Debug\NLog.xml
 C:\Users\Gvozd\Documents\GitHub\RealtorObjects\bin\Debug\ExifLib.dll
+C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\ExifLib.dll
+C:\Users\Badulundabad\Desktop\RealtorObjects\bin\Debug\NLog.xml
+C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\RealtorObjects.csproj.AssemblyReference.cache
+C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\NotificationWindow.g.cs
+C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\RegistrationForm.g.cs
+C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\NotificationWindow.baml
+C:\Users\Badulundabad\Desktop\RealtorObjects\obj\Debug\View\RegistrationForm.baml
