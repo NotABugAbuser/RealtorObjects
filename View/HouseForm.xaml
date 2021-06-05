@@ -268,9 +268,9 @@
                     Text="Город:"/>
                 <ComboBox
                     PreviewTextInput="RussianOnly"
-                    Text="{Binding City.Name, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding City.Name}"
-                    ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.LocationOptions.Cities}"
+                    Text="{Binding City, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding City}"
+                    ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.Cities}"
                     Grid.Row="0"
                     Grid.Column="1"
                     Style="{StaticResource GreenComboBox}"/>
@@ -281,9 +281,9 @@
                     Text="Район:"/>
                 <ComboBox
                     PreviewTextInput="RussianOnly"
-                    Text="{Binding District.Name, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding District.Name}"
-                    ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.LocationOptions.Districts}"
+                    Text="{Binding District, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding District}"
+                    ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.Districts}"
                     Grid.Row="2"
                     Grid.Column="1"
                     Style="{StaticResource GreenComboBox}"/>

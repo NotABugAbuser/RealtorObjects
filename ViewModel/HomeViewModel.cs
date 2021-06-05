@@ -1,20 +1,14 @@
-﻿using RandomFlatGenerator;
-using RealtorObjects.Model;
-using RealtorObjects.View;
-using RealtyModel.Events.Realty;
-using RealtyModel.Events.UI;
-using RealtyModel.Model;
+﻿using RealtyModel.Model;
 using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
-using RealtyModel.Model.RealtyObjects;
 using RealtyModel.Service;
+using RealtorObjects.Model;
+using RealtorObjects.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using System.Windows.Threading;
 
 namespace RealtorObjects.ViewModel
 {
@@ -25,7 +19,7 @@ namespace RealtorObjects.ViewModel
         private int currentPage = 1;
         private double widthOfFilters = 200;
         private Filter filter = new Filter();
-        private LocationOptions locationOptions = new LocationOptions();
+        private Street[] streets = Array.Empty<Street>();
         private CustomCommand modify;
         private CustomCommand goToPage;
         private CustomCommand openCloseFilters;
@@ -81,8 +75,10 @@ namespace RealtorObjects.ViewModel
         #endregion
         public HomeViewModel()
         {
-            this.LocationOptions = Client.RequestLocationOptions();
+            //this.CurrentObjectList.Add(Flat.CreateTestFlat());
+            this.Streets = Client.RequestStreets();
         }
+
         private void SplitBy(List<BaseRealtorObject> filteredList, byte pageSize)
         {
             ObjectLists.Clear();
@@ -109,9 +105,8 @@ namespace RealtorObjects.ViewModel
         public CustomCommand CreateFlat => createFlat ?? (createFlat = new CustomCommand(obj =>
         {
             FlatFormViewModel flatFormVM = new FlatFormViewModel(CurrentAgentName);
-            flatFormVM.LocationOptions = this.LocationOptions;
+            flatFormVM.Streets = this.Streets;
             new FlatFormV2(flatFormVM).Show();
-
         }));
         public CustomCommand OpenCloseFilters => openCloseFilters ?? (openCloseFilters = new CustomCommand(obj =>
         {
@@ -130,7 +125,8 @@ namespace RealtorObjects.ViewModel
             if (bro is Flat flat)
             {
                 FlatFormViewModel flatFormVM = new FlatFormViewModel(flat, CurrentAgentName);
-                flatFormVM.LocationOptions = this.LocationOptions;
+                flatFormVM.Streets = this.Streets;
+                flatFormVM.Streets = flatFormVM.Streets.OrderBy(s => s.Name).ToArray();
                 new FlatFormV2(flatFormVM).Show();
             }
         }));
@@ -147,12 +143,12 @@ namespace RealtorObjects.ViewModel
         {
             get => currentAgentName; set => currentAgentName = value;
         }
-        public LocationOptions LocationOptions
+        public Street[] Streets
         {
-            get => locationOptions;
+            get => streets;
             set
             {
-                locationOptions = value;
+                streets = value;
                 OnPropertyChanged();
             }
         }

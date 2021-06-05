@@ -83,10 +83,10 @@ namespace RealtorObjects.Model
         }
         public FieldChecking(Flat flat) {
             this.flat = flat;
-            fields.Add(flat.Customer.Name);
-            fields.Add(flat.Customer.PhoneNumbers);
-            fields.Add(flat.Location.City.Name);
-            fields.Add(flat.Location.District.Name);
+            fields.Add(flat.CustomerName);
+            fields.Add(flat.CustomerPhoneNumbers);
+            fields.Add(flat.Location.City);
+            fields.Add(flat.Location.District);
             fields.Add(flat.Location.Street.Name);
             fields.Add(flat.Location.FlatNumber);
             fields.Add(flat.Location.HouseNumber);
@@ -94,7 +94,6 @@ namespace RealtorObjects.Model
             fields.Add(flat.Info.Fund);
             fields.Add(flat.GeneralInfo.RoomCount);
             fields.Add(flat.Info.Type);
-            fields.Add(flat.Info.Kvl);
             fields.Add(flat.GeneralInfo.General);
             fields.Add(flat.GeneralInfo.Living);
             fields.Add(flat.GeneralInfo.Kitchen);
@@ -109,7 +108,6 @@ namespace RealtorObjects.Model
             fields.Add(flat.GeneralInfo.Water);
             fields.Add(flat.Info.Bath);
             fields.Add(flat.Info.Windows);
-            fields.Add(flat.Cost.Area);
             fields.Add(flat.Cost.Price);
             fields.Add(flat.Album.PhotoCollection.Length);
         }

@@ -23,9 +23,6 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
         <c:ByteArrayToBitmapImageConverter x:Key="ByteArrayToBitmapImage"/>
-        <c:StatusToBorderColorConverter x:Key="StatusToBorderColor"/>
-        <c:StatusToColorConverter x:Key="StatusToColor"/>
-        <c:StatusEngToRusConverter x:Key="StatusEngToRus"/>
         <c:PageEqualityConverter x:Key="PageEquality"/>
         <Style TargetType="Button" x:Key="ModifyButton">
             <Setter Property="Cursor" Value="Hand"/>
@@ -92,19 +89,13 @@
                         Grid.Column="2"
                         FontSize="14"
                         Style="{StaticResource RegularText}"
-                        Text="Участок"/>
+                        Text="{Binding Type}"/>
                     <TextBlock
                         Margin="0,15,0,0"
                         Grid.Column="2"
                         Grid.Row="1"
                         Style="{StaticResource RegularText}"
                         Text="{Binding StringFormat='Комнаты: 0', Path=GeneralInfo.RoomCount}"/>
-                    <TextBlock
-                        Margin="0,15,0,0"
-                        Grid.Column="2"
-                        Grid.Row="1"
-                        Style="{StaticResource RegularText}"
-                        Text="{Binding StringFormat='Площадь: 0', Path=Cost.Area}"/>
                 </StackPanel>
                 <StackPanel
                     VerticalAlignment="Center"
@@ -122,13 +113,13 @@
                         Grid.Column="2"
                         Grid.Row="1"
                         Style="{StaticResource RegularText}"
-                        Text="{Binding Customer.PhoneNumberList[0]}"/>
+                        Text="{Binding PhoneNumberList[0]}"/>
                     <TextBlock
                         Margin="0,15,0,0"
                         Grid.Column="2"
                         Grid.Row="1"
                         Style="{StaticResource RegularText}"
-                        Text="{Binding Customer.PhoneNumberList[1]}"/>
+                        Text="{Binding PhoneNumberList[1]}"/>
                 </StackPanel>
                 <StackPanel
                     VerticalAlignment="Center"
@@ -154,10 +145,15 @@
                         Style="{StaticResource RegularText}"
                         Text="{Binding Path=Location.FlatNumber, StringFormat='Квартира 0'}"/>
                 </StackPanel>
+                <TextBlock
+                    HorizontalAlignment="Left"
+                    Grid.Column="9"
+                    Style="{StaticResource RegularText}"
+                    Text="{Binding StringFormat='Площадь: 0', Path=GeneralInfo.General}"/>
                 <StackPanel
                     VerticalAlignment="Center"
                     Margin="0,3"
-                    Grid.Column="9">
+                    Grid.Column="11">
                     <TextBlock
                         FontSize="14"
                         FontWeight="Bold"
@@ -165,30 +161,7 @@
                         Grid.Row="1"
                         Style="{StaticResource RegularText}"
                         Text="{Binding Path=Cost.Price, StringFormat=' {0:### ### ##0 ₽}'}"/>
-                    <TextBlock
-                        Margin="0,15,0,0"
-                        Grid.Column="2"
-                        Grid.Row="1"
-                        Style="{StaticResource RegularText}"
-                        Text="Есть НДС"/>
                 </StackPanel>
-                <Border
-                    x:Name="PART_StatusBorder"
-                    Height="20"
-                    Width="80"
-                    CornerRadius="10"
-                    HorizontalAlignment="Left"
-                    Background="{Binding Status, Converter={StaticResource StatusToBorderColor}}"
-                    Grid.Column="11">
-                    <TextBlock 
-                        x:Name="PART_StatusText"
-                        HorizontalAlignment="Center"
-                        Margin="0,0,0,3"
-                        FontFamily="tahoma"
-                        Style="{StaticResource RegularText}"
-                        Foreground="{Binding Status, Converter={StaticResource StatusToColor}}"
-                        Text="{Binding Status, Converter={StaticResource StatusEngToRus}}"/>
-                </Border>
                 <Button
                     CommandParameter="{Binding .}"
                     Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DataContext.Modify}"
@@ -527,12 +500,12 @@
                 <TextBlock
                     Style="{StaticResource HeaderText}"
                     Grid.Column="9"
-                    Text="Цена"/>
+                    Text="Площадь"/>
                 <TextBlock
-                    Margin="15,0,0,0"
                     Style="{StaticResource HeaderText}"
                     Grid.Column="11"
-                    Text="Статус"/>
+                    HorizontalAlignment="Left"
+                    Text=" Цена"/>
                 <ListBox
                     Grid.Row="1"
                     Grid.ColumnSpan="20"
@@ -701,6 +674,7 @@
                                 Style="{StaticResource RegularFilterText}"
                                 Text="Город:"/>
                             <ComboBox
+                                IsEditable="False"
                                 Text="{Binding Filter.City, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedItem="{Binding Filter.City}"
                                 Margin="35,2,35,0"

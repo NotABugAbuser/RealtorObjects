@@ -292,7 +292,7 @@
                         MaxLength="32"
                         PreviewTextInput="AlphabeticalOnly"
                         Style="{StaticResource inputTextBox}"
-                        Text="{Binding Customer.Name, UpdateSourceTrigger=PropertyChanged}"/>
+                        Text="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged}"/>
                 </Border>
                 <TextBlock
                     Text="Телефоны через &lt;;&gt; или &lt;,&gt;"
@@ -307,7 +307,7 @@
                         MaxLength="39"
                         PreviewTextInput="PhoneNumbers"
                         Style="{StaticResource inputTextBox}"
-                        Text="{Binding Customer.PhoneNumbers, UpdateSourceTrigger=PropertyChanged}"/>
+                        Text="{Binding CustomerPhoneNumbers, UpdateSourceTrigger=PropertyChanged}"/>
                 </Border>
                 <TextBlock
                     Text="Дата:"
@@ -349,12 +349,13 @@
                     Grid.Row="0"
                     Style="{StaticResource Header}"
                     Text="Город:"/>
-                <ComboBox
+                <ComboBox Name="Cities"
                     TabIndex="5"
+                    IsEditable="False"
                     PreviewTextInput="RussianOnly"
-                    Text="{Binding City.Name, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding City, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding City}"
-                    ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.LocationOptions.Cities}"
+                    ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.Cities}"
                     Grid.Row="0"
                     Grid.Column="1"
                     Style="{StaticResource GreenComboBox}"/>
@@ -363,12 +364,13 @@
                     Grid.Row="2"
                     Style="{StaticResource Header}"
                     Text="Район:"/>
-                <ComboBox
+                <ComboBox Name="Districts"
                     TabIndex="10"
+                    IsEditable="False"
                     PreviewTextInput="RussianOnly"
-                    Text="{Binding District.Name, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding District.Name}"
-                    ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.LocationOptions.Districts}"
+                    Text="{Binding District, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding District}"
+                    ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.Districts}"
                     Grid.Row="2"
                     Grid.Column="1"
                     Style="{StaticResource GreenComboBox}"/>
@@ -388,7 +390,7 @@
                     Style="{StaticResource Border}">
                     <TextBox
                         TabIndex="6"
-                        PreviewTextInput="NumericOnly"
+                        PreviewTextInput="AnyLetter"
                         TextAlignment="Center"
                         MaxLength="3"
                         FontSize="13"
@@ -396,6 +398,8 @@
                         Text="{Binding FlatNumber, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"/>
                 </Border>
                 <Border
+                    Grid.ColumnSpan="2"
+                    Margin="0,0,100,0"
                     Grid.Column="5"
                     Grid.Row="0"
                     Style="{StaticResource Border}">
@@ -403,7 +407,7 @@
                         TabIndex="7"
                         PreviewTextInput="NumericOnly"
                         TextAlignment="Center"
-                        MaxLength="3"
+                        MaxLength="5"
                         FontSize="13"
                         Style="{StaticResource inputTextBox}"
                         Text="{Binding HouseNumber, UpdateSourceTrigger=PropertyChanged}"/>
@@ -413,17 +417,19 @@
                     Grid.Row="2"
                     Style="{StaticResource Header}"
                     Text="Улица:"/>
-                <ComboBox
+                <ComboBox Name="Streets"
                     TabIndex="11"
                     PreviewTextInput="RussianOnly"
-                    ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.LocationOptions.Streets}"
-                    SelectedItem="{Binding Street.Name}"
+                    ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.Streets}"
+                    SelectedItem="{Binding Street}"
                     Text="{Binding Street.Name, UpdateSourceTrigger=PropertyChanged}"
                     Grid.Row="2"
                     Grid.Column="3"
                     Grid.ColumnSpan="5"
                     Style="{StaticResource GreenComboBox}"/>
                 <CheckBox
+                    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Flat}"
+                    IsChecked="{Binding HasBanner}"
                     TabIndex="8"
                     Style="{StaticResource OptionCheckBox}"
                     HorizontalAlignment="Right"
@@ -431,6 +437,8 @@
                     Grid.Row="0"
                     Content="Растяжка"/>
                 <CheckBox
+                    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Flat}"
+                    IsChecked="{Binding HasExchange}"
                     TabIndex="9"
                     Style="{StaticResource OptionCheckBox}"
                     HorizontalAlignment="Right"
@@ -517,29 +525,43 @@
                     Grid.Column="4"
                     Grid.Row="0"
                     Style="{StaticResource Header}"
-                    Text="Кв-л:"/>
+                    Text="Год:"/>
                 <TextBox 
-                    TabIndex="14"
+                    TabIndex="15"
                     PreviewTextInput="NumericOnly"
                     Grid.Column="5"
                     Grid.Row="0"
-                    DataContext="{Binding Info}"
-                    Text="{Binding Kvl, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
-                    Tag="Kvl"
+                    DataContext="{Binding GeneralInfo}"
+                    Text="{Binding Year, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                    Tag="Year"
                     Style="{StaticResource IntegerNumericUpDown}"/>
                 <TextBlock
                     Grid.Column="6"
                     Grid.Row="0"
                     Style="{StaticResource Header}"
-                    Text="Год:"/>
+                    Text="Этажей:"/>
                 <TextBox 
                     TabIndex="15"
                     PreviewTextInput="NumericOnly"
                     Grid.Column="7"
                     Grid.Row="0"
                     DataContext="{Binding GeneralInfo}"
-                    Text="{Binding Year, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
-                    Tag="Year"
+                    Text="{Binding LevelCount, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                    Tag="LevelCount"
+                    Style="{StaticResource IntegerNumericUpDown}"/>
+                <TextBlock
+                    Grid.Column="8"
+                    Grid.Row="0"
+                    Style="{StaticResource Header}"
+                    Text="Этаж:"/>
+                <TextBox 
+                    TabIndex="15"
+                    PreviewTextInput="NumericOnly"
+                    Grid.Column="9"
+                    Grid.Row="0"
+                    DataContext="{Binding GeneralInfo}"
+                    Text="{Binding CurrentLevel, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
+                    Tag="CurrentLevel"
                     Style="{StaticResource IntegerNumericUpDown}"/>
                 <TextBlock
                     Grid.Column="4"
@@ -583,17 +605,6 @@
                     Text="{Binding Kitchen, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
                     Tag="Kitchen"
                     Style="{StaticResource DoubleNumericUpDown}"/>
-                <CheckBox 
-                    TabIndex="16"
-                    DataContext="{Binding Info}"
-                    IsChecked="{Binding IsPrivatised}"
-                    HorizontalAlignment="Right"
-                    Foreground="#262626"
-                    Content="Приватизация"
-                    Grid.Column="8"
-                    VerticalAlignment="Center"
-                    Margin="13,0,1,0"
-                    Grid.ColumnSpan="2" Style="{DynamicResource BlueCheckBoxStyle}"/>
             </Grid>
             <Grid Name="Fourth"
                 Grid.Row="6">
@@ -910,24 +921,23 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="23"/>
                 </Grid.RowDefinitions>
-                <TextBlock
-                    Style="{StaticResource Header}"
-                    Text="Кв.М:"/>
-                <TextBox
-                    TabIndex="43"
+                <CheckBox
+                    Grid.ColumnSpan="2"
+                    Margin="0,0,50,0"
+                    TabIndex="47"
+                    HorizontalAlignment="Right"
+                    Style="{StaticResource OptionCheckBox}"
+                    Grid.Column="7"
                     DataContext="{Binding Cost}"
-                    PreviewTextInput="NumericOnly"
-                    MaxLength="7"
-                    Style="{StaticResource IntegerNumericUpDown}"
-                    Text="{Binding Area, StringFormat=0,UpdateSourceTrigger=PropertyChanged}"
-                    Tag="Area"
-                    Grid.Column="1"/>
+                    IsChecked="{Binding HasMortgage}"
+                    Content="Ипотека"/>
                 <TextBlock
                     Style="{StaticResource Header}"
-                    Grid.Column="3"
-                    Text="Цена, руб:"/>
+                    Grid.Column="8"
+                    Grid.ColumnSpan="2"
+                    Text="Цена, тыс. руб:"/>
                 <Border 
-                    Grid.Column="5"
+                    Grid.Column="10"
                     Style="{StaticResource Border}">
                     <TextBox
                         TabIndex="44"
@@ -940,149 +950,6 @@
                         Text="{Binding Price, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"
                         Style="{StaticResource inputTextBox}"/>
                 </Border>
-                <Grid
-                    VerticalAlignment="Center"
-                    Height="23"
-                    Margin="0"
-                    Grid.Column="7">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="20"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock
-                        Style="{StaticResource Header}"
-                        Text="М"/>
-                    <Border
-                        Style="{StaticResource Border}"
-                        Grid.Column="1">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <RepeatButton 
-                                Style="{StaticResource PART_RepeatButtonStyle}"
-                                Command="{Binding Path=DataContext.ChangePrice, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
-                                CommandParameter="1000000"
-                                Margin="1,1,1,.5"
-                                Grid.Column="1">
-                                <Polygon
-                                    Style="{StaticResource WhiteArrowStyle}"
-                                    Points="0,3,3,0,6,3"/>
-                            </RepeatButton>
-                            <RepeatButton 
-                                Style="{StaticResource PART_RepeatButtonStyle}"
-                                Grid.Column="1"
-                                Grid.Row="1"
-                                Margin="1,.3,1,1"
-                                CommandParameter="-1000000"
-                                Command="{Binding Path=DataContext.ChangePrice, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}">
-                                <Polygon
-                                    Margin="0,1,0,0"
-                                    Style="{StaticResource WhiteArrowStyle}"
-                                    Points="0,0 3,3 6,0"/>
-                            </RepeatButton>
-                        </Grid>
-                    </Border>
-                    <TextBlock
-                        Style="{StaticResource Header}"
-                        Text="СТ"
-                        Grid.Column="2"/>
-                    <Border
-                        Style="{StaticResource Border}"
-                        Grid.Column="3">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <RepeatButton 
-                                Style="{StaticResource PART_RepeatButtonStyle}"
-                                Command="{Binding Path=DataContext.ChangePrice, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
-                                CommandParameter="100000"
-                                Margin="1,1,1,.5"
-                                Grid.Column="1">
-                                <Polygon
-                                    Style="{StaticResource WhiteArrowStyle}"
-                                    Points="0,3,3,0,6,3"/>
-                            </RepeatButton>
-                            <RepeatButton 
-                                Style="{StaticResource PART_RepeatButtonStyle}"
-                                Grid.Column="1"
-                                Grid.Row="1"
-                                Margin="1,.3,1,1"
-                                CommandParameter="-100000"
-                                Command="{Binding Path=DataContext.ChangePrice, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}">
-                                <Polygon
-                                    Margin="0,1,0,0"
-                                    Style="{StaticResource WhiteArrowStyle}"
-                                    Points="0,0 3,3 6,0"/>
-                            </RepeatButton>
-                        </Grid>
-                    </Border>
-                    <TextBlock
-                        Style="{StaticResource Header}"
-                        Text="T"
-                        HorizontalAlignment="Center"
-                        Grid.Column="4"/>
-                    <Border
-                        Style="{StaticResource Border}"
-                        Grid.Column="5">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <RepeatButton 
-                                Style="{StaticResource PART_RepeatButtonStyle}"
-                                Command="{Binding Path=DataContext.ChangePrice, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
-                                CommandParameter="1000"
-                                Margin="1,1,1,.5"
-                                Grid.Column="1">
-                                <Polygon
-                                    Style="{StaticResource WhiteArrowStyle}"
-                                    Points="0,3,3,0,6,3"/>
-                            </RepeatButton>
-                            <RepeatButton 
-                                Style="{StaticResource PART_RepeatButtonStyle}"
-                                Grid.Column="1"
-                                Grid.Row="1"
-                                Margin="1,.3,1,1"
-                                CommandParameter="-1000"
-                                Command="{Binding Path=DataContext.ChangePrice, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}">
-                                <Polygon
-                                    Margin="0,1,0,0"
-                                    Style="{StaticResource WhiteArrowStyle}"
-                                    Points="0,0 3,3 6,0"/>
-                            </RepeatButton>
-                        </Grid>
-                    </Border>
-                </Grid>
-                <CheckBox
-                    TabIndex="45"
-                    Style="{StaticResource OptionCheckBox}"
-                    Grid.Column="8"
-                    DataContext="{Binding Cost}"
-                    IsChecked="{Binding HasPercents}"
-                    Content="Проценты"/>
-                <CheckBox
-                    TabIndex="46"
-                    Style="{StaticResource OptionCheckBox}"
-                    Grid.Column="9"
-                    DataContext="{Binding Cost}"
-                    IsChecked="{Binding HasVAT}"
-                    Content="НДС"/>
-                <CheckBox
-                    TabIndex="47"
-                    Style="{StaticResource OptionCheckBox}"
-                    Grid.Column="10"
-                    DataContext="{Binding Cost}"
-                    IsChecked="{Binding HasMortgage}"
-                    Content="Ипотека"/>
                 <ListBox
                     Style="{StaticResource ImageListBox}"
                     ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Photos}"/>
@@ -1164,53 +1031,57 @@
                 BorderThickness="0,2,0,2"
                 Grid.Row="3"/>
         </Grid>
+        <Border
+            Background="#01000000"
+            Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.EditBorderVisibility}"
+            VerticalAlignment="Top"
+            Grid.RowSpan="2"
+            Height="500"/>
+        <Border
+            Background="#01000000"
+            Margin="0,470,0,0"
+            Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.EditBorderVisibility}"
+            HorizontalAlignment="Right"
+            Width="130"
+            Grid.Row="1"/>
+        <Border
+            Height="40"
+            VerticalAlignment="Bottom"
+            DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext}"
+            Visibility="{Binding EditBorderVisibility}"
+            Background="#f6f6f6"
+            Grid.Row="2">
+            <Grid
+                Margin="0,0,10,0"
+                Width="180"
+                HorizontalAlignment="Right"
+                Grid.ColumnSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="70"/>
+                </Grid.ColumnDefinitions>
+                <Button
+                     TabIndex="49"
+                     Style="{StaticResource GreenButton}"
+                     Command="{Binding Edit}"
+                     Content="Редактировать"/>
+                <Button
+                    TabIndex="50"
+                    Grid.Column="2"
+                    Command="{Binding Cancel}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                    Style="{StaticResource GreenButton}"
+                    Content="Отмена"/>
+            </Grid>
+        </Border>
         <Grid
-            Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.EditBorderVisibility}"
-            IsHitTestVisible="True"
-            Background="Transparent"
-            Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="40"/>
-            </Grid.RowDefinitions>
-            <Border
-                Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.EditBorderVisibility}"
-                Background="#f6f6f6"
-                Grid.Row="1">
-                <Grid
-                    Margin="0,0,10,0"
-                    Width="180"
-                    HorizontalAlignment="Right"
-                    Grid.Column="8"
-                    Grid.ColumnSpan="3"
-                    Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="70"/>
-                    </Grid.ColumnDefinitions>
-                    <Button
-                        TabIndex="49"
-                        Style="{StaticResource GreenButton}"
-                        Command="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.Edit}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
-                        Content="Редактировать"/>
-                    <Button
-                        TabIndex="50"
-                        Grid.Column="2"
-                        Command="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.Cancel}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
-                        Style="{StaticResource GreenButton}"
-                        Content="Отмена"/>
-                </Grid>
-            </Border>
-        </Grid>
-        <Grid
-            Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.SliderVisibility}"
+            DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext}"
+            Visibility="Collapsed"
             Background="Black"
             Grid.Row="1">
             <Image
-                Source="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.CurrentImage}"
+                Source="{Binding CurrentImage}"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center"
                 Stretch="Uniform"/>
@@ -1220,20 +1091,20 @@
                 Orientation="Horizontal"
                 VerticalAlignment="Bottom">
                 <Button
-                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.GoLeft}"
+                    Command="{Binding GoLeft}"
                     Style="{StaticResource LeftGalleryButton}"/>
                 <Button
-                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.ShowHideSlider}"
+                    Command="{Binding ShowHideSlider}"
                     Style="{StaticResource CloseGalleryButton}"/>
                 <Button
-                    Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.EditBorderVisibility}"
-                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.RemoveImage}"
+                    Visibility="{Binding EditBorderVisibility, Converter={StaticResource InverseVisibility}}"
+                    Command="{Binding RemoveImage}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
                     Style="{StaticResource DeleteGalleryButton}"/>
                 <Button
-                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.GoRight}"
+                    Command="{Binding GoRight}"
                     Style="{StaticResource RightGalleryButton}"/>
             </StackPanel>
-
         </Grid>
     </Grid>
 </Window>

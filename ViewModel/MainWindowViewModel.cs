@@ -1,19 +1,11 @@
 ﻿using FontAwesome.WPF;
 using RealtorObjects.View;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 using System.Windows;
 using RealtyModel.Model;
 using RealtyModel.Service;
-using RealtorObjects.Model;
 
 namespace RealtorObjects.ViewModel
 {
@@ -24,7 +16,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand closeApp;
         private CustomCommand updateWorkArea;
         private CustomCommand signOut;
-        private LocationOptions locationOptions = new LocationOptions();
+        private Street[] streets = Array.Empty<Street>();
         private BaseViewModel[] viewModels = new BaseViewModel[6] {
             new HomeViewModel(),
             new BaseViewModel(),
@@ -41,10 +33,7 @@ namespace RealtorObjects.ViewModel
             false,
             false
         };
-        public MainWindowViewModel() {
-            CurrentAgentName = (Application.Current as App).AgentName;
-            WorkArea = viewModels[0];
-        }
+
         public string CurrentAgentName {
             get => currentAgentName;
             set {
@@ -53,13 +42,6 @@ namespace RealtorObjects.ViewModel
             }
         }
         public ObservableCollection<bool> ToggledButtons => toggledButtons;
-        public LocationOptions LocationOptions {
-            get => locationOptions;
-            set {
-                locationOptions = value;
-                OnPropertyChanged();
-            }
-        }
         public BaseViewModel WorkArea {
             get => workArea;
             set {
@@ -70,6 +52,18 @@ namespace RealtorObjects.ViewModel
         public BaseViewModel[] ViewModels {
             get => viewModels;
             set => viewModels = value;
+        }
+        public Street[] Streets{
+            get => streets;
+            set {
+                streets = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public MainWindowViewModel() {
+            CurrentAgentName = (Application.Current as App).AgentName;
+            WorkArea = viewModels[0];
         }
 
         public CustomCommand SignOut => signOut ?? (signOut = new CustomCommand(obj => {

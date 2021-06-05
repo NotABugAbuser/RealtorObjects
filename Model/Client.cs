@@ -1,26 +1,15 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Windows.Threading;
-using System.Runtime.CompilerServices;
-using RealtyModel.Model;
 using System.Collections.Generic;
-using System.Net.NetworkInformation;
-using System.Linq;
-using System.Threading;
-using System.Diagnostics;
-using RealtyModel.Events.Network;
-using RealtyModel.Model.Operations;
-using Action = RealtyModel.Model.Operations.Action;
-using RealtyModel.Service;
-using System.Windows;
-using RealtyModel.Model.Derived;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using RealtyModel.Model;
 using RealtyModel.Model.Base;
+using RealtyModel.Model.Derived;
+using RealtyModel.Model.Operations;
+using RealtyModel.Service;
+using Action = RealtyModel.Model.Operations.Action;
 
 namespace RealtorObjects.Model
 {
@@ -31,13 +20,14 @@ namespace RealtorObjects.Model
 
             TcpClient client = new TcpClient();
             if(Debugger.IsAttached)
-                serverIp = IPAddress.Parse("192.168.1.111");
+                serverIp = IPAddress.Parse("192.168.1.34");
             else
                 serverIp = IPAddress.Parse("192.168.1.250");
             client.Connect(serverIp, 15000);
             NetworkStream network = client.GetStream();
             return network;
         }
+
         public static ObservableCollection<byte[]> RequestAlbum(int id) {
             NetworkStream network = Connect();
             Operation operation = new Operation(Action.Request, Target.Album, BinarySerializer.Serialize(id));
@@ -94,15 +84,15 @@ namespace RealtorObjects.Model
             OperationNotification.Notify(response.Code);
             return bros;
         }
-        public static LocationOptions RequestLocationOptions() {
+        public static Street[] RequestStreets() {
             NetworkStream network = Connect();
             Operation operation = new Operation(Action.Request, Target.Locations);
             Transfer.SendOperation(operation, network);
 
             Response response = Transfer.ReceiveResponse(network);
-            LocationOptions locationOptions = BinarySerializer.Deserialize<LocationOptions>(response.Data);
+            Street[] streets = BinarySerializer.Deserialize<Street[]>(response.Data);
             OperationNotification.Notify(response.Code);
-            return locationOptions;
+            return streets;
         }
     }
 }

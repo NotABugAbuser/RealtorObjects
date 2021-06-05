@@ -162,10 +162,6 @@
     <Compile Include="View\Converters\InverseVisibilityConverter.cs" />
     <Compile Include="View\Converters\ObjectAndPropertyMultiValueConverter.cs" />
     <Compile Include="View\Converters\PageEqualityConverter.cs" />
-    <Compile Include="View\Converters\StatusEngToRusConverter.cs" />
-    <Compile Include="View\Converters\StatusToBorderColorConverter.cs" />
-    <Compile Include="View\Converters\StatusToColorConverter.cs" />
-    <Compile Include="View\Converters\StatusToVisibilityConverter.cs" />
     <Compile Include="View\Converters\SymbolToStarConverter.cs" />
     <Compile Include="View\Customers.xaml.cs">
       <DependentUpon>Customers.xaml</DependentUpon>
