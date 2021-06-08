@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace RealtorObjects.ViewModel
@@ -77,6 +78,25 @@ namespace RealtorObjects.ViewModel
         {
             //this.CurrentObjectList.Add(Flat.CreateTestFlat());
             this.Streets = Client.RequestStreets();
+            Modify = new AsyncCommand(() =>
+            {
+                FlatFormViewModel flatFormVM = null;
+                BaseRealtorObject bro = (BaseRealtorObject)Modify.Parameter;
+                if (bro is Flat flat)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        flatFormVM = new FlatFormViewModel(flat, CurrentAgentName);
+                        flatFormVM.Streets = this.Streets;
+                        flatFormVM.Streets = flatFormVM.Streets.OrderBy(s => s.Name).ToArray();
+                        new FlatFormV2(flatFormVM).Show();
+                    });
+                }
+                return Task.Run(() =>
+                {
+                    flatFormVM.Photos = Client.RequestAlbumAsync(flatFormVM.Flat.AlbumId).Result;
+                });
+            });
         }
 
         private void SplitBy(List<BaseRealtorObject> filteredList, byte pageSize)
@@ -119,17 +139,6 @@ namespace RealtorObjects.ViewModel
                 WidthOfFilters = 200;
             }
         }));
-        public CustomCommand Modify => modify ?? (modify = new CustomCommand(obj =>
-        {
-            BaseRealtorObject bro = (BaseRealtorObject)obj;
-            if (bro is Flat flat)
-            {
-                FlatFormViewModel flatFormVM = new FlatFormViewModel(flat, CurrentAgentName);
-                flatFormVM.Streets = this.Streets;
-                flatFormVM.Streets = flatFormVM.Streets.OrderBy(s => s.Name).ToArray();
-                new FlatFormV2(flatFormVM).Show();
-            }
-        }));
         public CustomCommand GoToPage => goToPage ?? (goToPage = new CustomCommand(obj =>
         {
             Int16 index = (Int16)(Convert.ToInt16(obj) - 1);
@@ -138,6 +147,7 @@ namespace RealtorObjects.ViewModel
             CurrentPage = index + 1;
             CurrentObjectList = ObjectLists[index];
         }));
+        public AsyncCommand Modify { get; set; }
 
         public string CurrentAgentName
         {
@@ -179,5 +189,17 @@ namespace RealtorObjects.ViewModel
                 for (int i = 0; i < right + 1; i++) { Pages.Add(currentPage + i + 1); }
             }
         }
+        public CustomCommand ModifySync => modify ?? (modify = new CustomCommand(obj =>
+        {
+            BaseRealtorObject bro = (BaseRealtorObject)obj;
+            if (bro is Flat flat)
+            {
+                FlatFormViewModel flatFormVM = new FlatFormViewModel(flat, CurrentAgentName);
+                flatFormVM.Streets = this.Streets;
+                flatFormVM.Streets = flatFormVM.Streets.OrderBy(s => s.Name).ToArray();
+                new FlatFormV2(flatFormVM).Show();
+                //flatFormVM.Photos = Client.RequestAlbumAsync(flatFormVM.Flat.AlbumId).Result;
+            }
+        }));
     }
 }

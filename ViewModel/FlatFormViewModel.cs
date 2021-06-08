@@ -10,6 +10,7 @@ using RealtyModel.Model.Operations;
 using RealtyModel.Model.RealtyObjects;
 using RealtyModel.Service;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -167,7 +168,7 @@ namespace RealtorObjects.ViewModel
             isNew = true;
             currentAgent = agentName;
             EditBorderVisibility = Visibility.Collapsed;
-            
+
             if (Debugger.IsAttached)
                 Flat = Flat.CreateTestFlat();
             else Flat = Flat.GetEmptyInstance();
@@ -179,18 +180,9 @@ namespace RealtorObjects.ViewModel
         {
             Title = "[Квартира] — Просмотр";
             Flat = flat;
-            Photos = Client.RequestAlbum(Flat.AlbumId);
             currentAgent = agentName;
         }
 
-        public CustomCommand Edit => edit ?? (edit = new CustomCommand(obj =>
-        {
-            if (CheckAccess(Flat.Agent, currentAgent))
-            {
-                EditBorderVisibility = Visibility.Collapsed;
-                Title = "[Квартира]— Редактирование";
-            }
-        }));
         public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj =>
         {
             OpenFileDialog openFileDialog = new OpenFileDialog()
@@ -202,24 +194,20 @@ namespace RealtorObjects.ViewModel
             bool hasFileNames = openFileDialog.ShowDialog() == true && openFileDialog.FileNames.Length != 0;
             if (hasFileNames)
             {
-                Parallel.ForEach(openFileDialog.FileNames, new Action<String>((path) =>
-                {
-                    ((App)Application.Current).Dispatcher.Invoke(() =>
-                    {
+                foreach (String path in openFileDialog.FileNames)
                         Photos.Add(BitmapImageDecoder.GetDecodedBytes(path, 30, 0));
-                    });
-                }));
                 Flat.Preview = BitmapImageDecoder.GetDecodedBytes(openFileDialog.FileNames[0], 0, 100);
                 Flat.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
                 CurrentImage = Photos[0];
                 Index = 0;
-                //foreach (string fileName in openFileDialog.FileNames)
-                //{
-                //    Photos.Add(BitmapImageDecoder.GetDecodedBytes(fileName, 30, 0));
-                //}
-                //Flat.Preview = BitmapImageDecoder.GetDecodedBytes(openFileDialog.FileNames[0], 0, 100);
-                //Flat.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
-                //CurrentImage = Photos[0];
+            }
+        }));
+        public CustomCommand Edit => edit ?? (edit = new CustomCommand(obj =>
+        {
+            if (CheckAccess(Flat.Agent, currentAgent))
+            {
+                EditBorderVisibility = Visibility.Collapsed;
+                Title = "[Квартира]— Редактирование";
             }
         }));
         public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj =>
@@ -253,10 +241,12 @@ namespace RealtorObjects.ViewModel
             {
                 if (isNew)
                 {
+                    Flat.Album.WriteLocation(Flat.Location);
                     Client.AddFlat(Flat);
                 }
                 else
                 {
+                    Flat.Album.WriteLocation(Flat.Location);
                     Client.UpdateFlat(Flat);
                 }
                 (obj as Window).Close();
@@ -318,6 +308,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand decreaseDouble;
         private CustomCommand increaseInteger;
         private CustomCommand decreaseInteger;
+
         public CustomCommand IncreaseDouble => increaseDouble ??
             (increaseDouble = new CustomCommand(obj =>
             {
@@ -339,5 +330,47 @@ namespace RealtorObjects.ViewModel
                 ChangeProperty<int>(obj, -1);
             }));
         #endregion
+
+        public AsyncCommand AddImagesAsync
+        {
+            get => new AsyncCommand(() =>
+            {
+                return Task.Run(() =>
+                {
+                    OpenFileDialog openFileDialog = new OpenFileDialog()
+                    {
+                        Filter = "Файлы изображений (*.BMP; *.JPG; *.JPEG; *.PNG) | *.BMP; *.JPG; *.JPEG; *.PNG",
+                        Multiselect = true,
+                        Title = "Выбрать фотографии"
+                    };
+                    bool hasFileNames = openFileDialog.ShowDialog() == true && openFileDialog.FileNames.Length != 0;
+                    if (hasFileNames)
+                    {
+                        List<Byte[]> images = new List<Byte[]>();
+                        foreach (String path in openFileDialog.FileNames)
+                            images.Add(BitmapImageDecoder.GetDecodedBytes(path, 30, 0));
+                        //Parallel.ForEach(openFileDialog.FileNames, new Action<String>((path) =>
+                        //{
+                        //    images.Add(BitmapImageDecoder.GetDecodedBytes(path, 30, 0));
+                        //}));
+                        
+                        ((App)Application.Current).Dispatcher.Invoke(() =>
+                        {
+                            foreach (Byte[] image in images)
+                                Photos.Add(image);
+                        });
+                        Flat.Preview = BitmapImageDecoder.GetDecodedBytes(openFileDialog.FileNames[0], 0, 100);
+                        Flat.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
+                        CurrentImage = images[0];
+                        Index = 0;
+                        //images.Clear();
+                        GC.Collect();
+                        GC.SuppressFinalize(images);
+                        GC.Collect();
+
+                    }
+                });
+            });
+        }
     }
 }

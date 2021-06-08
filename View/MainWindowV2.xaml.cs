@@ -20,22 +20,30 @@ namespace RealtorObjects.View
     /// </summary>
     public partial class MainWindowV2 : Window
     {
-        public MainWindowV2() {
+        public MainWindowV2()
+        {
             InitializeComponent();
         }
-        public MainWindowV2(MainWindowViewModel mainWindowVM) {
+        public MainWindowV2(MainWindowViewModel mainWindowVM)
+        {
             InitializeComponent();
             this.DataContext = mainWindowVM;
         }
-        private void ThisMainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-            if (e.LeftButton == MouseButtonState.Pressed) {
+        private void ThisMainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
                 this.DragMove();
             }
         }
-        private void WindowApplication_Click(object sender, RoutedEventArgs e) {
-            if (this.WindowState == WindowState.Maximized) {
+        private void WindowApplication_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.WindowState == WindowState.Maximized)
+            {
                 this.WindowState = WindowState.Normal;
-            } else {
+            }
+            else
+            {
                 this.WindowState = WindowState.Maximized;
             }
         }

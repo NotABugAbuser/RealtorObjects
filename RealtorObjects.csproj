@@ -138,10 +138,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\AsyncCommand.cs" />
     <Compile Include="Model\BitmapImageDecoder.cs" />
     <Compile Include="Model\Client.cs" />
     <Compile Include="Model\CodeType.cs" />
     <Compile Include="Model\CredentialData.cs" />
+    <Compile Include="Model\IAsyncCommand.cs" />
     <Compile Include="Model\LINQExtension.cs" />
     <Compile Include="Model\LINQForEachAsyncExtension.cs" />
     <Compile Include="Model\NotificationInfo.cs" />
@@ -282,9 +284,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="data.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -299,9 +298,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Letter_C_gold_35041.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="View\Image\TestImage.png" />
