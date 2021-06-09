@@ -13,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RealtyModel.Service;
+using System.Diagnostics;
+using System.Windows.Controls;
 
 namespace RealtorObjects.View
 {
@@ -21,26 +23,33 @@ namespace RealtorObjects.View
     /// </summary>
     public partial class LoginForm : Window
     {
-        public LoginForm() {
+        public LoginForm()
+        {
             InitializeComponent();
         }
-        public LoginForm(LoginFormViewModel loginFormVM) {
+        public LoginForm(LoginFormViewModel loginFormVM)
+        {
             InitializeComponent();
             this.DataContext = loginFormVM;
         }
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e) {
-            if (e.LeftButton == MouseButtonState.Pressed) {
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
                 this.DragMove();
             }
-
         }
-        private void LoginValidation(object sender, TextCompositionEventArgs e) {
+
+        private void LoginValidation(object sender, TextCompositionEventArgs e)
+        {
             e.Handled = new Regex("[^а-яА-Я]").IsMatch(e.Text);
         }
-        private void EmailValidation(object sender, TextCompositionEventArgs e) {
+        private void EmailValidation(object sender, TextCompositionEventArgs e)
+        {
             e.Handled = new Regex("[^a-zA-Z0-9@.]").IsMatch(e.Text);
         }
-        private void PasswordValidation(object sender, TextCompositionEventArgs e) {
+        private void PasswordValidation(object sender, TextCompositionEventArgs e)
+        {
             e.Handled = new Regex("[^0-9a-zA-Z]").IsMatch(e.Text);
         }
     }

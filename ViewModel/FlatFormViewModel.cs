@@ -158,6 +158,10 @@ namespace RealtorObjects.ViewModel
             }
         }
         #endregion
+        public String KitchenArea { get; set; }
+        public String LivingArea { get; set; }
+        public String GeneralArea { get; set; }
+        public String Ceiling { get; set; }
 
         public FlatFormViewModel()
         {
@@ -195,7 +199,7 @@ namespace RealtorObjects.ViewModel
             if (hasFileNames)
             {
                 foreach (String path in openFileDialog.FileNames)
-                        Photos.Add(BitmapImageDecoder.GetDecodedBytes(path, 30, 0));
+                    Photos.Add(BitmapImageDecoder.GetDecodedBytes(path, 30, 0));
                 Flat.Preview = BitmapImageDecoder.GetDecodedBytes(openFileDialog.FileNames[0], 0, 100);
                 Flat.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
                 CurrentImage = Photos[0];
@@ -239,16 +243,15 @@ namespace RealtorObjects.ViewModel
         {
             if (new FieldChecking(Flat).CheckFieldsOfFlat())
             {
+                Flat.Album.WriteLocation(Flat.Location);
+                //Flat.GeneralInfo.Ceiling = float.Parse("1,2");
+                //Flat.GeneralInfo.General = float.Parse(GeneralArea);
+                //Flat.GeneralInfo.Living = float.Parse(LivingArea);
+                //Flat.GeneralInfo.Kitchen = float.Parse(KitchenArea);
                 if (isNew)
-                {
-                    Flat.Album.WriteLocation(Flat.Location);
                     Client.AddFlat(Flat);
-                }
                 else
-                {
-                    Flat.Album.WriteLocation(Flat.Location);
                     Client.UpdateFlat(Flat);
-                }
                 (obj as Window).Close();
             }
         }));
@@ -353,7 +356,7 @@ namespace RealtorObjects.ViewModel
                         //{
                         //    images.Add(BitmapImageDecoder.GetDecodedBytes(path, 30, 0));
                         //}));
-                        
+
                         ((App)Application.Current).Dispatcher.Invoke(() =>
                         {
                             foreach (Byte[] image in images)

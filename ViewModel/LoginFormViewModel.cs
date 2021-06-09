@@ -10,9 +10,26 @@ namespace RealtorObjects.ViewModel
 {
     public class LoginFormViewModel : BaseViewModel
     {
+        private CustomCommand login;
         private CustomCommand closeApp;
         private CredentialData credentialData = new CredentialData();
 
+        public CustomCommand Login => login ?? (login = new CustomCommand(obj =>
+        {
+            Credential credential = new Credential() { Password = credentialData.CurrentPassword, Name = credentialData.CurrentUsername };
+            if (Client.Login(credential))
+            {
+                ((App)Application.Current).AgentName = credential.Name;
+                MainWindowViewModel mainVM = new MainWindowViewModel();
+                new MainWindowV2(mainVM).Show();
+                (obj as LoginForm).Close();
+            }
+        }));
+        public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj =>
+        {
+            Application.Current.Shutdown();
+        }));
+        public AsyncCommand LoginAsync { get; set; }
         public CredentialData CredentialData
         {
             get => credentialData;
@@ -39,24 +56,5 @@ namespace RealtorObjects.ViewModel
                 }));
             });
         }
-
-        private CustomCommand login;
-        public CustomCommand Login => login ?? (login = new CustomCommand(obj =>
-        {
-            Credential credential = new Credential() { Password = credentialData.CurrentPassword, Name = credentialData.CurrentUsername };
-            if (Client.Login(credential))
-            {
-                ((App)Application.Current).AgentName = credential.Name;
-                MainWindowViewModel mainVM = new MainWindowViewModel();
-                new MainWindowV2(mainVM).Show();
-                (obj as LoginForm).Close();
-            }
-        }));
-        public AsyncCommand LoginAsync { get; set; }
-        public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj =>
-        {
-            Application.Current.Shutdown();
-        }));
-
     }
 }

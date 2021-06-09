@@ -232,7 +232,7 @@
             Foreground="white"
             Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Title}"
             Grid.ColumnSpan="5"/>
-        <Grid
+        <Grid Name="Bindings"
             Grid.Row="1"
             Margin="10">
             <Grid.RowDefinitions>
@@ -246,7 +246,7 @@
                 <RowDefinition Height="25"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Grid Name="First"
+            <Grid Name="Customer"
                 Grid.Row="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="23"/>
@@ -326,7 +326,7 @@
                         Text="{Binding RegistrationDate, StringFormat=dd.MM.yyyy HH:mm, Mode=OneWay}"/>
                 </Border>
             </Grid>
-            <Grid Name="Second"
+            <Grid Name="Location"
                 DataContext="{Binding Location}"
                 Grid.Row="2">
                 <Grid.RowDefinitions>
@@ -445,7 +445,7 @@
                     Grid.Column="7"
                     Content="Обмен"/>
             </Grid>
-            <Grid Name="Third" 
+            <Grid Name="Main" 
                 Grid.Row="4">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="23"/>
@@ -568,13 +568,13 @@
                     Grid.Row="2"
                     Style="{StaticResource Header}"
                     Text="Общая:"/>
-                <TextBox 
+                <TextBox Name="General"
                     TabIndex="19"
                     PreviewTextInput="NumericOnly"
                     Grid.Column="5"
                     Grid.Row="2"
                     DataContext="{Binding GeneralInfo}"
-                    Text="{Binding General, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding General, StringFormat= 0.00, UpdateSourceTrigger=PropertyChanged}"
                     Tag="General"
                     Style="{StaticResource DoubleNumericUpDown}"/>
                 <TextBlock
@@ -582,13 +582,13 @@
                     Grid.Row="2"
                     Style="{StaticResource Header}"
                     Text="Жилая:"/>
-                <TextBox 
+                <TextBox Name="Living"
                     TabIndex="20"
                     PreviewTextInput="NumericOnly"
                     Grid.Column="7"
                     Grid.Row="2"
                     DataContext="{Binding GeneralInfo}"
-                    Text="{Binding Living, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding Living, StringFormat= 0.00, UpdateSourceTrigger=PropertyChanged}"
                     Tag="Living"
                     Style="{StaticResource DoubleNumericUpDown}"/>
                 <TextBlock
@@ -596,17 +596,17 @@
                     Grid.Row="2"
                     Style="{StaticResource Header}"
                     Text="Кухня:"/>
-                <TextBox 
+                <TextBox Name="Kitchen"
                     TabIndex="21"
                     PreviewTextInput="NumericOnly"
                     Grid.Column="9"
                     Grid.Row="2"
                     DataContext="{Binding GeneralInfo}"
-                    Text="{Binding Kitchen, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding Kitchen, StringFormat= 0.00, UpdateSourceTrigger=PropertyChanged}"
                     Tag="Kitchen"
                     Style="{StaticResource DoubleNumericUpDown}"/>
             </Grid>
-            <Grid Name="Fourth"
+            <Grid Name="Conditions"
                 Grid.Row="6">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="23"/>
@@ -669,15 +669,16 @@
                     Style="{StaticResource GreenComboBox}"
                     Grid.Column="1"
                     Grid.Row="2"/>
-                <TextBox
-                    TabIndex="24"
-                    PreviewTextInput="NumericOnly"
-                    DataContext="{Binding GeneralInfo}"
-                    Text="{Binding Ceiling, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource DoubleNumericUpDown}"
-                    Tag="Ceiling"
-                    Grid.Row="4"
-                    Grid.Column="1"/>
+                <TextBox Name="Ceiling"
+                        TabIndex="24"
+                        PreviewTextInput="NumericOnly"
+                        DataContext="{Binding GeneralInfo}"
+                        Text="{Binding Ceiling, StringFormat= 0.00, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource DoubleNumericUpDown}"
+                        MaxLength="6"
+                        Tag="Ceiling"
+                        Grid.Row="4"
+                        Grid.Column="1"/>
                 <ComboBox 
                     TabIndex="25"
                     PreviewTextInput="RussianOnly"
@@ -894,7 +895,7 @@
                         Text="{Binding GeneralInfo.Description, UpdateSourceTrigger=PropertyChanged}"/>
                 </Border>
             </Grid>
-            <Grid Name="Fifth"
+            <Grid Name="CostAndPhotos"
                 Grid.Row="8">
                 <Grid.Resources>
                     <Style TargetType="Button" x:Key="ValueButton">
@@ -1075,9 +1076,9 @@
                     Content="Отмена"/>
             </Grid>
         </Border>
-        <Grid
+        <Grid Name="Slider"
             DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext}"
-            Visibility="{Binding SliderVisibility}"
+            Visibility="Collapsed"
             Background="Black"
             Grid.Row="1">
             <Image
