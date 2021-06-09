@@ -70,14 +70,82 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <Style TargetType="TextBox" x:Key="fieldTextBox">
+        <Style TargetType="TextBox" x:Key="loginTextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border BorderThickness="1">
+                            <Grid>
+                                <TextBox Name="PART_loginTextBox"
+                                         MaxLength="20"
+                                         BorderThickness="0"
+                                         Text="{Binding Path=Text, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}, UpdateSourceTrigger=PropertyChanged}"
+                                         Padding="10,8,8,0"
+                                         FontSize="17"
+                                         FontFamily="Courier New"
+                                         Foreground="#444"/>
+                                <TextBlock Name="PART_placeHolder"
+                                           Text="ФамилияИО"
+                                           Padding="12,10,10,0"
+                                           Visibility="Collapsed"
+                                           IsHitTestVisible="False"
+                                           FontSize="17"
+                                           FontFamily="Courier New"
+                                           Background="Transparent"
+                                           Foreground="Gray"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=PART_loginTextBox, Path=Text, Converter={StaticResource EmptyStringToBool}}" Value="True">
+                                <Setter Property="Visibility" TargetName="PART_placeHolder" Value="Visible"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="TextBox" x:Key="passwordTextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border BorderThickness="1">
+                            <Grid>
+                                <TextBox Name="PART_passwordTextBox"
+                                         MaxLength="20"
+                                         BorderThickness="0"
+                                         Text="{Binding Path=Text, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}, UpdateSourceTrigger=PropertyChanged}"
+                                         Foreground="{Binding Path=Foreground, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}, UpdateSourceTrigger=PropertyChanged}"
+                                         Padding="10"
+                                         FontSize="17"
+                                         FontFamily="Courier New"/>
+                                <TextBlock Name="PART_placeHolder"
+                                           Text="Пароль"
+                                           Padding="12,10,10,0"
+                                           Visibility="Collapsed"
+                                           IsHitTestVisible="False"
+                                           FontSize="17"
+                                           FontFamily="Courier New"
+                                           Background="Transparent"
+                                           Foreground="Gray"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=PART_passwordTextBox, Path=Text, Converter={StaticResource EmptyStringToBool}}" Value="True">
+                                <Setter Property="Visibility" TargetName="PART_placeHolder" Value="Visible"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="TextBox" x:Key="starTextBox">
             <Setter Property="MaxLength" Value="20"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Padding" Value="10,10,10,0"/>
             <Setter Property="FontSize" Value="17"/>
             <Setter Property="FontFamily" Value="Courier New"/>
-            <Setter Property="Foreground" Value="#444"/>
+            <Setter Property="Foreground" Value="{Binding Path=Foreground, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}, UpdateSourceTrigger=PropertyChanged}"/>
         </Style>
         <Style TargetType="TextBlock" x:Key="header">
             <Setter Property="Margin" Value="0"/>
@@ -110,10 +178,10 @@
                 Grid.Row="2"
                 BorderBrush="{StaticResource BorderGray}"
                 BorderThickness="1">
-                <TextBox
-                    PreviewTextInput="LoginValidation"
-                    Text="{Binding CredentialData.CurrentUsername}"
-                    Style="{StaticResource fieldTextBox}"/>
+                <TextBox Name="LoginBox"
+                        PreviewTextInput="LoginValidation"
+                        Text="{Binding CredentialData.CurrentUsername}"
+                        Style="{StaticResource loginTextBox}"/>
             </Border>
             <Border
                 Grid.Row="4"
@@ -124,13 +192,13 @@
                         PreviewTextInput="PasswordValidation"
                         Text="{Binding CredentialData.CurrentPassword, UpdateSourceTrigger=PropertyChanged}"
                         Foreground="Transparent"
-                        Style="{StaticResource fieldTextBox}"/>
+                        Style="{StaticResource passwordTextBox}"/>
                     <TextBox
                         KeyboardNavigation.TabNavigation="None"
                         Text="{Binding CredentialData.CurrentPassword, Converter={StaticResource SymbolToStar}}"
                         Background="Transparent"
                         IsHitTestVisible="False"
-                        Style="{StaticResource fieldTextBox}"/>
+                        Style="{StaticResource starTextBox}"/>
                 </Grid>
             </Border>
             <TextBlock

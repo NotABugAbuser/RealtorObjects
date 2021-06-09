@@ -27,13 +27,24 @@ namespace RealtorObjects.Model
             [ErrorCode.NoRealtorObjects] = new NotificationInfo("В базе данных нет объектов", CodeType.Exclamation),
             [ErrorCode.WrongAgent] = new NotificationInfo("У вас нет прав на редактирование этого объекта.", CodeType.Exclamation),
             [ErrorCode.FlatUpdatedSuccessfuly] = new NotificationInfo("Изменения квартиры успешно занесены в базу данных", CodeType.Successful),
-            [ErrorCode.FlatDuplicate] = new NotificationInfo("Квартира с данным адресом уже существует в базе данных", CodeType.Exclamation)
+            [ErrorCode.FlatDuplicate] = new NotificationInfo("Квартира с данным адресом уже существует в базе данных", CodeType.Exclamation),
+            [ErrorCode.WrongFormat] = new NotificationInfo("Введены данные в неверном формате", CodeType.Error)
         };
         public static void Notify(ErrorCode code)
         {
             if (code != ErrorCode.NoCode)
             {
                 NotificationWindow notification = new NotificationWindow(codes[code]);
+                notification.Show();
+                notification.Left = SystemParameters.WorkArea.Width - notification.ActualWidth;
+                notification.Top = SystemParameters.WorkArea.Height - notification.ActualHeight;
+            }
+        }
+        public static void Notify(ErrorCode code, string message)
+        {
+            if (code != ErrorCode.NoCode)
+            {
+                NotificationWindow notification = new NotificationWindow(new NotificationInfo(message, CodeType.Exclamation));
                 notification.Show();
                 notification.Left = SystemParameters.WorkArea.Width - notification.ActualWidth;
                 notification.Top = SystemParameters.WorkArea.Height - notification.ActualHeight;

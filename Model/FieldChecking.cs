@@ -1,4 +1,5 @@
 ﻿using RealtyModel.Model.Derived;
+using RealtyModel.Model.Operations;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,7 +27,6 @@ namespace RealtorObjects.Model
             " — Фонд",
             " — Количество комнат",
             " — Тип",
-            " — Кв-л",
             " — Общая",
             " — Жилая",
             " — Кухня",
@@ -41,7 +41,6 @@ namespace RealtorObjects.Model
             " — Горячая вода",
             " — Ванна",
             " — Окна",
-            " — Квадратные метры",
             " — Цена",
             " — Фотографии",
         };
@@ -75,7 +74,7 @@ namespace RealtorObjects.Model
                 }
             }
             if (!isEveryFieldFilled) {
-                MessageBox.Show(message.ToString());
+                OperationNotification.Notify(ErrorCode.NotFilled, message.ToString());
             }
             return isEveryFieldFilled;
         }

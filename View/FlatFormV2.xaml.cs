@@ -89,9 +89,9 @@ namespace RealtorObjects.View
             {
                 if (new Regex("[0-9]").IsMatch(e.Text))
                     e.Handled = false;
-                else if (new Regex(@"\,").IsMatch(e.Text))
+                else if (new Regex(@"\,").IsMatch(e.Text) || new Regex(@"\.").IsMatch(e.Text))
                 {
-                    if ((sender as TextBox).Text.Contains(","))
+                    if ((sender as TextBox).Text.Contains(",") || (sender as TextBox).Text.Contains("."))
                         e.Handled = true;
                     else e.Handled = false;
                 }

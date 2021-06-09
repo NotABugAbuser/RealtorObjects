@@ -156,6 +156,7 @@
     </Compile>
     <Compile Include="View\Converters\BoolToVisibilityReversedConverter.cs" />
     <Compile Include="View\Converters\ByteArrayToBitmapImageConverter.cs" />
+    <Compile Include="View\Converters\EmptyStringToBoolConverter.cs" />
     <Compile Include="View\Converters\InverseVisibilityConverter.cs" />
     <Compile Include="View\Converters\ObjectAndPropertyMultiValueConverter.cs" />
     <Compile Include="View\Converters\PageEqualityConverter.cs" />

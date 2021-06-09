@@ -405,7 +405,7 @@
                     Style="{StaticResource Border}">
                     <TextBox
                         TabIndex="7"
-                        PreviewTextInput="NumericOnly"
+                        PreviewTextInput="AnyLetter"
                         TextAlignment="Center"
                         MaxLength="5"
                         FontSize="13"
@@ -570,11 +570,11 @@
                     Text="Общая:"/>
                 <TextBox Name="General"
                     TabIndex="19"
-                    PreviewTextInput="NumericOnly"
+                    PreviewTextInput="NumericWithDotOnly"
                     Grid.Column="5"
                     Grid.Row="2"
-                    DataContext="{Binding GeneralInfo}"
-                    Text="{Binding General, StringFormat= 0.00, UpdateSourceTrigger=PropertyChanged}"
+                    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext}"
+                    Text="{Binding GeneralToParse, UpdateSourceTrigger=PropertyChanged}"
                     Tag="General"
                     Style="{StaticResource DoubleNumericUpDown}"/>
                 <TextBlock
@@ -584,11 +584,11 @@
                     Text="Жилая:"/>
                 <TextBox Name="Living"
                     TabIndex="20"
-                    PreviewTextInput="NumericOnly"
+                    PreviewTextInput="NumericWithDotOnly"
                     Grid.Column="7"
                     Grid.Row="2"
-                    DataContext="{Binding GeneralInfo}"
-                    Text="{Binding Living, StringFormat= 0.00, UpdateSourceTrigger=PropertyChanged}"
+                    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext}"
+                    Text="{Binding LivingToParse, UpdateSourceTrigger=PropertyChanged}"
                     Tag="Living"
                     Style="{StaticResource DoubleNumericUpDown}"/>
                 <TextBlock
@@ -598,11 +598,11 @@
                     Text="Кухня:"/>
                 <TextBox Name="Kitchen"
                     TabIndex="21"
-                    PreviewTextInput="NumericOnly"
+                    PreviewTextInput="NumericWithDotOnly"
                     Grid.Column="9"
                     Grid.Row="2"
-                    DataContext="{Binding GeneralInfo}"
-                    Text="{Binding Kitchen, StringFormat= 0.00, UpdateSourceTrigger=PropertyChanged}"
+                    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext}"
+                    Text="{Binding KitchenToParse, UpdateSourceTrigger=PropertyChanged}"
                     Tag="Kitchen"
                     Style="{StaticResource DoubleNumericUpDown}"/>
             </Grid>
@@ -670,15 +670,15 @@
                     Grid.Column="1"
                     Grid.Row="2"/>
                 <TextBox Name="Ceiling"
-                        TabIndex="24"
-                        PreviewTextInput="NumericOnly"
-                        DataContext="{Binding GeneralInfo}"
-                        Text="{Binding Ceiling, StringFormat= 0.00, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource DoubleNumericUpDown}"
-                        MaxLength="6"
-                        Tag="Ceiling"
-                        Grid.Row="4"
-                        Grid.Column="1"/>
+                    TabIndex="24"
+                    PreviewTextInput="NumericWithDotOnly"
+                    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext}"
+                    Text="{Binding CeilingToParse, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource DoubleNumericUpDown}"
+                    MaxLength="6"
+                    Tag="Ceiling"
+                    Grid.Row="4"
+                    Grid.Column="1"/>
                 <ComboBox 
                     TabIndex="25"
                     PreviewTextInput="RussianOnly"

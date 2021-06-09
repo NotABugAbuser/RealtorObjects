@@ -4,12 +4,13 @@
                     xmlns:c="clr-namespace:RealtorObjects.View.Converters"
                     xmlns:local="clr-namespace:RealtorObjects">
     <c:ObjectAndPropertyMultiValueConverter x:Key="ObjectAndProperty"/>
+    <c:EmptyStringToBoolConverter x:Key="EmptyStringToBool"/>
     <Style x:Key="ShadowBorder" TargetType="{x:Type Border}">
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="5,3"/>
         <Setter Property="Background" Value="white"/>
     </Style>
-    
+
     <Style TargetType="{x:Type TextBlock}" x:Key="Header">
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Foreground" Value="#202020"/>
@@ -253,14 +254,6 @@
                         BorderThickness="1" 
                         BorderBrush="{StaticResource BorderGray}">
                         <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="18"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
                             <TextBox
                                 MinWidth="50"
                                 Width="{Binding RelativeSource={RelativeSource AncestorType=TextBox, Mode=FindAncestor}, Path=ActualWidth}"
@@ -273,40 +266,25 @@
                                 Text="{Binding Path=Text, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}, UpdateSourceTrigger=PropertyChanged}"
                                 x:Name="PART_NumericTextBox"
                                 Padding="2,4,2,0"/>
-                            <RepeatButton 
-                                Style="{StaticResource PART_RepeatButtonStyle}"
-                                Command="{Binding Path=DataContext.IncreaseDouble, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
-                                Grid.Column="1"
-                                Margin="1,1,1,0.5">
-                                <RepeatButton.CommandParameter>
-                                    <MultiBinding Converter="{StaticResource ObjectAndProperty}">
-                                        <Binding Path="DataContext" RelativeSource="{RelativeSource AncestorType=TextBox, Mode=FindAncestor}"/>
-                                        <Binding Path="Tag" RelativeSource="{RelativeSource AncestorType=TextBox, Mode=FindAncestor}"/>
-                                    </MultiBinding>
-                                </RepeatButton.CommandParameter>
-                                <Polygon
-                                    Style="{StaticResource WhiteArrowStyle}"
-                                    Points="0,3,3,0,6,3"/>
-                            </RepeatButton>
-                            <RepeatButton 
-                                Style="{StaticResource PART_RepeatButtonStyle}"
-                                Grid.Column="1"
-                                Grid.Row="1"
-                                Command="{Binding Path=DataContext.DecreaseDouble, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
-                                Margin="1,0.5,1,1">
-                                <RepeatButton.CommandParameter>
-                                    <MultiBinding Converter="{StaticResource ObjectAndProperty}">
-                                        <Binding Path="DataContext" RelativeSource="{RelativeSource AncestorType=TextBox, Mode=FindAncestor}"/>
-                                        <Binding Path="Tag" RelativeSource="{RelativeSource AncestorType=TextBox, Mode=FindAncestor}"/>
-                                    </MultiBinding>
-                                </RepeatButton.CommandParameter>
-                                <Polygon
-                                    Margin="0,1,0,0"
-                                    Style="{StaticResource WhiteArrowStyle}"
-                                    Points="0,0 3,3 6,0"/>
-                            </RepeatButton>
+                            <TextBlock
+                                Background="Transparent"
+                                Foreground="Gray"
+                                Name="PART_placeHolder"
+                                FontFamily="Courier New"
+                                FontSize="13"
+                                Visibility="Collapsed"
+                                HorizontalAlignment="Right"
+                                IsHitTestVisible="False"
+                                Padding="2,4,4,0"
+                                TextAlignment="Right"
+                                Text="0.00"/>
                         </Grid>
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=PART_NumericTextBox, Path=Text, Converter={StaticResource EmptyStringToBool}}" Value="True">
+                            <Setter Property="Visibility" TargetName="PART_placeHolder" Value="Visible"/>
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -573,7 +551,7 @@
             <ScrollBar x:Name="PART_HorizontalScrollBar" AutomationProperties.AutomationId="HorizontalScrollBar" Cursor="Arrow" Grid.Column="0" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Orientation="Horizontal" Grid.Row="1" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportWidth}"/>
         </Grid>
     </ControlTemplate>
-    
+
     <Style x:Key="BaseCloseButton" TargetType="Button">
         <Setter Property="Width" Value="45"/>
         <Setter Property="Height" Value="32"/>

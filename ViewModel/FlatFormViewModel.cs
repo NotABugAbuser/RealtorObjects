@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ using System.Windows;
 
 namespace RealtorObjects.ViewModel
 {
-    public class FlatFormViewModel : BaseViewModel, IDoubleNumericUpDown, IIntegerNumericUpDown
+    public class FlatFormViewModel : BaseViewModel, IIntegerNumericUpDown
     {
         #region Fields
         private int index = 0;
@@ -158,10 +159,11 @@ namespace RealtorObjects.ViewModel
             }
         }
         #endregion
-        public String KitchenArea { get; set; }
-        public String LivingArea { get; set; }
-        public String GeneralArea { get; set; }
-        public String Ceiling { get; set; }
+        private string kitchenToParse = "";
+        private string livingToParse = "";
+        private string generalToParse = "";
+        private string ceilingToParse = "";
+
 
         public FlatFormViewModel()
         {
@@ -178,6 +180,7 @@ namespace RealtorObjects.ViewModel
             else Flat = Flat.GetEmptyInstance();
             Flat.RegistrationDate = DateTime.Now;
             Flat.Album.PhotoCollection = Array.Empty<byte>();
+
             Flat.Location.City = Cities[1];
         }
         public FlatFormViewModel(Flat flat, string agentName)
@@ -241,19 +244,27 @@ namespace RealtorObjects.ViewModel
         public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
         public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj =>
         {
-            if (new FieldChecking(Flat).CheckFieldsOfFlat())
+            Flat.Album.WriteLocation(Flat.Location);
+            try
             {
-                Flat.Album.WriteLocation(Flat.Location);
-                //Flat.GeneralInfo.Ceiling = float.Parse("1,2");
-                //Flat.GeneralInfo.General = float.Parse(GeneralArea);
-                //Flat.GeneralInfo.Living = float.Parse(LivingArea);
-                //Flat.GeneralInfo.Kitchen = float.Parse(KitchenArea);
-                if (isNew)
-                    Client.AddFlat(Flat);
-                else
-                    Client.UpdateFlat(Flat);
-                (obj as Window).Close();
+                Flat.GeneralInfo.Ceiling = float.Parse(CeilingToParse, CultureInfo.InvariantCulture);
+                Flat.GeneralInfo.General = float.Parse(GeneralToParse, CultureInfo.InvariantCulture);
+                Flat.GeneralInfo.Living = float.Parse(LivingToParse, CultureInfo.InvariantCulture);
+                Flat.GeneralInfo.Kitchen = float.Parse(KitchenToParse, CultureInfo.InvariantCulture);
+                if (new FieldChecking(Flat).CheckFieldsOfFlat())
+                {
+                    if (isNew)
+                        Client.AddFlat(Flat);
+                    else
+                        Client.UpdateFlat(Flat);
+                    (obj as Window).Close();
+                }
             }
+            catch (FormatException)
+            {
+                OperationNotification.Notify(ErrorCode.WrongFormat);
+            }
+
         }));
         private bool CheckAccess(string objectAgent, string currentAgent)
         {
@@ -307,25 +318,13 @@ namespace RealtorObjects.ViewModel
         }));
         #endregion
         #region UpDownOperations
-        private CustomCommand increaseDouble;
-        private CustomCommand decreaseDouble;
         private CustomCommand increaseInteger;
         private CustomCommand decreaseInteger;
 
-        public CustomCommand IncreaseDouble => increaseDouble ??
-            (increaseDouble = new CustomCommand(obj =>
-            {
-                ChangeProperty<Single>(obj, 0.05f);
-            }));
         public CustomCommand IncreaseInteger => increaseInteger ??
             (increaseInteger = new CustomCommand(obj =>
             {
                 ChangeProperty<int>(obj, 1);
-            }));
-        public CustomCommand DecreaseDouble => decreaseDouble ??
-            (decreaseDouble = new CustomCommand(obj =>
-            {
-                ChangeProperty<Single>(obj, -0.05f);
             }));
         public CustomCommand DecreaseInteger => decreaseInteger ??
             (decreaseInteger = new CustomCommand(obj =>
@@ -374,6 +373,22 @@ namespace RealtorObjects.ViewModel
                     }
                 });
             });
+        }
+        public string KitchenToParse { 
+            get => Flat.GeneralInfo.Kitchen.ToString(); 
+            set => kitchenToParse = value; 
+        }
+        public string LivingToParse {
+            get => Flat.GeneralInfo.Living.ToString();
+            set => livingToParse = value; 
+        }
+        public string GeneralToParse {
+            get => Flat.GeneralInfo.General.ToString();
+            set => generalToParse = value; 
+        }
+        public string CeilingToParse {
+            get => Flat.GeneralInfo.Ceiling.ToString();
+            set => ceilingToParse = value; 
         }
     }
 }

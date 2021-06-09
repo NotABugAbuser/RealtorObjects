@@ -2,6 +2,7 @@
 using RealtorObjects.ViewModel;
 using RealtyModel.Model;
 using System;
+using System.Diagnostics;
 using System.Windows;
 
 namespace RealtorObjects
@@ -23,7 +24,22 @@ namespace RealtorObjects
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            new LoginForm(new LoginFormViewModel()).Show();
+            if (Debugger.IsAttached)
+            {
+                LoginFormViewModel loginVM = new LoginFormViewModel() { 
+                    CredentialData = new Model.CredentialData() { 
+                        CurrentPassword = "1",
+                        CurrentUsername = "й"
+                    }
+                };
+                LoginForm window = new LoginForm();
+                window.Show();
+                loginVM.Login.Execute(window);
+            }
+            else
+            {
+                new LoginForm(new LoginFormViewModel()).Show();
+            }
         }
     }
 }
