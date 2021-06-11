@@ -16,6 +16,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand closeApp;
         private CustomCommand updateWorkArea;
         private CustomCommand signOut;
+        private CustomCommand openRegistrationForm;
         private Street[] streets = Array.Empty<Street>();
         private BaseViewModel[] viewModels = new BaseViewModel[6] {
             new HomeViewModel(),
@@ -33,7 +34,9 @@ namespace RealtorObjects.ViewModel
             false,
             false
         };
-
+        public CustomCommand OpenRegistrationForm => openRegistrationForm ?? (openRegistrationForm = new CustomCommand(obj => {
+            new RegistrationForm() { DataContext = new RegistrationFormViewModel() }.Show();
+        }));
         public string CurrentAgentName {
             get => currentAgentName;
             set {

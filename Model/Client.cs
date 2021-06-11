@@ -30,7 +30,18 @@ namespace RealtorObjects.Model
             NetworkStream network = client.GetStream();
             return network;
         }
+        public static Boolean Register(Credential credentials)
+        {
+            NetworkStream network = Connect();
+            Operation operation = new Operation(Action.Register, BinarySerializer.Serialize(credentials));
+            Transfer.SendOperation(operation, network);
 
+            Response response = Transfer.ReceiveResponse(network);
+            OperationNotification.Notify(response.Code);
+            if (response.Code == ErrorCode.Successful)
+                return true;
+            else return false;
+        }
         public static ObservableCollection<byte[]> RequestAlbum(int id)
         {
             NetworkStream network = Connect();

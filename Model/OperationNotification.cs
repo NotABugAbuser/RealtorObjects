@@ -28,7 +28,8 @@ namespace RealtorObjects.Model
             [ErrorCode.WrongAgent] = new NotificationInfo("У вас нет прав на редактирование этого объекта.", CodeType.Exclamation),
             [ErrorCode.FlatUpdatedSuccessfuly] = new NotificationInfo("Изменения квартиры успешно занесены в базу данных", CodeType.Successful),
             [ErrorCode.FlatDuplicate] = new NotificationInfo("Квартира с данным адресом уже существует в базе данных", CodeType.Exclamation),
-            [ErrorCode.WrongFormat] = new NotificationInfo("Введены данные в неверном формате", CodeType.Error)
+            [ErrorCode.WrongFormat] = new NotificationInfo("Введены данные в неверном формате", CodeType.Error),
+            [ErrorCode.AgentExists] = new NotificationInfo("Такой агент уже существует", CodeType.Exclamation)
         };
         public static void Notify(ErrorCode code)
         {

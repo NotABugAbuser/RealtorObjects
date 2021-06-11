@@ -3,18 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:RealtorObjects.View"
              mc:Ignorable="d" 
              xmlns:fa="http://schemas.fontawesome.com/icons/"
-             xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
              xmlns:c="clr-namespace:RealtorObjects.View.Converters"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              Background="#f7f7f7"
              Name="HomeVM"
              d:DesignHeight="648" d:DesignWidth="1196">
-    <UserControl.DataContext>
-        <vm:HomeViewModel/>
-    </UserControl.DataContext>
     <UserControl.Resources>
         <Style TargetType="TextBlock" x:Key="RegularText">
             <Setter Property="FontFamily" Value="{StaticResource Helvetica}"/>
@@ -131,7 +126,7 @@
                         Grid.Column="2"
                         Grid.Row="1"
                         Style="{StaticResource RegularText}"
-                        Text="{Binding Location.Street.Name}"/>
+                        Text="{Binding Path=Location.Street.Name}"/>
                     <TextBlock
                         Margin="0,15,0,0"
                         Grid.Column="2"

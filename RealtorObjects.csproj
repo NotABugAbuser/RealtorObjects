@@ -75,7 +75,7 @@
     <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="RealtyModel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\realtymodel\bin\Debug\RealtyModel.dll</HintPath>
+      <HintPath>..\RealtyModel\bin\Debug\RealtyModel.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -151,13 +151,16 @@
     <Compile Include="ViewModel\LoginFormViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\FlatFormViewModel.cs" />
+    <Compile Include="ViewModel\RegistrationFormViewModel.cs" />
     <Compile Include="View\CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Converters\BoolToVisibilityReversedConverter.cs" />
     <Compile Include="View\Converters\ByteArrayToBitmapImageConverter.cs" />
     <Compile Include="View\Converters\EmptyStringToBoolConverter.cs" />
+    <Compile Include="View\Converters\InverseBoolConverter.cs" />
     <Compile Include="View\Converters\InverseVisibilityConverter.cs" />
+    <Compile Include="View\Converters\NameToVisibilityConverter.cs" />
     <Compile Include="View\Converters\ObjectAndPropertyMultiValueConverter.cs" />
     <Compile Include="View\Converters\PageEqualityConverter.cs" />
     <Compile Include="View\Converters\SymbolToStarConverter.cs" />

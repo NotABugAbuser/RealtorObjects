@@ -106,8 +106,8 @@ namespace RealtorObjects.ViewModel
         }));
         public CustomCommand CreateFlat => createFlat ?? (createFlat = new CustomCommand(obj =>
         {
-            FlatFormViewModel flatFormVM = new FlatFormViewModel(CurrentAgentName);
-            flatFormVM.Streets = this.Streets;
+            FlatFormViewModel flatFormVM = new FlatFormViewModel((Application.Current as App).AgentName);
+            flatFormVM.Streets = new ObservableCollection<Street>(Streets);
             new FlatFormV2(flatFormVM).Show();
         }));
         public CustomCommand OpenCloseFilters => openCloseFilters ?? (openCloseFilters = new CustomCommand(obj =>
@@ -137,9 +137,7 @@ namespace RealtorObjects.ViewModel
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        flatFormVM = new FlatFormViewModel(flat, CurrentAgentName);
-                        flatFormVM.Streets = this.Streets;
-                        flatFormVM.Streets = flatFormVM.Streets.OrderBy(s => s.Name).ToArray();
+                        flatFormVM = new FlatFormViewModel(flat, (Application.Current as App).AgentName);
                         new FlatFormV2(flatFormVM).Show();
                     });
                 }

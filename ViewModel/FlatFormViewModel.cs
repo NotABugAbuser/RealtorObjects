@@ -30,7 +30,7 @@ namespace RealtorObjects.ViewModel
         private string title = "[Квартира] — Изменение";
         private string currentAgent = "";
         private readonly FlatOptions flatOptions = new FlatOptions();
-        private Street[] streets = Array.Empty<Street>();
+        private ObservableCollection<Street> streets = new ObservableCollection<Street>();
         private District[] districts = new District[]
         {
             District.Авиагородок,
@@ -108,7 +108,7 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
-        public Street[] Streets
+        public ObservableCollection<Street> Streets
         {
             get => streets;
             set
@@ -163,31 +163,55 @@ namespace RealtorObjects.ViewModel
         private string livingToParse = "";
         private string generalToParse = "";
         private string ceilingToParse = "";
-
+        private Int32 streetId = 0;
+        private String street = "";
+        private CustomCommand changeStreet;
+        public String Street
+        {
+            get => street;
+            set
+            {
+                street = value;
+                OnPropertyChanged();
+            }
+        }
+        public CustomCommand ChangeStreet
+        {
+            get => changeStreet ?? (changeStreet = new CustomCommand(obj =>
+            {
+                if (Flat.Location.Street != null)
+                {
+                    streetId = Flat.Location.Street.Id;
+                    Street = Flat.Location.Street.Name;
+                }
+            }));
+        }
 
         public FlatFormViewModel()
         {
         }
         public FlatFormViewModel(string agentName)
         {
-            Title = "[Квартира] — Добавление";
-            isNew = true;
             currentAgent = agentName;
+
+            Title = $"[{agentName}: Квартира] — Добавление";
+            isNew = true;
             EditBorderVisibility = Visibility.Collapsed;
 
             if (Debugger.IsAttached)
                 Flat = Flat.CreateTestFlat();
             else Flat = Flat.GetEmptyInstance();
+            Flat.Agent = agentName;
             Flat.RegistrationDate = DateTime.Now;
             Flat.Album.PhotoCollection = Array.Empty<byte>();
-
-            Flat.Location.City = Cities[1];
+            Street = Flat.Location.Street.Name;
         }
         public FlatFormViewModel(Flat flat, string agentName)
         {
-            Title = "[Квартира] — Просмотр";
+            Title = $"[{Flat.Agent}: Квартира #{Flat.Id}] — Просмотр";
             Flat = flat;
             currentAgent = agentName;
+            Street = Flat.Location.Street.Name;
         }
 
         public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj =>
@@ -214,7 +238,7 @@ namespace RealtorObjects.ViewModel
             if (CheckAccess(Flat.Agent, currentAgent))
             {
                 EditBorderVisibility = Visibility.Collapsed;
-                Title = "[Квартира]— Редактирование";
+                Title = $"[{Flat.Agent}: Квартира #{Flat.Id}] — Редактирование";
             }
         }));
         public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj =>
@@ -241,10 +265,13 @@ namespace RealtorObjects.ViewModel
             var value = Convert.ToInt32(obj);
             Flat.Cost.Price += value;
         }));
-        public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
+        public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj =>
+        {
+            (obj as Window).Close();
+        }
+        ));
         public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj =>
         {
-            Flat.Album.WriteLocation(Flat.Location);
             try
             {
                 Flat.GeneralInfo.Ceiling = float.Parse(CeilingToParse, CultureInfo.InvariantCulture);
@@ -374,21 +401,25 @@ namespace RealtorObjects.ViewModel
                 });
             });
         }
-        public string KitchenToParse { 
-            get => Flat.GeneralInfo.Kitchen.ToString(); 
-            set => kitchenToParse = value; 
+        public string KitchenToParse
+        {
+            get => Flat.GeneralInfo.Kitchen.ToString();
+            set => kitchenToParse = value;
         }
-        public string LivingToParse {
+        public string LivingToParse
+        {
             get => Flat.GeneralInfo.Living.ToString();
-            set => livingToParse = value; 
+            set => livingToParse = value;
         }
-        public string GeneralToParse {
+        public string GeneralToParse
+        {
             get => Flat.GeneralInfo.General.ToString();
-            set => generalToParse = value; 
+            set => generalToParse = value;
         }
-        public string CeilingToParse {
+        public string CeilingToParse
+        {
             get => Flat.GeneralInfo.Ceiling.ToString();
-            set => ceilingToParse = value; 
+            set => ceilingToParse = value;
         }
     }
 }

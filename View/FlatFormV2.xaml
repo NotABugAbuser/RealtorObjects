@@ -3,12 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:RealtorObjects.View"
         mc:Ignorable="d"
         MouseDown="Window_MouseDown"
-        xmlns:v="clr-namespace:RealtorObjects.View"
         xmlns:fa="http://schemas.fontawesome.com/icons/"
-        xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
         xmlns:c="clr-namespace:RealtorObjects.View.Converters"
         WindowStyle="none"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
@@ -17,9 +14,6 @@
         Background="#f6f6f6"
         Height="640" Width="755"
         WindowStartupLocation="CenterScreen">
-    <Window.DataContext>
-        <vm:FlatFormViewModel/>
-    </Window.DataContext>
     <Window.Style>
         <Style TargetType="Window">
             <Setter Property="BorderThickness" Value="0"/>
@@ -33,6 +27,7 @@
     <Window.Resources>
         <c:InverseVisibilityConverter x:Key="InverseVisibility"/>
         <c:ByteArrayToBitmapImageConverter x:Key="ByteArrayToBitmapImage"/>
+        <c:InverseBoolConverter x:Key="InverseBool"/>
         <Style TargetType="Button" x:Key="LeftGalleryButton">
             <Setter Property="Background" Value="#66ffffff"/>
             <Setter Property="Width" Value="50"/>
@@ -338,8 +333,8 @@
                     <ColumnDefinition Width="42"/>
                     <ColumnDefinition Width="265"/>
                     <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="37"/>
                     <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="80"/>
                     <ColumnDefinition Width="37"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="70"/>
@@ -375,18 +370,18 @@
                     Grid.Column="1"
                     Style="{StaticResource GreenComboBox}"/>
                 <TextBlock
-                    Grid.Column="2"
-                    Grid.Row="0"
+                    Grid.Column="4"
+                    Grid.Row="2"
                     Style="{StaticResource Header}"
                     Text="Квартира №:"/>
                 <TextBlock
-                    Grid.Column="4"
-                    Grid.Row="0"
+                    Grid.Column="2"
+                    Grid.Row="2"
                     Style="{StaticResource Header}"
                     Text="Дом №:"/>
                 <Border
-                    Grid.Column="3"
-                    Grid.Row="0"
+                    Grid.Column="5"
+                    Grid.Row="2"
                     Style="{StaticResource Border}">
                     <TextBox
                         TabIndex="6"
@@ -398,10 +393,8 @@
                         Text="{Binding FlatNumber, StringFormat=0, UpdateSourceTrigger=PropertyChanged}"/>
                 </Border>
                 <Border
-                    Grid.ColumnSpan="2"
-                    Margin="0,0,100,0"
-                    Grid.Column="5"
-                    Grid.Row="0"
+                    Grid.Column="3"
+                    Grid.Row="2"
                     Style="{StaticResource Border}">
                     <TextBox
                         TabIndex="7"
@@ -414,30 +407,36 @@
                 </Border>
                 <TextBlock
                     Grid.Column="2"
-                    Grid.Row="2"
                     Style="{StaticResource Header}"
                     Text="Улица:"/>
                 <ComboBox Name="Streets"
-                    TabIndex="11"
-                    PreviewTextInput="RussianOnly"
-                    ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=DataContext.Streets}"
-                    SelectedItem="{Binding Street}"
-                    Text="{Binding Street.Name, UpdateSourceTrigger=PropertyChanged}"
-                    Grid.Row="2"
-                    Grid.Column="3"
-                    Grid.ColumnSpan="5"
-                    Style="{StaticResource GreenComboBox}"/>
+                          TabIndex="11"
+                          PreviewTextInput="RussianOnly"
+                          ItemsSource="{Binding Path=DataContext.Streets, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                          SelectedItem="{Binding Street, Mode=OneWayToSource}"
+                          Text="{Binding Path=DataContext.Street, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}"
+                          Grid.Column="3"
+                          Grid.ColumnSpan="5"
+                          Style="{StaticResource GreenComboBox}">
+                          <i:Interaction.Triggers>
+                              <i:EventTrigger EventName="StreetChanged">
+                                  <i:InvokeCommandAction Command="{Binding Path=DataContext.ChangeStreet, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                                                         CommandParameter="{Binding ElementName=Streets.SelectedItem}"/>
+                              </i:EventTrigger>
+                          </i:Interaction.Triggers>
+                </ComboBox>
                 <CheckBox
-                    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Flat}"
+                    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Flat.GeneralInfo}"
                     IsChecked="{Binding HasBanner}"
                     TabIndex="8"
                     Style="{StaticResource OptionCheckBox}"
                     HorizontalAlignment="Right"
                     Grid.Column="6"
-                    Grid.Row="0"
+                    Grid.Row="2"
                     Content="Растяжка"/>
                 <CheckBox
-                    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Flat}"
+                    Grid.Row="2"
+                    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Flat.GeneralInfo}"
                     IsChecked="{Binding HasExchange}"
                     TabIndex="9"
                     Style="{StaticResource OptionCheckBox}"
@@ -791,6 +790,7 @@
                             Content="Раздельные"
                             Grid.Row="1"/>
                         <RadioButton
+                            IsChecked="{Binding Info.IsSeparated, Converter={StaticResource InverseBool}, Mode=OneWay}"
                             TabIndex="33"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Right"
@@ -1045,7 +1045,7 @@
             HorizontalAlignment="Right"
             Width="130"
             Grid.Row="1"/>
-        <Border
+        <Border Name="BottomButtons"
             Height="40"
             VerticalAlignment="Bottom"
             DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext}"
@@ -1067,7 +1067,7 @@
                      Style="{StaticResource GreenButton}"
                      Command="{Binding Edit}"
                      Content="Редактировать"/>
-                <Button
+                <Button Name="Cancel"
                     TabIndex="50"
                     Grid.Column="2"
                     Command="{Binding Cancel}"
@@ -1077,16 +1077,16 @@
             </Grid>
         </Border>
         <Grid Name="Slider"
-            DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext}"
-            Visibility="Collapsed"
-            Background="Black"
-            Grid.Row="1">
-            <Image
+              DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext}"
+              Visibility="Collapsed"
+              Background="Black"
+              Grid.Row="1">
+              <Image
                 Source="{Binding Converter={StaticResource ByteArrayToBitmapImage}, Path=CurrentImage}"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center"
                 Stretch="Uniform"/>
-            <StackPanel 
+              <StackPanel 
                 Margin="0,0,0,10"
                 HorizontalAlignment="Center"
                 Orientation="Horizontal"

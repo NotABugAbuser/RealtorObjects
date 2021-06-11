@@ -21,9 +21,6 @@
         BorderThickness="1"
         WindowStyle="none"
         WindowStartupLocation="CenterScreen">
-    <Window.DataContext>
-        <vm:LoginFormViewModel/>
-    </Window.DataContext>
     <Window.Resources>
         <c:SymbolToStarConverter x:Key="SymbolToStar"/>
         <Style TargetType="Button" x:Key="SubmitButton">
@@ -117,12 +114,9 @@
             <Setter Property="VerticalAlignment" Value="Bottom"/>
             <Setter Property="Foreground" Value="#555"/>
         </Style>
+        
     </Window.Resources>
     <Grid>
-        <Button
-            Style="{StaticResource WhiteCloseButton}"
-            Command="{Binding CloseApp}">
-        </Button>
         <Grid
             Background="white"
             Margin="45,35,45,45">
@@ -147,7 +141,7 @@
                 FontFamily="{StaticResource Helvetica}"
                 FontSize="24"
                 VerticalAlignment="bottom"
-                Text="Зарегистрируйтесь"/>
+                Text="Регистрация агента"/>
             <TextBlock
                 Text="имя:"
                 Style="{StaticResource header}"
@@ -188,10 +182,12 @@
                     Style="{StaticResource fieldTextBox}"/>
             </Border>
             <TextBlock
+                Visibility="Collapsed"
                 Text="эл. почта:"
                 Style="{StaticResource header}"
                 Grid.Row="7"/>
             <Border
+                Visibility="Collapsed"
                 Grid.Row="8"
                 BorderBrush="{StaticResource BorderGray}"
                 BorderThickness="1">
@@ -246,7 +242,8 @@
             <Button
                 Content="Подтвердить"
                 Grid.Row="14"
-                Command="{Binding CreateNewUser}"
+                Command="{Binding Register}"
+                CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
                 Style="{StaticResource SubmitButton}"/>
         </Grid>
     </Grid>

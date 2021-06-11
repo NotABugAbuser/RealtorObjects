@@ -28,8 +28,8 @@ namespace RealtorObjects
             {
                 LoginFormViewModel loginVM = new LoginFormViewModel() { 
                     CredentialData = new Model.CredentialData() { 
-                        CurrentPassword = "1",
-                        CurrentUsername = "й"
+                        CurrentPassword = "123",
+                        CurrentUsername = "Директор"
                     }
                 };
                 LoginForm window = new LoginForm();

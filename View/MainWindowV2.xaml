@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RealtorObjects.View"
-        xmlns:v="clr-namespace:RealtorObjects.View"
+        xmlns:c="clr-namespace:RealtorObjects.View.Converters"
         xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
         xmlns:fa="http://schemas.fontawesome.com/icons/"
         xmlns:fa4="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
@@ -98,6 +98,36 @@
             <Setter Property="LineStackingStrategy" Value="BlockLineHeight"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
+        <Style TargetType="Button" x:Key="HeaderButton">
+            <Setter Property="Background" Value="{StaticResource PrimaryViolet}"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Width" Value="170"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontFamily" Value="{StaticResource Helvetica}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            Background="{TemplateBinding Background}">
+                            <ContentPresenter
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightPrimaryViolet}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SecondaryViolet}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <c:NameToVisibilityConverter x:Key="NameToVisibility"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -109,6 +139,7 @@
             Background="{StaticResource PrimaryViolet}">
             <Grid>
                 <StackPanel
+                    Visibility="Collapsed"
                     Margin="0,15,0,0">
                     <ToggleButton 
                         Command="{Binding UpdateWorkArea}"
@@ -196,6 +227,21 @@
                         </Grid>
                     </ToggleButton>
                 </StackPanel>
+                <Button Name="RegisterButton"
+                        Visibility="{Binding CurrentAgentName, Converter={StaticResource NameToVisibility}}"
+                        Style="{StaticResource HeaderButton}"
+                        Command="{Binding OpenRegistrationForm}">
+                        <Grid>
+                        <fa:ImageAwesome
+                            Margin="0"
+                            Style="{StaticResource LeftIcon}"
+                            Icon="Solid_Plus"/>
+                        <TextBlock
+                            Margin="30,0,0,0"
+                            Style="{StaticResource LeftText}"
+                            Text="Новый агент"/>
+                    </Grid>
+                </Button>
                 <TextBlock
                     VerticalAlignment="Bottom"
                     Margin="0,0,0,52"
