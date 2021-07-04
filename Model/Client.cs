@@ -23,24 +23,20 @@ namespace RealtorObjects.Model
 
             TcpClient client = new TcpClient();
             if (Debugger.IsAttached)
-                serverIp = IPAddress.Parse("192.168.1.34");
+                serverIp = IPAddress.Parse("192.168.1.250");
             else
                 serverIp = IPAddress.Parse("192.168.1.250");
             client.Connect(serverIp, 15000);
             NetworkStream network = client.GetStream();
             return network;
         }
-        public static Boolean Register(Credential credentials)
+        public static ErrorCode Register(Credential credentials)
         {
             NetworkStream network = Connect();
             Operation operation = new Operation(Action.Register, BinarySerializer.Serialize(credentials));
             Transfer.SendOperation(operation, network);
 
-            Response response = Transfer.ReceiveResponse(network);
-            OperationNotification.Notify(response.Code);
-            if (response.Code == ErrorCode.Successful)
-                return true;
-            else return false;
+            return Transfer.ReceiveResponse(network).Code;
         }
         public static ObservableCollection<byte[]> RequestAlbum(int id)
         {

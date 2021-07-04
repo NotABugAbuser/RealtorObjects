@@ -30,7 +30,7 @@ namespace RealtorObjects.View
 
         }
         private void LoginValidation(object sender, TextCompositionEventArgs e) {
-            e.Handled = new Regex("[^а-яА-Я]").IsMatch(e.Text);
+            e.Handled = new Regex("[^а-яА-ЯёЁ]").IsMatch(e.Text);
         }
         private void EmailValidation(object sender, TextCompositionEventArgs e) {
             e.Handled = new Regex("[^a-zA-Z0-9@.]").IsMatch(e.Text);

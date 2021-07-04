@@ -74,7 +74,7 @@ namespace RealtorObjects.Model
                 }
             }
             if (!isEveryFieldFilled) {
-                OperationNotification.Notify(ErrorCode.NotFilled, message.ToString());
+                OperationNotification.WarningNotify(ErrorCode.NotFilled, message.ToString());
             }
             return isEveryFieldFilled;
         }

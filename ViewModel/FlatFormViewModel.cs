@@ -42,8 +42,8 @@ namespace RealtorObjects.ViewModel
             District.Залесье,
             District.Заря,
             District.ЗЖМ,
-            District.Красный_сад,
             District.Наливная,
+            District.Пальмира,
             District.ПЧЛ,
             District.РДВС,
             District.СЖМ,
@@ -55,9 +55,22 @@ namespace RealtorObjects.ViewModel
         {
             City.Азов,
             City.Батайск,
-            City.Ростов_на_Дону
+            City.Весна,
+            City.Донская_чаша,
+            City.Дружба,
+            City.Красный_сад,
+            City.Кулешовка,
+            City.Лесная_полянка,
+            City.Луч,
+            City.Милиоратор,
+            City.Мокрый_Батай,
+            City.Овощной,
+            City.Ромашка,
+            City.Ростов_на_Дону,
+            City.Труд,
+            City.Ягодка
         };
-        private Flat flat = new Flat();
+        private Flat flat = new Flat() { Location = new Location() { Street = new Street() } };
         private Visibility editBorderVisibility = Visibility.Visible;
         private Visibility sliderVisibility = Visibility.Collapsed;
         private ObservableCollection<byte[]> photos = new ObservableCollection<byte[]>();
@@ -159,59 +172,32 @@ namespace RealtorObjects.ViewModel
             }
         }
         #endregion
-        private string kitchenToParse = "";
-        private string livingToParse = "";
-        private string generalToParse = "";
-        private string ceilingToParse = "";
-        private Int32 streetId = 0;
-        private String street = "";
-        private CustomCommand changeStreet;
-        public String Street
-        {
-            get => street;
-            set
-            {
-                street = value;
-                OnPropertyChanged();
-            }
-        }
-        public CustomCommand ChangeStreet
-        {
-            get => changeStreet ?? (changeStreet = new CustomCommand(obj =>
-            {
-                if (Flat.Location.Street != null)
-                {
-                    streetId = Flat.Location.Street.Id;
-                    Street = Flat.Location.Street.Name;
-                }
-            }));
-        }
+
+        public String StreetName { get; set; }
 
         public FlatFormViewModel()
         {
         }
         public FlatFormViewModel(string agentName)
         {
-            currentAgent = agentName;
-
-            Title = $"[{agentName}: Квартира] — Добавление";
             isNew = true;
             EditBorderVisibility = Visibility.Collapsed;
-
+            Title = $"[{agentName}: Квартира] — Добавление";
+            currentAgent = agentName;
             if (Debugger.IsAttached)
                 Flat = Flat.CreateTestFlat();
             else Flat = Flat.GetEmptyInstance();
             Flat.Agent = agentName;
             Flat.RegistrationDate = DateTime.Now;
             Flat.Album.PhotoCollection = Array.Empty<byte>();
-            Street = Flat.Location.Street.Name;
+            StreetName = Flat.Location.Street.Name;
         }
         public FlatFormViewModel(Flat flat, string agentName)
         {
-            Title = $"[{Flat.Agent}: Квартира #{Flat.Id}] — Просмотр";
             Flat = flat;
+            Title = $"[{Flat.Agent}: Квартира #{Flat.Id}] — Просмотр";
             currentAgent = agentName;
-            Street = Flat.Location.Street.Name;
+            StreetName = Flat.Location.Street.Name;
         }
 
         public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj =>
@@ -274,24 +260,25 @@ namespace RealtorObjects.ViewModel
         {
             try
             {
-                Flat.GeneralInfo.Ceiling = float.Parse(CeilingToParse, CultureInfo.InvariantCulture);
-                Flat.GeneralInfo.General = float.Parse(GeneralToParse, CultureInfo.InvariantCulture);
-                Flat.GeneralInfo.Living = float.Parse(LivingToParse, CultureInfo.InvariantCulture);
-                Flat.GeneralInfo.Kitchen = float.Parse(KitchenToParse, CultureInfo.InvariantCulture);
-                if (new FieldChecking(Flat).CheckFieldsOfFlat())
+                if (Flat.GeneralInfo.CurrentLevel <= Flat.GeneralInfo.LevelCount)
                 {
-                    if (isNew)
-                        Client.AddFlat(Flat);
-                    else
-                        Client.UpdateFlat(Flat);
-                    (obj as Window).Close();
+                    if (Flat.Location.Street == null)
+                        Flat.Location.Street = new Street() { Id = 0, Name = StreetName };
+                    if (new FieldChecking(Flat).CheckFieldsOfFlat())
+                    {
+                        if (isNew)
+                            Client.AddFlat(Flat);
+                        else
+                            Client.UpdateFlat(Flat);
+                        (obj as Window).Close();
+                    }
                 }
+                else OperationNotification.WarningNotify(ErrorCode.WrongData, "Этажи введены неверно");
             }
             catch (FormatException)
             {
                 OperationNotification.Notify(ErrorCode.WrongFormat);
             }
-
         }));
         private bool CheckAccess(string objectAgent, string currentAgent)
         {
@@ -400,26 +387,6 @@ namespace RealtorObjects.ViewModel
                     }
                 });
             });
-        }
-        public string KitchenToParse
-        {
-            get => Flat.GeneralInfo.Kitchen.ToString();
-            set => kitchenToParse = value;
-        }
-        public string LivingToParse
-        {
-            get => Flat.GeneralInfo.Living.ToString();
-            set => livingToParse = value;
-        }
-        public string GeneralToParse
-        {
-            get => Flat.GeneralInfo.General.ToString();
-            set => generalToParse = value;
-        }
-        public string CeilingToParse
-        {
-            get => Flat.GeneralInfo.Ceiling.ToString();
-            set => ceilingToParse = value;
         }
     }
 }

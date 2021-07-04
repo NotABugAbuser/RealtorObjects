@@ -21,7 +21,6 @@ namespace RealtorObjects.View
     /// </summary>
     public partial class FlatFormV2 : Window
     {
-
         public FlatFormV2()
         {
             InitializeComponent();
@@ -59,6 +58,7 @@ namespace RealtorObjects.View
 
             }
         }
+        
         private void EnglishOnly(object sender, TextCompositionEventArgs e)
         {
             e.Handled = new Regex("[^a-zA-z]").IsMatch(e.Text);
@@ -66,6 +66,10 @@ namespace RealtorObjects.View
         private void RussianOnly(object sender, TextCompositionEventArgs e)
         {
             e.Handled = new Regex("[^а-яА-Я]").IsMatch(e.Text);
+        }
+        private void RussianWithNumbersOnly(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = new Regex("[^а-яА-Я0-9-]").IsMatch(e.Text);
         }
         private void NumericOnly(object sender, TextCompositionEventArgs e)
         {
@@ -85,13 +89,25 @@ namespace RealtorObjects.View
         }
         private void NumericWithDotOnly(object sender, TextCompositionEventArgs e)
         {
+                if (new Regex("[0-9]").IsMatch(e.Text))
+                    e.Handled = false;
+                else if (new Regex(@"\.").IsMatch(e.Text))
+                {
+                    if ((sender as TextBox).Text.Contains("."))
+                        e.Handled = true;
+                    else e.Handled = false;
+                }
+                else e.Handled = true;
+        }
+        private void NumericWithCommaOnly(object sender, TextCompositionEventArgs e)
+        {
             if ((sender as TextBox).Text.Length < 6)
             {
                 if (new Regex("[0-9]").IsMatch(e.Text))
                     e.Handled = false;
-                else if (new Regex(@"\,").IsMatch(e.Text) || new Regex(@"\.").IsMatch(e.Text))
+                else if (new Regex(@"\,").IsMatch(e.Text))
                 {
-                    if ((sender as TextBox).Text.Contains(",") || (sender as TextBox).Text.Contains("."))
+                    if ((sender as TextBox).Text.Contains(","))
                         e.Handled = true;
                     else e.Handled = false;
                 }

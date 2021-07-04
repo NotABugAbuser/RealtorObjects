@@ -26,10 +26,12 @@ namespace RealtorObjects
             base.OnStartup(e);
             if (Debugger.IsAttached)
             {
-                LoginFormViewModel loginVM = new LoginFormViewModel() { 
-                    CredentialData = new Model.CredentialData() { 
-                        CurrentPassword = "123",
-                        CurrentUsername = "Директор"
+                LoginFormViewModel loginVM = new LoginFormViewModel()
+                {
+                    CredentialData = new Model.CredentialData()
+                    {
+                        CurrentPassword = "csharprulit",
+                        CurrentUsername = "Админ"
                     }
                 };
                 LoginForm window = new LoginForm();

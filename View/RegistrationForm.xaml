@@ -136,6 +136,8 @@
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="40"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             <TextBlock
                 FontFamily="{StaticResource Helvetica}"
@@ -182,12 +184,10 @@
                     Style="{StaticResource fieldTextBox}"/>
             </Border>
             <TextBlock
-                Visibility="Collapsed"
                 Text="эл. почта:"
                 Style="{StaticResource header}"
                 Grid.Row="7"/>
             <Border
-                Visibility="Collapsed"
                 Grid.Row="8"
                 BorderBrush="{StaticResource BorderGray}"
                 BorderThickness="1">
@@ -243,6 +243,12 @@
                 Content="Подтвердить"
                 Grid.Row="14"
                 Command="{Binding Register}"
+                CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                Style="{StaticResource SubmitButton}"/>
+            <Button
+                Content="Отмена"
+                Grid.Row="16"
+                Command="{Binding Cancel}"
                 CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
                 Style="{StaticResource SubmitButton}"/>
         </Grid>

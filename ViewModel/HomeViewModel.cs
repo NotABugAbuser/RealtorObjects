@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Diagnostics;
 
 namespace RealtorObjects.ViewModel
 {
@@ -74,30 +75,20 @@ namespace RealtorObjects.ViewModel
         }
 
         #endregion
+        public Street[] Streets
+        {
+            get => streets;
+            set
+            {
+                streets = value;
+                OnPropertyChanged();
+            }
+        }
         public HomeViewModel()
         {
-            //this.CurrentObjectList.Add(Flat.CreateTestFlat());
-            this.Streets = Client.RequestStreets();
-
+            Streets = Client.RequestStreets();
         }
 
-        private void SplitBy(List<BaseRealtorObject> filteredList, byte pageSize)
-        {
-            ObjectLists.Clear();
-            if (filteredList.Count > pageSize)
-            {
-                foreach (var batch in filteredList.Batch(25))
-                {
-                    ObjectLists.Add(batch.ToList());
-                }
-                CalculatePages(0);
-                CurrentPage = 1;
-            }
-            else
-            {
-                ObjectLists.Add(new List<BaseRealtorObject>(filteredList));
-            }
-        }
         public CustomCommand SendQuery => sendQuery ?? (sendQuery = new CustomCommand(obj =>
         {
             CurrentObjectList.Clear();
@@ -138,28 +129,39 @@ namespace RealtorObjects.ViewModel
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         flatFormVM = new FlatFormViewModel(flat, (Application.Current as App).AgentName);
+                        flatFormVM.Streets = new ObservableCollection<Street>(Streets);
                         new FlatFormV2(flatFormVM).Show();
                     });
                 }
                 return Task.Run(() =>
                 {
-                    flatFormVM.Photos = Client.RequestAlbumAsync(flatFormVM.Flat.AlbumId).Result;
+                    //flatFormVM.Photos = Client.RequestAlbumAsync(flatFormVM.Flat.AlbumId).Result;
+                    flatFormVM.Photos = Client.RequestAlbum(flatFormVM.Flat.AlbumId);
+                    flatFormVM.CurrentImage = flatFormVM.Photos[0];
                     flatFormVM.Flat.Album.PhotoCollection = BinarySerializer.Serialize(flatFormVM.Photos);
                 });
             }));
 
+        private void SplitBy(List<BaseRealtorObject> filteredList, byte pageSize)
+        {
+            ObjectLists.Clear();
+            if (filteredList.Count > pageSize)
+            {
+                foreach (var batch in filteredList.Batch(25))
+                {
+                    ObjectLists.Add(batch.ToList());
+                }
+                CalculatePages(0);
+                CurrentPage = 1;
+            }
+            else
+            {
+                ObjectLists.Add(new List<BaseRealtorObject>(filteredList));
+            }
+        }
         public string CurrentAgentName
         {
             get => currentAgentName; set => currentAgentName = value;
-        }
-        public Street[] Streets
-        {
-            get => streets;
-            set
-            {
-                streets = value;
-                OnPropertyChanged();
-            }
         }
         private void CalculatePages(short currentPage)
         {

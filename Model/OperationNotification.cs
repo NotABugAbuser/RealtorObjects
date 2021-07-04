@@ -1,14 +1,7 @@
-﻿using FontAwesome.WPF;
-using RealtorObjects.View;
+﻿using RealtorObjects.View;
 using RealtyModel.Model.Operations;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace RealtorObjects.Model
 {
@@ -41,7 +34,17 @@ namespace RealtorObjects.Model
                 notification.Top = SystemParameters.WorkArea.Height - notification.ActualHeight;
             }
         }
-        public static void Notify(ErrorCode code, string message)
+        public static void SuccessfulNotify(ErrorCode code, string message)
+        {
+            if (code != ErrorCode.NoCode)
+            {
+                NotificationWindow notification = new NotificationWindow(new NotificationInfo(message, CodeType.Successful));
+                notification.Show();
+                notification.Left = SystemParameters.WorkArea.Width - notification.ActualWidth;
+                notification.Top = SystemParameters.WorkArea.Height - notification.ActualHeight;
+            }
+        }
+        public static void WarningNotify(ErrorCode code, string message)
         {
             if (code != ErrorCode.NoCode)
             {
