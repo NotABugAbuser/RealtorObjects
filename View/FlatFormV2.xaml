@@ -826,6 +826,8 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <CheckBox
                         TabIndex="36"
@@ -1070,6 +1072,7 @@
         <Grid Name="Slider"
               DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext}"
               Visibility="{Binding SliderVisibility}"
+              Opacity="0"
               Background="Black"
               Grid.Row="1">
             <Image

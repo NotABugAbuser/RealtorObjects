@@ -1,6 +1,8 @@
-﻿using System;
+﻿using RealtorObjects.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -9,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -16,34 +19,27 @@ using System.Windows.Shapes;
 namespace RealtorObjects.View
 {
     /// <summary>
-    /// Логика взаимодействия для HouseForm.xaml
+    /// Логика взаимодействия для FlatFormV3.xaml
     /// </summary>
-    public partial class HouseForm : Window
+    public partial class FlatFormV3 : Window
     {
-        public HouseForm() {
+        private const int GWL_STYLE = -16;
+        private const int WS_SYSMENU = 0x80000;
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+        [DllImport("user32.dll")]
+        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+        public FlatFormV3() {
             InitializeComponent();
         }
-        private void CloseApplication_Click(object sender, RoutedEventArgs e) {
-            Application.Current.Shutdown();
+        public FlatFormV3(FlatFormViewModel flatFormVM) {
+            InitializeComponent();
+            this.DataContext = flatFormVM;
         }
-
-        private void MinimizeApplcation_Click(object sender, RoutedEventArgs e) {
-            this.WindowState = WindowState.Minimized;
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            var hwnd = new WindowInteropHelper(this).Handle;
+            SetWindowLong(hwnd, GWL_STYLE, GetWindowLong(hwnd, GWL_STYLE) & ~WS_SYSMENU);
         }
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e) {
-            if (e.LeftButton == MouseButtonState.Pressed) {
-                this.DragMove();
-            }
-        }
-        private void WindowApplication_Click(object sender, RoutedEventArgs e) {
-            if (this.WindowState == WindowState.Normal) {
-                this.WindowState = WindowState.Maximized;
-            } else {
-                this.WindowState = WindowState.Normal;
-
-            }
-        }
-
         private void EnglishOnly(object sender, TextCompositionEventArgs e) {
             e.Handled = new Regex("[^a-zA-z]").IsMatch(e.Text);
         }

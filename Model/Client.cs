@@ -23,7 +23,7 @@ namespace RealtorObjects.Model
 
             TcpClient client = new TcpClient();
             if (Debugger.IsAttached)
-                serverIp = IPAddress.Parse("192.168.1.250");
+                serverIp = IPAddress.Parse("192.168.8.102");
             else
                 serverIp = IPAddress.Parse("192.168.1.250");
             client.Connect(serverIp, 15000);

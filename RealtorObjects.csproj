@@ -73,8 +73,7 @@
       <HintPath>packages\NLog.4.7.10\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
-    <Reference Include="RealtyModel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="RealtyModel">
       <HintPath>..\RealtyModel\bin\Debug\RealtyModel.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -137,6 +136,7 @@
     <Compile Include="Model\BitmapImageDecoder.cs" />
     <Compile Include="Model\Client.cs" />
     <Compile Include="Model\CodeType.cs" />
+    <Compile Include="Model\ComboBoxOptions.cs" />
     <Compile Include="Model\CredentialData.cs" />
     <Compile Include="Model\IAsyncCommand.cs" />
     <Compile Include="Model\LINQExtension.cs" />
@@ -155,6 +155,7 @@
     <Compile Include="View\CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="View\Converters\BoolToVisibilityReversedConverter.cs" />
     <Compile Include="View\Converters\ByteArrayToBitmapImageConverter.cs" />
     <Compile Include="View\Converters\EmptyStringToBoolConverter.cs" />
@@ -169,6 +170,9 @@
     </Compile>
     <Compile Include="View\FlatFormV2.xaml.cs">
       <DependentUpon>FlatFormV2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FlatFormV3.xaml.cs">
+      <DependentUpon>FlatFormV3.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\HomeV2.xaml.cs">
       <DependentUpon>HomeV2.xaml</DependentUpon>
@@ -221,6 +225,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\FlatFormV2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FlatFormV3.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

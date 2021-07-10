@@ -99,7 +99,7 @@ namespace RealtorObjects.ViewModel
         {
             FlatFormViewModel flatFormVM = new FlatFormViewModel((Application.Current as App).AgentName);
             flatFormVM.Streets = new ObservableCollection<Street>(Streets);
-            new FlatFormV2(flatFormVM).Show();
+            new FlatFormV2(/*flatFormVM*/).Show();
         }));
         public CustomCommand OpenCloseFilters => openCloseFilters ?? (openCloseFilters = new CustomCommand(obj =>
         {
