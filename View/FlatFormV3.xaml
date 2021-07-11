@@ -14,12 +14,14 @@
         ResizeMode="NoResize"
         Background="#f6f6f6"
         Height="620" Width="755"
+        Name="ThisWindow"
         WindowStartupLocation="CenterScreen"
         Title="{Binding Title}">
     <Window.DataContext>
         <vm:FlatFormViewModel/>
     </Window.DataContext>
     <Window.Resources>
+        <c:BoolToVisibilityReversedConverter x:Key="BoolToVisibilityReversed"/>
         <c:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
         <c:ByteArrayToBitmapImageConverter x:Key="ByteArrayToBitmapImage"/>
         <Style TargetType="Border" x:Key="SectionBorder">
@@ -46,22 +48,56 @@
         <Style TargetType="RadioButton">
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
-        <ControlTemplate TargetType="ListBoxItem" x:Key="ImageListBoxItemTemplate">
-            <Border
-                Height="80"
-                Width="140"
-                Margin="5,3,0,3"
-                BorderThickness="1"
-                BorderBrush="Gray">
-                <Grid>
-                    <Image
-                        Stretch="UniformToFill"
-                        Source="{Binding Converter={StaticResource ByteArrayToBitmapImage}, Path=.}"/>
-                </Grid>
-            </Border>
-        </ControlTemplate>
+        <Style TargetType="Border" x:Key="PlaceHolderBorder">
+            <Setter Property="Visibility" Value="Hidden"/>
+            <Setter Property="Background" Value="#f6f6f6f6"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="ListBoxItem" x:Key="ImageListBoxItemStyle">
-            <Setter Property="Template" Value="{StaticResource ImageListBoxItemTemplate}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border
+                            Height="80"
+                            Width="140"
+                            Margin="5,3,0,3"
+                            BorderThickness="1"
+                            BorderBrush="Gray">
+                            <Grid>
+                                <Image
+                                    Stretch="UniformToFill"
+                                    Source="{Binding Converter={StaticResource ByteArrayToBitmapImage}, Path=.}"/>
+                                <Border
+                                    Name="PlaceHolder"
+                                    Visibility="Hidden"
+                                    Background="#b6f6f6f6">
+                                    <TextBlock
+                                        FontWeight="Bold"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        Text="Открыть в галерее"/>
+                                </Border>
+                            </Grid>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseLeftButtonUp">
+                                    <i:InvokeCommandAction
+                                        Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.OpenGallery}"
+                                        CommandParameter="{Binding ElementName=ImageGallery, Path=SelectedIndex}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Visibility" Value="Visible" TargetName="PlaceHolder"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
         <Style TargetType="ListBox" x:Key="PhotoListBox">
             <Setter Property="Height" Value="90"/>
@@ -84,6 +120,15 @@
             <Setter Property="Width" Value="140"/>
             <Setter Property="Height" Value="80"/>
             <Setter Property="Margin" Value="4,3,0,3"/>
+        </Style>
+        <Style TargetType="Button" x:Key="GalleryButton">
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Width" Value="50"/>
+        </Style>
+        <Style TargetType="fa:ImageAwesome" x:Key="InnerIcon">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Foreground" Value="#3f3f3f"/>
         </Style>
     </Window.Resources>
     <Grid
@@ -116,7 +161,7 @@
                     Text="Клиент:"/>
                 <TextBox
                     PreviewTextInput="RussianOnly"
-                    Text="{Binding Flat.CustomerName, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding CopiedFlat.CustomerName, UpdateSourceTrigger=PropertyChanged}"
                     IsEnabled="{Binding CanEdit}"
                     Grid.Row="2"/>
                 <TextBlock
@@ -125,7 +170,7 @@
                     Text="Телефоны через &lt;;&gt; или &lt;,&gt;"/>
                 <TextBox
                     PreviewTextInput="PhoneNumbers"
-                    Text="{Binding Flat.CustomerPhoneNumbers, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding CopiedFlat.CustomerPhoneNumbers, UpdateSourceTrigger=PropertyChanged}"
                     IsEnabled="{Binding CanEdit}"
                     Grid.Column="4"
                     Grid.Row="2"/>
@@ -147,7 +192,7 @@
                     <TextBlock
                         Text="Город:"/>
                     <ComboBox
-                        SelectedItem="{Binding Flat.Location.City}"
+                        SelectedItem="{Binding CopiedFlat.Location.City}"
                         IsEnabled="{Binding CanEdit}"
                         ItemsSource="{Binding ComboBoxOptions.Cities}"
                         Grid.Column="1"/>
@@ -155,7 +200,7 @@
                         Grid.Column="2"
                         Text="Район:"/>
                     <ComboBox
-                        SelectedItem="{Binding Flat.Location.District}"
+                        SelectedItem="{Binding CopiedFlat.Location.District}"
                         IsEnabled="{Binding CanEdit}"
                         ItemsSource="{Binding ComboBoxOptions.Districts}"
                         Grid.Column="3"/>
@@ -164,8 +209,8 @@
                         Text="Улица:"/>
                     <ComboBox
                         PreviewTextInput="RussianWithNumbersOnly"
-                        Text="{Binding StreetName}"
-                        SelectedItem="{Binding Flat.Location.Street}"
+                        Text="{Binding CopiedFlat.Location.Street}"
+                        SelectedItem="{Binding CopiedFlat.Location.Street}"
                         IsEnabled="{Binding CanEdit}"
                         IsEditable="True"
                         Grid.Column="5"/>
@@ -174,7 +219,7 @@
                         Text="Дом №:"/>
                     <TextBox
                         PreviewTextInput="RussianWithNumbersOnly"
-                        Text="{Binding Flat.Location.HouseNumber, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding CopiedFlat.Location.HouseNumber, UpdateSourceTrigger=PropertyChanged}"
                         IsEnabled="{Binding CanEdit}"
                         MaxLength="5"
                         TextAlignment="Center"
@@ -184,7 +229,7 @@
                         Text="Кв. №:"/>
                     <TextBox
                         PreviewTextInput="NumericOnly"
-                        Text="{Binding Flat.Location.FlatNumber,UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding CopiedFlat.Location.FlatNumber,UpdateSourceTrigger=PropertyChanged}"
                         IsEnabled="{Binding CanEdit}"
                         MaxLength="5"
                         TextAlignment="Center"
@@ -216,7 +261,7 @@
                 <TextBlock
                     Text="Фонд:"/>
                 <ComboBox
-                    SelectedItem="{Binding Flat.Info.Fund}"
+                    SelectedItem="{Binding CopiedFlat.Info.Fund}"
                     IsEnabled="{Binding CanEdit}"
                     ItemsSource="{Binding ComboBoxOptions.Funds}"
                     Grid.Column="1"/>
@@ -224,7 +269,7 @@
                     Text="Тип:"
                     Grid.Row="2"/>
                 <ComboBox
-                    SelectedItem="{Binding Flat.Info.Type}"
+                    SelectedItem="{Binding CopiedFlat.Info.Type}"
                     IsEnabled="{Binding CanEdit}"
                     ItemsSource="{Binding ComboBoxOptions.Types}"
                     Grid.Column="1"
@@ -233,7 +278,7 @@
                     Text="Материал:"
                     Grid.Column="2"/>
                 <ComboBox
-                    SelectedItem="{Binding Flat.Info.Material}"
+                    SelectedItem="{Binding CopiedFlat.Info.Material}"
                     IsEnabled="{Binding CanEdit}"
                     ItemsSource="{Binding ComboBoxOptions.Materials}"
                     Grid.Column="3"/>
@@ -241,7 +286,7 @@
                     Text="Год:"
                     Grid.Column="4"/>
                 <ComboBox
-                    SelectedItem="{Binding Flat.GeneralInfo.Year}"
+                    SelectedItem="{Binding CopiedFlat.GeneralInfo.Year}"
                     IsEnabled="{Binding CanEdit}"
                     ItemsSource="{Binding ComboBoxOptions.Years}"
                     Grid.Column="5"/>
@@ -249,7 +294,7 @@
                     Text="Этаж:"
                     Grid.Column="6"/>
                 <ComboBox
-                    SelectedItem="{Binding Flat.GeneralInfo.CurrentLevel}"
+                    SelectedItem="{Binding CopiedFlat.GeneralInfo.CurrentLevel}"
                     IsEnabled="{Binding CanEdit}"
                     ItemsSource="{Binding ComboBoxOptions.LevelCount}"
                     Grid.Column="7"/>
@@ -257,7 +302,7 @@
                     Text="Этажей:"
                     Grid.Column="8"/>
                 <ComboBox
-                    SelectedItem="{Binding Flat.GeneralInfo.LevelCount}"
+                    SelectedItem="{Binding CopiedFlat.GeneralInfo.LevelCount}"
                     IsEnabled="{Binding CanEdit}"
                     ItemsSource="{Binding ComboBoxOptions.LevelCount}"
                     Grid.Column="9"/>
@@ -266,7 +311,7 @@
                     Grid.Column="2"
                     Grid.Row="2"/>
                 <ComboBox
-                    SelectedItem="{Binding Flat.GeneralInfo.RoomCount}"
+                    SelectedItem="{Binding CopiedFlat.GeneralInfo.RoomCount}"
                     IsEnabled="{Binding CanEdit}"
                     ItemsSource="{Binding ComboBoxOptions.RoomCount}"
                     Grid.Column="3"
@@ -278,7 +323,7 @@
                 <TextBox
                     PreviewTextInput="NumericWithDotOnly"
                     Padding="0,2,3,0"
-                    Text="{Binding Flat.GeneralInfo.General, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding CopiedFlat.GeneralInfo.General, UpdateSourceTrigger=PropertyChanged, StringFormat=##0.00}"
                     IsEnabled="{Binding CanEdit}"
                     TextAlignment="Right"
                     Grid.Column="5"
@@ -290,7 +335,7 @@
                 <TextBox
                     PreviewTextInput="NumericWithDotOnly"
                     Padding="0,2,3,0"
-                    Text="{Binding Flat.GeneralInfo.Living, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding CopiedFlat.GeneralInfo.Living, UpdateSourceTrigger=PropertyChanged, StringFormat=##0.00}"
                     IsEnabled="{Binding CanEdit}"
                     TextAlignment="Right"
                     Grid.Column="7"
@@ -302,7 +347,7 @@
                 <TextBox
                     PreviewTextInput="NumericWithDotOnly"
                     Padding="0,2,3,0"
-                    Text="{Binding Flat.GeneralInfo.Kitchen, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding CopiedFlat.GeneralInfo.Kitchen, UpdateSourceTrigger=PropertyChanged, StringFormat=##0.00}"
                     IsEnabled="{Binding CanEdit}"
                     TextAlignment="Right"
                     Grid.Column="9"
@@ -340,7 +385,7 @@
                     Grid.Row="0"
                     Text="Г. вода:"/>
                 <ComboBox
-                    SelectedItem="{Binding Flat.GeneralInfo.Water}"
+                    SelectedItem="{Binding CopiedFlat.GeneralInfo.Water}"
                     IsEnabled="{Binding CanEdit}"
                     ItemsSource="{Binding ComboBoxOptions.Waters}"
                     Grid.Column="1"
@@ -349,7 +394,7 @@
                     Grid.Row="2"
                     Text="Полы:"/>
                 <ComboBox
-                    SelectedItem="{Binding Flat.Info.Floor}"
+                    SelectedItem="{Binding CopiedFlat.Info.Floor}"
                     IsEnabled="{Binding CanEdit}"
                     ItemsSource="{Binding ComboBoxOptions.Floors}"
                     Grid.Column="1"
@@ -358,7 +403,7 @@
                     Grid.Row="4"
                     Text="Ванна:"/>
                 <ComboBox
-                    SelectedItem="{Binding Flat.Info.Bath}"
+                    SelectedItem="{Binding CopiedFlat.Info.Bath}"
                     IsEnabled="{Binding CanEdit}"
                     ItemsSource="{Binding ComboBoxOptions.Baths}"
                     Grid.Column="1"
@@ -367,7 +412,7 @@
                     Grid.Row="6"
                     Text="Лоджия:"/>
                 <ComboBox
-                    SelectedItem="{Binding Flat.Info.Loggia}"
+                    SelectedItem="{Binding CopiedFlat.Info.Loggia}"
                     IsEnabled="{Binding CanEdit}"
                     ItemsSource="{Binding ComboBoxOptions.Loggias}"
                     Grid.Column="1"
@@ -376,7 +421,7 @@
                     Grid.Row="8"
                     Text="Балкон:"/>
                 <ComboBox
-                    SelectedItem="{Binding Flat.Info.Balcony}"
+                    SelectedItem="{Binding CopiedFlat.Info.Balcony}"
                     IsEnabled="{Binding CanEdit}"
                     ItemsSource="{Binding ComboBoxOptions.Balconies}"
                     Grid.Column="1"
@@ -386,7 +431,7 @@
                     Grid.Row="0"
                     Text="Состояние:"/>
                 <ComboBox
-                    SelectedItem="{Binding Flat.GeneralInfo.Condition}"
+                    SelectedItem="{Binding CopiedFlat.GeneralInfo.Condition}"
                     IsEnabled="{Binding CanEdit}"
                     ItemsSource="{Binding ComboBoxOptions.Conditions}"
                     Grid.Column="3"
@@ -396,7 +441,7 @@
                     Grid.Row="2"
                     Text="Сан. узел:"/>
                 <ComboBox
-                    SelectedItem="{Binding Flat.Info.Bathroom}"
+                    SelectedItem="{Binding CopiedFlat.Info.Bathroom}"
                     IsEnabled="{Binding CanEdit}"
                     ItemsSource="{Binding ComboBoxOptions.Bathrooms}"
                     Grid.Column="3"
@@ -406,7 +451,7 @@
                     Grid.Row="4"
                     Text="Удобства:"/>
                 <ComboBox
-                    SelectedItem="{Binding Flat.GeneralInfo.Convenience}"
+                    SelectedItem="{Binding CopiedFlat.GeneralInfo.Convenience}"
                     IsEnabled="{Binding CanEdit}"
                     ItemsSource="{Binding ComboBoxOptions.Conveniences}"
                     Grid.Column="3"
@@ -416,7 +461,7 @@
                     Grid.Row="6"
                     Text="Отопление:"/>
                 <ComboBox
-                    SelectedItem="{Binding Flat.GeneralInfo.Heating}"
+                    SelectedItem="{Binding CopiedFlat.GeneralInfo.Heating}"
                     IsEnabled="{Binding CanEdit}"
                     ItemsSource="{Binding ComboBoxOptions.Heatings}"
                     Grid.Column="3"
@@ -426,10 +471,10 @@
                     Grid.Row="8"
                     Text="Потолок:"/>
                 <ComboBox
-                    PreviewTextInput="NumericWithDotOnly"
+                    PreviewTextInput="NumericOnly"
                     IsEnabled="{Binding CanEdit}"
-                    Text="{Binding Flat.GeneralInfo.Ceiling}"
-                    SelectedItem="{Binding Flat.GeneralInfo.Ceiling}"
+                    Text="{Binding CopiedFlat.GeneralInfo.Ceiling, UpdateSourceTrigger=PropertyChanged, StringFormat=##0.00}"
+                    SelectedItem="{Binding CopiedFlat.GeneralInfo.Ceiling}"
                     ItemsSource="{Binding ComboBoxOptions.Ceilings}"
                     IsEditable="True"
                     Grid.Column="3"
@@ -447,13 +492,13 @@
                     BorderBrush="{StaticResource BorderGray}"/>
                 <TextBox
                     PreviewTextInput="RussianWithNumbersOnly"
-                    Text="{Binding Flat.Info.Rooms,UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding CopiedFlat.Info.Rooms,UpdateSourceTrigger=PropertyChanged}"
                     IsEnabled="{Binding CanEdit}"
                     Margin="7,0"
                     Grid.Column="5"
                     Grid.Row="2"/>
                 <RadioButton
-                    IsChecked="{Binding Flat.Info.TypeOfRooms, Mode=TwoWay}"
+                    IsChecked="{Binding CopiedFlat.Info.IsSeparated, Mode=TwoWay}"
                     IsEnabled="{Binding CanEdit}"
                     Margin="7,0"
                     GroupName="RoomType"
@@ -477,7 +522,7 @@
                     Text="Окна:"/>
                 <TextBox
                     PreviewTextInput="RussianWithNumbersOnly"
-                    Text="{Binding Flat.Info.Windows ,UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding CopiedFlat.Info.Windows ,UpdateSourceTrigger=PropertyChanged}"
                     IsEnabled="{Binding CanEdit}"
                     Grid.Column="5"
                     Grid.Row="8"/>
@@ -495,42 +540,42 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <CheckBox
-                        IsChecked="{Binding Flat.GeneralInfo.HasBanner}"
+                        IsChecked="{Binding CopiedFlat.GeneralInfo.HasBanner}"
                         IsEnabled="{Binding CanEdit}"
                         Content="Растяжка"
                         Grid.Row="0"/>
                     <CheckBox
-                        IsChecked="{Binding Flat.GeneralInfo.HasExchange}"
+                        IsChecked="{Binding CopiedFlat.GeneralInfo.HasExchange}"
                         IsEnabled="{Binding CanEdit}"
                         Content="Обмен"
                         Grid.Row="1"/>
                     <CheckBox
-                        IsChecked="{Binding Flat.Info.HasRenovation}"
+                        IsChecked="{Binding CopiedFlat.Info.HasRenovation}"
                         IsEnabled="{Binding CanEdit}"
                         Content="Перепланировка"
                         Grid.Row="2"/>
                     <CheckBox
-                        IsChecked="{Binding Flat.Info.HasImprovedLayout}"
+                        IsChecked="{Binding CopiedFlat.Info.HasImprovedLayout}"
                         IsEnabled="{Binding CanEdit}"
                         Content="Улуч. планировка"
                         Grid.Row="3"/>
                     <CheckBox
-                        IsChecked="{Binding Flat.Info.HasGarage}"
+                        IsChecked="{Binding CopiedFlat.Info.HasGarage}"
                         IsEnabled="{Binding CanEdit}"
                         Content="Гараж"
                         Grid.Row="4"/>
                     <CheckBox
-                        IsChecked="{Binding Flat.Info.HasElevator}"
+                        IsChecked="{Binding CopiedFlat.Info.HasElevator}"
                         IsEnabled="{Binding CanEdit}"
                         Content="Лифт"
                         Grid.Row="5"/>
                     <CheckBox
-                        IsChecked="{Binding Flat.Info.HasChute}"
+                        IsChecked="{Binding CopiedFlat.Info.HasChute}"
                         IsEnabled="{Binding CanEdit}"
                         Content="Мусоропровод"
                         Grid.Row="6"/>
                     <CheckBox
-                        IsChecked="{Binding Flat.Info.IsCorner}"
+                        IsChecked="{Binding CopiedFlat.Info.IsCorner}"
                         IsEnabled="{Binding CanEdit}"
                         Content="Угловая"
                         Grid.Row="7"/>
@@ -543,7 +588,7 @@
                     Grid.Row="10"/>
                 <TextBox
                     PreviewTextInput="AnyLetter"
-                    Text="{Binding Flat.GeneralInfo.Description, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding CopiedFlat.GeneralInfo.Description, UpdateSourceTrigger=PropertyChanged}"
                     IsEnabled="{Binding CanEdit}"
                     TextWrapping="Wrap"
                     Width="668"
@@ -568,7 +613,7 @@
                     <RowDefinition Height="90"/>
                 </Grid.RowDefinitions>
                 <CheckBox
-                    IsChecked="{Binding Flat.Cost.HasMortgage}"
+                    IsChecked="{Binding CopiedFlat.HasMortgage}"
                     IsEnabled="{Binding CanEdit}"
                     Content="Ипотека"/>
                 <TextBlock
@@ -576,7 +621,7 @@
                     Grid.Column="1"/>
                 <TextBox
                     PreviewTextInput="NumericOnly"
-                    Text="{Binding Flat.Cost.Price, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding CopiedFlat.Price, UpdateSourceTrigger=PropertyChanged}"
                     IsEnabled="{Binding CanEdit}"
                     MaxLength="6"
                     TextAlignment="Center"
@@ -599,7 +644,7 @@
                         </Button>
                     </Border>
                     <ListBox
-                        IsEnabled="{Binding CanEdit}"
+                        Name="ImageGallery"
                         Width="573"
                         ItemsSource="{Binding Photos}"
                         Style="{StaticResource PhotoListBox}"/>
@@ -640,6 +685,69 @@
                     Content="Отмена"/>
             </Grid>
         </Border>
-        
+        <Border
+            Visibility="{Binding SliderVisibility}"
+            Background="#f6f6f6"
+            Padding="0,10"
+            Grid.RowSpan="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="500"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border
+                    Background="White"
+                    BorderThickness="1"
+                    BorderBrush="{StaticResource BorderGray}">
+                    <Image
+                        Source="{Binding Converter={StaticResource ByteArrayToBitmapImage}, Path=CurrentImage}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Stretch="Uniform"/>
+                </Border>
+                <StackPanel
+                    Grid.Row="1"
+                    Orientation="Horizontal"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Center">
+                    <Button
+                        Command="{Binding GoLeft}"
+                        Style="{StaticResource GalleryButton}">
+                        <fa:ImageAwesome
+                            Style="{StaticResource InnerIcon}"
+                            Icon="Solid_ArrowLeft"/>
+                    </Button>
+                    <Button
+                        Visibility="{Binding CanEdit, Converter={StaticResource BoolToVisibilityReversed}}"
+                        Command="{Binding RemoveImage}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                        Style="{StaticResource GalleryButton}">
+                        <fa:ImageAwesome
+                            Height="27"
+                            Margin="0,0,0,1"
+                            Style="{StaticResource InnerIcon}"
+                            Icon="Solid_TrashAlt"/>
+                    </Button>
+                    <Button
+                        Command="{Binding GoRight}"
+                        Style="{StaticResource GalleryButton}">
+                        <fa:ImageAwesome
+                            Style="{StaticResource InnerIcon}"
+                            Icon="Solid_ArrowRight"/>
+                    </Button>
+                </StackPanel>
+                <Button
+                    Grid.Row="1"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Right"
+                    Command="{Binding CloseGallery}"
+                    Style="{StaticResource GalleryButton}">
+                    <fa:ImageAwesome
+                        Height="25"
+                        Style="{StaticResource InnerIcon}"
+                        Icon="Solid_Times"/>
+                </Button>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

@@ -62,7 +62,8 @@ namespace RealtorObjects.ViewModel
         }
         public ObservableCollection<int> Pages
         {
-            get => pages; set => pages = value;
+            get => pages; 
+            set => pages = value;
         }
         public List<BaseRealtorObject> CurrentObjectList
         {
@@ -99,7 +100,7 @@ namespace RealtorObjects.ViewModel
         {
             FlatFormViewModel flatFormVM = new FlatFormViewModel((Application.Current as App).AgentName);
             flatFormVM.Streets = new ObservableCollection<Street>(Streets);
-            new FlatFormV2(/*flatFormVM*/).Show();
+            new FlatFormV3(flatFormVM).Show();
         }));
         public CustomCommand OpenCloseFilters => openCloseFilters ?? (openCloseFilters = new CustomCommand(obj =>
         {
@@ -122,23 +123,22 @@ namespace RealtorObjects.ViewModel
         }));
         public AsyncCommand Modify => modify ?? (modify = new AsyncCommand(() =>
             {
-                FlatFormViewModel flatFormVM = null;
+                FlatFormViewModel flatFormVM = new FlatFormViewModel();
                 BaseRealtorObject bro = (BaseRealtorObject)Modify.Parameter;
                 if (bro is Flat flat)
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
+                        flat.Album = Client.RequestAlbum(flat.AlbumId);
                         flatFormVM = new FlatFormViewModel(flat, (Application.Current as App).AgentName);
                         flatFormVM.Streets = new ObservableCollection<Street>(Streets);
-                        new FlatFormV2(flatFormVM).Show();
+                        new FlatFormV3(flatFormVM).Show();
                     });
                 }
                 return Task.Run(() =>
                 {
-                    //flatFormVM.Photos = Client.RequestAlbumAsync(flatFormVM.Flat.AlbumId).Result;
-                    flatFormVM.Photos = Client.RequestAlbum(flatFormVM.Flat.AlbumId);
+                    flatFormVM.Photos = BinarySerializer.Deserialize<ObservableCollection<byte[]>>(flatFormVM.OriginalFlat.Album.PhotoCollection);
                     flatFormVM.CurrentImage = flatFormVM.Photos[0];
-                    flatFormVM.Flat.Album.PhotoCollection = BinarySerializer.Serialize(flatFormVM.Photos);
                 });
             }));
 
@@ -161,7 +161,8 @@ namespace RealtorObjects.ViewModel
         }
         public string CurrentAgentName
         {
-            get => currentAgentName; set => currentAgentName = value;
+            get => currentAgentName; 
+            set => currentAgentName = value;
         }
         private void CalculatePages(short currentPage)
         {

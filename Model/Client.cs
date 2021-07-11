@@ -38,7 +38,7 @@ namespace RealtorObjects.Model
 
             return Transfer.ReceiveResponse(network).Code;
         }
-        public static ObservableCollection<byte[]> RequestAlbum(int id)
+        public static Album RequestAlbum(int id)
         {
             NetworkStream network = Connect();
             Operation operation = new Operation(Action.Request, Target.Album, BinarySerializer.Serialize(id));
@@ -46,7 +46,7 @@ namespace RealtorObjects.Model
 
             Response response = Transfer.ReceiveResponse(network);
             OperationNotification.Notify(response.Code);
-            return BinarySerializer.Deserialize<ObservableCollection<byte[]>>(response.Data);
+            return BinarySerializer.Deserialize<Album>(response.Data);
         }
         public static async Task<ObservableCollection<Byte[]>> RequestAlbumAsync(int id)
         {

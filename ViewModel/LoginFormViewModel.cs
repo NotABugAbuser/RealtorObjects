@@ -5,57 +5,51 @@ using System.Windows;
 using RealtyModel.Model;
 using RealtorObjects.View;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace RealtorObjects.ViewModel
 {
-    public class LoginFormViewModel : BaseViewModel
-    {
+    public class LoginFormViewModel : BaseViewModel {
         private CustomCommand login;
         private CustomCommand closeApp;
         private CredentialData credentialData = new CredentialData();
+        private AsyncCommand loginAsync;
+        public LoginFormViewModel() {
+            if (Debugger.IsAttached) {
+                CredentialData.CurrentUsername = "Админ";
+                CredentialData.CurrentPassword = "csharprulit";
+            }
+        }
+        public CustomCommand Login => login ?? (login = new CustomCommand(obj => {
 
-        public CustomCommand Login => login ?? (login = new CustomCommand(obj =>
-        {
-            new FlatFormV3(new FlatFormViewModel("ГвоздиковЕА")).Show();
-            //Credential credential = new Credential() { Password = credentialData.CurrentPassword, Name = credentialData.CurrentUsername };
-            //if (Client.Login(credential))
-            //{
-            //    ((App)Application.Current).AgentName = credential.Name;
-            //    MainWindowViewModel mainVM = new MainWindowViewModel();
-            //    new MainWindowV2(mainVM).Show();
-            //    (obj as LoginForm).Close();
-            //}
+            Credential credential = new Credential() { Password = credentialData.CurrentPassword, Name = credentialData.CurrentUsername };
+            if (Client.Login(credential)) {
+                ((App)Application.Current).AgentName = credential.Name;
+                MainWindowViewModel mainVM = new MainWindowViewModel();
+                new MainWindowV2(mainVM).Show();
+                (obj as LoginForm).Close();
+            }
         }));
-        public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj =>
-        {
+        public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
             Application.Current.Shutdown();
         }));
-        public AsyncCommand LoginAsync { get; set; }
+        //public AsyncCommand LoginAsync => loginAsync ?? (loginAsync = new AsyncCommand(() => {
+        //    return Task.Run(() => {
+        //        Credential credential = new Credential() { Password = credentialData.CurrentPassword, Name = credentialData.CurrentUsername };
+        //        if (Client.Login(credential)) {
+        //            ((App)Application.Current).AgentName = credential.Name;
+        //            ((App)Application.Current).Dispatcher.Invoke(() => {
+        //                MainWindowViewModel mainVM = new MainWindowViewModel();
+        //                new MainWindowV2(mainVM).Show();
+        //                App.Current.Windows[0].Close();
+        //            });
+        //        }
+        //    });
+        //}));
         public CredentialData CredentialData
         {
             get => credentialData;
             set => credentialData = value;
-        }
-
-        public LoginFormViewModel()
-        {
-            LoginAsync = new AsyncCommand(() =>
-            {
-                return Task.Run(new Action(() =>
-                {
-                    Credential credential = new Credential() { Password = credentialData.CurrentPassword, Name = credentialData.CurrentUsername };
-                    if (Client.Login(credential))
-                    {
-                        ((App)Application.Current).AgentName = credential.Name;
-                        ((App)Application.Current).Dispatcher.Invoke(() =>
-                        {
-                            MainWindowViewModel mainVM = new MainWindowViewModel();
-                            new MainWindowV2(mainVM).Show();
-                            App.Current.Windows[0].Close();
-                        });
-                    }
-                }));
-            });
         }
     }
 }

@@ -163,28 +163,28 @@ namespace RealtorObjects.Model
             50
         };
         readonly int[] roomCount = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
-        readonly double[] ceilings = {
-            2.00,
-            2.05,
-            2.10,
-            2.15,
-            2.20,
-            2.25,
-            2.30,
-            2.35,
-            2.40,
-            2.45,
-            2.50,
-            2.55,
-            2.60,
-            2.65,
-            2.70,
-            2.75,
-            2.80,
-            2.85,
-            2.90,
-            2.95,
-            3.00
+        readonly float[] ceilings = {
+            2.00f,
+            2.05f,
+            2.10f,
+            2.15f,
+            2.20f,
+            2.25f,
+            2.30f,
+            2.35f,
+            2.40f,
+            2.45f,
+            2.50f,
+            2.55f,
+            2.60f,
+            2.65f,
+            2.70f,
+            2.75f,
+            2.80f,
+            2.85f,
+            2.90f,
+            2.95f,
+            3.00f
         };
         readonly List<string> districts = new List<string>(){
             "Авиагородок",
@@ -333,7 +333,7 @@ namespace RealtorObjects.Model
         public int[] Years => years;
         public int[] LevelCount => levelCount;
         public int[] RoomCount => roomCount;
-        public double[] Ceilings => ceilings;
+        public float[] Ceilings => ceilings;
         public List<string> Districts => districts;
         public List<string> Cities => cities;
     }

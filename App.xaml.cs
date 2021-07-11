@@ -11,37 +11,16 @@ namespace RealtorObjects
     {
         private Credential credential = new Credential();
         private String agentName = "";
-        public String AgentName
-        {
+        public String AgentName {
             get => agentName; set => agentName = value;
         }
-        public Credential Credential
-        {
+        public Credential Credential {
             get => credential;
             private set => credential = value;
         }
 
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
-            if (Debugger.IsAttached)
-            {
-                LoginFormViewModel loginVM = new LoginFormViewModel()
-                {
-                    CredentialData = new Model.CredentialData()
-                    {
-                        CurrentPassword = "csharprulit",
-                        CurrentUsername = "Админ"
-                    }
-                };
-                LoginForm window = new LoginForm();
-                window.Show();
-                loginVM.Login.Execute(window);
-            }
-            else
-            {
-                new LoginForm(new LoginFormViewModel()).Show();
-            }
+        protected override void OnStartup(StartupEventArgs e) {
+            new LoginForm(new LoginFormViewModel()).Show();
         }
     }
 }

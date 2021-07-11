@@ -1,6 +1,7 @@
 ﻿using RealtorObjects.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -62,13 +63,9 @@ namespace RealtorObjects.View
             e.Handled = new Regex("[^0-9;,]").IsMatch(e.Text);
         }
         private void NumericWithDotOnly(object sender, TextCompositionEventArgs e) {
-            if (new Regex("[0-9]").IsMatch(e.Text))
-                e.Handled = false;
-            else if (new Regex(@"\.").IsMatch(e.Text)) {
-                if ((sender as TextBox).Text.Contains("."))
-                    e.Handled = true;
-                else e.Handled = false;
-            } else e.Handled = true;
+        }
+        private void TestRegex(object sender, TextCompositionEventArgs e) {
+            e.Handled = (new Regex(@"(?<= ^| )\d + (\.\d +) ? (?=$| )").IsMatch(e.Text));
         }
         private void NumericWithCommaOnly(object sender, TextCompositionEventArgs e) {
             if ((sender as TextBox).Text.Length < 6) {

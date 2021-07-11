@@ -60,6 +60,9 @@
     <Reference Include="FontAwesome5.Net, Version=2.1.2.0, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
       <HintPath>packages\FontAwesome5.2.1.2\lib\net472\FontAwesome5.Net.dll</HintPath>
     </Reference>
+    <Reference Include="Jurassic, Version=3.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Jurassic.3.2.2\lib\netstandard2.0\Jurassic.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -144,6 +147,7 @@
     <Compile Include="Model\NotificationInfo.cs" />
     <Compile Include="Model\OperationNotification.cs" />
     <Compile Include="Model\FieldChecking.cs" />
+    <Compile Include="Model\Pagination.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\HouseFormViewModel.cs" />

@@ -40,7 +40,6 @@ namespace RealtorObjects.Model
             " — Отопление",
             " — Горячая вода",
             " — Ванна",
-            " — Окна",
             " — Цена",
             " — Фотографии",
         };
@@ -86,7 +85,7 @@ namespace RealtorObjects.Model
             fields.Add(flat.CustomerPhoneNumbers);
             fields.Add(flat.Location.City);
             fields.Add(flat.Location.District);
-            fields.Add(flat.Location.Street.Name);
+            fields.Add(flat.Location.Street);
             fields.Add(flat.Location.FlatNumber);
             fields.Add(flat.Location.HouseNumber);
             fields.Add(flat.Info.Material);
@@ -106,8 +105,7 @@ namespace RealtorObjects.Model
             fields.Add(flat.GeneralInfo.Heating);
             fields.Add(flat.GeneralInfo.Water);
             fields.Add(flat.Info.Bath);
-            fields.Add(flat.Info.Windows);
-            fields.Add(flat.Cost.Price);
+            fields.Add(flat.Price);
             fields.Add(flat.Album.PhotoCollection.Length);
         }
     }

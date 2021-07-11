@@ -7,7 +7,6 @@ using RealtyModel.Interface;
 using RealtyModel.Model;
 using RealtyModel.Model.Derived;
 using RealtyModel.Model.Operations;
-using RealtyModel.Model.RealtyObjects;
 using RealtyModel.Service;
 using System;
 using System.Collections.Generic;
@@ -19,6 +18,10 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.ComponentModel;
+using System.Text.Json;
+using System.Text;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace RealtorObjects.ViewModel
 {
@@ -32,7 +35,8 @@ namespace RealtorObjects.ViewModel
         private string currentAgent = "";
 
         private ObservableCollection<Street> streets = new ObservableCollection<Street>();
-        private Flat flat = new Flat() { Location = new Location() { Street = new Street() } };
+        private Flat copiedFlat = new Flat();
+        private Flat originalFlat = new Flat();
         private bool canEdit = false;
         readonly private ComboBoxOptions comboBoxOptions = new ComboBoxOptions();
         private Visibility sliderVisibility = Visibility.Collapsed;
@@ -44,8 +48,20 @@ namespace RealtorObjects.ViewModel
         private CustomCommand allowToEdit;
         private CustomCommand goLeft;
         private CustomCommand goRight;
+        private CustomCommand openGallery;
+        private CustomCommand closeGallery;
         private CustomCommand showHideSlider;
-        private string streetName;
+
+        public CustomCommand OpenGallery => openGallery ?? (openGallery = new CustomCommand(obj => {
+            int index = Convert.ToInt32(obj);
+            Index = index;
+            CurrentImage = Photos[index];
+            SliderVisibility = Visibility.Visible;
+        }));
+        public CustomCommand CloseGallery => closeGallery ?? (closeGallery = new CustomCommand(obj => {
+            SliderVisibility = Visibility.Collapsed;
+            Index = 0;
+        }));
         #endregion
         #region Properties
         public int Index {
@@ -69,10 +85,10 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
-        public Flat Flat {
-            get => flat;
+        public Flat CopiedFlat {
+            get => copiedFlat;
             set {
-                flat = value;
+                copiedFlat = value;
                 OnPropertyChanged();
             }
         }
@@ -98,35 +114,26 @@ namespace RealtorObjects.ViewModel
             }
         }
         #endregion
-
-        public String StreetName {
-            get => streetName;
-            set {
-                streetName = value;
-                OnPropertyChanged();
-            }
-        }
-
         public FlatFormViewModel() {
         }
         public FlatFormViewModel(string agentName) {
             isNew = true;
             Title = $"[{agentName}: Квартира] — Добавление";
             currentAgent = agentName;
-            if (Debugger.IsAttached)
-                Flat = Flat.CreateTestFlat();
-            else Flat = Flat.GetEmptyInstance();
-            Flat.Agent = agentName;
-            Flat.RegistrationDate = DateTime.Now;
-            Flat.Album.PhotoCollection = Array.Empty<byte>();
-            StreetName = Flat.Location.Street.Name;
+            CanEdit = true;
+            if (Debugger.IsAttached) {
+                CopiedFlat = Flat.CreateTestFlat();
+            } else {
+                CopiedFlat = new Flat();
+            }
+            CopiedFlat.Agent = agentName;
+            CopiedFlat.RegistrationDate = DateTime.Now;
         }
         public FlatFormViewModel(Flat flat, string agentName) {
-            Flat = flat;
-
-            Title = $"[{Flat.Agent}: Квартира #{Flat.Id}] — Просмотр";
+            CopiedFlat = flat.GetCopy();
+            OriginalFlat = flat;
+            Title = $"[{CopiedFlat.Agent}: Квартира #{CopiedFlat.Id}] — Просмотр";
             currentAgent = agentName;
-            StreetName = Flat.Location.Street.Name;
         }
 
         public CustomCommand AddImages => addImages ?? (addImages = new CustomCommand(obj => {
@@ -135,30 +142,24 @@ namespace RealtorObjects.ViewModel
                 Multiselect = true,
                 Title = "Выбрать фотографии"
             };
+            Debug.WriteLine($"До добавления id {CopiedFlat.Album.Id}");
             bool hasFileNames = openFileDialog.ShowDialog() == true && openFileDialog.FileNames.Length != 0;
             if (hasFileNames) {
                 foreach (String path in openFileDialog.FileNames) {
                     Photos.Add(BitmapImageDecoder.GetDecodedBytes(path, 30, 0));
                 }
-                Flat.Preview = BitmapImageDecoder.GetDecodedBytes(openFileDialog.FileNames[0], 0, 100);
-                Flat.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
+                CopiedFlat.Preview = BitmapImageDecoder.GetDecodedBytes(openFileDialog.FileNames[0], 0, 100);
+                CopiedFlat.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
                 CurrentImage = Photos[0];
                 Index = 0;
             }
         }));
-        public CustomCommand AllowToEdit => allowToEdit ?? (allowToEdit = new CustomCommand(obj => {
-            CanEdit = true;
-            //if (CheckAccess(Flat.Agent, currentAgent)) {
-            //    //EditBorderVisibility = Visibility.Collapsed;
-            //    Title = $"[{Flat.Agent}: Квартира #{Flat.Id}] — Редактирование";
-            //}
-        }));
         public CustomCommand RemoveImage => removeImage ?? (removeImage = new CustomCommand(obj => {
-            Window window = obj as FlatFormV2;
+            Window window = obj as FlatFormV3;
             bool isSure = MessageBox.Show(window, "Удалить фотографию?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
             if (isSure) {
                 Photos.RemoveAt(Index);
-                Flat.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
+                CopiedFlat.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
                 Index = 0;
                 if (Photos.Count != 0) {
                     CurrentImage = Photos[0];
@@ -167,31 +168,30 @@ namespace RealtorObjects.ViewModel
                 }
             }
         }));
+        public CustomCommand AllowToEdit => allowToEdit ?? (allowToEdit = new CustomCommand(obj => {
+            if (CheckAccess(CopiedFlat.Agent, currentAgent)) {
+                CanEdit = true;
+                Title = $"[{CopiedFlat.Agent}: Квартира #{CopiedFlat.Id}] — Редактирование";
+            }
+        }));
         public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => {
             (obj as Window).Close();
-        }
-        ));
+        }));
         public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj => {
-            try {
-                if (Flat.GeneralInfo.CurrentLevel <= Flat.GeneralInfo.LevelCount) {
-                    if (Flat.Location.Street == null)
-                        Flat.Location.Street = new Street() { Id = 0, Name = StreetName };
-                    if (new FieldChecking(Flat).CheckFieldsOfFlat()) {
-                        if (isNew)
-                            Client.AddFlat(Flat);
-                        else
-                            Client.UpdateFlat(Flat);
-                        (obj as Window).Close();
-                    }
-                } else OperationNotification.WarningNotify(ErrorCode.WrongData, "Этажи введены неверно");
-            } catch (FormatException) {
-                OperationNotification.Notify(ErrorCode.WrongFormat);
+            if (new FieldChecking(CopiedFlat).CheckFieldsOfFlat()) {
+                if (isNew) {
+                    Client.AddFlat(CopiedFlat);
+                } else {
+                    Client.UpdateFlat(CopiedFlat);
+                    Debug.WriteLine($"Отправил с id {CopiedFlat.Album.Id}");
+                }
+                (obj as Window).Close();
             }
         }));
         private bool CheckAccess(string objectAgent, string currentAgent) {
-            if (objectAgent == currentAgent)
+            if (objectAgent == currentAgent) {
                 return true;
-            else {
+            } else {
                 OperationNotification.Notify(ErrorCode.WrongAgent);
                 return false;
             }
@@ -211,14 +211,7 @@ namespace RealtorObjects.ViewModel
             }
             CurrentImage = Photos[Index];
         }));
-        public CustomCommand ShowHideSlider => showHideSlider ?? (showHideSlider = new CustomCommand(obj => {
-            if (SliderVisibility == Visibility.Visible) {
-                SliderVisibility = Visibility.Collapsed;
-            } else {
-                SliderVisibility = Visibility.Visible;
-                Index = 0;
-            }
-        }));
+        
         #endregion
 
         public AsyncCommand AddImagesAsync {
@@ -232,19 +225,15 @@ namespace RealtorObjects.ViewModel
                     bool hasFileNames = openFileDialog.ShowDialog() == true && openFileDialog.FileNames.Length != 0;
                     if (hasFileNames) {
                         List<Byte[]> images = new List<Byte[]>();
-                        foreach (String path in openFileDialog.FileNames)
+                        foreach (String path in openFileDialog.FileNames) {
                             images.Add(BitmapImageDecoder.GetDecodedBytes(path, 30, 0));
-                        //Parallel.ForEach(openFileDialog.FileNames, new Action<String>((path) =>
-                        //{
-                        //    images.Add(BitmapImageDecoder.GetDecodedBytes(path, 30, 0));
-                        //}));
-
+                        }
                         ((App)Application.Current).Dispatcher.Invoke(() => {
                             foreach (Byte[] image in images)
                                 Photos.Add(image);
                         });
-                        Flat.Preview = BitmapImageDecoder.GetDecodedBytes(openFileDialog.FileNames[0], 0, 100);
-                        Flat.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
+                        CopiedFlat.Preview = BitmapImageDecoder.GetDecodedBytes(openFileDialog.FileNames[0], 0, 100);
+                        CopiedFlat.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
                         CurrentImage = images[0];
                         Index = 0;
                         //images.Clear();
@@ -265,6 +254,10 @@ namespace RealtorObjects.ViewModel
                 canEdit = value;
                 OnPropertyChanged();
             }
+        }
+
+        public Flat OriginalFlat {
+            get => originalFlat; set => originalFlat = value;
         }
     }
 }
