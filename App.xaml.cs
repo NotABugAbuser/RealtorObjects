@@ -20,7 +20,7 @@ namespace RealtorObjects
         }
 
         protected override void OnStartup(StartupEventArgs e) {
-            new LoginForm(new LoginFormViewModel()).Show();
+            new LoginFormV2(new LoginFormViewModel()).Show();
         }
     }
 }

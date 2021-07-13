@@ -1,8 +1,13 @@
-﻿using MiscUtil;
+﻿using BitmapImageDecoding;
+using MiscUtil;
+using RealtorObjects.Model;
+using RealtyModel.Model;
 using RealtyModel.Model.Derived;
+using RealtyModel.Model.Operations;
 using RealtyModel.Service;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -12,70 +17,57 @@ using System.Windows;
 
 namespace RealtorObjects.ViewModel
 {
-    public class HouseFormViewModel : BaseViewModel
+    public class HouseFormViewModel : RealtorObjectFormViewModel
     {
-        public CustomCommand ChangePrice => changePrice ?? (changePrice = new CustomCommand(obj =>
-        {
-            var value = Convert.ToInt32(obj);
-            //House.Cost.Price += value;
+        private House originalHouse = new House();
+        private House copiedHouse = new House();
+        public HouseFormViewModel() {
+        }
+        public HouseFormViewModel(string agentName) {
+            isNew = true;
+            Title = $"[Земельный объект]  —  Добавление";
+            currentAgent = agentName;
+            CanEdit = true;
+            if (Debugger.IsAttached) {
+                CopiedHouse = House.CreateTestHouse();
+            } else {
+                CopiedHouse = new House();
+            }
+            CopiedHouse.Agent = agentName;
+        }
+        public HouseFormViewModel(House house, string agentName) {
+            CopiedHouse = house.GetCopy();
+            OriginalHouse = house;
+            Title = $"[#{CopiedHouse.Id}] [Тип: {CopiedHouse.GeneralInfo.ObjectType}] [Создатель заявки: {CopiedHouse.Agent}]  —  Просмотр";
+            currentAgent = agentName;
+        }
+        public CustomCommand AllowToEdit => allowToEdit ?? (allowToEdit = new CustomCommand(obj => {
+            if (CheckAccess(CopiedHouse.Agent, currentAgent)) {
+                CanEdit = true;
+                Title = $"[#{CopiedHouse.Id}] [Тип: {CopiedHouse.GeneralInfo.ObjectType}] [Создатель заявки: {CopiedHouse.Agent}]  —  Редактирование";
+            }
         }));
-        public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
-        public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj =>
-        {
+        public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj => {
+            if (Photos.Count != 0) {
+                CopiedHouse.Preview = BitmapImageDecoder.GetDecodedBytes(Photos[0], 0, 100);
+                CopiedHouse.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
+            }
+            if (FieldFillness.IsFilled(CopiedHouse)) {
+                if (isNew) {
+                    Client.AddHouse(CopiedHouse);
+                } else {
+                    Client.UpdateHouse(CopiedHouse);
+                }
+                (obj as Window).Close();
+            }
         }));
-        public void ChangeProperty<T>(object obj, T step)
-        {
-            var objects = obj as object[];
-            object instance = objects[0];
-            string name = objects[1].ToString();
-            PropertyInfo property = instance.GetType().GetProperty(name);
-            T value = (T)property.GetValue(instance, null);
-            property.SetValue(instance, Operator.Add(step, value));
+        public House OriginalHouse {
+            get => originalHouse;
+            set => originalHouse = value;
         }
-
-        private House house;
-        private string title;
-        private bool isCurrentHouseNew = false;
-        private CustomCommand cancel;
-        private CustomCommand confirm;
-        private CustomCommand changePrice;
-        public string Title
-        {
-            get => title;
-            set => title = value;
+        public House CopiedHouse {
+            get => copiedHouse;
+            set => copiedHouse = value;
         }
-        public bool IsCurrentHouseNew
-        {
-            get => isCurrentHouseNew;
-            set => isCurrentHouseNew = value;
-        }
-        #region UpDownOperations
-        private CustomCommand increaseDouble;
-        private CustomCommand decreaseDouble;
-        private CustomCommand increaseInteger;
-        private CustomCommand decreaseInteger;
-        public CustomCommand IncreaseDouble => increaseDouble ??
-            (increaseDouble = new CustomCommand(obj =>
-            {
-                ChangeProperty<Single>(obj, 0.05f);
-            }));
-        public CustomCommand IncreaseInteger => increaseInteger ??
-            (increaseInteger = new CustomCommand(obj =>
-            {
-                ChangeProperty<int>(obj, 1);
-            }));
-        public CustomCommand DecreaseDouble => decreaseDouble ??
-            (decreaseDouble = new CustomCommand(obj =>
-            {
-                ChangeProperty<Single>(obj, -0.05f);
-            }));
-        public CustomCommand DecreaseInteger => decreaseInteger ??
-            (decreaseInteger = new CustomCommand(obj =>
-            {
-                ChangeProperty<int>(obj, -1);
-            }));
-
-        public House House { get => house; set => house = value; }
-        #endregion
     }
 }

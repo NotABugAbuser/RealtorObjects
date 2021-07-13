@@ -146,7 +146,7 @@
     <Compile Include="Model\LINQForEachAsyncExtension.cs" />
     <Compile Include="Model\NotificationInfo.cs" />
     <Compile Include="Model\OperationNotification.cs" />
-    <Compile Include="Model\FieldChecking.cs" />
+    <Compile Include="Model\FieldFillness.cs" />
     <Compile Include="Model\Pagination.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
@@ -155,10 +155,8 @@
     <Compile Include="ViewModel\LoginFormViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\FlatFormViewModel.cs" />
+    <Compile Include="ViewModel\RealtorObjectViewModel.cs" />
     <Compile Include="ViewModel\RegistrationFormViewModel.cs" />
-    <Compile Include="View\CircularProgressBar.xaml.cs">
-      <DependentUpon>CircularProgressBar.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="View\Converters\BoolToVisibilityReversedConverter.cs" />
     <Compile Include="View\Converters\ByteArrayToBitmapImageConverter.cs" />
@@ -169,32 +167,20 @@
     <Compile Include="View\Converters\ObjectAndPropertyMultiValueConverter.cs" />
     <Compile Include="View\Converters\PageEqualityConverter.cs" />
     <Compile Include="View\Converters\SymbolToStarConverter.cs" />
-    <Compile Include="View\Customers.xaml.cs">
-      <DependentUpon>Customers.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\FlatFormV2.xaml.cs">
-      <DependentUpon>FlatFormV2.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\FlatFormV3.xaml.cs">
       <DependentUpon>FlatFormV3.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\HomeV2.xaml.cs">
       <DependentUpon>HomeV2.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\HouseForm.xaml.cs">
-      <DependentUpon>HouseForm.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\LoadingForm.xaml.cs">
-      <DependentUpon>LoadingForm.xaml</DependentUpon>
+    <Compile Include="View\HouseFormV2.xaml.cs">
+      <DependentUpon>HouseFormV2.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Locations.xaml.cs">
       <DependentUpon>Locations.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\LoginForm.xaml.cs">
-      <DependentUpon>LoginForm.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="View\LoginFormV2.xaml.cs">
+      <DependentUpon>LoginFormV2.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -203,32 +189,20 @@
     <Compile Include="View\MainWindowV2.xaml.cs">
       <DependentUpon>MainWindowV2.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\MainWindowV3.xaml.cs">
+      <DependentUpon>MainWindowV3.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\NotificationWindow.xaml.cs">
       <DependentUpon>NotificationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\RegistrationForm.xaml.cs">
       <DependentUpon>RegistrationForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Statistics.xaml.cs">
-      <DependentUpon>Statistics.xaml</DependentUpon>
-    </Compile>
-    <Page Include="View\CircularProgressBar.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Customers.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\Dictionaries\ColorsAndBrushes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Dictionaries\ControlStylesAndTemplates.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\FlatFormV2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -240,39 +214,31 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\HouseForm.xaml">
+    <Page Include="View\HouseFormV2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\LoadingForm.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Locations.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\LoginForm.xaml">
+    <Page Include="View\LoginFormV2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\MainWindowV2.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\MainWindowV3.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\NotificationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\RegistrationForm.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Statistics.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

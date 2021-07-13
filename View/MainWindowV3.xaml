@@ -1,0 +1,403 @@
+﻿<Window x:Class="RealtorObjects.View.MainWindowV3"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RealtorObjects.View"
+        xmlns:c="clr-namespace:RealtorObjects.View.Converters"
+        xmlns:vm="clr-namespace:RealtorObjects.ViewModel"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
+        xmlns:fa4="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
+        mc:Ignorable="d"
+        Title="Риелторские объекты" 
+        Height="728" 
+        Width="1366" 
+        Background="#f6f6f6"
+        Name="ThisMainWindow"
+        MinHeight="597"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style TargetType="CheckBox" x:Key="GlobalCheckBox">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <ControlTemplate TargetType="Button" x:Key="AddButtonTemplate">
+            <Button>
+                <Grid 
+                    Width="100">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <fa:ImageAwesome
+                        Height="15"
+                        Width="15"
+                        Margin="5,0,0,0"
+                        HorizontalAlignment="Left"
+                        Foreground="#3f3f3f"
+                        Icon="Solid_Plus"/>
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="0,0,0,1"
+                        HorizontalAlignment="Center"
+                        Text="{TemplateBinding Content}"/>
+                </Grid>
+            </Button>
+        </ControlTemplate>
+        <Style TargetType="Button" x:Key="AddButton">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Padding" Value="0,3"/>
+            <Setter Property="Height" Value="27"/>
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="Template" Value="{StaticResource AddButtonTemplate}"/>
+        </Style>
+        <Style TargetType="Border" x:Key="VerticalWrap">
+            <Setter Property="Grid.RowSpan" Value="19"/>
+            <Setter Property="BorderThickness" Value="0,0,2,0"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderGray}"/>
+        </Style>
+        <Style TargetType="CheckBox" BasedOn="{StaticResource GlobalCheckBox}" x:Key="SecondColumn">
+            <Setter Property="Grid.Column" Value="1"/>
+            <Setter Property="Margin" Value="12,0,0,0"/>
+        </Style>
+        <Style TargetType="CheckBox" BasedOn="{StaticResource GlobalCheckBox}" x:Key="ThirdColumn">
+            <Setter Property="Grid.Column" Value="2"/>
+            <Setter Property="Margin" Value="12,0,0,0"/>
+        </Style>
+        <Style TargetType="CheckBox" BasedOn="{StaticResource GlobalCheckBox}" x:Key="FourthColumn">
+            <Setter Property="Grid.Column" Value="3"/>
+            <Setter Property="Margin" Value="12,0,0,0"/>
+        </Style>
+        <Style TargetType="CheckBox" BasedOn="{StaticResource GlobalCheckBox}" x:Key="FifthColumn">
+            <Setter Property="Grid.Column" Value="4"/>
+            <Setter Property="Margin" Value="12,0,0,0"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="1000"/>
+        </Grid.RowDefinitions>
+        <Grid 
+            Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Border
+                BorderThickness="0,0,0,2"
+                Margin="10,0"
+                BorderBrush="{StaticResource BorderGray}">
+                <StackPanel
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal">
+                    <Button
+                        Style="{StaticResource AddButton}"
+                        Content="Комната"/>
+                    <Button
+                        Style="{StaticResource AddButton}"
+                        Content="Квартира"/>
+                    <Button
+                        Style="{StaticResource AddButton}"
+                        Content="Участок"/>
+                    <Button
+                        Height="25"
+                        Margin="15,0"
+                        Width="70">
+                        <fa:ImageAwesome
+                            Foreground="#3f3f3f"
+                            Height="15"
+                            Icon="Solid_AngleDown"/>
+                    </Button>
+                    <Button
+                        Style="{StaticResource AddButton}"
+                        Content="Фрагмент"/>
+                    <Button
+                        Style="{StaticResource AddButton}"
+                        Content="Дом"/>
+                    <Button
+                        Style="{StaticResource AddButton}"
+                        Content="Коттедж"/>
+                </StackPanel>
+            </Border>
+            <Grid
+                Width="1100"
+                Margin="10,40,10,0"
+                Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="23"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border
+                    Style="{StaticResource VerticalWrap}"/>
+                <Border
+                    Grid.Column="1"
+                    Style="{StaticResource VerticalWrap}"/>
+                <Border
+                    Grid.Column="2"
+                    Style="{StaticResource VerticalWrap}"/>
+                <Border
+                    Grid.Column="3"
+                    Style="{StaticResource VerticalWrap}"/>
+                <Border
+                    Grid.Column="4"
+                    Style="{StaticResource VerticalWrap}"/>
+                <CheckBox
+                    Style="{StaticResource GlobalCheckBox}"
+                    Content="Все типы"/>
+                <CheckBox
+                    Style="{StaticResource GlobalCheckBox}"
+                    Grid.Row="2"
+                    Content="Комната"/>
+                <CheckBox
+                    Style="{StaticResource GlobalCheckBox}"
+                    Grid.Row="3"
+                    Content="Квартира"/>
+                <CheckBox
+                    Style="{StaticResource GlobalCheckBox}"
+                    Grid.Row="4"
+                    Content="Земельный участок"/>
+                <CheckBox
+                    Style="{StaticResource GlobalCheckBox}"
+                    Grid.Row="5"
+                    Content="Фрагмент дома"/>
+                <CheckBox
+                    Style="{StaticResource GlobalCheckBox}"
+                    Grid.Row="6"
+                    Content="Частный дом"/>
+                <CheckBox
+                    Style="{StaticResource GlobalCheckBox}"
+                    Grid.Row="7"
+                    Content="Коттедж"/>
+                <CheckBox
+                    Style="{StaticResource SecondColumn}"
+                    Content="Все города"/>
+                <CheckBox
+                    Style="{StaticResource SecondColumn}"
+                    Grid.Row="2"
+                    Content="Азов"/>
+                <CheckBox
+                    Style="{StaticResource SecondColumn}"
+                    Grid.Row="3"
+                    Content="Батайск"/>
+                <CheckBox
+                    Style="{StaticResource SecondColumn}"
+                    Grid.Row="4"
+                    Content="Весна"/>
+                <CheckBox
+                    Style="{StaticResource SecondColumn}"
+                    Grid.Row="5"
+                    Content="Донская чаша"/>
+                <CheckBox
+                    Style="{StaticResource SecondColumn}"
+                    Grid.Row="6"
+                    Content="Дружба"/>
+                <CheckBox
+                    Style="{StaticResource SecondColumn}"
+                    Grid.Row="7"
+                    Content="Красный сад"/>
+                <CheckBox
+                    Style="{StaticResource SecondColumn}"
+                    Grid.Row="8"
+                    Content="Кулешовка"/>
+                <CheckBox
+                    Style="{StaticResource SecondColumn}"
+                    Grid.Row="9"
+                    Content="Лесная полянка"/>
+                <CheckBox
+                    Style="{StaticResource SecondColumn}"
+                    Grid.Row="10"
+                    Content="Луч"/>
+                <CheckBox
+                    Style="{StaticResource SecondColumn}"
+                    Grid.Row="11"
+                    Content="Милиоратор"/>
+                <CheckBox
+                    Style="{StaticResource SecondColumn}"
+                    Grid.Row="12"
+                    Content="Мокрый Батай"/>
+                <CheckBox
+                    Style="{StaticResource SecondColumn}"
+                    Grid.Row="13"
+                    Content="Овощной"/>
+                <CheckBox
+                    Style="{StaticResource SecondColumn}"
+                    Grid.Row="14"
+                    Content="Ромашка"/>
+                <CheckBox
+                    Style="{StaticResource SecondColumn}"
+                    Grid.Row="15"
+                    Content="Ростов-на-Дону"/>
+                <CheckBox
+                    Style="{StaticResource SecondColumn}"
+                    Grid.Row="16"
+                    Content="Труд"/>
+                <CheckBox
+                    Style="{StaticResource SecondColumn}"
+                    Grid.Row="17"
+                    Content="Ягодка"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Content="Все районы"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Grid.Row="2"
+                    Content="Авиагородок"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Grid.Row="3"
+                    Content="Авиаторов сквер"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Grid.Row="4"
+                    Content="Азовский"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Grid.Row="5"
+                    Content="Ветлечебница"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Grid.Row="6"
+                    Content="ВЖМ"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Grid.Row="7"
+                    Content="Гайдара"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Grid.Row="8"
+                    Content="Залесье"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Grid.Row="9"
+                    Content="Заря"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Grid.Row="10"
+                    Content="ЗЖМ"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Grid.Row="11"
+                    Content="Наливная"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Grid.Row="12"
+                    Content="Пальмира"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Grid.Row="13"
+                    Content="ПЧЛ"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Grid.Row="14"
+                    Content="РДВС"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Grid.Row="15"
+                    Content="СЖМ"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Grid.Row="16"
+                    Content="Соленое озеро"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Grid.Row="17"
+                    Content="Солнечный"/>
+                <CheckBox
+                    Style="{StaticResource ThirdColumn}"
+                    Grid.Row="18"
+                    Content="Центр"/>
+                <CheckBox
+                    Style="{StaticResource FourthColumn}"
+                    Grid.Row="0"
+                    Content="Все состояния"/>
+                <CheckBox
+                    Style="{StaticResource FourthColumn}"
+                    Grid.Row="2"
+                    Content="Евро"/>
+                <CheckBox
+                    Style="{StaticResource FourthColumn}"
+                    Grid.Row="3"
+                    Content="Отличное"/>
+                <CheckBox
+                    Style="{StaticResource FourthColumn}"
+                    Grid.Row="4"
+                    Content="Хорошее"/>
+                <CheckBox
+                    Style="{StaticResource FourthColumn}"
+                    Grid.Row="5"
+                    Content="Жилое"/>
+                <CheckBox
+                    Style="{StaticResource FourthColumn}"
+                    Grid.Row="6"
+                    Content="Требуется космет. ремонт"/>
+                <CheckBox
+                    Style="{StaticResource FourthColumn}"
+                    Grid.Row="7"
+                    Content="Требуется капитальный ремонт"/>
+                <CheckBox
+                    Style="{StaticResource FourthColumn}"
+                    Grid.Row="8"
+                    Content="Без отделки"/>
+                <CheckBox
+                    Style="{StaticResource FifthColumn}"
+                    Grid.Row="0"
+                    Content="Все виды отоплений"/>
+                <CheckBox
+                    Style="{StaticResource FifthColumn}"
+                    Grid.Row="2"
+                    Content="АГВ"/>
+                <CheckBox
+                    Style="{StaticResource FifthColumn}"
+                    Grid.Row="3"
+                    Content="Котел"/>
+                <CheckBox
+                    Style="{StaticResource FifthColumn}"
+                    Grid.Row="4"
+                    Content="Местное"/>
+                <CheckBox
+                    Style="{StaticResource FifthColumn}"
+                    Grid.Row="5"
+                    Content="Печное"/>
+                <CheckBox
+                    Style="{StaticResource FifthColumn}"
+                    Grid.Row="6"
+                    Content="ТЭЦ"/>
+                <CheckBox
+                    Style="{StaticResource FifthColumn}"
+                    Grid.Row="7"
+                    Content="Форсунка"/>
+                <CheckBox
+                    Style="{StaticResource FifthColumn}"
+                    Grid.Row="8"
+                    Content="Электро"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

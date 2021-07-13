@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Diagnostics;
+using RealtyModel.Model.Operations;
 
 namespace RealtorObjects.ViewModel
 {
@@ -30,159 +31,150 @@ namespace RealtorObjects.ViewModel
         private List<BaseRealtorObject> currentObjectList = new List<BaseRealtorObject>() { };
         private List<List<BaseRealtorObject>> objectLists = new List<List<BaseRealtorObject>>();
         private CustomCommand createFlat;
+        private CustomCommand createHouse;
         #endregion
         #region Properties
-        public int CurrentPage
-        {
+        public int CurrentPage {
             get => currentPage;
-            set
-            {
+            set {
                 currentPage = value;
                 OnPropertyChanged();
             }
         }
-        public double WidthOfFilters
-        {
+        public double WidthOfFilters {
             get => widthOfFilters;
-            set
-            {
+            set {
                 widthOfFilters = value;
                 OnPropertyChanged();
             }
         }
-        public Filter Filter
-        {
+        public Filter Filter {
             get => filter;
             set => filter = value;
         }
-        public List<List<BaseRealtorObject>> ObjectLists
-        {
+        public List<List<BaseRealtorObject>> ObjectLists {
             get => objectLists;
             set => objectLists = value;
         }
-        public ObservableCollection<int> Pages
-        {
-            get => pages; 
+        public ObservableCollection<int> Pages {
+            get => pages;
             set => pages = value;
         }
-        public List<BaseRealtorObject> CurrentObjectList
-        {
+        public List<BaseRealtorObject> CurrentObjectList {
             get => currentObjectList;
-            set
-            {
+            set {
                 currentObjectList = value;
                 OnPropertyChanged();
             }
         }
 
         #endregion
-        public Street[] Streets
-        {
+        public Street[] Streets {
             get => streets;
-            set
-            {
+            set {
                 streets = value;
                 OnPropertyChanged();
             }
         }
-        public HomeViewModel()
-        {
+        public HomeViewModel() {
             Streets = Client.RequestStreets();
         }
 
-        public CustomCommand SendQuery => sendQuery ?? (sendQuery = new CustomCommand(obj =>
-        {
+        public CustomCommand SendQuery => sendQuery ?? (sendQuery = new CustomCommand(obj => {
             CurrentObjectList.Clear();
             SplitBy(Client.RequestRealtorObjects(Filter), 25);
             CurrentObjectList = ObjectLists[0];
         }));
-        public CustomCommand CreateFlat => createFlat ?? (createFlat = new CustomCommand(obj =>
-        {
+        public CustomCommand CreateFlat => createFlat ?? (createFlat = new CustomCommand(obj => {
             FlatFormViewModel flatFormVM = new FlatFormViewModel((Application.Current as App).AgentName);
-            flatFormVM.Streets = new ObservableCollection<Street>(Streets);
             new FlatFormV3(flatFormVM).Show();
         }));
-        public CustomCommand OpenCloseFilters => openCloseFilters ?? (openCloseFilters = new CustomCommand(obj =>
-        {
-            if (WidthOfFilters == 200)
-            {
+        public CustomCommand CreateHouse => createHouse ?? (createHouse = new CustomCommand(obj => {
+            HouseFormViewModel houseFormVM = new HouseFormViewModel((Application.Current as App).AgentName);
+            new HouseFormV2(houseFormVM).Show();
+        }));
+        public CustomCommand OpenCloseFilters => openCloseFilters ?? (openCloseFilters = new CustomCommand(obj => {
+            if (WidthOfFilters == 200) {
                 WidthOfFilters = 0;
-            }
-            else
-            {
+            } else {
                 WidthOfFilters = 200;
             }
         }));
-        public CustomCommand GoToPage => goToPage ?? (goToPage = new CustomCommand(obj =>
-        {
+        public CustomCommand GoToPage => goToPage ?? (goToPage = new CustomCommand(obj => {
             Int16 index = (Int16)(Convert.ToInt16(obj) - 1);
             Pages.Clear();
             CalculatePages(index);
             CurrentPage = index + 1;
             CurrentObjectList = ObjectLists[index];
         }));
-        public AsyncCommand Modify => modify ?? (modify = new AsyncCommand(() =>
-            {
-                FlatFormViewModel flatFormVM = new FlatFormViewModel();
-                BaseRealtorObject bro = (BaseRealtorObject)Modify.Parameter;
-                if (bro is Flat flat)
-                {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        flat.Album = Client.RequestAlbum(flat.AlbumId);
-                        flatFormVM = new FlatFormViewModel(flat, (Application.Current as App).AgentName);
-                        flatFormVM.Streets = new ObservableCollection<Street>(Streets);
-                        new FlatFormV3(flatFormVM).Show();
-                    });
-                }
-                return Task.Run(() =>
-                {
-                    flatFormVM.Photos = BinarySerializer.Deserialize<ObservableCollection<byte[]>>(flatFormVM.OriginalFlat.Album.PhotoCollection);
-                    flatFormVM.CurrentImage = flatFormVM.Photos[0];
+        public AsyncCommand Modify => modify ?? (modify = new AsyncCommand(() => {
+            BaseRealtorObject bro = (BaseRealtorObject)Modify.Parameter;
+            if (bro is Flat flat) {
+                return ModifyFlat(flat);
+            } else if (bro is House house) {
+                return ModifyHouse(house);
+            } else {
+                return Task.Run(()=> {
+                    OperationNotification.Notify(ErrorCode.Unknown);
                 });
-            }));
+            }
+        }));
+        private Task ModifyFlat(Flat flat) {
+            FlatFormViewModel flatFormVM = new FlatFormViewModel();
+            Application.Current.Dispatcher.Invoke(() => {
+                flat.Album = Client.RequestAlbum(flat.AlbumId);
+                flatFormVM = new FlatFormViewModel(flat, (Application.Current as App).AgentName);
+                flatFormVM.Streets = new ObservableCollection<Street>(Streets);
+                new FlatFormV3(flatFormVM).Show();
+            });
+            return Task.Run(() => {
+                flatFormVM.Photos = BinarySerializer.Deserialize<ObservableCollection<byte[]>>(flatFormVM.OriginalFlat.Album.PhotoCollection);
+                flatFormVM.CurrentImage = flatFormVM.Photos[0];
+            });
+        }
+        private Task ModifyHouse(House house) {
+            HouseFormViewModel houseFormVM = new HouseFormViewModel();
+            Application.Current.Dispatcher.Invoke(() => {
+                house.Album = Client.RequestAlbum(house.AlbumId);
+                houseFormVM = new HouseFormViewModel(house, (Application.Current as App).AgentName);
+                houseFormVM.Streets = new ObservableCollection<Street>();
+                new HouseFormV2(houseFormVM).Show();
+            });
+            return Task.Run(() => {
+                houseFormVM.Photos = BinarySerializer.Deserialize<ObservableCollection<byte[]>>(houseFormVM.OriginalHouse.Album.PhotoCollection);
+                houseFormVM.CurrentImage = houseFormVM.Photos[0];
+            });
+        }
 
-        private void SplitBy(List<BaseRealtorObject> filteredList, byte pageSize)
-        {
+        private void SplitBy(List<BaseRealtorObject> filteredList, byte pageSize) {
             ObjectLists.Clear();
-            if (filteredList.Count > pageSize)
-            {
-                foreach (var batch in filteredList.Batch(25))
-                {
+            if (filteredList.Count > pageSize) {
+                foreach (var batch in filteredList.Batch(25)) {
                     ObjectLists.Add(batch.ToList());
                 }
                 CalculatePages(0);
                 CurrentPage = 1;
-            }
-            else
-            {
+            } else {
                 ObjectLists.Add(new List<BaseRealtorObject>(filteredList));
             }
         }
-        public string CurrentAgentName
-        {
-            get => currentAgentName; 
+        public string CurrentAgentName {
+            get => currentAgentName;
             set => currentAgentName = value;
         }
-        private void CalculatePages(short currentPage)
-        {
+        private void CalculatePages(short currentPage) {
             int count = ObjectLists.Count;
-            if (count < 15)
-            {
+            if (count < 15) {
                 for (int i = 0; i < count; i++) { Pages.Add(i + 1); }
-            }
-            else
-            {
+            } else {
                 int left = 7;
                 int right = 7;
-                if (currentPage + 8 > count)
-                {
+                if (currentPage + 8 > count) {
                     int difference = -(count - 8 - currentPage);
                     left += difference;
                     right -= difference;
                 }
-                if (currentPage - 7 < 0)
-                {
+                if (currentPage - 7 < 0) {
                     int difference = -(currentPage - 7);
                     left -= difference;
                     right += difference;

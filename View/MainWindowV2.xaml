@@ -266,8 +266,7 @@
                 </Button>
             </Grid>
         </Border>
-        <ContentControl 
-            Content="{Binding WorkArea}" 
+        <local:HomeV2
             Grid.Column="1" 
             Grid.Row="1"
             Grid.ColumnSpan="2"/>

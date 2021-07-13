@@ -536,6 +536,12 @@
                     CommandParameter="Flat"
                     Content="+ Квартира"/>
                 <Button
+                    Style="{StaticResource HeaderButton}"
+                    Grid.Column="1"
+                    Command="{Binding CreateHouse}"
+                    CommandParameter="Flat"
+                    Content="+ Дом"/>
+                <Button
                     Visibility="Collapsed"
                     Style="{StaticResource HeaderButton}"
                     Grid.Column="1"
@@ -571,40 +577,6 @@
                 HorizontalScrollBarVisibility="Disabled">
                 <StackPanel
                     Orientation="Vertical">
-                    <TextBlock
-                        Style="{StaticResource FilterHeaderText}"
-                        Text="Тип объекта"/>
-                    <CheckBox
-                        IsChecked="{Binding Filter.IsFlat}"
-                        Style="{StaticResource VioletCheckBox}"
-                        Content="Квартира"/>
-                    <CheckBox
-                        IsChecked="{Binding Filter.IsPlot}"
-                        Style="{StaticResource VioletCheckBox}"
-                        Content="Участок"/>
-                    <CheckBox
-                        IsChecked="{Binding Filter.IsHouse}"
-                        Style="{StaticResource VioletCheckBox}"
-                        Content="Частный дом"/>
-                    <CheckBox
-                        IsChecked="{Binding Filter.IsHouse}"
-                        Style="{StaticResource VioletCheckBox}"
-                        Content="Часть дома"/>
-                    <TextBlock
-                        Style="{StaticResource FilterHeaderText}"
-                        Text="Статус"/>
-                    <CheckBox
-                        IsChecked="{Binding Filter.IsActive}"
-                        Style="{StaticResource VioletCheckBox}"
-                        Content="Активный"/>
-                    <CheckBox
-                        IsChecked="{Binding Filter.IsPlanned}"
-                        Style="{StaticResource VioletCheckBox}"
-                        Content="Запланирован"/>
-                    <CheckBox
-                        IsChecked="{Binding Filter.IsArchived}"
-                        Style="{StaticResource VioletCheckBox}"
-                        Content="Архивный"/>
                     <TextBlock
                         Style="{StaticResource FilterHeaderText}"
                         Text="Стоимость"/>
@@ -655,87 +627,8 @@
                         TickFrequency="10"
                         Maximum="1500"
                         LargeChange="10"/>
-                    <TextBlock
-                        Style="{StaticResource FilterHeaderText}"
-                        Text="Местоположение"/>
-                    <CheckBox
-                        IsChecked="{Binding Filter.IsAllCities}"
-                        Style="{StaticResource VioletCheckBox}"
-                        Content="Все города"/>
-                    <Grid>
-                        <StackPanel>
-                            <TextBlock
-                                Margin="35,5,35,0"
-                                Style="{StaticResource RegularFilterText}"
-                                Text="Город:"/>
-                            <ComboBox
-                                IsEditable="False"
-                                Text="{Binding Filter.City, UpdateSourceTrigger=PropertyChanged}"
-                                SelectedItem="{Binding Filter.City}"
-                                Margin="35,2,35,0"
-                                ItemsSource="{Binding LocationOptions.Cities}"
-                                Style="{StaticResource GreenComboBox}"/>
-                        </StackPanel>
-                        <Border
-                            Visibility="{Binding Filter.IsAllCities, Converter={StaticResource BoolToVisibilityReversed}}"
-                            Margin="35,21,35,0"
-                            Background="#ccc"
-                            Opacity="0.4"/>
-                    </Grid>
-                    <CheckBox
-                        Margin="35,20,35,5"
-                        IsChecked="{Binding Filter.IsAllDistricts}"
-                        Style="{StaticResource VioletCheckBox}"
-                        Content="Все районы"/>
-                    <Grid>
-                        <StackPanel>
-                            <TextBlock
-                                Style="{StaticResource RegularFilterText}"
-                                Text="Район:"/>
-                            <ComboBox
-                                Text="{Binding Filter.District, UpdateSourceTrigger=PropertyChanged}"
-                                SelectedItem="{Binding Filter.District}"
-                                ItemsSource="{Binding LocationOptions.Districts}"
-                                Margin="35,2,35,0"
-                                Style="{StaticResource GreenComboBox}"/>
-                        </StackPanel>
-                        <Border
-                            Visibility="{Binding Filter.IsAllDistricts, Converter={StaticResource BoolToVisibilityReversed}}"
-                            Margin="35,16,35,0"
-                            Background="#ccc"
-                            Opacity="0.4"/>
-                    </Grid>
-                    <TextBlock
-                        Style="{StaticResource FilterHeaderText}"
-                        Text="Состояние"/>
-                    <CheckBox
-                        IsChecked="{Binding Filter.IsEuro}"
-                        Style="{StaticResource VioletCheckBox}"
-                        Content="Евро"/>
-                    <CheckBox
-                        IsChecked="{Binding Filter.IsExcellent}"
-                        Style="{StaticResource VioletCheckBox}"
-                        Content="Отличное"/>
-                    <CheckBox
-                        IsChecked="{Binding Filter.IsGood}"
-                        Style="{StaticResource VioletCheckBox}"
-                        Content="Хорошее"/>
-                    <CheckBox
-                        IsChecked="{Binding Filter.IsLiving}"
-                        Style="{StaticResource VioletCheckBox}"
-                        Content="Жилое"/>
-                    <CheckBox
-                        IsChecked="{Binding Filter.IsCosmeticRequired}"
-                        Style="{StaticResource VioletCheckBox}"
-                        Content="Треб. косм. ремонт"/>
-                    <CheckBox
-                        IsChecked="{Binding Filter.IsMajorRequired}"
-                        Style="{StaticResource VioletCheckBox}"
-                        Content="Треб. кап. ремонт"/>
-                    <CheckBox
-                        IsChecked="{Binding Filter.IsWithoutDecoration}"
-                        Style="{StaticResource VioletCheckBox}"
-                        Content="Без отделки"/>
+                    
+                   
                     <TextBlock
                         Style="{StaticResource FilterHeaderText}"
                         Text="Отопление"/>

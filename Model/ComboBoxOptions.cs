@@ -8,36 +8,6 @@ namespace RealtorObjects.Model
 {
     public class ComboBoxOptions {
         readonly int[] years = {
-            1950,
-            1951,
-            1952,
-            1953,
-            1954,
-            1955,
-            1956,
-            1957,
-            1958,
-            1959,
-            1960,
-            1961,
-            1962,
-            1963,
-            1964,
-            1965,
-            1966,
-            1967,
-            1968,
-            1969,
-            1970,
-            1971,
-            1972,
-            1973,
-            1974,
-            1975,
-            1976,
-            1977,
-            1978,
-            1979,
             1980,
             1981,
             1982,
@@ -163,28 +133,72 @@ namespace RealtorObjects.Model
             50
         };
         readonly int[] roomCount = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
-        readonly float[] ceilings = {
-            2.00f,
-            2.05f,
-            2.10f,
-            2.15f,
-            2.20f,
-            2.25f,
-            2.30f,
-            2.35f,
-            2.40f,
-            2.45f,
-            2.50f,
-            2.55f,
-            2.60f,
-            2.65f,
-            2.70f,
-            2.75f,
-            2.80f,
-            2.85f,
-            2.90f,
-            2.95f,
-            3.00f
+        readonly List<string> walls = new List<string>() {
+            "Дерево",
+            "Кирпич",
+            "Монолит",
+            "Панель",
+            "Саман",
+            "Саман + кирпич",
+            "Шелев",
+            "Шлак",
+        };
+        readonly List<string> categories = new List<string>() {
+            "Земли сельскохозяйственного назначения",
+            "Земли поселений",
+            "Земли промышленности",
+            "Земли особо охраняемой территории",
+            "Земли лесного фонда",
+            "Земли водного фонда",
+            "Земли запаса",
+        };
+        readonly List<string> demarcations = new List<string>() {
+            "Да",
+            "В процессе",
+            "Нет",
+        };
+        readonly List<string> roofs = new List<string>() {
+            "Металлочерепица",
+            "Мягкая кровля",
+            "Ондулин",
+            "Профильный настил",
+            "Черепица",
+            "Шифер",
+        };
+        readonly List<string> gases = new List<string>() { 
+            "Есть",
+            "Нет",
+            "По участку",
+            "По меже",
+            "Рядом",
+        };
+        readonly List<string> houseWaters = new List<string>() {
+            "Нет",
+            "В доме",
+            "Колонка",
+            "Скважина",
+            "По участку",
+            "По меже",
+            "Рядом",
+        };
+        readonly List<string> yards = new List<string>() { 
+            "Общий",
+            "Свой",
+            "Нет",
+        };
+        readonly List<string> sewers = new List<string>() {
+            "Центральная",
+            "Нет",
+            "Яма",
+            "По меже",
+            "По участку",
+            "Рядом",
+        };
+        readonly List<string> houseTypes = new List<string>() {
+            "Дом",
+            "Фрагмент дома",
+            "Участок",
+            "Коттедж",
         };
         readonly List<string> districts = new List<string>(){
             "Авиагородок",
@@ -333,8 +347,16 @@ namespace RealtorObjects.Model
         public int[] Years => years;
         public int[] LevelCount => levelCount;
         public int[] RoomCount => roomCount;
-        public float[] Ceilings => ceilings;
         public List<string> Districts => districts;
         public List<string> Cities => cities;
+        public List<string> HouseTypes => houseTypes;
+        public List<string> Walls => walls;
+        public List<string> Categories => categories;
+        public List<string> Demarcations => demarcations;
+        public List<string> Roofs => roofs;
+        public List<string> Gases => gases;
+        public List<string> HouseWaters => houseWaters;
+        public List<string> Yards => yards;
+        public List<string> Sewers => sewers;
     }
 }

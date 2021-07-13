@@ -13,7 +13,6 @@ namespace RealtorObjects.ViewModel
         private CustomCommand login;
         private CustomCommand closeApp;
         private CredentialData credentialData = new CredentialData();
-        private AsyncCommand loginAsync;
         public LoginFormViewModel() {
             if (Debugger.IsAttached) {
                 CredentialData.CurrentUsername = "Админ";
@@ -21,31 +20,18 @@ namespace RealtorObjects.ViewModel
             }
         }
         public CustomCommand Login => login ?? (login = new CustomCommand(obj => {
-
             Credential credential = new Credential() { Password = credentialData.CurrentPassword, Name = credentialData.CurrentUsername };
             if (Client.Login(credential)) {
                 ((App)Application.Current).AgentName = credential.Name;
+                Client.Name = credential.Name;
                 MainWindowViewModel mainVM = new MainWindowViewModel();
-                new MainWindowV2(mainVM).Show();
-                (obj as LoginForm).Close();
+                new MainWindowV3(mainVM).Show();
+                (obj as Window).Close();
             }
         }));
         public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
             Application.Current.Shutdown();
         }));
-        //public AsyncCommand LoginAsync => loginAsync ?? (loginAsync = new AsyncCommand(() => {
-        //    return Task.Run(() => {
-        //        Credential credential = new Credential() { Password = credentialData.CurrentPassword, Name = credentialData.CurrentUsername };
-        //        if (Client.Login(credential)) {
-        //            ((App)Application.Current).AgentName = credential.Name;
-        //            ((App)Application.Current).Dispatcher.Invoke(() => {
-        //                MainWindowViewModel mainVM = new MainWindowViewModel();
-        //                new MainWindowV2(mainVM).Show();
-        //                App.Current.Windows[0].Close();
-        //            });
-        //        }
-        //    });
-        //}));
         public CredentialData CredentialData
         {
             get => credentialData;
