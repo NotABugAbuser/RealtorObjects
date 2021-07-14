@@ -7,15 +7,21 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
+
 namespace RealtorObjects.View.Converters
 {
-    class PageEqualityConverter : IMultiValueConverter
+    class PageToBoolConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             if (values[0] == DependencyProperty.UnsetValue || values[1] == DependencyProperty.UnsetValue) {
                 return false;
             } else {
-                return System.Convert.ToInt16(values[0]) == System.Convert.ToInt16(values[1]);
+                string pageString = System.Convert.ToString(values[0]);
+                if (pageString != "..." && pageString != "<" && pageString != ">") {
+                    return System.Convert.ToInt16(values[0]) == System.Convert.ToInt16(values[1]);
+                } else {
+                    return false;
+                }
             }
         }
 

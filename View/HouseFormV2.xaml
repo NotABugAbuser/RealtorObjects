@@ -472,7 +472,7 @@
                 <TextBox
                     PreviewTextInput="NumericWithDotOnly"
                     Padding="0,2,3,0"
-                    Text="{Binding CopiedHouse.GeneralInfo.Living, UpdateSourceTrigger=PropertyChanged, StringFormat=##0.00}"
+                    Text="{Binding CopiedHouse.GeneralInfo.Living, UpdateSourceTrigger=PropertyChanged, StringFormat=0}"
                     IsEnabled="{Binding CanEdit}"
                     TextAlignment="Right"
                     Grid.Column="7"
@@ -484,7 +484,7 @@
                 <TextBox
                     PreviewTextInput="NumericWithDotOnly"
                     Padding="0,2,3,0"
-                    Text="{Binding CopiedHouse.GeneralInfo.Living, UpdateSourceTrigger=PropertyChanged, StringFormat=##0.00}"
+                    Text="{Binding CopiedHouse.GeneralInfo.Living, UpdateSourceTrigger=PropertyChanged, StringFormat=9}"
                     IsEnabled="{Binding CanEdit}"
                     TextAlignment="Right"
                     Grid.Column="7"

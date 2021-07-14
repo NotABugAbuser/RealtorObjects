@@ -1,5 +1,7 @@
-﻿using System;
+﻿using RealtyModel.Model.Base;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -9,47 +11,55 @@ namespace RealtorObjects.Model
 {
     static class Pagination
     {
-        public static void Paginate(int current, int last) {
-            int delta = 2;
-            int left = current - delta;
-            int right = current + delta + 1;
-            List<int> range = new List<int>();
-            List<string> rangeWithDots = new List<string>();
-            int l = 0;
-            for (int i = 1; i <= last; i++) {
-                if (i == 1 || i == last || i>= left && i < right) {
-                    range.Add(i);
+        public static string[] Paginate(int pagesTotal, int currentPage) {
+            List<string> pages = new List<string>();
+            if (pagesTotal == 1) {
+                pages.Add("1");
+                return pages.ToArray();
+            }
+            if (currentPage > 1) {
+                pages.Add("<");
+            }
+            pages.Add("1");
+            if (currentPage - 5 <= 2) {
+                pages.Add("2");
+            } else {
+                pages.Add("...");
+            }
+            for (int i = 5; i >= 1; i--) {
+                if (currentPage - i >= 3) {
+                    pages.Add($"{currentPage - i}");
                 }
             }
-            foreach (int i in range) {
-                if (l != 0) {
-                    if (i - 1 == 2) {
-                        rangeWithDots.Add((l + 1).ToString());
-                    } else if(i - 1 != 1) {
-                        rangeWithDots.Add("...");
-                    }
+            if (currentPage != 1 && currentPage != pagesTotal) {
+                pages.Add(currentPage.ToString());
+            }
+            for (int i = 1; i <= 5; i++) {
+                if (currentPage + i <= pagesTotal - 2) {
+                    pages.Add($"{currentPage + i}");
                 }
-                rangeWithDots.Add(i.ToString());
-                l = i;
             }
-            foreach(string str in rangeWithDots) {
-                Debug.Write(str);
+            if (currentPage + 5 <= pagesTotal - 1) {
+                pages.Add("...");
+            } else {
+                pages.Add($"{pagesTotal - 1}");
             }
+            pages.Add(pagesTotal.ToString());
+            if (currentPage < pagesTotal) {
+                pages.Add(">");
+            }
+            return pages.ToArray();
         }
-        /*
-    for (let i of range) {
-        if (l) {
-            if (i - l === 2) {
-                rangeWithDots.push(l + 1);
-            } else if (i - l !== 1) {
-                rangeWithDots.push('...');
+        public static List<ObservableCollection<BaseRealtorObject>> Split(List<BaseRealtorObject> filteredList, byte pageSize = 25) {
+            List<ObservableCollection<BaseRealtorObject>> pageList = new List<ObservableCollection<BaseRealtorObject>>();
+            if (filteredList.Count > pageSize) {
+                foreach (IEnumerable<BaseRealtorObject> batch in filteredList.Batch(pageSize)) {
+                    pageList.Add(new ObservableCollection<BaseRealtorObject>(batch));
+                }
+            } else {
+                pageList.Add(new ObservableCollection<BaseRealtorObject>(filteredList));
             }
+            return pageList;
         }
-        rangeWithDots.push(i);
-        l = i;
-    }
-
-    return rangeWithDots;
-}*/
     }
 }

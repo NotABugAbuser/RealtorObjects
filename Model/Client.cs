@@ -24,6 +24,18 @@ namespace RealtorObjects.Model
             get => name; 
             set => name = value;
         }
+        public static void Add210Flats(Flat flat) {
+            for (int i = 0; i < 210; i++) {
+                try {
+                    NetworkStream network = Connect();
+                    Operation operation = new Operation(Action.Add, Target.Flat, BinarySerializer.Serialize(flat), Name);
+                    Transfer.SendOperation(operation, network);
+                    OperationNotification.Notify(Transfer.ReceiveResponse(network).Code);
+                } catch (SocketException) {
+                    OperationNotification.Notify(ErrorCode.ServerUnavailable);
+                }
+            }
+        }
 
         private static NetworkStream Connect() {
 
@@ -69,7 +81,7 @@ namespace RealtorObjects.Model
                 NetworkStream network = Connect();
                 Operation operation = new Operation(Action.Add, Target.Flat, BinarySerializer.Serialize(flat), Name);
                 Transfer.SendOperation(operation, network);
-                OperationNotification.SuccessfulNotify(Transfer.ReceiveResponse(network).Code, $"{flat.GeneralInfo.ObjectType} успешно внесена в базу данных");
+                OperationNotification.Notify(Transfer.ReceiveResponse(network).Code);
             } catch (SocketException) {
                 OperationNotification.Notify(ErrorCode.ServerUnavailable);
             }
@@ -79,7 +91,7 @@ namespace RealtorObjects.Model
                 NetworkStream network = Connect();
                 Operation operation = new Operation(Action.Add, Target.House, BinarySerializer.Serialize(house), Name);
                 Transfer.SendOperation(operation, network);
-                OperationNotification.SuccessfulNotify(Transfer.ReceiveResponse(network).Code, $"{house.GeneralInfo.ObjectType} успешно внесен в базу данных");
+                OperationNotification.Notify(Transfer.ReceiveResponse(network).Code);
             } catch (SocketException) {
                 OperationNotification.Notify(ErrorCode.ServerUnavailable);
             }
@@ -131,17 +143,16 @@ namespace RealtorObjects.Model
             List<BaseRealtorObject> bros = new List<BaseRealtorObject>();
             bros.AddRange(objects.Item1);
             bros.AddRange(objects.Item2);
-            Debug.WriteLine(bros.Count);
             OperationNotification.Notify(response.Code);
             return bros;
         }
-        public static Street[] RequestStreets() {
+        public static string[] RequestStreets() {
             NetworkStream network = Connect();
             Operation operation = new Operation(Action.Request, Target.Locations,Name);
             Transfer.SendOperation(operation, network);
 
             Response response = Transfer.ReceiveResponse(network);
-            Street[] streets = BinarySerializer.Deserialize<Street[]>(response.Data);
+            string[] streets = BinarySerializer.Deserialize<string[]>(response.Data);
             OperationNotification.Notify(response.Code);
             return streets;
         }

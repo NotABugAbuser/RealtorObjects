@@ -119,7 +119,7 @@ namespace RealtorObjects.Model
                 }
             }
             if (!isEveryFieldFilled) {
-                OperationNotification.WarningNotify(ErrorCode.NotFilled, message.ToString());
+                OperationNotification.WarningNotify(message.ToString());
             }
             return isEveryFieldFilled;
         }

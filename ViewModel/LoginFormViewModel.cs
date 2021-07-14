@@ -22,9 +22,8 @@ namespace RealtorObjects.ViewModel
         public CustomCommand Login => login ?? (login = new CustomCommand(obj => {
             Credential credential = new Credential() { Password = credentialData.CurrentPassword, Name = credentialData.CurrentUsername };
             if (Client.Login(credential)) {
-                ((App)Application.Current).AgentName = credential.Name;
                 Client.Name = credential.Name;
-                MainWindowViewModel mainVM = new MainWindowViewModel();
+                MainWindowViewModel mainVM = new MainWindowViewModel(credential.Name);
                 new MainWindowV3(mainVM).Show();
                 (obj as Window).Close();
             }

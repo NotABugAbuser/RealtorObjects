@@ -29,7 +29,7 @@ namespace RealtorObjects.ViewModel
         protected string currentAgent = "";
         protected int index = 0;
         protected bool isNew = false;
-        protected ObservableCollection<Street> streets = new ObservableCollection<Street>();
+        protected string[] streets;
         protected ObservableCollection<byte[]> photos = new ObservableCollection<byte[]>();
         protected CustomCommand confirm;
         readonly protected ComboBoxOptions comboBoxOptions = new ComboBoxOptions();
@@ -121,7 +121,7 @@ namespace RealtorObjects.ViewModel
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<Street> Streets {
+        public string[] Streets {
             get => streets;
             set {
                 streets = value;

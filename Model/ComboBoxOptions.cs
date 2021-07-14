@@ -132,7 +132,7 @@ namespace RealtorObjects.Model
             49,
             50
         };
-        readonly int[] roomCount = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+        readonly int[] roomCount = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
         readonly List<string> walls = new List<string>() {
             "Дерево",
             "Кирпич",

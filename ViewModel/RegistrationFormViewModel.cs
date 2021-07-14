@@ -37,15 +37,15 @@ namespace RealtorObjects.ViewModel
                     ErrorCode code = Client.Register(current);
                     if (code == ErrorCode.Successful)
                     {
-                        OperationNotification.SuccessfulNotify(ErrorCode.Successful, "Агент зарегистрирован");
+                        OperationNotification.SuccessfulNotify("Агент зарегистрирован");
                         (obj as Window).Close();
                     }
-                    else if (code == ErrorCode.AgentExists) OperationNotification.WarningNotify(ErrorCode.AgentExists, "Агент не зарегистрирован");
-                    else OperationNotification.WarningNotify(ErrorCode.WrongData, "Что-то пошло не так");
+                    else if (code == ErrorCode.AgentExists) OperationNotification.WarningNotify("Агент не зарегистрирован");
+                    else OperationNotification.WarningNotify("Что-то пошло не так");
                 }
-                else OperationNotification.WarningNotify(ErrorCode.WrongData, "Пароли не совпадают");
+                else OperationNotification.WarningNotify("Пароли не совпадают");
             }
-            else OperationNotification.WarningNotify(ErrorCode.WrongData, "Не все поля заполнены");
+            else OperationNotification.WarningNotify("Не все поля заполнены");
         }));
         public CustomCommand Cancel => cancel ?? (cancel = new CustomCommand(obj => (obj as Window).Close()));
         public CredentialData Credentials

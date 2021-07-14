@@ -9,16 +9,6 @@ namespace RealtorObjects
 {
     public partial class App : Application
     {
-        private Credential credential = new Credential();
-        private String agentName = "";
-        public String AgentName {
-            get => agentName; set => agentName = value;
-        }
-        public Credential Credential {
-            get => credential;
-            private set => credential = value;
-        }
-
         protected override void OnStartup(StartupEventArgs e) {
             new LoginFormV2(new LoginFormViewModel()).Show();
         }

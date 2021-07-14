@@ -16,13 +16,22 @@
         Name="ThisMainWindow"
         MinHeight="597"
         WindowStartupLocation="CenterScreen">
+    <Window.DataContext>
+        <vm:MainWindowViewModel/>
+    </Window.DataContext>
     <Window.Resources>
+        <c:UnitsToThousandsConverter x:Key="UnitsToThousands"/>
+        <c:NameToVisibilityConverter x:Key="NameTovisibility"/>
+        <c:PageToBoolConverter x:Key="PageToBool"/>
+        <c:ByteArrayToBitmapImageConverter x:Key="ByteArrayToBitmapImage"/>
         <Style TargetType="CheckBox" x:Key="GlobalCheckBox">
             <Setter Property="SnapsToDevicePixels" Value="True"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
         <ControlTemplate TargetType="Button" x:Key="AddButtonTemplate">
-            <Button>
+            <Button
+                Command="{TemplateBinding Command}"
+                CommandParameter="{TemplateBinding CommandParameter}">
                 <Grid 
                     Width="100">
                     <Grid.ColumnDefinitions>
@@ -44,11 +53,85 @@
                 </Grid>
             </Button>
         </ControlTemplate>
+        <ControlTemplate TargetType="Button" x:Key="UserButtonTemplate">
+            <Button
+                Command="{TemplateBinding Command}"
+                CommandParameter="{TemplateBinding CommandParameter}">
+                <Grid 
+                    Width="100">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="18"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <fa:ImageAwesome
+                        Height="15"
+                        Width="15"
+                        Margin="5,0,0,0"
+                        HorizontalAlignment="Left"
+                        Foreground="#3f3f3f"
+                        Icon="Solid_User"/>
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="0,0,2,1"
+                        HorizontalAlignment="Center"
+                        Text="{TemplateBinding Content}"/>
+                </Grid>
+            </Button>
+        </ControlTemplate>
+        <ControlTemplate TargetType="Button" x:Key="RequestButtonTemplate">
+            <Button 
+                Command="{TemplateBinding Command}"
+                CommandParameter="{TemplateBinding CommandParameter}">
+                <Grid 
+                    Width="100">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="23"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <fa:ImageAwesome
+                        Height="15"
+                        Width="15"
+                        Margin="8,0,0,0"
+                        HorizontalAlignment="Left"
+                        Foreground="#3f3f3f"
+                        Icon="Solid_CloudDownloadAlt"/>
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="0,0,2,1"
+                        HorizontalAlignment="Center"
+                        Text="{TemplateBinding Content}"/>
+                </Grid>
+            </Button>
+        </ControlTemplate>
+        <ControlTemplate TargetType="Button" x:Key="LogOutButtonTemplate">
+            <Button 
+                Command="{TemplateBinding Command}"
+                CommandParameter="{TemplateBinding CommandParameter}">
+                <Grid 
+                    Width="100">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="23"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <fa:ImageAwesome
+                        Height="15"
+                        Width="15"
+                        Margin="8,0,0,0"
+                        HorizontalAlignment="Left"
+                        Foreground="#3f3f3f"
+                        Icon="Solid_DoorOpen"/>
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="0,0,2,1"
+                        HorizontalAlignment="Center"
+                        Text="{TemplateBinding Content}"/>
+                </Grid>
+            </Button>
+        </ControlTemplate>
         <Style TargetType="Button" x:Key="AddButton">
             <Setter Property="Width" Value="100"/>
             <Setter Property="Padding" Value="0,3"/>
             <Setter Property="Height" Value="27"/>
-            <Setter Property="Margin" Value="5,0"/>
             <Setter Property="Template" Value="{StaticResource AddButtonTemplate}"/>
         </Style>
         <Style TargetType="Border" x:Key="VerticalWrap">
@@ -72,58 +155,292 @@
             <Setter Property="Grid.Column" Value="4"/>
             <Setter Property="Margin" Value="12,0,0,0"/>
         </Style>
+        <Style TargetType="TextBlock" x:Key="RangeTextBlock">
+            <Setter Property="Width" Value="70"/>
+            <Setter Property="Margin" Value="15,0"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="ListBoxItem" x:Key="RealtorObjectItemStyle">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <ControlTemplate.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="15"/>
+                                <Setter Property="Foreground" Value="#3f3f3f"/>
+                            </Style>
+                        </ControlTemplate.Resources>
+                        <Button 
+                            Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Modify}"
+                            CommandParameter="{Binding .}"
+                            Padding="0"
+                            Margin="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="110"/>
+                                    <ColumnDefinition Width="152"/>
+                                </Grid.ColumnDefinitions>
+                                <Border
+                                    Grid.RowSpan="10"
+                                    BorderBrush="{StaticResource BorderGray}"
+                                    BorderThickness="0,0,1,0">
+                                    <Image
+                                        Source="{Binding Preview, Converter={StaticResource ByteArrayToBitmapImage}}"
+                                        Height="110"
+                                        Width="110"
+                                        Stretch="UniformToFill"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel
+                                    Margin="7,2"
+                                    Grid.Column="1">
+                                    <TextBlock
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        Text="{Binding GeneralInfo.ObjectType}"/>
+                                    <TextBlock
+                                        Margin="0,2,0,0"
+                                        Text="{Binding GeneralInfo.General, StringFormat=— 0 квм}"/>
+                                    <TextBlock
+                                        Text="{Binding Price, Converter={StaticResource UnitsToThousands}, StringFormat=— ### ##0 ₽}"/>
+                                    <TextBlock
+                                        Text="— Кулешовка"/>
+                                    <TextBlock
+                                        Text="— Наливная"/>
+                                </StackPanel>
+                            </Grid>
+                        </Button>
+                    </ControlTemplate>    
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ListBox" x:Key="RealtorObjectsListBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderGray}"/>
+            <Setter Property="Margin" Value="0,10"/>
+            <Setter Property="ItemContainerStyle" Value="{StaticResource RealtorObjectItemStyle}"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <UniformGrid
+                            Margin="1"
+                            Columns="5"
+                            Rows="5"/>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ListBoxItem" x:Key="PageButtonItemStyle">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border
+                            Cursor="Hand"
+                            Height="30"
+                            Name="PART_Bd"
+                            Width="30"
+                            Margin="3,0"
+                            BorderBrush="#bababa"
+                            BorderThickness="1"
+                            Background="#eee">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Name="PART_Tb"
+                                Text="{Binding .}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <DataTrigger Value="True">
+                                <DataTrigger.Binding>
+                                    <MultiBinding Converter="{StaticResource PageToBool}">
+                                        <Binding Path="Text" ElementName="PART_Tb"/>
+                                        <Binding Path="DataContext.CurrentPageNumber" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
+                                    </MultiBinding>
+                                </DataTrigger.Binding>
+                                <Setter Property="Cursor" Value="Arrow" TargetName="PART_Bd"/>
+                                <Setter Property="BorderBrush" Value="#707070" TargetName="PART_Bd"/>
+                                <Setter Property="Background" Value="#BEE6FD" TargetName="PART_Bd"/>
+                            </DataTrigger>
+                            <DataTrigger Value="..." Binding="{Binding ElementName=PART_Tb, Path=Text}">
+                                <Setter Property="Cursor" Value="Arrow" TargetName="PART_Bd"/>
+                            </DataTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#BEE6FD" TargetName="PART_Bd"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ListBox" x:Key="PageButtonsListBox">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="0,3,0,0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="ItemContainerStyle" Value="{StaticResource PageButtonItemStyle}"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <StackPanel
+                            VerticalAlignment="Top"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="1000"/>
+            <RowDefinition Height="{Binding HeightOfFilters}"/>
         </Grid.RowDefinitions>
+        <Grid
+            MinWidth="1328"
+            Margin="10,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <ListBox
+                ItemsSource="{Binding CurrentPage}"
+                Style="{StaticResource RealtorObjectsListBox}"/>
+            <Border
+                BorderThickness="0,0,0,2"
+                BorderBrush="{StaticResource BorderGray}"
+                Grid.Row="1">
+                <ListBox
+                    Style="{StaticResource PageButtonsListBox}"
+                    ItemsSource="{Binding PageButtons}"/>
+            </Border>
+        </Grid>
         <Grid 
+            Margin="10,0"
             Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
+                <RowDefinition Height="450"/>
+                <RowDefinition Height="146"/>
+                <RowDefinition Height="40"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Border
-                BorderThickness="0,0,0,2"
-                Margin="10,0"
-                BorderBrush="{StaticResource BorderGray}">
-                <StackPanel
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    Orientation="Horizontal">
-                    <Button
-                        Style="{StaticResource AddButton}"
-                        Content="Комната"/>
-                    <Button
-                        Style="{StaticResource AddButton}"
-                        Content="Квартира"/>
-                    <Button
-                        Style="{StaticResource AddButton}"
-                        Content="Участок"/>
-                    <Button
-                        Height="25"
-                        Margin="15,0"
-                        Width="70">
-                        <fa:ImageAwesome
-                            Foreground="#3f3f3f"
-                            Height="15"
-                            Icon="Solid_AngleDown"/>
-                    </Button>
-                    <Button
-                        Style="{StaticResource AddButton}"
-                        Content="Фрагмент"/>
-                    <Button
-                        Style="{StaticResource AddButton}"
-                        Content="Дом"/>
-                    <Button
-                        Style="{StaticResource AddButton}"
-                        Content="Коттедж"/>
-                </StackPanel>
-            </Border>
+                BorderThickness="0,2,0,0"
+                Height="3"
+                VerticalAlignment="Top"
+                Grid.Row="1"
+                BorderBrush="{StaticResource BorderGray}"/>
+            <Grid
+                Width="1338"
+                VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="35"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="35"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="10"/>
+                </Grid.ColumnDefinitions>
+                <Button
+                    Template="{StaticResource LogOutButtonTemplate}"
+                    Style="{StaticResource AddButton}"
+                    Content="Выйти"/>
+                <Button
+                    Visibility="{Binding CurrentAgentName, Converter={StaticResource NameTovisibility}}"
+                    Template="{StaticResource UserButtonTemplate}"
+                    Style="{StaticResource AddButton}"
+                    Grid.Column="2"
+                    Content="Просмотр"/>
+                <Button
+                    Command="{Binding CreateFlat}"
+                    CommandParameter="Комната"
+                    Style="{StaticResource AddButton}"
+                    Grid.Column="4"
+                    Content="Комната"/>
+                <Button
+                    Command="{Binding CreateFlat}"
+                    CommandParameter="Квартира"
+                    Style="{StaticResource AddButton}"
+                    Grid.Column="6"
+                    Content="Квартира"/>
+                <Button
+                    Command="{Binding CreateHouse}"
+                    CommandParameter="Дом"
+                    Style="{StaticResource AddButton}"
+                    Grid.Column="8"
+                    Content="Дом"/>
+                <Button
+                    Command="{Binding ChangeHeightOfFilters}"
+                    Height="25"
+                    Grid.Column="10"
+                    Width="50">
+                    <fa:ImageAwesome
+                        Margin="0,1,0,0"
+                        Foreground="#3f3f3f"
+                        Height="12"
+                        Icon="{Binding FilterArrow}"/>
+                </Button>
+                <Button
+                    Command="{Binding CreateHouse}"
+                    CommandParameter="Фрагмент дома"
+                    Style="{StaticResource AddButton}"
+                    Grid.Column="12"
+                    Content="Фрагмент"/>
+                <Button
+                    Command="{Binding CreateHouse}"
+                    CommandParameter="Участок"
+                    Style="{StaticResource AddButton}"
+                    Grid.Column="14"
+                    Content="Участок"/>
+                <Button
+                    Command="{Binding CreateHouse}"
+                    CommandParameter="Коттедж"
+                    Style="{StaticResource AddButton}"
+                    Grid.Column="16"
+                    Content="Коттедж"/>
+                <Button
+                    Command="{Binding CreateHouse}"
+                    CommandParameter=""
+                    Template="{StaticResource UserButtonTemplate}"
+                    Style="{StaticResource AddButton}"
+                    Grid.Column="18"
+                    Content="Регистрация"/>
+                <Button
+                    Visibility="{Binding CurrentAgentName, Converter={StaticResource NameTovisibility}}"
+                    Command="{Binding RequestRealtorObjects}"
+                    Template="{StaticResource RequestButtonTemplate}"
+                    Style="{StaticResource AddButton}"
+                    Grid.Column="20"
+                    Content="Запросить"/>
+            </Grid>
             <Grid
                 Width="1100"
-                Margin="10,40,10,0"
+                Margin="0,12,0,0"
                 Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="23"/>
@@ -165,100 +482,121 @@
                 <Border
                     Grid.Column="3"
                     Style="{StaticResource VerticalWrap}"/>
-                <Border
-                    Grid.Column="4"
-                    Style="{StaticResource VerticalWrap}"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsAllTypes}"
                     Style="{StaticResource GlobalCheckBox}"
                     Content="Все типы"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsRoom}"
                     Style="{StaticResource GlobalCheckBox}"
                     Grid.Row="2"
                     Content="Комната"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsFlat}"
                     Style="{StaticResource GlobalCheckBox}"
                     Grid.Row="3"
                     Content="Квартира"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsPlot}"
                     Style="{StaticResource GlobalCheckBox}"
                     Grid.Row="4"
                     Content="Земельный участок"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsPart}"
                     Style="{StaticResource GlobalCheckBox}"
                     Grid.Row="5"
                     Content="Фрагмент дома"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsHouse}"
                     Style="{StaticResource GlobalCheckBox}"
                     Grid.Row="6"
                     Content="Частный дом"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsCottage}"
                     Style="{StaticResource GlobalCheckBox}"
                     Grid.Row="7"
                     Content="Коттедж"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsAllCities}"
                     Style="{StaticResource SecondColumn}"
                     Content="Все города"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsAzov}"
                     Style="{StaticResource SecondColumn}"
                     Grid.Row="2"
                     Content="Азов"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsBataysk}"
                     Style="{StaticResource SecondColumn}"
                     Grid.Row="3"
                     Content="Батайск"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsVesna}"
                     Style="{StaticResource SecondColumn}"
                     Grid.Row="4"
                     Content="Весна"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsChasha}"
                     Style="{StaticResource SecondColumn}"
                     Grid.Row="5"
                     Content="Донская чаша"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsDruzhba}"
                     Style="{StaticResource SecondColumn}"
                     Grid.Row="6"
                     Content="Дружба"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsSad}"
                     Style="{StaticResource SecondColumn}"
                     Grid.Row="7"
                     Content="Красный сад"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsKuleshovka}"
                     Style="{StaticResource SecondColumn}"
                     Grid.Row="8"
                     Content="Кулешовка"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsPolyanka}"
                     Style="{StaticResource SecondColumn}"
                     Grid.Row="9"
                     Content="Лесная полянка"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsLuch}"
                     Style="{StaticResource SecondColumn}"
                     Grid.Row="10"
                     Content="Луч"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsMiliorator}"
                     Style="{StaticResource SecondColumn}"
                     Grid.Row="11"
                     Content="Милиоратор"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsBatay}"
                     Style="{StaticResource SecondColumn}"
                     Grid.Row="12"
                     Content="Мокрый Батай"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsOvoschnoy}"
                     Style="{StaticResource SecondColumn}"
                     Grid.Row="13"
                     Content="Овощной"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsRomashka}"
                     Style="{StaticResource SecondColumn}"
                     Grid.Row="14"
                     Content="Ромашка"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsRostov}"
                     Style="{StaticResource SecondColumn}"
                     Grid.Row="15"
                     Content="Ростов-на-Дону"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsTrud}"
                     Style="{StaticResource SecondColumn}"
                     Grid.Row="16"
                     Content="Труд"/>
                 <CheckBox
+                    IsChecked="{Binding Filter.IsYagodka}"
                     Style="{StaticResource SecondColumn}"
                     Grid.Row="17"
                     Content="Ягодка"/>
@@ -398,6 +736,62 @@
                     Grid.Row="8"
                     Content="Электро"/>
             </Grid>
+            <StackPanel
+                Grid.Row="2">
+                <StackPanel
+                    Width="275"
+                    Margin="0,20,0,12"
+                    Orientation="Horizontal">
+                    <TextBlock
+                        VerticalAlignment="Bottom"
+                        Text="Стоимость от"/>
+                    <TextBlock
+                        Style="{StaticResource RangeTextBlock}"
+                        Text="{Binding Filter.MinimumPrice, StringFormat=### ### ##0млн}"/>
+                    <TextBlock
+                        VerticalAlignment="Bottom"
+                        Text="до"/>
+                    <TextBlock
+                        Style="{StaticResource RangeTextBlock}"
+                        Text="{Binding Filter.MaximumPrice, StringFormat=### ### ##0млн}"/>
+                </StackPanel>
+                <local:RangeSlider
+                    Grid.Row="1"
+                    Height="19"
+                    UpperValue="{Binding Filter.MaximumPrice, UpdateSourceTrigger=PropertyChanged}"
+                    LowerValue="{Binding Filter.MinimumPrice, UpdateSourceTrigger=PropertyChanged}"
+                    Maximum="40000"
+                    Minimum="0"
+                    TickFrequency="500"
+                    IsSnapToTickEnabled="True"/>
+                <StackPanel
+                    Width="275"
+                    Margin="0,20,0,12"
+                    Orientation="Horizontal">
+                    <TextBlock
+                        VerticalAlignment="Bottom"
+                        Text="Площадь   от"/>
+                    <TextBlock
+                        Style="{StaticResource RangeTextBlock}"
+                        Text="{Binding Filter.MinimumArea, StringFormat=0квм}"/>
+                    <TextBlock
+                        VerticalAlignment="Bottom"
+                        Text="до"/>
+                    <TextBlock
+                        Style="{StaticResource RangeTextBlock}"
+                        Text="{Binding Filter.MaximumArea, StringFormat=0квм}"/>
+                </StackPanel>
+                <local:RangeSlider
+                    Grid.Row="1"
+                    VerticalAlignment="Top"
+                    Height="19"
+                    LowerValue="{Binding Filter.MinimumArea, UpdateSourceTrigger=PropertyChanged}"
+                    UpperValue="{Binding Filter.MaximumArea, UpdateSourceTrigger=PropertyChanged}"
+                    Maximum="400"
+                    Minimum="0"
+                    TickFrequency="5"
+                    IsSnapToTickEnabled="True"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>

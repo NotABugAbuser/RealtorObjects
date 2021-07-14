@@ -149,7 +149,6 @@
     <Compile Include="Model\FieldFillness.cs" />
     <Compile Include="Model\Pagination.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
-    <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\HouseFormViewModel.cs" />
     <Compile Include="ViewModel\LoadingFormViewModel.cs" />
     <Compile Include="ViewModel\LoginFormViewModel.cs" />
@@ -165,13 +164,11 @@
     <Compile Include="View\Converters\InverseVisibilityConverter.cs" />
     <Compile Include="View\Converters\NameToVisibilityConverter.cs" />
     <Compile Include="View\Converters\ObjectAndPropertyMultiValueConverter.cs" />
-    <Compile Include="View\Converters\PageEqualityConverter.cs" />
+    <Compile Include="View\Converters\PageToBoolConverter.cs" />
     <Compile Include="View\Converters\SymbolToStarConverter.cs" />
+    <Compile Include="View\Converters\UnitsToThousandsConverter.cs" />
     <Compile Include="View\FlatFormV3.xaml.cs">
       <DependentUpon>FlatFormV3.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\HomeV2.xaml.cs">
-      <DependentUpon>HomeV2.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\HouseFormV2.xaml.cs">
       <DependentUpon>HouseFormV2.xaml</DependentUpon>
@@ -186,17 +183,20 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="View\MainWindowV2.xaml.cs">
-      <DependentUpon>MainWindowV2.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\MainWindowV3.xaml.cs">
       <DependentUpon>MainWindowV3.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\NotificationWindow.xaml.cs">
       <DependentUpon>NotificationWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\RangeSlider.xaml.cs">
+      <DependentUpon>RangeSlider.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\RegistrationForm.xaml.cs">
       <DependentUpon>RegistrationForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TestSlider.xaml.cs">
+      <DependentUpon>TestSlider.xaml</DependentUpon>
     </Compile>
     <Page Include="View\Dictionaries\ColorsAndBrushes.xaml">
       <SubType>Designer</SubType>
@@ -207,10 +207,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\FlatFormV3.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\HomeV2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -226,10 +222,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\MainWindowV2.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="View\MainWindowV3.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -238,7 +230,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\RangeSlider.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\RegistrationForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TestSlider.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -278,19 +278,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="View\Image\TestImage.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="View\Image\Archived.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="View\Image\Plot.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="View\Image\BlankImage.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="View\Image\errorCircle.png" />
-    <Resource Include="View\Image\exclamationTriangle.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Иконка продукта.ico" />

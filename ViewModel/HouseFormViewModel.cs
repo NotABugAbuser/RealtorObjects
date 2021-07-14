@@ -23,7 +23,7 @@ namespace RealtorObjects.ViewModel
         private House copiedHouse = new House();
         public HouseFormViewModel() {
         }
-        public HouseFormViewModel(string agentName) {
+        public HouseFormViewModel(string agentName, string objectType) {
             isNew = true;
             Title = $"[Земельный объект]  —  Добавление";
             currentAgent = agentName;
@@ -32,6 +32,10 @@ namespace RealtorObjects.ViewModel
                 CopiedHouse = House.CreateTestHouse();
             } else {
                 CopiedHouse = new House();
+            }
+            CopiedHouse.GeneralInfo.ObjectType = objectType;
+            if (objectType.Equals("Участок")) {
+                CopiedHouse.GeneralInfo.RoomCount = 0;
             }
             CopiedHouse.Agent = agentName;
         }
@@ -48,9 +52,12 @@ namespace RealtorObjects.ViewModel
             }
         }));
         public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj => {
+            CopiedHouse.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
             if (Photos.Count != 0) {
                 CopiedHouse.Preview = BitmapImageDecoder.GetDecodedBytes(Photos[0], 0, 100);
-                CopiedHouse.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
+            }
+            if(CopiedHouse.Album.PhotoCollection.Length < 1100) {
+                CopiedHouse.Album.PhotoCollection = Array.Empty<byte>();
             }
             if (FieldFillness.IsFilled(CopiedHouse)) {
                 if (isNew) {

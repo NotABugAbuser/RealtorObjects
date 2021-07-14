@@ -31,7 +31,7 @@ namespace RealtorObjects.ViewModel
         private Flat originalFlat = new Flat();
         public FlatFormViewModel() {
         }
-        public FlatFormViewModel(string agentName) {
+        public FlatFormViewModel(string agentName, string objectType) {
             isNew = true;
             Title = $"[Квартирный объект]  —  Добавление";
             currentAgent = agentName;
@@ -41,6 +41,7 @@ namespace RealtorObjects.ViewModel
             } else {
                 CopiedFlat = new Flat();
             }
+            CopiedFlat.GeneralInfo.ObjectType = objectType;
             CopiedFlat.Agent = agentName;
         }
         public FlatFormViewModel(Flat flat, string agentName) {
@@ -60,9 +61,12 @@ namespace RealtorObjects.ViewModel
                 CopiedFlat.Preview = BitmapImageDecoder.GetDecodedBytes(Photos[0], 0, 100);
                 CopiedFlat.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
             }
+            if (CopiedFlat.Album.PhotoCollection.Length < 1100) {
+                CopiedFlat.Album.PhotoCollection = Array.Empty<byte>();
+            }
             if (FieldFillness.IsFilled(CopiedFlat)) {
                 if (isNew) {
-                    Client.AddFlat(CopiedFlat);
+                    Client.Add210Flats(CopiedFlat);
                 } else {
                     Client.UpdateFlat(CopiedFlat);
                 }
