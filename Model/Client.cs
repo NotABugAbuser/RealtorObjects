@@ -12,6 +12,7 @@ using RealtyModel.Service;
 using Action = RealtyModel.Model.Operations.Action;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Net.NetworkInformation;
 
 namespace RealtorObjects.Model
 {
@@ -21,24 +22,26 @@ namespace RealtorObjects.Model
         private static IPAddress serverIp;
 
         public static string Name {
-            get => name; 
+            get => name;
             set => name = value;
         }
-        public static void Add210Flats(Flat flat) {
-            for (int i = 0; i < 210; i++) {
-                try {
-                    NetworkStream network = Connect();
-                    Operation operation = new Operation(Action.Add, Target.Flat, BinarySerializer.Serialize(flat), Name);
-                    Transfer.SendOperation(operation, network);
-                    OperationNotification.Notify(Transfer.ReceiveResponse(network).Code);
-                } catch (SocketException) {
-                    OperationNotification.Notify(ErrorCode.ServerUnavailable);
+        public static bool PingHost(string nameOrAddress) {
+            bool pingable = false;
+            Ping pinger = null;
+            try {
+                pinger = new Ping();
+                PingReply reply = pinger.Send(nameOrAddress);
+                pingable = reply.Status == IPStatus.Success;
+            } catch (PingException) {
+                // Discard PingExceptions and return false;
+            } finally {
+                if (pinger != null) {
+                    pinger.Dispose();
                 }
             }
+            return pingable;
         }
-
         private static NetworkStream Connect() {
-
             TcpClient client = new TcpClient();
             if (Debugger.IsAttached) {
                 serverIp = IPAddress.Parse("192.168.8.102");
@@ -56,6 +59,26 @@ namespace RealtorObjects.Model
 
             return Transfer.ReceiveResponse(network).Code;
         }
+        public static List<Credential> RequestCredentials() {
+            NetworkStream network = Connect();
+            Operation operation = new Operation(Action.Request, Target.Agent, Name);
+            Transfer.SendOperation(operation, network);
+
+            Response response = Transfer.ReceiveResponse(network);
+            SymmetricEncryption encrypted = BinarySerializer.Deserialize<SymmetricEncryption>(response.Data);
+            OperationNotification.Notify(response.Code);
+            return encrypted.Decrypt<List<Credential>>();
+        }
+        public static bool UpdateCredentials(List<Credential> credentials) {
+            NetworkStream network = Connect();
+            Operation operation = new Operation(Action.Update, Target.Agent, new SymmetricEncryption(credentials).Encrypt<List<Credential>>(), Name);
+            Transfer.SendOperation(operation, network);
+
+            Response response = Transfer.ReceiveResponse(network);
+            OperationNotification.Notify(response.Code);
+            return BinarySerializer.Deserialize<bool>(response.Data);
+        }
+
         public static Album RequestAlbum(int id) {
             NetworkStream network = Connect();
             Operation operation = new Operation(Action.Request, Target.Album, BinarySerializer.Serialize(id), Name);
@@ -119,9 +142,8 @@ namespace RealtorObjects.Model
         public static bool Login(Credential credential) {
             try {
                 NetworkStream network = Connect();
-                Operation operation = new Operation(Action.Login, BinarySerializer.Serialize(credential), Name);
+                Operation operation = new Operation(Action.Login, new SymmetricEncryption(credential).Encrypt<Credential>(), Name);
                 Transfer.SendOperation(operation, network);
-
                 Response response = Transfer.ReceiveResponse(network);
                 bool isSuccessful = BinarySerializer.Deserialize<bool>(response.Data);
                 Application.Current.Dispatcher.Invoke(() => {
@@ -133,11 +155,10 @@ namespace RealtorObjects.Model
                 return false;
             }
         }
-        public static List<BaseRealtorObject> RequestRealtorObjects(Filter filter) {
+        public static List<BaseRealtorObject> RequestRealtorObjects(Filtration filtration) {
             NetworkStream network = Connect();
-            Operation operation = new Operation(Action.Request, Target.RealtorObjects, BinarySerializer.Serialize(filter), Name);
+            Operation operation = new Operation(Action.Request, Target.RealtorObjects, BinarySerializer.Serialize(filtration), Name);
             Transfer.SendOperation(operation, network);
-
             Response response = Transfer.ReceiveResponse(network);
             Tuple<Flat[], House[]> objects = BinarySerializer.Deserialize<Tuple<Flat[], House[]>>(response.Data);
             List<BaseRealtorObject> bros = new List<BaseRealtorObject>();
@@ -148,7 +169,7 @@ namespace RealtorObjects.Model
         }
         public static string[] RequestStreets() {
             NetworkStream network = Connect();
-            Operation operation = new Operation(Action.Request, Target.Locations,Name);
+            Operation operation = new Operation(Action.Request, Target.Locations, Name);
             Transfer.SendOperation(operation, network);
 
             Response response = Transfer.ReceiveResponse(network);

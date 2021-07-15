@@ -14,7 +14,7 @@ using System.Windows;
 
 namespace RealtorObjects.ViewModel
 {
-    public class RealtorObjectFormViewModel : BaseViewModel
+    public class RealtorObjectFormVM : BaseVM
     {
         protected string title;
         protected CustomCommand cancel;

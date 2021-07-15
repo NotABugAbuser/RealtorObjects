@@ -24,7 +24,7 @@ namespace RealtorObjects.View
         public LoginFormV2() {
             InitializeComponent();
         }
-        public LoginFormV2(LoginFormViewModel loginFormVM) {
+        public LoginFormV2(LoginFormVM loginFormVM) {
             InitializeComponent();
             this.DataContext = loginFormVM;
         }

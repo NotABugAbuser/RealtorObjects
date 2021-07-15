@@ -9,11 +9,11 @@ using System.Diagnostics;
 
 namespace RealtorObjects.ViewModel
 {
-    public class LoginFormViewModel : BaseViewModel {
+    public class LoginFormVM : BaseVM {
         private CustomCommand login;
         private CustomCommand closeApp;
         private CredentialData credentialData = new CredentialData();
-        public LoginFormViewModel() {
+        public LoginFormVM() {
             if (Debugger.IsAttached) {
                 CredentialData.CurrentUsername = "Админ";
                 CredentialData.CurrentPassword = "csharprulit";
@@ -23,7 +23,7 @@ namespace RealtorObjects.ViewModel
             Credential credential = new Credential() { Password = credentialData.CurrentPassword, Name = credentialData.CurrentUsername };
             if (Client.Login(credential)) {
                 Client.Name = credential.Name;
-                MainWindowViewModel mainVM = new MainWindowViewModel(credential.Name);
+                MainWindowVM mainVM = new MainWindowVM(credential.Name);
                 new MainWindowV3(mainVM).Show();
                 (obj as Window).Close();
             }

@@ -1,37 +1,24 @@
 ﻿using BitmapImageDecoding;
 using Microsoft.Win32;
-using MiscUtil;
 using RealtorObjects.Model;
-using RealtorObjects.View;
-using RealtyModel.Interface;
 using RealtyModel.Model;
 using RealtyModel.Model.Derived;
-using RealtyModel.Model.Operations;
 using RealtyModel.Service;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
-using System.ComponentModel;
-using System.Text.Json;
-using System.Text;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace RealtorObjects.ViewModel
 {
-    public class FlatFormViewModel : RealtorObjectFormViewModel
+    public class FlatFormVM : RealtorObjectFormVM
     {
         private Flat copiedFlat = new Flat();
         private Flat originalFlat = new Flat();
-        public FlatFormViewModel() {
+        public FlatFormVM() {
         }
-        public FlatFormViewModel(string agentName, string objectType) {
+        public FlatFormVM(string agentName) {
             isNew = true;
             Title = $"[Квартирный объект]  —  Добавление";
             currentAgent = agentName;
@@ -41,10 +28,9 @@ namespace RealtorObjects.ViewModel
             } else {
                 CopiedFlat = new Flat();
             }
-            CopiedFlat.GeneralInfo.ObjectType = objectType;
             CopiedFlat.Agent = agentName;
         }
-        public FlatFormViewModel(Flat flat, string agentName) {
+        public FlatFormVM(Flat flat, string agentName) {
             CopiedFlat = flat.GetCopy();
             OriginalFlat = flat;
             Title = $"[#{CopiedFlat.Id}] [Тип: {CopiedFlat.GeneralInfo.ObjectType}] [Создатель заявки: {CopiedFlat.Agent}]  —  Просмотр";
@@ -64,9 +50,14 @@ namespace RealtorObjects.ViewModel
             if (CopiedFlat.Album.PhotoCollection.Length < 1100) {
                 CopiedFlat.Album.PhotoCollection = Array.Empty<byte>();
             }
+            if (CopiedFlat.GeneralInfo.RoomCount == 1) {
+                CopiedFlat.GeneralInfo.ObjectType = "Комната";
+            } else {
+                CopiedFlat.GeneralInfo.ObjectType = "Квартира";
+            }
             if (FieldFillness.IsFilled(CopiedFlat)) {
                 if (isNew) {
-                    Client.Add210Flats(CopiedFlat);
+                    Client.AddFlat(CopiedFlat);
                 } else {
                     Client.UpdateFlat(CopiedFlat);
                 }
@@ -103,7 +94,6 @@ namespace RealtorObjects.ViewModel
                         CopiedFlat.Album.PhotoCollection = BinarySerializer.Serialize(Photos);
                         CurrentImage = images[0];
                         Index = 0;
-                        //images.Clear();
                         GC.Collect();
                         GC.SuppressFinalize(images);
                         GC.Collect();

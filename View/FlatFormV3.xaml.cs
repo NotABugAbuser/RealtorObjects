@@ -33,7 +33,7 @@ namespace RealtorObjects.View
         public FlatFormV3() {
             InitializeComponent();
         }
-        public FlatFormV3(FlatFormViewModel flatFormVM) {
+        public FlatFormV3(FlatFormVM flatFormVM) {
             InitializeComponent();
             this.DataContext = flatFormVM;
         }

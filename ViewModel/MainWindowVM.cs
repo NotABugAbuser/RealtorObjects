@@ -18,63 +18,85 @@ using RealtyModel.Model.Operations;
 
 namespace RealtorObjects.ViewModel
 {
-    public class MainWindowViewModel : BaseViewModel
+    public class MainWindowVM : BaseVM
     {
         private readonly string currentAgentName = "Пользователь 0";
         private readonly string[] streets;
-        private double heightOfFilters = 690;
-        private EFontAwesomeIcon filterArrow = EFontAwesomeIcon.Solid_AngleUp;
-        private CustomCommand changeHeightOfFilters;
+        private double heightOfFiltrations = 50;
+        private EFontAwesomeIcon filtrationArrow = EFontAwesomeIcon.Solid_AngleUp;
+        private CustomCommand changeHeightOfFiltrations;
         private CustomCommand createFlat;
         private CustomCommand createHouse;
+        private CustomCommand logOut;
+        private CustomCommand openAccounts;
+        private AsyncCommand goToPageAsync;
         private AsyncCommand modify;
         private List<ObservableCollection<BaseRealtorObject>> pages = new List<ObservableCollection<BaseRealtorObject>>() { };
-        private string[] pageButtons;
+        private string[] pageButtons = { "1" };
         private ObservableCollection<BaseRealtorObject> currentPage = new ObservableCollection<BaseRealtorObject>();
-        private Int16 currentPageNumber = 1;
+        private Int32 currentPageNumber = 1;
         private CustomCommand requestRealtorObjects;
-        private Filter filter = new Filter();
-        public MainWindowViewModel() {
+        private Filtration filtration = new Filtration();
+        public MainWindowVM() {
         }
-        public MainWindowViewModel(string agentName) {
+        public MainWindowVM(string agentName) {
             this.currentAgentName = agentName;
             this.streets = Client.RequestStreets();
         }
+        public CustomCommand OpenAccounts => openAccounts ?? (openAccounts = new CustomCommand(obj => {
+            List<Credential> credentials = Client.RequestCredentials();
+            new Accounts(new AccountsVM(credentials)).ShowDialog();
+        }));
+        public CustomCommand LogOut => logOut ?? (logOut = new CustomCommand(obj => {
+            Window window = obj as Window;
+            new LoginFormV2(new LoginFormVM()).Show();
+            window.Close();
+        }));
+        public AsyncCommand GoToPageAsync=> goToPageAsync ?? (goToPageAsync = new AsyncCommand(() => {
+            return Task.Run(()=> {
+                string page = goToPageAsync.Parameter as string;
+                if (page == "<") {
+                    CurrentPageNumber -= 1;
+                    CurrentPage = pages[CurrentPageNumber - 1];
+                    PageButtons = Pagination.Paginate(pages.Count, CurrentPageNumber);
+                } else if (page == ">") {
+                    CurrentPageNumber += 1;
+                    CurrentPage = pages[CurrentPageNumber - 1];
+                    PageButtons = Pagination.Paginate(pages.Count, CurrentPageNumber);
+                } else if (page != "...") {
+                    Int32 selectedPage = Convert.ToInt32(page);
+                    CurrentPageNumber = selectedPage;
+                    CurrentPage = pages[selectedPage - 1];
+                    PageButtons = Pagination.Paginate(pages.Count, CurrentPageNumber);
+                }
+            });
+        }));
         public CustomCommand RequestRealtorObjects => requestRealtorObjects ?? (requestRealtorObjects = new CustomCommand(obj => {
-            List<BaseRealtorObject> realtorObjects = Client.RequestRealtorObjects(new Filter());
+            List<BaseRealtorObject> realtorObjects = Client.RequestRealtorObjects(filtration);
             pages = Pagination.Split(realtorObjects);
             CurrentPageNumber = 1;
             PageButtons = Pagination.Paginate(pages.Count, CurrentPageNumber);
             CurrentPage = pages[CurrentPageNumber - 1];
         }));
         public CustomCommand CreateFlat => createFlat ?? (createFlat = new CustomCommand(obj => {
-            string objectType = obj as string;
-            FlatFormViewModel flatFormVM = new FlatFormViewModel(CurrentAgentName, objectType);
+            FlatFormVM flatFormVM = new FlatFormVM(CurrentAgentName);
             flatFormVM.Streets = this.streets;
-            new FlatFormV3(flatFormVM).Show();
+            new FlatFormV3(flatFormVM).ShowDialog();
         }));
         public CustomCommand CreateHouse => createHouse ?? (createHouse = new CustomCommand(obj => {
-            string objectType = obj as string;
-            HouseFormViewModel houseFormVM = new HouseFormViewModel(CurrentAgentName, objectType);
+            HouseFormVM houseFormVM = new HouseFormVM(CurrentAgentName);
             houseFormVM.Streets = this.streets;
-            new HouseFormV2(houseFormVM).Show();
+            new HouseFormV2(houseFormVM).ShowDialog();
         }));
-        public CustomCommand ChangeHeightOfFilters => changeHeightOfFilters ?? (changeHeightOfFilters = new CustomCommand(obj => {
-            if (HeightOfFilters == 50) {
-                HeightOfFilters = 690;
-                FilterArrow = EFontAwesomeIcon.Solid_AngleDown;
+        public CustomCommand ChangeHeightOfFiltrations => changeHeightOfFiltrations ?? (changeHeightOfFiltrations = new CustomCommand(obj => {
+            if (HeightOfFiltrations == 50) {
+                HeightOfFiltrations = 690;
+                FiltrationArrow = EFontAwesomeIcon.Solid_AngleDown;
             } else {
-                HeightOfFilters = 50;
-                FilterArrow = EFontAwesomeIcon.Solid_AngleUp;
+                HeightOfFiltrations = 50;
+                FiltrationArrow = EFontAwesomeIcon.Solid_AngleUp;
             }
         }));
-        public Int16 CurrentPageNumber {
-            get => currentPageNumber;
-            set {
-                currentPageNumber = value;
-                OnPropertyChanged();
-            }
-        }
         public AsyncCommand Modify => modify ?? (modify = new AsyncCommand(() => {
             BaseRealtorObject bro = (BaseRealtorObject)Modify.Parameter;
             if (bro is Flat flat) {
@@ -88,12 +110,12 @@ namespace RealtorObjects.ViewModel
             }
         }));
         private Task ModifyFlat(Flat flat) {
-            FlatFormViewModel flatFormVM = new FlatFormViewModel();
+            FlatFormVM flatFormVM = new FlatFormVM();
             Application.Current.Dispatcher.Invoke(() => {
                 flat.Album = Client.RequestAlbum(flat.AlbumId);
-                flatFormVM = new FlatFormViewModel(flat, CurrentAgentName);
+                flatFormVM = new FlatFormVM(flat, CurrentAgentName);
                 flatFormVM.Streets = this.streets;
-                new FlatFormV3(flatFormVM).Show();
+                new FlatFormV3(flatFormVM).ShowDialog();
             });
             return Task.Run(() => {
                 flatFormVM.Photos = BinarySerializer.Deserialize<ObservableCollection<byte[]>>(flatFormVM.OriginalFlat.Album.PhotoCollection);
@@ -101,12 +123,12 @@ namespace RealtorObjects.ViewModel
             });
         }
         private Task ModifyHouse(House house) {
-            HouseFormViewModel houseFormVM = new HouseFormViewModel();
+            HouseFormVM houseFormVM = new HouseFormVM();
             Application.Current.Dispatcher.Invoke(() => {
                 house.Album = Client.RequestAlbum(house.AlbumId);
-                houseFormVM = new HouseFormViewModel(house, CurrentAgentName);
+                houseFormVM = new HouseFormVM(house, CurrentAgentName);
                 houseFormVM.Streets = this.streets;
-                new HouseFormV2(houseFormVM).Show();
+                new HouseFormV2(houseFormVM).ShowDialog();
             });
             return Task.Run(() => {
                 houseFormVM.Photos = BinarySerializer.Deserialize<ObservableCollection<byte[]>>(houseFormVM.OriginalHouse.Album.PhotoCollection);
@@ -114,21 +136,27 @@ namespace RealtorObjects.ViewModel
             });
         }
         public string CurrentAgentName => currentAgentName;
-        public double HeightOfFilters {
-            get => heightOfFilters;
+        public double HeightOfFiltrations {
+            get => heightOfFiltrations;
             set {
-                heightOfFilters = value;
+                heightOfFiltrations = value;
                 OnPropertyChanged();
             }
         }
-        public EFontAwesomeIcon FilterArrow {
-            get => filterArrow;
+        public EFontAwesomeIcon FiltrationArrow {
+            get => filtrationArrow;
             set {
-                filterArrow = value;
+                filtrationArrow = value;
                 OnPropertyChanged();
             }
         }
-
+        public Int32 CurrentPageNumber {
+            get => currentPageNumber;
+            set {
+                currentPageNumber = value;
+                OnPropertyChanged();
+            }
+        }
         public ObservableCollection<BaseRealtorObject> CurrentPage {
             get => currentPage;
             set {
@@ -145,8 +173,8 @@ namespace RealtorObjects.ViewModel
             }
         }
 
-        public Filter Filter {
-            get => filter; set => filter = value;
+        public Filtration Filtration {
+            get => filtration; set => filtration = value;
         }
     }
 }

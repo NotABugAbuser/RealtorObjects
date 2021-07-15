@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RealtorObjects.ViewModel
 {
-    public class BaseViewModel : INotifyPropertyChanged
+    public class BaseVM : INotifyPropertyChanged
     {
         public void OnPropertyChanged([CallerMemberName] string property = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));

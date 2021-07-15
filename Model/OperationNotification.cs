@@ -19,7 +19,9 @@ namespace RealtorObjects.Model
             [ErrorCode.AgentExists] = new NotificationInfo("Такой агент уже существует в базе данных. Операция отменена", CodeType.Exclamation),
             [ErrorCode.ObjectDuplicate] = new NotificationInfo("Объект с таким адресом уже существует в базе данных. Операция отменена", CodeType.Exclamation),
             [ErrorCode.ObjectUpdatedSuccessfuly] = new NotificationInfo("Изменения объекта успешно занесены в базу данных", CodeType.Successful),
-            [ErrorCode.ObjectAddedSuccessfuly] = new NotificationInfo("Объект успешно занесен в базу данных", CodeType.Successful)
+            [ErrorCode.ObjectAddedSuccessfuly] = new NotificationInfo("Объект успешно занесен в базу данных", CodeType.Successful),
+            [ErrorCode.CredentialUpdatedSuccessfuly] = new NotificationInfo("Изменения данных профилей успешно занесены в базу", CodeType.Successful),
+            [ErrorCode.NotFilled] = new NotificationInfo("Не все значения заполнены", CodeType.Exclamation)
         };
         public static void Notify(ErrorCode code) {
             if (code != ErrorCode.NoCode) {

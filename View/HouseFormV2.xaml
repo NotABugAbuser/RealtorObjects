@@ -18,7 +18,7 @@
         WindowStartupLocation="CenterScreen"
         Title="{Binding Title}">
     <Window.DataContext>
-        <vm:HouseFormViewModel/>
+        <vm:HouseFormVM/>
     </Window.DataContext>
     <Window.Resources>
         <c:BoolToVisibilityReversedConverter x:Key="BoolToVisibilityReversed"/>

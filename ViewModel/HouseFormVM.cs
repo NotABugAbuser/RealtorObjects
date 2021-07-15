@@ -17,13 +17,13 @@ using System.Windows;
 
 namespace RealtorObjects.ViewModel
 {
-    public class HouseFormViewModel : RealtorObjectFormViewModel
+    public class HouseFormVM : RealtorObjectFormVM
     {
         private House originalHouse = new House();
         private House copiedHouse = new House();
-        public HouseFormViewModel() {
+        public HouseFormVM() {
         }
-        public HouseFormViewModel(string agentName, string objectType) {
+        public HouseFormVM(string agentName) {
             isNew = true;
             Title = $"[Земельный объект]  —  Добавление";
             currentAgent = agentName;
@@ -33,13 +33,9 @@ namespace RealtorObjects.ViewModel
             } else {
                 CopiedHouse = new House();
             }
-            CopiedHouse.GeneralInfo.ObjectType = objectType;
-            if (objectType.Equals("Участок")) {
-                CopiedHouse.GeneralInfo.RoomCount = 0;
-            }
             CopiedHouse.Agent = agentName;
         }
-        public HouseFormViewModel(House house, string agentName) {
+        public HouseFormVM(House house, string agentName) {
             CopiedHouse = house.GetCopy();
             OriginalHouse = house;
             Title = $"[#{CopiedHouse.Id}] [Тип: {CopiedHouse.GeneralInfo.ObjectType}] [Создатель заявки: {CopiedHouse.Agent}]  —  Просмотр";

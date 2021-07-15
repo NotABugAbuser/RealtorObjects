@@ -26,7 +26,7 @@ namespace RealtorObjects.View
         public HouseFormV2() {
             InitializeComponent();
         }
-        public HouseFormV2(HouseFormViewModel houseFormVM) {
+        public HouseFormV2(HouseFormVM houseFormVM) {
             InitializeComponent();
             this.DataContext = houseFormVM;
         }

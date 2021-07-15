@@ -1,4 +1,5 @@
-﻿using RealtorObjects.View;
+﻿using RealtorObjects.Model;
+using RealtorObjects.View;
 using RealtorObjects.ViewModel;
 using RealtyModel.Model;
 using System;
@@ -10,7 +11,7 @@ namespace RealtorObjects
     public partial class App : Application
     {
         protected override void OnStartup(StartupEventArgs e) {
-            new LoginFormV2(new LoginFormViewModel()).Show();
+            new LoginFormV2(new LoginFormVM()).Show();
         }
     }
 }

@@ -22,7 +22,7 @@
         WindowStyle="none"
         WindowStartupLocation="CenterScreen">
     <Window.DataContext>
-        <vm:LoginFormViewModel/>
+        <vm:LoginFormVM/>
     </Window.DataContext>
     <Window.Resources>
         <c:SymbolToStarConverter x:Key="SymbolToStar"/>
@@ -179,10 +179,12 @@
                 Grid.Row="2"
                 BorderBrush="{StaticResource BorderGray}"
                 BorderThickness="1">
-                <TextBox Name="LoginBox"
-                        PreviewTextInput="LoginValidation"
-                        Text="{Binding CredentialData.CurrentUsername}"
-                        Style="{StaticResource loginTextBox}"/>
+                <TextBox 
+                    TabIndex="1"
+                    Name="LoginBox"
+                    PreviewTextInput="LoginValidation"
+                    Text="{Binding CredentialData.CurrentUsername}"
+                    Style="{StaticResource loginTextBox}"/>
             </Border>
             <Border
                 Grid.Row="4"
@@ -190,6 +192,7 @@
                 BorderThickness="1">
                 <Grid>
                     <TextBox
+                        TabIndex="2"
                         PreviewTextInput="PasswordValidation"
                         Text="{Binding CredentialData.CurrentPassword, UpdateSourceTrigger=PropertyChanged}"
                         Foreground="Transparent"
@@ -203,6 +206,7 @@
                 </Grid>
             </Border>
             <Button
+                TabIndex="3"
                 Grid.Row="6"
                 Command="{Binding Login}"
                 CommandParameter="{Binding ElementName=LoginWindow}">

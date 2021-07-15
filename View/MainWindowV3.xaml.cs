@@ -26,7 +26,7 @@ namespace RealtorObjects.View
         public MainWindowV3() {
             InitializeComponent();
         }
-        public MainWindowV3(MainWindowViewModel mainWindowVM) {
+        public MainWindowV3(MainWindowVM mainWindowVM) {
             InitializeComponent();
             this.DataContext = mainWindowVM;
         }

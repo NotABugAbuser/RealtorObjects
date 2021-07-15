@@ -20,35 +20,35 @@ namespace RealtorObjects.Model
             if (currentPage > 1) {
                 pages.Add("<");
             }
-            pages.Add("1");
-            if (currentPage - 5 <= 2) {
-                pages.Add("2");
-            } else {
+            if (currentPage != 1) {
+                pages.Add("1");
+            }
+            if (currentPage - 5 > 1) {
                 pages.Add("...");
             }
             for (int i = 5; i >= 1; i--) {
-                if (currentPage - i >= 3) {
+                if (currentPage - i > 1) {
                     pages.Add($"{currentPage - i}");
                 }
             }
-            if (currentPage != 1 && currentPage != pagesTotal) {
-                pages.Add(currentPage.ToString());
-            }
-            for (int i = 1; i <= 5; i++) {
-                if (currentPage + i <= pagesTotal - 2) {
-                    pages.Add($"{currentPage + i}");
-                }
-            }
-            if (currentPage + 5 <= pagesTotal - 1) {
-                pages.Add("...");
+            pages.Add(currentPage.ToString());
+            if (currentPage == pagesTotal) {
+                return pages.ToArray();
             } else {
-                pages.Add($"{pagesTotal - 1}");
+                for (int i = 1; i <= 5; i++) {
+                    if (currentPage + i <= pagesTotal - 1) {
+                        pages.Add($"{currentPage + i}");
+                    }
+                }
+                if (currentPage + 5 < pagesTotal - 1) {
+                    pages.Add("...");
+                }
+                pages.Add(pagesTotal.ToString());
+                if(currentPage < pagesTotal) {
+                    pages.Add(">");
+                }
+                return pages.ToArray();
             }
-            pages.Add(pagesTotal.ToString());
-            if (currentPage < pagesTotal) {
-                pages.Add(">");
-            }
-            return pages.ToArray();
         }
         public static List<ObservableCollection<BaseRealtorObject>> Split(List<BaseRealtorObject> filteredList, byte pageSize = 25) {
             List<ObservableCollection<BaseRealtorObject>> pageList = new List<ObservableCollection<BaseRealtorObject>>();
