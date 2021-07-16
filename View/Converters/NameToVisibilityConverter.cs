@@ -10,7 +10,7 @@ namespace RealtorObjects.View.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             String name = value as String;
-            return name == "Директор" || name == "Админ" ? Visibility.Visible : Visibility.Collapsed;
+            return name == "Директор" || name == "ГвоздиковЕА" || name == "Администратор" ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

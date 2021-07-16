@@ -183,7 +183,7 @@
                     TabIndex="1"
                     Name="LoginBox"
                     PreviewTextInput="LoginValidation"
-                    Text="{Binding CredentialData.CurrentUsername}"
+                    Text="{Binding Credential.Name}"
                     Style="{StaticResource loginTextBox}"/>
             </Border>
             <Border
@@ -194,12 +194,12 @@
                     <TextBox
                         TabIndex="2"
                         PreviewTextInput="PasswordValidation"
-                        Text="{Binding CredentialData.CurrentPassword, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding Credential.Password, UpdateSourceTrigger=PropertyChanged}"
                         Foreground="Transparent"
                         Style="{StaticResource passwordTextBox}"/>
                     <TextBox
                         KeyboardNavigation.TabNavigation="None"
-                        Text="{Binding CredentialData.CurrentPassword, Converter={StaticResource SymbolToStar}}"
+                        Text="{Binding Credential.Password, Converter={StaticResource SymbolToStar}}"
                         Background="Transparent"
                         IsHitTestVisible="False"
                         Style="{StaticResource starTextBox}"/>

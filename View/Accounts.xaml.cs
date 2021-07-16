@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -38,6 +39,18 @@ namespace RealtorObjects.View
         public Accounts(AccountsVM accountsVM) {
             InitializeComponent();
             this.DataContext = accountsVM;
+        }
+        private void Names(object sender, TextCompositionEventArgs e) {
+            e.Handled = new Regex("[^а-яА-Я]").IsMatch(e.Text);
+        }
+        private void NumbersOnly(object sender, TextCompositionEventArgs e) {
+            e.Handled = new Regex("[^0-9]").IsMatch(e.Text);
+        }
+        private void Passwords(object sender, TextCompositionEventArgs e) {
+            e.Handled = new Regex("[^0-9a-zA-Z]").IsMatch(e.Text);
+        }
+        private void Emails(object sender, TextCompositionEventArgs e) {
+            e.Handled = new Regex("[^0-9a-zA-Z@.]").IsMatch(e.Text);
         }
 
     }

@@ -4,7 +4,7 @@ using RealtorObjects.Model;
 using RealtyModel.Model;
 using RealtyModel.Model.Derived;
 using RealtyModel.Model.Operations;
-using RealtyModel.Service;
+using RealtyModel.Model.Tools;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,9 +21,10 @@ namespace RealtorObjects.ViewModel
     {
         private House originalHouse = new House();
         private House copiedHouse = new House();
+        private int currentAgentId = 0;
         public HouseFormVM() {
         }
-        public HouseFormVM(string agentName) {
+        public HouseFormVM(string agentName, int agentId) {
             isNew = true;
             Title = $"[Земельный объект]  —  Добавление";
             currentAgent = agentName;
@@ -33,16 +34,18 @@ namespace RealtorObjects.ViewModel
             } else {
                 CopiedHouse = new House();
             }
+            CopiedHouse.AgentId = agentId;
             CopiedHouse.Agent = agentName;
         }
-        public HouseFormVM(House house, string agentName) {
+        public HouseFormVM(House house, string agentName, int currentAgentId) {
             CopiedHouse = house.GetCopy();
             OriginalHouse = house;
             Title = $"[#{CopiedHouse.Id}] [Тип: {CopiedHouse.GeneralInfo.ObjectType}] [Создатель заявки: {CopiedHouse.Agent}]  —  Просмотр";
             currentAgent = agentName;
+            this.currentAgentId = currentAgentId;
         }
         public CustomCommand AllowToEdit => allowToEdit ?? (allowToEdit = new CustomCommand(obj => {
-            if (CheckAccess(CopiedHouse.Agent, currentAgent)) {
+            if (CheckAccess(CopiedHouse.Agent, currentAgent, CopiedHouse.AgentId, currentAgentId)) {
                 CanEdit = true;
                 Title = $"[#{CopiedHouse.Id}] [Тип: {CopiedHouse.GeneralInfo.ObjectType}] [Создатель заявки: {CopiedHouse.Agent}]  —  Редактирование";
             }

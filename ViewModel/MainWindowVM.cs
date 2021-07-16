@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using RealtyModel.Model;
-using RealtyModel.Service;
 using RealtorObjects.Model;
 using Screen = System.Windows.Forms.Screen;
 using FontAwesome5;
@@ -15,16 +14,16 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using RealtyModel.Model.Derived;
 using RealtyModel.Model.Operations;
+using RealtyModel.Model.Tools;
 
 namespace RealtorObjects.ViewModel
 {
     public class MainWindowVM : BaseVM
     {
         private readonly string currentAgentName = "Пользователь 0";
+        private readonly int currentAgentId = 0;
         private readonly string[] streets;
-        private double heightOfFiltrations = 50;
         private EFontAwesomeIcon filtrationArrow = EFontAwesomeIcon.Solid_AngleUp;
-        private CustomCommand changeHeightOfFiltrations;
         private CustomCommand createFlat;
         private CustomCommand createHouse;
         private CustomCommand logOut;
@@ -39,21 +38,22 @@ namespace RealtorObjects.ViewModel
         private Filtration filtration = new Filtration();
         public MainWindowVM() {
         }
-        public MainWindowVM(string agentName) {
+        public MainWindowVM(string agentName, int code) {
             this.currentAgentName = agentName;
+            this.currentAgentId = code;
             this.streets = Client.RequestStreets();
         }
         public CustomCommand OpenAccounts => openAccounts ?? (openAccounts = new CustomCommand(obj => {
-            List<Credential> credentials = Client.RequestCredentials();
-            new Accounts(new AccountsVM(credentials)).ShowDialog();
+            List<Agent> agents = Client.RequestAgents();
+            new Accounts(new AccountsVM(agents)).ShowDialog();
         }));
         public CustomCommand LogOut => logOut ?? (logOut = new CustomCommand(obj => {
             Window window = obj as Window;
             new LoginFormV2(new LoginFormVM()).Show();
             window.Close();
         }));
-        public AsyncCommand GoToPageAsync=> goToPageAsync ?? (goToPageAsync = new AsyncCommand(() => {
-            return Task.Run(()=> {
+        public AsyncCommand GoToPageAsync => goToPageAsync ?? (goToPageAsync = new AsyncCommand(() => {
+            return Task.Run(() => {
                 string page = goToPageAsync.Parameter as string;
                 if (page == "<") {
                     CurrentPageNumber -= 1;
@@ -79,23 +79,14 @@ namespace RealtorObjects.ViewModel
             CurrentPage = pages[CurrentPageNumber - 1];
         }));
         public CustomCommand CreateFlat => createFlat ?? (createFlat = new CustomCommand(obj => {
-            FlatFormVM flatFormVM = new FlatFormVM(CurrentAgentName);
+            FlatFormVM flatFormVM = new FlatFormVM(CurrentAgentName, currentAgentId);
             flatFormVM.Streets = this.streets;
-            new FlatFormV3(flatFormVM).ShowDialog();
+            new FlatFormV3(flatFormVM).Show();
         }));
         public CustomCommand CreateHouse => createHouse ?? (createHouse = new CustomCommand(obj => {
-            HouseFormVM houseFormVM = new HouseFormVM(CurrentAgentName);
+            HouseFormVM houseFormVM = new HouseFormVM(CurrentAgentName, currentAgentId);
             houseFormVM.Streets = this.streets;
-            new HouseFormV2(houseFormVM).ShowDialog();
-        }));
-        public CustomCommand ChangeHeightOfFiltrations => changeHeightOfFiltrations ?? (changeHeightOfFiltrations = new CustomCommand(obj => {
-            if (HeightOfFiltrations == 50) {
-                HeightOfFiltrations = 690;
-                FiltrationArrow = EFontAwesomeIcon.Solid_AngleDown;
-            } else {
-                HeightOfFiltrations = 50;
-                FiltrationArrow = EFontAwesomeIcon.Solid_AngleUp;
-            }
+            new HouseFormV2(houseFormVM).Show();
         }));
         public AsyncCommand Modify => modify ?? (modify = new AsyncCommand(() => {
             BaseRealtorObject bro = (BaseRealtorObject)Modify.Parameter;
@@ -113,9 +104,9 @@ namespace RealtorObjects.ViewModel
             FlatFormVM flatFormVM = new FlatFormVM();
             Application.Current.Dispatcher.Invoke(() => {
                 flat.Album = Client.RequestAlbum(flat.AlbumId);
-                flatFormVM = new FlatFormVM(flat, CurrentAgentName);
+                flatFormVM = new FlatFormVM(flat, CurrentAgentName, currentAgentId);
                 flatFormVM.Streets = this.streets;
-                new FlatFormV3(flatFormVM).ShowDialog();
+                new FlatFormV3(flatFormVM).Show();
             });
             return Task.Run(() => {
                 flatFormVM.Photos = BinarySerializer.Deserialize<ObservableCollection<byte[]>>(flatFormVM.OriginalFlat.Album.PhotoCollection);
@@ -126,9 +117,9 @@ namespace RealtorObjects.ViewModel
             HouseFormVM houseFormVM = new HouseFormVM();
             Application.Current.Dispatcher.Invoke(() => {
                 house.Album = Client.RequestAlbum(house.AlbumId);
-                houseFormVM = new HouseFormVM(house, CurrentAgentName);
+                houseFormVM = new HouseFormVM(house, CurrentAgentName, currentAgentId);
                 houseFormVM.Streets = this.streets;
-                new HouseFormV2(houseFormVM).ShowDialog();
+                new HouseFormV2(houseFormVM).Show();
             });
             return Task.Run(() => {
                 houseFormVM.Photos = BinarySerializer.Deserialize<ObservableCollection<byte[]>>(houseFormVM.OriginalHouse.Album.PhotoCollection);
@@ -136,13 +127,6 @@ namespace RealtorObjects.ViewModel
             });
         }
         public string CurrentAgentName => currentAgentName;
-        public double HeightOfFiltrations {
-            get => heightOfFiltrations;
-            set {
-                heightOfFiltrations = value;
-                OnPropertyChanged();
-            }
-        }
         public EFontAwesomeIcon FiltrationArrow {
             get => filtrationArrow;
             set {

@@ -11,7 +11,7 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         Background="#F6f6f6"
-        Title="Профили" Height="350" Width="390">
+        Title="Профили" Height="350" Width="790">
     <Window.DataContext>
         <vm:AccountsVM/>
     </Window.DataContext>
@@ -23,15 +23,19 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
                         <Border
-                            Width="368"
+                            Width="768"
                             Height="20"
                             BorderThickness="1"
                             BorderBrush="{StaticResource BorderGray}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="18"/>
+                                    <ColumnDefinition Width="110"/>
+                                    <ColumnDefinition Width="110"/>
                                     <ColumnDefinition Width="130"/>
-                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition Width="130"/>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="110"/>
                                     <ColumnDefinition Width="18"/>
                                 </Grid.ColumnDefinitions>
                                 <Border
@@ -43,20 +47,47 @@
                                         Text="{Binding Id}"/>
                                 </Border>
                                 <TextBox
+                                    PreviewTextInput="Names"
                                     Width="130"
                                     Grid.Column="1"
                                     BorderThickness="0"
                                     VerticalAlignment="Center"
-                                    Text="{Binding Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                    Text="{Binding Surname}"/>
                                 <TextBox
+                                    PreviewTextInput="Names"
                                     Grid.Column="2"
                                     Width="200"
                                     BorderThickness="1,0"
                                     VerticalAlignment="Center"
-                                    Text="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    Text="{Binding Name}"/>
+                                <TextBox
+                                    PreviewTextInput="Names"
+                                    Grid.Column="3"
+                                    BorderThickness="1,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Patronymic}"/>
+                                <TextBox
+                                    PreviewTextInput="NumbersOnly"
+                                    Grid.Column="4"
+                                    BorderThickness="1,0,0,0"
+                                    VerticalAlignment="Center"
+                                    MaxLength="11"
+                                    Text="{Binding PhoneNumber}"/>
+                                <TextBox
+                                    PreviewTextInput="Emails"
+                                    Grid.Column="5"
+                                    BorderThickness="1,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Email}"/>
+                                <TextBox
+                                    PreviewTextInput="Passwords"
+                                    Grid.Column="6"
+                                    BorderThickness="1,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Password}"/>
                                 <fa:ImageAwesome
                                     Icon="Solid_Times"
-                                    Grid.Column="3"
+                                    Grid.Column="30"
                                     Width="14"
                                     Foreground="#cc0000"
                                     Height="14">
@@ -76,7 +107,7 @@
         </Style>
         <Style TargetType="ListBox" x:Key="Accounts">
             <Setter Property="Padding" Value="0"/>
-            <Setter Property="Width" Value="370"/>
+            <Setter Property="Width" Value="770"/>
             <Setter Property="Margin" Value="0,2,0,0"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -120,7 +151,7 @@
                 </Grid>
             </Border>
             <ListBox
-                ItemsSource="{Binding Credentials}"
+                ItemsSource="{Binding Agents}"
                 Style="{StaticResource Accounts}"/>
         </StackPanel>
         <StackPanel

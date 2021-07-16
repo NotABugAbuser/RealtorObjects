@@ -3,7 +3,7 @@ using Microsoft.Win32;
 using RealtorObjects.Model;
 using RealtyModel.Model;
 using RealtyModel.Model.Derived;
-using RealtyModel.Service;
+using RealtyModel.Model.Tools;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,9 +16,10 @@ namespace RealtorObjects.ViewModel
     {
         private Flat copiedFlat = new Flat();
         private Flat originalFlat = new Flat();
+        private int currentAgentId = 0;
         public FlatFormVM() {
         }
-        public FlatFormVM(string agentName) {
+        public FlatFormVM(string agentName, int agentId) {
             isNew = true;
             Title = $"[Квартирный объект]  —  Добавление";
             currentAgent = agentName;
@@ -28,16 +29,17 @@ namespace RealtorObjects.ViewModel
             } else {
                 CopiedFlat = new Flat();
             }
+            CopiedFlat.AgentId = agentId;
             CopiedFlat.Agent = agentName;
         }
-        public FlatFormVM(Flat flat, string agentName) {
+        public FlatFormVM(Flat flat, string agentName, int currentAgentId) {
             CopiedFlat = flat.GetCopy();
             OriginalFlat = flat;
             Title = $"[#{CopiedFlat.Id}] [Тип: {CopiedFlat.GeneralInfo.ObjectType}] [Создатель заявки: {CopiedFlat.Agent}]  —  Просмотр";
             currentAgent = agentName;
         }
         public CustomCommand AllowToEdit => allowToEdit ?? (allowToEdit = new CustomCommand(obj => {
-            if (CheckAccess(CopiedFlat.Agent, currentAgent)) {
+            if (CheckAccess(CopiedFlat.Agent, currentAgent, CopiedFlat.AgentId, currentAgentId)) {
                 CanEdit = true;
                 Title = $"[#{CopiedFlat.Id}] [Тип: {CopiedFlat.GeneralInfo.ObjectType}] [Создатель заявки: {CopiedFlat.Agent}]  —  Редактирование";
             }

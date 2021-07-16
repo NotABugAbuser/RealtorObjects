@@ -8,11 +8,11 @@ using RealtyModel.Model;
 using RealtyModel.Model.Base;
 using RealtyModel.Model.Derived;
 using RealtyModel.Model.Operations;
-using RealtyModel.Service;
 using Action = RealtyModel.Model.Operations.Action;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Net.NetworkInformation;
+using RealtyModel.Model.Tools;
 
 namespace RealtorObjects.Model
 {
@@ -44,22 +44,15 @@ namespace RealtorObjects.Model
         private static NetworkStream Connect() {
             TcpClient client = new TcpClient();
             if (Debugger.IsAttached) {
-                serverIp = IPAddress.Parse("192.168.8.102");
+                serverIp = IPAddress.Parse("192.168.8.100");
             } else {
-                serverIp = IPAddress.Parse("192.168.1.250");
+                serverIp = IPAddress.Parse("192.168.8.100");
             }
             client.Connect(serverIp, 15000);
             NetworkStream network = client.GetStream();
             return network;
         }
-        public static ErrorCode Register(Credential credentials) {
-            NetworkStream network = Connect();
-            Operation operation = new Operation(Action.Register, BinarySerializer.Serialize(credentials), Name);
-            Transfer.SendOperation(operation, network);
-
-            return Transfer.ReceiveResponse(network).Code;
-        }
-        public static List<Credential> RequestCredentials() {
+        public static List<Agent> RequestAgents() {
             NetworkStream network = Connect();
             Operation operation = new Operation(Action.Request, Target.Agent, Name);
             Transfer.SendOperation(operation, network);
@@ -67,11 +60,13 @@ namespace RealtorObjects.Model
             Response response = Transfer.ReceiveResponse(network);
             SymmetricEncryption encrypted = BinarySerializer.Deserialize<SymmetricEncryption>(response.Data);
             OperationNotification.Notify(response.Code);
-            return encrypted.Decrypt<List<Credential>>();
+            return encrypted.Decrypt<List<Agent>>();
         }
-        public static bool UpdateCredentials(List<Credential> credentials) {
+        public static bool UpdateAgents(List<Agent> agents) {
+            Debug.WriteLine(agents == null);
+            Debug.WriteLine(agents.Count);
             NetworkStream network = Connect();
-            Operation operation = new Operation(Action.Update, Target.Agent, new SymmetricEncryption(credentials).Encrypt<List<Credential>>(), Name);
+            Operation operation = new Operation(Action.Update, Target.Agent, new SymmetricEncryption(agents).Encrypt<List<Agent>>(), Name);
             Transfer.SendOperation(operation, network);
 
             Response response = Transfer.ReceiveResponse(network);
@@ -139,20 +134,18 @@ namespace RealtorObjects.Model
                 OperationNotification.Notify(ErrorCode.ServerUnavailable);
             }
         }
-        public static bool Login(Credential credential) {
+        public static Tuple<bool, int> Login(Credential credential) {
             try {
                 NetworkStream network = Connect();
                 Operation operation = new Operation(Action.Login, new SymmetricEncryption(credential).Encrypt<Credential>(), Name);
                 Transfer.SendOperation(operation, network);
                 Response response = Transfer.ReceiveResponse(network);
-                bool isSuccessful = BinarySerializer.Deserialize<bool>(response.Data);
-                Application.Current.Dispatcher.Invoke(() => {
-                    OperationNotification.Notify(response.Code);
-                });
-                return isSuccessful;
+                Tuple<bool, int> pair = BinarySerializer.Deserialize<Tuple<bool, int>>(response.Data);
+                OperationNotification.Notify(response.Code);
+                return pair;
             } catch (SocketException) {
                 OperationNotification.Notify(ErrorCode.ServerUnavailable);
-                return false;
+                return new Tuple<bool, int>(false, 0);
             }
         }
         public static List<BaseRealtorObject> RequestRealtorObjects(Filtration filtration) {

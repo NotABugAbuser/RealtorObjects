@@ -30,5 +30,19 @@ namespace RealtorObjects.View
             InitializeComponent();
             this.DataContext = mainWindowVM;
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e) {
+            GeneralScrollBar.ScrollToVerticalOffset(0);
+            GoUpButton.Visibility = Visibility.Collapsed;
+        }
+
+        private void GeneralScrollBar_ScrollChanged(object sender, ScrollChangedEventArgs e) {
+            if (GeneralScrollBar.VerticalOffset > 100){
+                GoUpButton.Visibility = Visibility.Visible;
+            }
+            if (GeneralScrollBar.VerticalOffset == 0){
+                GoUpButton.Visibility = Visibility.Collapsed;
+            }
+        }
     }
 }

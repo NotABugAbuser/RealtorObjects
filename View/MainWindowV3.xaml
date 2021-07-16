@@ -11,10 +11,11 @@
         mc:Ignorable="d"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         Title="Риелторские объекты" 
-        Height="728" 
-        Width="1366" 
+        Height="738" 
+        Width="1376" 
         Background="#f6f6f6"
         Name="ThisMainWindow"
+        WindowState="Maximized"
         MinHeight="597"
         WindowStartupLocation="CenterScreen">
     <Window.DataContext>
@@ -163,6 +164,8 @@
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="TextAlignment" Value="Center"/>
         </Style>
+        <c:ObjectToHeaderConverter x:Key="ObjectToHeader"/>
+        <c:ObjectToAddressConverter x:Key="ObjectToAddress"/>
         <Style TargetType="ListBoxItem" x:Key="RealtorObjectItemStyle">
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -175,51 +178,83 @@
                                 <Setter Property="Foreground" Value="#3f3f3f"/>
                             </Style>
                         </ControlTemplate.Resources>
-                        <Button 
-                            Background="#f8f8f8"
-                            Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Modify}"
-                            CommandParameter="{Binding .}"
-                            Padding="0"
-                            Margin="1">
+                        <Border
+                            Padding="10"
+                            VerticalAlignment="Top"
+                            Margin="1"
+                            Height="160"
+                            BorderThickness="1"
+                            BorderBrush="{StaticResource BorderGray}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="110"/>
-                                    <ColumnDefinition Width="152"/>
+                                    <ColumnDefinition Width="184"/>
+                                    <ColumnDefinition Width="25"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Border
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="22"/>
+                                    <RowDefinition Height="20"/>
+                                    <RowDefinition Height="15"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="14"/>
+                                </Grid.RowDefinitions>
+                                <Image
                                     Grid.RowSpan="10"
-                                    BorderBrush="{StaticResource BorderGray}"
-                                    BorderThickness="0,0,1,0">
-                                    <Image
-                                        Source="{Binding Preview, Converter={StaticResource ByteArrayToBitmapImage}}"
-                                        Height="110"
-                                        Width="110"
-                                        Stretch="UniformToFill"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"/>
-                                </Border>
-                                <StackPanel
-                                    Margin="7,2"
-                                    Grid.Column="1">
+                                    Source="{Binding Preview, Converter={StaticResource ByteArrayToBitmapImage}}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Stretch="UniformToFill"/>
+                                <TextBlock
+                                    Grid.Column="2"
+                                    FontSize="15"
+                                    FontWeight="Bold"
+                                    FontFamily="Arial"
+                                    Foreground="#666"
+                                    Text="{Binding .,Converter={StaticResource ObjectToHeader}}"/>
+                                <TextBlock
+                                    Grid.Column="3"
+                                    TextAlignment="Right"
+                                    FontSize="17"
+                                    FontWeight="Bold"
+                                    FontFamily="Arial"
+                                    Foreground="Black"
+                                    Text="{Binding Price, StringFormat=### ### ##0 ₽}"/>
+                                <TextBlock
+                                    Grid.Column="2"
+                                    Grid.Row="1"
+                                    FontSize="14"
+                                    Foreground="#666"
+                                    Text="{Binding ., Converter={StaticResource ObjectToAddress}}"/>
+                                <TextBlock
+                                    FontSize="14"
+                                    TextAlignment="Justify"
+                                    TextTrimming="CharacterEllipsis"
+                                    TextWrapping="Wrap"
+                                    Text="{Binding GeneralInfo.Description}"
+                                    Grid.Column="2"
+                                    Grid.ColumnSpan="2"
+                                    Grid.Row="3"/>
+                                <Border
+                                    Background="Gray"
+                                    CornerRadius="4"
+                                    Width="87"
+                                    HorizontalAlignment="Right"
+                                    Height="14"
+                                    Grid.Column="3"
+                                    Grid.Row="4">
                                     <TextBlock
-                                        FontSize="16"
+                                        Foreground="White"
+                                        FontSize="10"
                                         FontWeight="Bold"
-                                        Text="{Binding GeneralInfo.ObjectType}"/>
-                                    <TextBlock
-                                        Margin="0,2,0,0"
-                                        Text="{Binding CustomerName, StringFormat=— 0}"/>
-                                    <TextBlock
-                                        Text="{Binding GeneralInfo.General, StringFormat=— 0 квм}"/>
-                                    <TextBlock
-                                        Text="{Binding Price, Converter={StaticResource UnitsToThousands}, StringFormat=— ### ### ##0 ₽}"/>
-                                    <TextBlock
-                                        Text="— Кулешовка"/>
-                                    <TextBlock
-                                        Text="— Наливная"/>
-                                </StackPanel>
+                                        Text="17 октября 2021"
+                                        VerticalAlignment="Center"
+                                        TextAlignment="Center"
+                                        HorizontalAlignment="Center"/>
+                                </Border>
                             </Grid>
-                        </Button>
-                    </ControlTemplate>    
+                        </Border>
+                    </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
@@ -228,18 +263,6 @@
             <Setter Property="BorderBrush" Value="{StaticResource BorderGray}"/>
             <Setter Property="Margin" Value="0,10"/>
             <Setter Property="ItemContainerStyle" Value="{StaticResource RealtorObjectItemStyle}"/>
-            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
-            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
-            <Setter Property="ItemsPanel">
-                <Setter.Value>
-                    <ItemsPanelTemplate>
-                        <UniformGrid
-                            Margin="1"
-                            Columns="5"
-                            Rows="5"/>
-                    </ItemsPanelTemplate>
-                </Setter.Value>
-            </Setter>
         </Style>
         <Style TargetType="ListBoxItem" x:Key="PageButtonItemStyle">
             <Setter Property="Padding" Value="0"/>
@@ -308,501 +331,534 @@
                     </ItemsPanelTemplate>
                 </Setter.Value>
             </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <ItemsPresenter/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="Button" x:Key="GoUpButton">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+            <Setter Property="Margin" Value="28,10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border
+                            Cursor="Hand"
+                            Visibility="{TemplateBinding Visibility}"
+                            BorderThickness="1"
+                            CornerRadius="20"
+                            BorderBrush="{StaticResource BorderGray}"
+                            Background="#fbfbfb"
+                            Height="{TemplateBinding Height}"
+                            Width="{TemplateBinding Width}">
+                            <fa:ImageAwesome
+                                Height="20"
+                                Foreground="#3f3f3f"
+                                Icon="Solid_ArrowUp"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
         <c:DefaultMultiValueConverter x:Key="DefaultMultiConverter"/>
     </Window.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="{Binding HeightOfFiltrations}"/>
-        </Grid.RowDefinitions>
-        <Grid
-            Width="1330"
-            Margin="10,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="50"/>
-            </Grid.RowDefinitions>
-            <ListBox
-                ItemsSource="{Binding CurrentPage}"
-                Style="{StaticResource RealtorObjectsListBox}"/>
-            <Border
-                BorderThickness="0,0,0,2"
-                BorderBrush="{StaticResource BorderGray}"
-                Grid.Row="1">
-                <ListBox
-                    Style="{StaticResource PageButtonsListBox}"
-                    ItemsSource="{Binding PageButtons}"/>
-            </Border>
-        </Grid>
-        <Grid 
-            Width="1330"
-            Margin="10,0"
-            Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="450"/>
-                <RowDefinition Height="146"/>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Border
-                BorderThickness="0,2,0,0"
-                Height="3"
-                VerticalAlignment="Top"
-                Grid.Row="1"
-                BorderBrush="{StaticResource BorderGray}"/>
-            <Grid
-                VerticalAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="160"/>
-                    <ColumnDefinition Width="35"/>
-                    <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="35"/>
-                    <ColumnDefinition Width="160"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="100"/>
-                </Grid.ColumnDefinitions>
-                <Button
-                    Command="{Binding LogOut}"
-                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
-                    Template="{StaticResource LogOutButtonTemplate}"
-                    Style="{StaticResource AddButton}"
-                    Content="Выйти"/>
-                <Button
-                    Command="{Binding OpenAccounts}"
-                    Template="{StaticResource UserButtonTemplate}"
-                    Style="{StaticResource AddButton}"
-                    Grid.Column="2"
-                    Content="Профили"/>
-                <Button
-                    Command="{Binding CreateFlat}"
-                    Style="{StaticResource AddButton}"
-                    Width="160"
-                    Grid.Column="4"
-                    Content="Квартирный объект">
-                </Button>
-                <Button
-                    Command="{Binding ChangeHeightOfFiltrations}"
-                    Height="25"
-                    Grid.Column="6"
-                    Width="50">
-                    <fa:ImageAwesome
-                        Margin="0,1,0,0"
-                        Foreground="#3f3f3f"
-                        Height="12"
-                        Icon="{Binding FiltrationArrow}"/>
-                </Button>
-                <Button
-                    Command="{Binding CreateHouse}"
-                    Width="160"
-                    Style="{StaticResource AddButton}"
-                    Grid.Column="8"
-                    Content="Земельный объект"/>
-                <Button
-                    Visibility="{Binding CurrentAgentName, Converter={StaticResource NameTovisibility}}"
-                    Command="{Binding RequestRealtorObjects}"
-                    Template="{StaticResource RequestButtonTemplate}"
-                    Style="{StaticResource AddButton}"
-                    Grid.Column="20"
-                    Content="Запросить"/>
-            </Grid>
-            <Grid
-                Width="1100"
-                Margin="0,12,0,0"
-                Grid.Row="1">
+        <ScrollViewer
+            Name="GeneralScrollBar"
+            ScrollChanged="GeneralScrollBar_ScrollChanged"
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Visible">
+            <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="23"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="656"/>
+                    <RowDefinition Height="690"/>
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Border
-                    Style="{StaticResource VerticalWrap}"/>
-                <Border
-                    Grid.Column="1"
-                    Style="{StaticResource VerticalWrap}"/>
-                <Border
-                    Grid.Column="2"
-                    Style="{StaticResource VerticalWrap}"/>
-                <Border
-                    Grid.Column="3"
-                    Style="{StaticResource VerticalWrap}"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.TypeOptions.IsAllTypes}"
-                    Style="{StaticResource GlobalCheckBox}"
-                    Content="Все типы"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.TypeOptions.IsRoom}"
-                    Style="{StaticResource GlobalCheckBox}"
-                    Grid.Row="2"
-                    Content="Комната"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.TypeOptions.IsFlat}"
-                    Style="{StaticResource GlobalCheckBox}"
-                    Grid.Row="3"
-                    Content="Квартира"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.TypeOptions.IsPlot}"
-                    Style="{StaticResource GlobalCheckBox}"
-                    Grid.Row="4"
-                    Content="Земельный участок"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.TypeOptions.IsPart}"
-                    Style="{StaticResource GlobalCheckBox}"
-                    Grid.Row="5"
-                    Content="Фрагмент дома"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.TypeOptions.IsHouse}"
-                    Style="{StaticResource GlobalCheckBox}"
-                    Grid.Row="6"
-                    Content="Частный дом"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.TypeOptions.IsCottage}"
-                    Style="{StaticResource GlobalCheckBox}"
-                    Grid.Row="7"
-                    Content="Коттедж"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.CityOptions.IsAllCities}"
-                    Style="{StaticResource SecondColumn}"
-                    Content="Все города"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.CityOptions.IsAzov}"
-                    Style="{StaticResource SecondColumn}"
-                    Grid.Row="2"
-                    Content="Азов"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.CityOptions.IsBataysk}"
-                    Style="{StaticResource SecondColumn}"
-                    Grid.Row="3"
-                    Content="Батайск"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.CityOptions.IsVesna}"
-                    Style="{StaticResource SecondColumn}"
-                    Grid.Row="4"
-                    Content="Весна"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.CityOptions.IsChasha}"
-                    Style="{StaticResource SecondColumn}"
-                    Grid.Row="5"
-                    Content="Донская чаша"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.CityOptions.IsDruzhba}"
-                    Style="{StaticResource SecondColumn}"
-                    Grid.Row="6"
-                    Content="Дружба"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.CityOptions.IsSad}"
-                    Style="{StaticResource SecondColumn}"
-                    Grid.Row="7"
-                    Content="Красный сад"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.CityOptions.IsKuleshovka}"
-                    Style="{StaticResource SecondColumn}"
-                    Grid.Row="8"
-                    Content="Кулешовка"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.CityOptions.IsPolyanka}"
-                    Style="{StaticResource SecondColumn}"
-                    Grid.Row="9"
-                    Content="Лесная полянка"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.CityOptions.IsLuch}"
-                    Style="{StaticResource SecondColumn}"
-                    Grid.Row="10"
-                    Content="Луч"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.CityOptions.IsMiliorator}"
-                    Style="{StaticResource SecondColumn}"
-                    Grid.Row="11"
-                    Content="Милиоратор"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.CityOptions.IsBatay}"
-                    Style="{StaticResource SecondColumn}"
-                    Grid.Row="12"
-                    Content="Мокрый Батай"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.CityOptions.IsOvoschnoy}"
-                    Style="{StaticResource SecondColumn}"
-                    Grid.Row="13"
-                    Content="Овощной"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.CityOptions.IsRomashka}"
-                    Style="{StaticResource SecondColumn}"
-                    Grid.Row="14"
-                    Content="Ромашка"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.CityOptions.IsRostov}"
-                    Style="{StaticResource SecondColumn}"
-                    Grid.Row="15"
-                    Content="Ростов-на-Дону"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.CityOptions.IsTrud}"
-                    Style="{StaticResource SecondColumn}"
-                    Grid.Row="16"
-                    Content="Труд"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.CityOptions.IsYagodka}"
-                    Style="{StaticResource SecondColumn}"
-                    Grid.Row="17"
-                    Content="Ягодка"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsAllDistricts}"
-                    Style="{StaticResource ThirdColumn}"
-                    Content="Все районы"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsAviagorodok}"
-                    Style="{StaticResource ThirdColumn}"
-                    Grid.Row="2"
-                    Content="Авиагородок"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsSkver}"
-                    Style="{StaticResource ThirdColumn}"
-                    Grid.Row="3"
-                    Content="Авиаторов сквер"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsAzovskiy}"
-                    Style="{StaticResource ThirdColumn}"
-                    Grid.Row="4"
-                    Content="Азовский"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsVetlecheblitsa}"
-                    Style="{StaticResource ThirdColumn}"
-                    Grid.Row="5"
-                    Content="Ветлечебница"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsVzhm}"
-                    Style="{StaticResource ThirdColumn}"
-                    Grid.Row="6"
-                    Content="ВЖМ"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsGaydara}"
-                    Style="{StaticResource ThirdColumn}"
-                    Grid.Row="7"
-                    Content="Гайдара"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsZalesie}"
-                    Style="{StaticResource ThirdColumn}"
-                    Grid.Row="8"
-                    Content="Залесье"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsZarya}"
-                    Style="{StaticResource ThirdColumn}"
-                    Grid.Row="9"
-                    Content="Заря"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsZzhm}"
-                    Style="{StaticResource ThirdColumn}"
-                    Grid.Row="10"
-                    Content="ЗЖМ"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsNalivnaya}"
-                    Style="{StaticResource ThirdColumn}"
-                    Grid.Row="11"
-                    Content="Наливная"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsPalmira}"
-                    Style="{StaticResource ThirdColumn}"
-                    Grid.Row="12"
-                    Content="Пальмира"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsPchl}"
-                    Style="{StaticResource ThirdColumn}"
-                    Grid.Row="13"
-                    Content="ПЧЛ"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsRdvs}"
-                    Style="{StaticResource ThirdColumn}"
-                    Grid.Row="14"
-                    Content="РДВС"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsSzhm}"
-                    Style="{StaticResource ThirdColumn}"
-                    Grid.Row="15"
-                    Content="СЖМ"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsOzero}"
-                    Style="{StaticResource ThirdColumn}"
-                    Grid.Row="16"
-                    Content="Соленое озеро"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsSolnechniy}"
-                    Style="{StaticResource ThirdColumn}"
-                    Grid.Row="17"
-                    Content="Солнечный"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.DistrictOptions.IsCentr}"
-                    Style="{StaticResource ThirdColumn}"
-                    Grid.Row="18"
-                    Content="Центр"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.ConditionOptions.IsAllConditions}"
-                    Style="{StaticResource FourthColumn}"
-                    Grid.Row="0"
-                    Content="Все состояния"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.ConditionOptions.IsEuro}"
-                    Style="{StaticResource FourthColumn}"
-                    Grid.Row="2"
-                    Content="Евро"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.ConditionOptions.IsExcellent}"
-                    Style="{StaticResource FourthColumn}"
-                    Grid.Row="3"
-                    Content="Отличное"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.ConditionOptions.IsGood}"
-                    Style="{StaticResource FourthColumn}"
-                    Grid.Row="4"
-                    Content="Хорошее"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.ConditionOptions.IsLiving}"
-                    Style="{StaticResource FourthColumn}"
-                    Grid.Row="5"
-                    Content="Жилое"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.ConditionOptions.IsCosmeticRequired}"
-                    Style="{StaticResource FourthColumn}"
-                    Grid.Row="6"
-                    Content="Требуется космет. ремонт"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.ConditionOptions.IsMajorRequired}"
-                    Style="{StaticResource FourthColumn}"
-                    Grid.Row="7"
-                    Content="Требуется капитальный ремонт"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.ConditionOptions.IsWithoutDecoration}"
-                    Style="{StaticResource FourthColumn}"
-                    Grid.Row="8"
-                    Content="Без отделки"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.HeatingOptions.IsAllHeatings}"
-                    Style="{StaticResource FifthColumn}"
-                    Grid.Row="0"
-                    Content="Все виды отоплений"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.HeatingOptions.IsAGV}"
-                    Style="{StaticResource FifthColumn}"
-                    Grid.Row="2"
-                    Content="АГВ"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.HeatingOptions.IsBoiler}"
-                    Style="{StaticResource FifthColumn}"
-                    Grid.Row="3"
-                    Content="Котел"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.HeatingOptions.IsLocal}"
-                    Style="{StaticResource FifthColumn}"
-                    Grid.Row="4"
-                    Content="Местное"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.HeatingOptions.IsStove}"
-                    Style="{StaticResource FifthColumn}"
-                    Grid.Row="5"
-                    Content="Печное"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.HeatingOptions.IsTPS}"
-                    Style="{StaticResource FifthColumn}"
-                    Grid.Row="6"
-                    Content="ТЭЦ"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.HeatingOptions.IsNozzle}"
-                    Style="{StaticResource FifthColumn}"
-                    Grid.Row="7"
-                    Content="Форсунка"/>
-                <CheckBox
-                    IsChecked="{Binding Filtration.HeatingOptions.IsElectro}"
-                    Style="{StaticResource FifthColumn}"
-                    Grid.Row="8"
-                    Content="Электро"/>
+                <Grid
+                    Margin="10,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="50"/>
+                    </Grid.RowDefinitions>
+                    <ListBox
+                        ItemsSource="{Binding CurrentPage}"
+                        Style="{StaticResource RealtorObjectsListBox}"/>
+                    
+                    <Border
+                        BorderThickness="0,0,0,2"
+                        BorderBrush="{StaticResource BorderGray}"
+                        Grid.Row="1">
+                        <ListBox
+                            Style="{StaticResource PageButtonsListBox}"
+                            ItemsSource="{Binding PageButtons}"/>
+                    </Border>
+                </Grid>
+                <Grid 
+                    Margin="10,0"
+                    Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="450"/>
+                        <RowDefinition Height="146"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border
+                        BorderThickness="0,2,0,0"
+                        Height="3"
+                        VerticalAlignment="Top"
+                        Grid.Row="1"
+                        BorderBrush="{StaticResource BorderGray}"/>
+                    <Grid
+                        VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <Button
+                            Command="{Binding LogOut}"
+                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                            Template="{StaticResource LogOutButtonTemplate}"
+                            Style="{StaticResource AddButton}"
+                            Content="Выйти"/>
+                        <Button
+                            Visibility="{Binding CurrentAgentName,Converter={StaticResource NameTovisibility}}"
+                            Command="{Binding OpenAccounts}"
+                            Template="{StaticResource UserButtonTemplate}"
+                            Style="{StaticResource AddButton}"
+                            Grid.Column="2"
+                            Content="Профили"/>
+                        <Button
+                            Command="{Binding CreateFlat}"
+                            Style="{StaticResource AddButton}"
+                            Width="160"
+                            Grid.Column="4"
+                            Content="Квартирный объект">
+                        </Button>
+                        <Button
+                            Command="{Binding CreateHouse}"
+                            Width="160"
+                            Style="{StaticResource AddButton}"
+                            Grid.Column="6"
+                            Content="Земельный объект"/>
+                        <Button
+                            Command="{Binding RequestRealtorObjects}"
+                            Template="{StaticResource RequestButtonTemplate}"
+                            Style="{StaticResource AddButton}"
+                            Grid.Column="10"
+                            Content="Запросить"/>
+                    </Grid>
+                    <Grid
+                        Width="1100"
+                        Margin="0,12,0,0"
+                        Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            Style="{StaticResource VerticalWrap}"/>
+                        <Border
+                            Grid.Column="1"
+                            Style="{StaticResource VerticalWrap}"/>
+                        <Border
+                            Grid.Column="2"
+                            Style="{StaticResource VerticalWrap}"/>
+                        <Border
+                            Grid.Column="3"
+                            Style="{StaticResource VerticalWrap}"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.TypeOptions.IsAllTypes}"
+                            Style="{StaticResource GlobalCheckBox}"
+                            Content="Все типы"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.TypeOptions.IsRoom}"
+                            Style="{StaticResource GlobalCheckBox}"
+                            Grid.Row="2"
+                            Content="Комната"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.TypeOptions.IsFlat}"
+                            Style="{StaticResource GlobalCheckBox}"
+                            Grid.Row="3"
+                            Content="Квартира"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.TypeOptions.IsPlot}"
+                            Style="{StaticResource GlobalCheckBox}"
+                            Grid.Row="4"
+                            Content="Земельный участок"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.TypeOptions.IsPart}"
+                            Style="{StaticResource GlobalCheckBox}"
+                            Grid.Row="5"
+                            Content="Фрагмент дома"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.TypeOptions.IsHouse}"
+                            Style="{StaticResource GlobalCheckBox}"
+                            Grid.Row="6"
+                            Content="Частный дом"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.TypeOptions.IsCottage}"
+                            Style="{StaticResource GlobalCheckBox}"
+                            Grid.Row="7"
+                            Content="Коттедж"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.CityOptions.IsAllCities}"
+                            Style="{StaticResource SecondColumn}"
+                            Content="Все города"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.CityOptions.IsAzov}"
+                            Style="{StaticResource SecondColumn}"
+                            Grid.Row="2"
+                            Content="Азов"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.CityOptions.IsBataysk}"
+                            Style="{StaticResource SecondColumn}"
+                            Grid.Row="3"
+                            Content="Батайск"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.CityOptions.IsVesna}"
+                            Style="{StaticResource SecondColumn}"
+                            Grid.Row="4"
+                            Content="Весна"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.CityOptions.IsChasha}"
+                            Style="{StaticResource SecondColumn}"
+                            Grid.Row="5"
+                            Content="Донская чаша"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.CityOptions.IsDruzhba}"
+                            Style="{StaticResource SecondColumn}"
+                            Grid.Row="6"
+                            Content="Дружба"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.CityOptions.IsSad}"
+                            Style="{StaticResource SecondColumn}"
+                            Grid.Row="7"
+                            Content="Красный сад"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.CityOptions.IsKuleshovka}"
+                            Style="{StaticResource SecondColumn}"
+                            Grid.Row="8"
+                            Content="Кулешовка"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.CityOptions.IsPolyanka}"
+                            Style="{StaticResource SecondColumn}"
+                            Grid.Row="9"
+                            Content="Лесная полянка"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.CityOptions.IsLuch}"
+                            Style="{StaticResource SecondColumn}"
+                            Grid.Row="10"
+                            Content="Луч"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.CityOptions.IsMiliorator}"
+                            Style="{StaticResource SecondColumn}"
+                            Grid.Row="11"
+                            Content="Милиоратор"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.CityOptions.IsBatay}"
+                            Style="{StaticResource SecondColumn}"
+                            Grid.Row="12"
+                            Content="Мокрый Батай"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.CityOptions.IsOvoschnoy}"
+                            Style="{StaticResource SecondColumn}"
+                            Grid.Row="13"
+                            Content="Овощной"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.CityOptions.IsRomashka}"
+                            Style="{StaticResource SecondColumn}"
+                            Grid.Row="14"
+                            Content="Ромашка"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.CityOptions.IsRostov}"
+                            Style="{StaticResource SecondColumn}"
+                            Grid.Row="15"
+                            Content="Ростов-на-Дону"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.CityOptions.IsTrud}"
+                            Style="{StaticResource SecondColumn}"
+                            Grid.Row="16"
+                            Content="Труд"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.CityOptions.IsYagodka}"
+                            Style="{StaticResource SecondColumn}"
+                            Grid.Row="17"
+                            Content="Ягодка"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsAllDistricts}"
+                            Style="{StaticResource ThirdColumn}"
+                            Content="Все районы"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsAviagorodok}"
+                            Style="{StaticResource ThirdColumn}"
+                            Grid.Row="2"
+                            Content="Авиагородок"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsSkver}"
+                            Style="{StaticResource ThirdColumn}"
+                            Grid.Row="3"
+                            Content="Авиаторов сквер"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsAzovskiy}"
+                            Style="{StaticResource ThirdColumn}"
+                            Grid.Row="4"
+                            Content="Азовский"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsVetlecheblitsa}"
+                            Style="{StaticResource ThirdColumn}"
+                            Grid.Row="5"
+                            Content="Ветлечебница"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsVzhm}"
+                            Style="{StaticResource ThirdColumn}"
+                            Grid.Row="6"
+                            Content="ВЖМ"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsGaydara}"
+                            Style="{StaticResource ThirdColumn}"
+                            Grid.Row="7"
+                            Content="Гайдара"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsZalesie}"
+                            Style="{StaticResource ThirdColumn}"
+                            Grid.Row="8"
+                            Content="Залесье"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsZarya}"
+                            Style="{StaticResource ThirdColumn}"
+                            Grid.Row="9"
+                            Content="Заря"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsZzhm}"
+                            Style="{StaticResource ThirdColumn}"
+                            Grid.Row="10"
+                            Content="ЗЖМ"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsNalivnaya}"
+                            Style="{StaticResource ThirdColumn}"
+                            Grid.Row="11"
+                            Content="Наливная"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsPalmira}"
+                            Style="{StaticResource ThirdColumn}"
+                            Grid.Row="12"
+                            Content="Пальмира"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsPchl}"
+                            Style="{StaticResource ThirdColumn}"
+                            Grid.Row="13"
+                            Content="ПЧЛ"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsRdvs}"
+                            Style="{StaticResource ThirdColumn}"
+                            Grid.Row="14"
+                            Content="РДВС"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsSzhm}"
+                            Style="{StaticResource ThirdColumn}"
+                            Grid.Row="15"
+                            Content="СЖМ"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsOzero}"
+                            Style="{StaticResource ThirdColumn}"
+                            Grid.Row="16"
+                            Content="Соленое озеро"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsSolnechniy}"
+                            Style="{StaticResource ThirdColumn}"
+                            Grid.Row="17"
+                            Content="Солнечный"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.DistrictOptions.IsCentr}"
+                            Style="{StaticResource ThirdColumn}"
+                            Grid.Row="18"
+                            Content="Центр"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.ConditionOptions.IsAllConditions}"
+                            Style="{StaticResource FourthColumn}"
+                            Grid.Row="0"
+                            Content="Все состояния"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.ConditionOptions.IsEuro}"
+                            Style="{StaticResource FourthColumn}"
+                            Grid.Row="2"
+                            Content="Евро"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.ConditionOptions.IsExcellent}"
+                            Style="{StaticResource FourthColumn}"
+                            Grid.Row="3"
+                            Content="Отличное"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.ConditionOptions.IsGood}"
+                            Style="{StaticResource FourthColumn}"
+                            Grid.Row="4"
+                            Content="Хорошее"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.ConditionOptions.IsLiving}"
+                            Style="{StaticResource FourthColumn}"
+                            Grid.Row="5"
+                            Content="Жилое"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.ConditionOptions.IsCosmeticRequired}"
+                            Style="{StaticResource FourthColumn}"
+                            Grid.Row="6"
+                            Content="Требуется космет. ремонт"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.ConditionOptions.IsMajorRequired}"
+                            Style="{StaticResource FourthColumn}"
+                            Grid.Row="7"
+                            Content="Требуется капитальный ремонт"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.ConditionOptions.IsWithoutDecoration}"
+                            Style="{StaticResource FourthColumn}"
+                            Grid.Row="8"
+                            Content="Без отделки"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.HeatingOptions.IsAllHeatings}"
+                            Style="{StaticResource FifthColumn}"
+                            Grid.Row="0"
+                            Content="Все виды отоплений"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.HeatingOptions.IsAGV}"
+                            Style="{StaticResource FifthColumn}"
+                            Grid.Row="2"
+                            Content="АГВ"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.HeatingOptions.IsBoiler}"
+                            Style="{StaticResource FifthColumn}"
+                            Grid.Row="3"
+                            Content="Котел"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.HeatingOptions.IsLocal}"
+                            Style="{StaticResource FifthColumn}"
+                            Grid.Row="4"
+                            Content="Местное"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.HeatingOptions.IsStove}"
+                            Style="{StaticResource FifthColumn}"
+                            Grid.Row="5"
+                            Content="Печное"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.HeatingOptions.IsTPS}"
+                            Style="{StaticResource FifthColumn}"
+                            Grid.Row="6"
+                            Content="ТЭЦ"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.HeatingOptions.IsNozzle}"
+                            Style="{StaticResource FifthColumn}"
+                            Grid.Row="7"
+                            Content="Форсунка"/>
+                        <CheckBox
+                            IsChecked="{Binding Filtration.HeatingOptions.IsElectro}"
+                            Style="{StaticResource FifthColumn}"
+                            Grid.Row="8"
+                            Content="Электро"/>
+                    </Grid>
+                    <StackPanel
+                        Grid.Row="2">
+                        <StackPanel
+                            Width="275"
+                            Margin="0,20,0,12"
+                            Orientation="Horizontal">
+                            <TextBlock
+                                VerticalAlignment="Bottom"
+                                Text="Стоимость от"/>
+                            <TextBlock
+                                Style="{StaticResource RangeTextBlock}"
+                                Text="{Binding Filtration.MinimumPrice, StringFormat=### ### ##0тыс}"/>
+                            <TextBlock
+                                VerticalAlignment="Bottom"
+                                Text="до"/>
+                            <TextBlock
+                                Style="{StaticResource RangeTextBlock}"
+                                Text="{Binding Filtration.MaximumPrice, StringFormat=### ### ##0тыс}"/>
+                        </StackPanel>
+                        <local:RangeSlider
+                            Width="1100"
+                            Grid.Row="1"
+                            Height="19"
+                            UpperValue="{Binding Filtration.MaximumPrice, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            LowerValue="{Binding Filtration.MinimumPrice, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            Maximum="40000"
+                            Minimum="0"
+                            TickFrequency="250"
+                            IsSnapToTickEnabled="True"/>
+                        <StackPanel
+                            Width="275"
+                            Margin="0,20,0,12"
+                            Orientation="Horizontal">
+                            <TextBlock
+                                VerticalAlignment="Bottom"
+                                Text="Площадь   от"/>
+                            <TextBlock
+                                Style="{StaticResource RangeTextBlock}"
+                                Text="{Binding Filtration.MinimumArea, StringFormat=0квм}"/>
+                            <TextBlock
+                                VerticalAlignment="Bottom"
+                                Text="до"/>
+                            <TextBlock
+                                Style="{StaticResource RangeTextBlock}"
+                                Text="{Binding Filtration.MaximumArea, StringFormat=0квм}"/>
+                        </StackPanel>
+                        <local:RangeSlider
+                            Grid.Row="1"
+                            Width="1100"
+                            VerticalAlignment="Top"
+                            Height="19"
+                            LowerValue="{Binding Filtration.MinimumArea, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            UpperValue="{Binding Filtration.MaximumArea, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            Maximum="400"
+                            Minimum="0"
+                            TickFrequency="5"
+                            IsSnapToTickEnabled="True"/>
+                    </StackPanel>
+                </Grid>
             </Grid>
-            <StackPanel
-                Grid.Row="2">
-                <StackPanel
-                    Width="275"
-                    Margin="0,20,0,12"
-                    Orientation="Horizontal">
-                    <TextBlock
-                        VerticalAlignment="Bottom"
-                        Text="Стоимость от"/>
-                    <TextBlock
-                        Style="{StaticResource RangeTextBlock}"
-                        Text="{Binding Filtration.MinimumPrice, StringFormat=### ### ##0тыс}"/>
-                    <TextBlock
-                        VerticalAlignment="Bottom"
-                        Text="до"/>
-                    <TextBlock
-                        Style="{StaticResource RangeTextBlock}"
-                        Text="{Binding Filtration.MaximumPrice, StringFormat=### ### ##0тыс}"/>
-                </StackPanel>
-                <local:RangeSlider
-                    Width="1100"
-                    Grid.Row="1"
-                    Height="19"
-                    UpperValue="{Binding Filtration.MaximumPrice, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                    LowerValue="{Binding Filtration.MinimumPrice, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                    Maximum="40000"
-                    Minimum="0"
-                    TickFrequency="250"
-                    IsSnapToTickEnabled="True"/>
-                <StackPanel
-                    Width="275"
-                    Margin="0,20,0,12"
-                    Orientation="Horizontal">
-                    <TextBlock
-                        VerticalAlignment="Bottom"
-                        Text="Площадь   от"/>
-                    <TextBlock
-                        Style="{StaticResource RangeTextBlock}"
-                        Text="{Binding Filtration.MinimumArea, StringFormat=0квм}"/>
-                    <TextBlock
-                        VerticalAlignment="Bottom"
-                        Text="до"/>
-                    <TextBlock
-                        Style="{StaticResource RangeTextBlock}"
-                        Text="{Binding Filtration.MaximumArea, StringFormat=0квм}"/>
-                </StackPanel>
-                <local:RangeSlider
-                    Grid.Row="1"
-                    Width="1100"
-                    VerticalAlignment="Top"
-                    Height="19"
-                    LowerValue="{Binding Filtration.MinimumArea, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                    UpperValue="{Binding Filtration.MaximumArea, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                    Maximum="400"
-                    Minimum="0"
-                    TickFrequency="5"
-                    IsSnapToTickEnabled="True"/>
-            </StackPanel>
-        </Grid>
+        </ScrollViewer>
+        <Button
+            Visibility="Collapsed"
+            Name="GoUpButton"
+            Click="Button_Click"
+            Style="{StaticResource GoUpButton}"/>
     </Grid>
 </Window>

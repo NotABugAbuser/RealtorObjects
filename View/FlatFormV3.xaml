@@ -209,6 +209,7 @@
                         Text="Улица:"/>
                     <ComboBox
                         PreviewTextInput="RussianWithNumbersOnly"
+                        ItemsSource="{Binding Streets}"
                         Text="{Binding CopiedFlat.Location.Street}"
                         SelectedItem="{Binding CopiedFlat.Location.Street}"
                         IsEnabled="{Binding CanEdit}"
@@ -323,7 +324,7 @@
                 <TextBox
                     PreviewTextInput="NumericWithDotOnly"
                     Padding="0,2,3,0"
-                    Text="{Binding CopiedFlat.GeneralInfo.General, UpdateSourceTrigger=PropertyChanged, StringFormat=##0.00}"
+                    Text="{Binding CopiedFlat.GeneralInfo.General, UpdateSourceTrigger=LostFocus, StringFormat=##0.00}"
                     IsEnabled="{Binding CanEdit}"
                     TextAlignment="Right"
                     Grid.Column="5"
@@ -335,7 +336,7 @@
                 <TextBox
                     PreviewTextInput="NumericWithDotOnly"
                     Padding="0,2,3,0"
-                    Text="{Binding CopiedFlat.GeneralInfo.Living, UpdateSourceTrigger=PropertyChanged, StringFormat=##0.00}"
+                    Text="{Binding CopiedFlat.GeneralInfo.Living, UpdateSourceTrigger=LostFocus, StringFormat=##0.00}"
                     IsEnabled="{Binding CanEdit}"
                     TextAlignment="Right"
                     Grid.Column="7"
@@ -347,7 +348,7 @@
                 <TextBox
                     PreviewTextInput="NumericWithDotOnly"
                     Padding="0,2,3,0"
-                    Text="{Binding CopiedFlat.GeneralInfo.Kitchen, UpdateSourceTrigger=PropertyChanged, StringFormat=##0.00}"
+                    Text="{Binding CopiedFlat.GeneralInfo.Kitchen, UpdateSourceTrigger=LostFocus, StringFormat=##0.00}"
                     IsEnabled="{Binding CanEdit}"
                     TextAlignment="Right"
                     Grid.Column="9"
@@ -471,11 +472,11 @@
                     Grid.Row="8"
                     Text="Потолок:"/>
                 <TextBox
+                    PreviewTextInput="NumericWithDotOnly"
                     TextAlignment="Right"
                     Padding="0,2,3,0"
-                    PreviewTextInput="NumericOnly"
                     IsEnabled="{Binding CanEdit}"
-                    Text="{Binding CopiedFlat.GeneralInfo.Ceiling, StringFormat=0.00}"
+                    Text="{Binding CopiedFlat.GeneralInfo.Ceiling, StringFormat=0.00, UpdateSourceTrigger=LostFocus}"
                     Grid.Column="3"
                     Grid.Row="8"/>
                 <TextBlock

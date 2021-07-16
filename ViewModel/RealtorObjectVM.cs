@@ -3,7 +3,7 @@ using Microsoft.Win32;
 using RealtorObjects.Model;
 using RealtyModel.Model;
 using RealtyModel.Model.Operations;
-using RealtyModel.Service;
+using RealtyModel.Model.Tools;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -92,8 +92,8 @@ namespace RealtorObjects.ViewModel
             Index = 0;
         }));
         #endregion
-        protected bool CheckAccess(string objectAgent, string currentAgent) {
-            if (objectAgent == currentAgent) {
+        protected bool CheckAccess(string objectAgent, string currentAgent, int objectAgentId, int currentAgentId) {
+            if (objectAgent == currentAgent && objectAgentId == currentAgentId) {
                 return true;
             } else {
                 OperationNotification.Notify(ErrorCode.WrongAgent);

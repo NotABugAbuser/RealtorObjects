@@ -1,7 +1,7 @@
 ﻿using RealtorObjects.Model;
 using RealtyModel.Model;
 using RealtyModel.Model.Operations;
-using RealtyModel.Service;
+using RealtyModel.Model.Tools;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,29 +16,36 @@ namespace RealtorObjects.ViewModel
 {
     public class AccountsVM : BaseVM
     {
-        private ObservableCollection<Credential> credentials = new ObservableCollection<Credential>();
+        private ObservableCollection<Agent> agents = new ObservableCollection<Agent>();
         private CustomCommand cancel;
         private CustomCommand confirm;
         private CustomCommand add;
         private CustomCommand delete;
         public AccountsVM() {
         }
-        public AccountsVM(List<Credential> credentials) {
-            Credentials = new ObservableCollection<Credential>(credentials);
+        public AccountsVM(List<Agent> agents) {
+            Agents = new ObservableCollection<Agent>(agents);
         }
         public CustomCommand Delete => delete ?? (delete = new CustomCommand(obj => {
-            Credentials.Remove(obj as Credential);
+            Agents.Remove(obj as Agent);
         }));
         public CustomCommand Confirm => confirm ?? (confirm = new CustomCommand(obj => {
             bool isEveryFieldFilled = true;
-            foreach (Credential c in Credentials) {
-                if (String.IsNullOrEmpty(c.Name) || String.IsNullOrEmpty(c.Password)) {
+            foreach (Agent c in Agents) {
+                if (String.IsNullOrEmpty(c.Name) 
+                || String.IsNullOrEmpty(c.Surname)
+                || String.IsNullOrEmpty(c.Patronymic)
+                || String.IsNullOrEmpty(c.Password)
+                || String.IsNullOrEmpty(c.Email)
+                || String.IsNullOrEmpty(c.PhoneNumber)) {
                     isEveryFieldFilled = false;
                     break;
                 }
             }
             if (isEveryFieldFilled) {
-                Client.UpdateCredentials(Credentials.ToList());
+                Debug.WriteLine(Agents == null);
+                Debug.WriteLine(Agents.Count);
+                Client.UpdateAgents(Agents.ToList());
                 (obj as Window).Close();
             } else {
                 OperationNotification.Notify(ErrorCode.NotFilled);
@@ -48,15 +55,15 @@ namespace RealtorObjects.ViewModel
             (obj as Window).Close();
         }));
         public CustomCommand Add => add ?? (add = new CustomCommand(obj => {
-            Credential credential = new Credential();
-            credential.RegistrationDate = DateTime.Now;
-            credential.Id = credentials.Max(cr => cr.Id) + 1;
-            Credentials.Add(credential);
+            Agent agent = new Agent();
+            agent.Id = Agents.Max(a => a.Id) + 1;
+            agent.RegistrationDate = DateTime.Now;
+            Agents.Add(agent);
         }));
-        public ObservableCollection<Credential> Credentials {
-            get => credentials;
+        public ObservableCollection<Agent> Agents {
+            get => agents;
             set {
-                credentials = value;
+                agents = value;
                 OnPropertyChanged();
             }
         }

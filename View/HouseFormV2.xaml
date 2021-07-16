@@ -207,6 +207,7 @@
                         Grid.Column="4"
                         Text="Улица:"/>
                     <ComboBox
+                        ItemsSource="{Binding Streets}"
                         PreviewTextInput="RussianWithNumbersOnly"
                         Text="{Binding CopiedHouse.Location.Street}"
                         SelectedItem="{Binding CopiedHouse.Location.Street}"
@@ -295,7 +296,7 @@
                 <TextBox
                     PreviewTextInput="NumericWithDotOnly"
                     Padding="0,2,3,0"
-                    Text="{Binding CopiedHouse.Info.FacadeLength, StringFormat=0.00}"
+                    Text="{Binding CopiedHouse.Info.FacadeLength, StringFormat=0.00, UpdateSourceTrigger=LostFocus}"
                     IsEnabled="{Binding CanEdit}"
                     TextAlignment="Right"
                     Grid.Column="7"/>
@@ -314,7 +315,7 @@
                 <TextBox
                     PreviewTextInput="NumericWithDotOnly"
                     Padding="0,2,3,0"
-                    Text="{Binding CopiedHouse.GeneralInfo.General, UpdateSourceTrigger=PropertyChanged, StringFormat=##0.00}"
+                    Text="{Binding CopiedHouse.GeneralInfo.General, UpdateSourceTrigger=LostFocus, StringFormat=##0.00}"
                     IsEnabled="{Binding CanEdit}"
                     TextAlignment="Right"
                     Grid.Column="5"
@@ -326,7 +327,7 @@
                 <TextBox
                     PreviewTextInput="NumericWithDotOnly"
                     Padding="0,2,3,0"
-                    Text="{Binding CopiedHouse.GeneralInfo.Living, UpdateSourceTrigger=PropertyChanged, StringFormat=##0.00}"
+                    Text="{Binding CopiedHouse.GeneralInfo.Living, UpdateSourceTrigger=LostFocus, StringFormat=##0.00}"
                     IsEnabled="{Binding CanEdit}"
                     TextAlignment="Right"
                     Grid.Column="7"
@@ -338,7 +339,7 @@
                 <TextBox
                     PreviewTextInput="NumericWithDotOnly"
                     Padding="0,2,3,0"
-                    Text="{Binding CopiedHouse.GeneralInfo.Kitchen, UpdateSourceTrigger=PropertyChanged, StringFormat=##0.00}"
+                    Text="{Binding CopiedHouse.GeneralInfo.Kitchen, UpdateSourceTrigger=LostFocus, StringFormat=##0.00}"
                     IsEnabled="{Binding CanEdit}"
                     TextAlignment="Right"
                     Grid.Column="9"
@@ -459,9 +460,9 @@
                     Grid.Column="6"
                     Text="Потолок:"/>
                 <TextBox
-                    PreviewTextInput="NumericOnly"
+                    PreviewTextInput="NumericWithDotOnly"
                     IsEnabled="{Binding CanEdit}"
-                    Text="{Binding CopiedHouse.GeneralInfo.Ceiling, StringFormat=0.00}"
+                    Text="{Binding CopiedHouse.GeneralInfo.Ceiling, StringFormat=0.00, UpdateSourceTrigger=LostFocus}"
                     Padding="0,2,3,0"
                     TextAlignment="Right"
                     Grid.Column="7"/>
@@ -470,7 +471,7 @@
                     Grid.Row="2"
                     Text="Соток:"/>
                 <TextBox
-                    PreviewTextInput="NumericWithDotOnly"
+                    PreviewTextInput="NumericOnly"
                     Padding="0,2,3,0"
                     Text="{Binding CopiedHouse.GeneralInfo.Living, UpdateSourceTrigger=PropertyChanged, StringFormat=0}"
                     IsEnabled="{Binding CanEdit}"
@@ -482,7 +483,7 @@
                     Grid.Row="4"
                     Text="Гектар:"/>
                 <TextBox
-                    PreviewTextInput="NumericWithDotOnly"
+                    PreviewTextInput="NumericOnly"
                     Padding="0,2,3,0"
                     Text="{Binding CopiedHouse.GeneralInfo.Living, UpdateSourceTrigger=PropertyChanged, StringFormat=9}"
                     IsEnabled="{Binding CanEdit}"
