@@ -160,6 +160,7 @@
     <Compile Include="View\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="View\Converters\BoolToVisibilityReversedConverter.cs" />
     <Compile Include="View\Converters\ByteArrayToBitmapImageConverter.cs" />
+    <Compile Include="View\Converters\DateToShortDateConverter.cs" />
     <Compile Include="View\Converters\DefaultMultiValueConverter.cs" />
     <Compile Include="View\Converters\EmptyStringToBoolConverter.cs" />
     <Compile Include="View\Converters\InverseBoolConverter.cs" />
@@ -265,9 +266,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Иконка продукта.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="View\test.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

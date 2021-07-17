@@ -166,6 +166,7 @@
         </Style>
         <c:ObjectToHeaderConverter x:Key="ObjectToHeader"/>
         <c:ObjectToAddressConverter x:Key="ObjectToAddress"/>
+        <c:DateToShortDateConverter x:Key="DateToShortDate"/>
         <Style TargetType="ListBoxItem" x:Key="RealtorObjectItemStyle">
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -179,6 +180,7 @@
                             </Style>
                         </ControlTemplate.Resources>
                         <Border
+                            Background="#fafafa"
                             Padding="10"
                             VerticalAlignment="Top"
                             Margin="1"
@@ -219,7 +221,7 @@
                                     FontWeight="Bold"
                                     FontFamily="Arial"
                                     Foreground="Black"
-                                    Text="{Binding Price, StringFormat=### ### ##0 ₽}"/>
+                                    Text="{Binding Price, StringFormat=### ### ##0 ₽, Converter={StaticResource UnitsToThousands}}"/>
                                 <TextBlock
                                     Grid.Column="2"
                                     Grid.Row="1"
@@ -247,12 +249,19 @@
                                         Foreground="White"
                                         FontSize="10"
                                         FontWeight="Bold"
-                                        Text="17 октября 2021"
+                                        Text="{Binding ., Converter={StaticResource DateToShortDate}}"
                                         VerticalAlignment="Center"
                                         TextAlignment="Center"
                                         HorizontalAlignment="Center"/>
                                 </Border>
                             </Grid>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseLeftButtonUp">
+                                    <i:InvokeCommandAction
+                                        Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.Modify}"
+                                        CommandParameter="{Binding .}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>

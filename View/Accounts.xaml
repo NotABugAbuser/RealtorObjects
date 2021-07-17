@@ -11,7 +11,7 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         Background="#F6f6f6"
-        Title="Профили" Height="350" Width="790">
+        Title="Профили" Height="350" Width="845">
     <Window.DataContext>
         <vm:AccountsVM/>
     </Window.DataContext>
@@ -23,7 +23,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
                         <Border
-                            Width="768"
+                            Width="823"
                             Height="20"
                             BorderThickness="1"
                             BorderBrush="{StaticResource BorderGray}">
@@ -36,6 +36,7 @@
                                     <ColumnDefinition Width="130"/>
                                     <ColumnDefinition Width="140"/>
                                     <ColumnDefinition Width="110"/>
+                                    <ColumnDefinition Width="55"/>
                                     <ColumnDefinition Width="18"/>
                                 </Grid.ColumnDefinitions>
                                 <Border
@@ -85,6 +86,15 @@
                                     BorderThickness="1,0"
                                     VerticalAlignment="Center"
                                     Text="{Binding Password}"/>
+                                <Border
+                                    Grid.Column="7"
+                                    Background="LightGray">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        TextAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        Text="{Binding ObjectCount}"/>
+                                </Border>
                                 <fa:ImageAwesome
                                     Icon="Solid_Times"
                                     Grid.Column="30"
@@ -107,7 +117,7 @@
         </Style>
         <Style TargetType="ListBox" x:Key="Accounts">
             <Setter Property="Padding" Value="0"/>
-            <Setter Property="Width" Value="770"/>
+            <Setter Property="Width" Value="825"/>
             <Setter Property="Margin" Value="0,2,0,0"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -129,7 +139,12 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="19"/>
+                        <ColumnDefinition Width="110"/>
+                        <ColumnDefinition Width="110"/>
                         <ColumnDefinition Width="130"/>
+                        <ColumnDefinition Width="130"/>
+                        <ColumnDefinition Width="140"/>
+                        <ColumnDefinition Width="110"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock
@@ -142,12 +157,37 @@
                         Grid.Column="1"
                         VerticalAlignment="Center"
                         Foreground="White"
-                        Text="Никнейм"/>
+                        Text="Фамилия"/>
                     <TextBlock
                         Grid.Column="2"
                         VerticalAlignment="Center"
                         Foreground="White"
+                        Text="Имя"/>
+                    <TextBlock
+                        Grid.Column="3"
+                        VerticalAlignment="Center"
+                        Foreground="White"
+                        Text="Отчество"/>
+                    <TextBlock
+                        Grid.Column="4"
+                        VerticalAlignment="Center"
+                        Foreground="White"
+                        Text="Телефон"/>
+                    <TextBlock
+                        Grid.Column="5"
+                        VerticalAlignment="Center"
+                        Foreground="White"
+                        Text="Электронная почта"/>
+                    <TextBlock
+                        Grid.Column="6"
+                        VerticalAlignment="Center"
+                        Foreground="White"
                         Text="Пароль"/>
+                    <TextBlock
+                        Grid.Column="7"
+                        VerticalAlignment="Center"
+                        Foreground="White"
+                        Text="Объекты"/>
                 </Grid>
             </Border>
             <ListBox

@@ -44,9 +44,9 @@ namespace RealtorObjects.Model
         private static NetworkStream Connect() {
             TcpClient client = new TcpClient();
             if (Debugger.IsAttached) {
-                serverIp = IPAddress.Parse("192.168.8.100");
+                serverIp = IPAddress.Parse("192.168.1.82");
             } else {
-                serverIp = IPAddress.Parse("192.168.8.100");
+                serverIp = IPAddress.Parse("192.168.1.250");
             }
             client.Connect(serverIp, 15000);
             NetworkStream network = client.GetStream();
