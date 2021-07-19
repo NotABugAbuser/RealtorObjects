@@ -202,10 +202,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Dictionaries\ControlStylesAndTemplates.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\FlatFormV3.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -26,6 +26,7 @@
     </Window.DataContext>
     <Window.Resources>
         <c:SymbolToStarConverter x:Key="SymbolToStar"/>
+        <c:EmptyStringToBoolConverter x:Key="EmptyStringToBool"/>
         <Style TargetType="Button" x:Key="ConfirmButton">
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Foreground" Value="White"/>
@@ -77,22 +78,23 @@
                         <Border BorderThickness="1">
                             <Grid>
                                 <TextBox Name="PART_loginTextBox"
-                                         MaxLength="20"
-                                         BorderThickness="0"
-                                         Text="{Binding Path=Text, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}, UpdateSourceTrigger=PropertyChanged}"
-                                         Padding="10,8,8,0"
-                                         FontSize="17"
-                                         FontFamily="Courier New"
-                                         Foreground="#444"/>
+                                    MaxLength="20"
+                                    BorderThickness="0"
+                                    TabIndex="1"
+                                    Text="{Binding Path=Text, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}, UpdateSourceTrigger=PropertyChanged}"
+                                    Padding="10,8,8,0"
+                                    FontSize="17"
+                                    FontFamily="Courier New"
+                                    Foreground="#444"/>
                                 <TextBlock Name="PART_placeHolder"
-                                           Text="ФамилияИО"
-                                           Padding="12,10,10,0"
-                                           Visibility="Collapsed"
-                                           IsHitTestVisible="False"
-                                           FontSize="17"
-                                           FontFamily="Courier New"
-                                           Background="Transparent"
-                                           Foreground="Gray"/>
+                                    Text="ФамилияИО"
+                                    Padding="12,10,10,0"
+                                    Visibility="Collapsed"
+                                    IsHitTestVisible="False"
+                                    FontSize="17"
+                                    FontFamily="Courier New"
+                                    Background="Transparent"
+                                    Foreground="Gray"/>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -111,22 +113,23 @@
                         <Border BorderThickness="1">
                             <Grid>
                                 <TextBox Name="PART_passwordTextBox"
-                                         MaxLength="20"
-                                         BorderThickness="0"
-                                         Text="{Binding Path=Text, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}, UpdateSourceTrigger=PropertyChanged}"
-                                         Foreground="{Binding Path=Foreground, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}, UpdateSourceTrigger=PropertyChanged}"
-                                         Padding="10"
-                                         FontSize="17"
-                                         FontFamily="Courier New"/>
+                                    MaxLength="20"
+                                    TabIndex="2"
+                                    BorderThickness="0"
+                                    Text="{Binding Path=Text, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}, UpdateSourceTrigger=PropertyChanged}"
+                                    Foreground="black"
+                                    Padding="10"
+                                    FontSize="17"
+                                    FontFamily="Courier New"/>
                                 <TextBlock Name="PART_placeHolder"
-                                           Text="Пароль"
-                                           Padding="12,10,10,0"
-                                           Visibility="Collapsed"
-                                           IsHitTestVisible="False"
-                                           FontSize="17"
-                                           FontFamily="Courier New"
-                                           Background="Transparent"
-                                           Foreground="Gray"/>
+                                    Text="Пароль"
+                                    Padding="12,10,10,0"
+                                    Visibility="Collapsed"
+                                    IsHitTestVisible="False"
+                                    FontSize="17"
+                                    FontFamily="Courier New"
+                                    Background="Transparent"
+                                    Foreground="Gray"/>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -138,9 +141,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style TargetType="TextBox" x:Key="starTextBox">
-            <Setter Property="MaxLength" Value="20"/>
-            <Setter Property="BorderThickness" Value="0"/>
+        <Style TargetType="TextBlock" x:Key="starTextBox">
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Padding" Value="10,10,10,0"/>
             <Setter Property="FontSize" Value="17"/>
@@ -152,6 +153,34 @@
             <Setter Property="FontSize" Value="10"/>
             <Setter Property="VerticalAlignment" Value="Bottom"/>
             <Setter Property="Foreground" Value="#555"/>
+        </Style>
+        <Style TargetType="Button" x:Key="WhiteCloseButton">
+            <Setter Property="Background" Value="#f3f3f3"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+            <Setter Property="Width" Value="45"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Background="{TemplateBinding Background}">
+                            <Line Width="45" Height="32" Margin="0" X1="18" Y1="12" X2="27" Y2="21" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/>
+                            <Line Width="45" Height="32" Margin="0" X1="27" Y1="12" X2="18" Y2="21" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Red"/>
+                    <Setter Property="BorderBrush" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource BackgroundGray}"/>
+                    <Setter Property="BorderBrush" Value="gray"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
     <Grid>
@@ -180,7 +209,6 @@
                 BorderBrush="{StaticResource BorderGray}"
                 BorderThickness="1">
                 <TextBox 
-                    TabIndex="1"
                     Name="LoginBox"
                     PreviewTextInput="LoginValidation"
                     Text="{Binding Credential.Name}"
@@ -195,13 +223,12 @@
                         TabIndex="2"
                         PreviewTextInput="PasswordValidation"
                         Text="{Binding Credential.Password, UpdateSourceTrigger=PropertyChanged}"
-                        Foreground="Transparent"
                         Style="{StaticResource passwordTextBox}"/>
-                    <TextBox
+                    <TextBlock
+                        IsHitTestVisible="False"
+                        Background="Transparent"
                         KeyboardNavigation.TabNavigation="None"
                         Text="{Binding Credential.Password, Converter={StaticResource SymbolToStar}}"
-                        Background="Transparent"
-                        IsHitTestVisible="False"
                         Style="{StaticResource starTextBox}"/>
                 </Grid>
             </Border>

@@ -21,7 +21,8 @@ namespace RealtorObjects.Model
             [ErrorCode.ObjectUpdatedSuccessfuly] = new NotificationInfo("Изменения объекта успешно занесены в базу данных", CodeType.Successful),
             [ErrorCode.ObjectAddedSuccessfuly] = new NotificationInfo("Объект успешно занесен в базу данных", CodeType.Successful),
             [ErrorCode.CredentialUpdatedSuccessfuly] = new NotificationInfo("Изменения данных профилей успешно занесены в базу", CodeType.Successful),
-            [ErrorCode.NotFilled] = new NotificationInfo("Не все значения заполнены", CodeType.Exclamation)
+            [ErrorCode.NotFilled] = new NotificationInfo("Не все значения заполнены", CodeType.Exclamation),
+            [ErrorCode.Serialization] = new NotificationInfo("Ошибка преобразования данных", CodeType.Error)
         };
         public static void Notify(ErrorCode code) {
             if (code != ErrorCode.NoCode) {

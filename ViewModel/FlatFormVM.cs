@@ -57,7 +57,7 @@ namespace RealtorObjects.ViewModel
             } else {
                 CopiedFlat.GeneralInfo.ObjectType = "Квартира";
             }
-            if (FieldFillness.IsFilled(CopiedFlat)) {
+            if (FieldFillness.IsFilled(CopiedFlat) && Client.CanConnect()) {
                 if (isNew) {
                     Client.AddFlat(CopiedFlat);
                 } else {

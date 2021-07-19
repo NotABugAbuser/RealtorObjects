@@ -30,6 +30,7 @@ namespace RealtorObjects.ViewModel
         private CustomCommand openAccounts;
         private AsyncCommand goToPageAsync;
         private AsyncCommand modify;
+        private CustomCommand requestCallableObjects;
         private List<ObservableCollection<BaseRealtorObject>> pages = new List<ObservableCollection<BaseRealtorObject>>() { };
         private string[] pageButtons = { "1" };
         private ObservableCollection<BaseRealtorObject> currentPage = new ObservableCollection<BaseRealtorObject>();
@@ -44,8 +45,10 @@ namespace RealtorObjects.ViewModel
             this.streets = Client.RequestStreets();
         }
         public CustomCommand OpenAccounts => openAccounts ?? (openAccounts = new CustomCommand(obj => {
-            List<Agent> agents = Client.RequestAgents();
-            new Accounts(new AccountsVM(agents)).ShowDialog();
+            if (Client.CanConnect()) {
+                List<Agent> agents = Client.RequestAgents();
+                new Accounts(new AccountsVM(agents)).ShowDialog();
+            }
         }));
         public CustomCommand LogOut => logOut ?? (logOut = new CustomCommand(obj => {
             Window window = obj as Window;
@@ -72,11 +75,22 @@ namespace RealtorObjects.ViewModel
             });
         }));
         public CustomCommand RequestRealtorObjects => requestRealtorObjects ?? (requestRealtorObjects = new CustomCommand(obj => {
-            List<BaseRealtorObject> realtorObjects = Client.RequestRealtorObjects(filtration);
-            pages = Pagination.Split(realtorObjects);
-            CurrentPageNumber = 1;
-            PageButtons = Pagination.Paginate(pages.Count, CurrentPageNumber);
-            CurrentPage = pages[CurrentPageNumber - 1];
+            if (Client.CanConnect()) {
+                List<BaseRealtorObject> realtorObjects = Client.RequestRealtorObjects(filtration);
+                pages = Pagination.Split(realtorObjects);
+                CurrentPageNumber = 1;
+                PageButtons = Pagination.Paginate(pages.Count, CurrentPageNumber);
+                CurrentPage = pages[CurrentPageNumber - 1];
+            }
+        }));
+        public CustomCommand RequestCallableObjects => requestCallableObjects ?? (requestCallableObjects = new CustomCommand(obj => {
+            if (Client.CanConnect()) {
+                List<BaseRealtorObject> realtorObjects = Client.RequestCallableObjects();
+                pages = Pagination.Split(realtorObjects);
+                CurrentPageNumber = 1;
+                PageButtons = Pagination.Paginate(pages.Count, CurrentPageNumber);
+                CurrentPage = pages[CurrentPageNumber - 1];
+            }
         }));
         public CustomCommand CreateFlat => createFlat ?? (createFlat = new CustomCommand(obj => {
             FlatFormVM flatFormVM = new FlatFormVM(CurrentAgentName, currentAgentId);

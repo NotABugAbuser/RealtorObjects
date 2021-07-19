@@ -58,7 +58,7 @@ namespace RealtorObjects.ViewModel
             if(CopiedHouse.Album.PhotoCollection.Length < 1100) {
                 CopiedHouse.Album.PhotoCollection = Array.Empty<byte>();
             }
-            if (FieldFillness.IsFilled(CopiedHouse)) {
+            if (FieldFillness.IsFilled(CopiedHouse) && Client.CanConnect()) {
                 if (isNew) {
                     Client.AddHouse(CopiedHouse);
                 } else {

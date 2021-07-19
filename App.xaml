@@ -13,7 +13,6 @@
             <FontFamily x:Key="AFuturaRound">pack://application:,,,/View/Font/#a_FuturaRound</FontFamily>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="View/Dictionaries/ColorsAndBrushes.xaml"/>
-                <ResourceDictionary Source="View/Dictionaries/ControlStylesAndTemplates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

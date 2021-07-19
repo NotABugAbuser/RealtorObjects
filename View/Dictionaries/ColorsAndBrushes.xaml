@@ -3,8 +3,6 @@
                     xmlns:local="clr-namespace:RealtorObjects">
 
     <Color x:Key="MainGrayColor">#e8e8e8</Color>
-    <!--<Color x:Key="MainGreenColor">#78B01C</Color>
-    <Color x:Key="LightMainGreenlueColor">#A0BF3E</Color>-->
     <Color x:Key="LightBackgroundGrayColor">#F3F3F3</Color>
     <Color x:Key="BackgroundGrayColor">#E6E6E6</Color>
     <Color x:Key="BorderGrayColor">#969696</Color>

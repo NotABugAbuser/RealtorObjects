@@ -13,44 +13,71 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Net.NetworkInformation;
 using RealtyModel.Model.Tools;
+using System.Runtime.Serialization;
 
 namespace RealtorObjects.Model
 {
     public class Client
     {
         private static string name = "Unknown user";
-        private static IPAddress serverIp;
+        private static IPAddress serverIp = IPAddress.Parse("192.168.8.100");
 
         public static string Name {
             get => name;
             set => name = value;
         }
-        public static bool PingHost(string nameOrAddress) {
-            bool pingable = false;
+        public static IPAddress ServerIp {
+            get => serverIp; set => serverIp = value;
+        }
+        public static bool CanConnect() {
+            bool canConnect = false;
             Ping pinger = null;
             try {
                 pinger = new Ping();
-                PingReply reply = pinger.Send(nameOrAddress);
-                pingable = reply.Status == IPStatus.Success;
+                PingReply reply = pinger.Send(ServerIp, 200);
+                canConnect = reply.Status == IPStatus.Success;
             } catch (PingException) {
-                // Discard PingExceptions and return false;
+                canConnect = false;
             } finally {
                 if (pinger != null) {
                     pinger.Dispose();
                 }
             }
-            return pingable;
+            if (!canConnect) {
+                OperationNotification.Notify(ErrorCode.ServerUnavailable);
+            }
+            return canConnect;
         }
         private static NetworkStream Connect() {
             TcpClient client = new TcpClient();
-            if (Debugger.IsAttached) {
-                serverIp = IPAddress.Parse("192.168.1.82");
-            } else {
-                serverIp = IPAddress.Parse("192.168.1.250");
-            }
-            client.Connect(serverIp, 15000);
+            client.Connect(ServerIp, 15000);
             NetworkStream network = client.GetStream();
             return network;
+        }
+        public static List<BaseRealtorObject> RequestCallableObjects() {
+            try {
+                NetworkStream network = Connect();
+                Operation operation = new Operation(Action.Request, Target.Calleable, name);
+                Transfer.SendOperation(operation, network);
+
+
+                Response response = Transfer.ReceiveResponse(network);
+                Tuple<Flat[], House[]> objects = BinarySerializer.Deserialize<Tuple<Flat[], House[]>>(response.Data);
+                List<BaseRealtorObject> bros = new List<BaseRealtorObject>();
+                bros.AddRange(objects.Item1);
+                bros.AddRange(objects.Item2);
+                OperationNotification.Notify(response.Code);
+                return bros;
+            } catch (SerializationException) {
+                OperationNotification.Notify(ErrorCode.Serialization);
+                return new List<BaseRealtorObject>();
+            } catch (SocketException) {
+                OperationNotification.Notify(ErrorCode.ServerUnavailable);
+                return new List<BaseRealtorObject>();
+            } catch (Exception) {
+                OperationNotification.Notify(ErrorCode.Unknown);
+                return new List<BaseRealtorObject>();
+            }
         }
         public static List<Agent> RequestAgents() {
             NetworkStream network = Connect();
@@ -63,15 +90,18 @@ namespace RealtorObjects.Model
             return encrypted.Decrypt<List<Agent>>();
         }
         public static bool UpdateAgents(List<Agent> agents) {
-            Debug.WriteLine(agents == null);
-            Debug.WriteLine(agents.Count);
-            NetworkStream network = Connect();
-            Operation operation = new Operation(Action.Update, Target.Agent, new SymmetricEncryption(agents).Encrypt<List<Agent>>(), Name);
-            Transfer.SendOperation(operation, network);
+            try {
+                NetworkStream network = Connect();
+                Operation operation = new Operation(Action.Update, Target.Agent, new SymmetricEncryption(agents).Encrypt<List<Agent>>(), Name);
+                Transfer.SendOperation(operation, network);
 
-            Response response = Transfer.ReceiveResponse(network);
-            OperationNotification.Notify(response.Code);
-            return BinarySerializer.Deserialize<bool>(response.Data);
+                Response response = Transfer.ReceiveResponse(network);
+                OperationNotification.Notify(response.Code);
+                return BinarySerializer.Deserialize<bool>(response.Data);
+            } catch (SocketException) {
+                OperationNotification.Notify(ErrorCode.ServerUnavailable);
+                return false;
+            }
         }
 
         public static Album RequestAlbum(int id) {
@@ -99,9 +129,15 @@ namespace RealtorObjects.Model
                 NetworkStream network = Connect();
                 Operation operation = new Operation(Action.Add, Target.Flat, BinarySerializer.Serialize(flat), Name);
                 Transfer.SendOperation(operation, network);
-                OperationNotification.Notify(Transfer.ReceiveResponse(network).Code);
+
+                Response response = Transfer.ReceiveResponse(network);
+                OperationNotification.Notify(response.Code);
+            } catch (SerializationException) {
+                OperationNotification.Notify(ErrorCode.Serialization);
             } catch (SocketException) {
                 OperationNotification.Notify(ErrorCode.ServerUnavailable);
+            } catch (Exception) {
+                OperationNotification.Notify(ErrorCode.Unknown);
             }
         }
         public static void AddHouse(House house) {
@@ -109,9 +145,15 @@ namespace RealtorObjects.Model
                 NetworkStream network = Connect();
                 Operation operation = new Operation(Action.Add, Target.House, BinarySerializer.Serialize(house), Name);
                 Transfer.SendOperation(operation, network);
-                OperationNotification.Notify(Transfer.ReceiveResponse(network).Code);
+
+                Response response = Transfer.ReceiveResponse(network);
+                OperationNotification.Notify(response.Code);
+            } catch (SerializationException) {
+                OperationNotification.Notify(ErrorCode.Serialization);
             } catch (SocketException) {
                 OperationNotification.Notify(ErrorCode.ServerUnavailable);
+            } catch (Exception) {
+                OperationNotification.Notify(ErrorCode.Unknown);
             }
         }
         public static void UpdateFlat(Flat flat) {
@@ -119,9 +161,15 @@ namespace RealtorObjects.Model
                 NetworkStream network = Connect();
                 Operation operation = new Operation(Action.Update, Target.Flat, BinarySerializer.Serialize(flat), Name);
                 Transfer.SendOperation(operation, network);
-                OperationNotification.Notify(Transfer.ReceiveResponse(network).Code);
+
+                Response response = Transfer.ReceiveResponse(network);
+                OperationNotification.Notify(response.Code);
+            } catch (SerializationException) {
+                OperationNotification.Notify(ErrorCode.Serialization);
             } catch (SocketException) {
                 OperationNotification.Notify(ErrorCode.ServerUnavailable);
+            } catch (Exception) {
+                OperationNotification.Notify(ErrorCode.Unknown);
             }
         }
         public static void UpdateHouse(House house) {
@@ -129,9 +177,15 @@ namespace RealtorObjects.Model
                 NetworkStream network = Connect();
                 Operation operation = new Operation(Action.Update, Target.House, BinarySerializer.Serialize(house), Name);
                 Transfer.SendOperation(operation, network);
-                OperationNotification.Notify(Transfer.ReceiveResponse(network).Code);
+
+                Response response = Transfer.ReceiveResponse(network);
+                OperationNotification.Notify(response.Code);
+            } catch (SerializationException) {
+                OperationNotification.Notify(ErrorCode.Serialization);
             } catch (SocketException) {
                 OperationNotification.Notify(ErrorCode.ServerUnavailable);
+            } catch (Exception) {
+                OperationNotification.Notify(ErrorCode.Unknown);
             }
         }
         public static Tuple<bool, int> Login(Credential credential) {
@@ -143,32 +197,60 @@ namespace RealtorObjects.Model
                 Tuple<bool, int> pair = BinarySerializer.Deserialize<Tuple<bool, int>>(response.Data);
                 OperationNotification.Notify(response.Code);
                 return pair;
+            } catch (SerializationException) {
+                OperationNotification.Notify(ErrorCode.Serialization);
+                return new Tuple<bool, int>(false, 0);
             } catch (SocketException) {
                 OperationNotification.Notify(ErrorCode.ServerUnavailable);
+                return new Tuple<bool, int>(false, 0);
+            } catch (Exception) {
+                OperationNotification.Notify(ErrorCode.Unknown);
                 return new Tuple<bool, int>(false, 0);
             }
         }
         public static List<BaseRealtorObject> RequestRealtorObjects(Filtration filtration) {
-            NetworkStream network = Connect();
-            Operation operation = new Operation(Action.Request, Target.RealtorObjects, BinarySerializer.Serialize(filtration), Name);
-            Transfer.SendOperation(operation, network);
-            Response response = Transfer.ReceiveResponse(network);
-            Tuple<Flat[], House[]> objects = BinarySerializer.Deserialize<Tuple<Flat[], House[]>>(response.Data);
-            List<BaseRealtorObject> bros = new List<BaseRealtorObject>();
-            bros.AddRange(objects.Item1);
-            bros.AddRange(objects.Item2);
-            OperationNotification.Notify(response.Code);
-            return bros;
+            try {
+                NetworkStream network = Connect();
+                Operation operation = new Operation(Action.Request, Target.RealtorObjects, BinarySerializer.Serialize(filtration), Name);
+                Transfer.SendOperation(operation, network);
+                Response response = Transfer.ReceiveResponse(network);
+                Tuple<Flat[], House[]> objects = BinarySerializer.Deserialize<Tuple<Flat[], House[]>>(response.Data);
+                List<BaseRealtorObject> bros = new List<BaseRealtorObject>();
+                bros.AddRange(objects.Item1);
+                bros.AddRange(objects.Item2);
+                OperationNotification.Notify(response.Code);
+                return bros;
+            } catch (SerializationException) {
+                OperationNotification.Notify(ErrorCode.Serialization);
+                return new List<BaseRealtorObject>();
+            } catch (SocketException) {
+                OperationNotification.Notify(ErrorCode.ServerUnavailable);
+                return new List<BaseRealtorObject>();
+            } catch (Exception) {
+                OperationNotification.Notify(ErrorCode.Unknown);
+                return new List<BaseRealtorObject>();
+            }
         }
         public static string[] RequestStreets() {
-            NetworkStream network = Connect();
-            Operation operation = new Operation(Action.Request, Target.Locations, Name);
-            Transfer.SendOperation(operation, network);
+            try {
+                NetworkStream network = Connect();
+                Operation operation = new Operation(Action.Request, Target.Locations, Name);
+                Transfer.SendOperation(operation, network);
 
-            Response response = Transfer.ReceiveResponse(network);
-            string[] streets = BinarySerializer.Deserialize<string[]>(response.Data);
-            OperationNotification.Notify(response.Code);
-            return streets;
+                Response response = Transfer.ReceiveResponse(network);
+                string[] streets = BinarySerializer.Deserialize<string[]>(response.Data);
+                OperationNotification.Notify(response.Code);
+                return streets;
+            } catch (SerializationException) {
+                OperationNotification.Notify(ErrorCode.Serialization);
+                return new string[0];
+            } catch (SocketException) {
+                OperationNotification.Notify(ErrorCode.ServerUnavailable);
+                return new string[0];
+            } catch (Exception) {
+                OperationNotification.Notify(ErrorCode.Unknown);
+                return new string[0];
+            }
         }
     }
 }

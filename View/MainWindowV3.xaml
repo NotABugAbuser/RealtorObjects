@@ -84,8 +84,7 @@
             <Button 
                 Command="{TemplateBinding Command}"
                 CommandParameter="{TemplateBinding CommandParameter}">
-                <Grid 
-                    Width="100">
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="23"/>
                         <ColumnDefinition Width="*"/>
@@ -93,7 +92,6 @@
                     <fa:ImageAwesome
                         Height="15"
                         Width="15"
-                        Margin="8,0,0,0"
                         HorizontalAlignment="Left"
                         Foreground="#3f3f3f"
                         Icon="Solid_CloudDownloadAlt"/>
@@ -131,7 +129,6 @@
             </Button>
         </ControlTemplate>
         <Style TargetType="Button" x:Key="AddButton">
-            <Setter Property="Width" Value="100"/>
             <Setter Property="Padding" Value="0,3"/>
             <Setter Property="Height" Value="27"/>
             <Setter Property="Template" Value="{StaticResource AddButtonTemplate}"/>
@@ -427,15 +424,15 @@
                         VerticalAlignment="Center">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100"/>
-                            <ColumnDefinition Width="10"/>
-                            <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="160"/>
                             <ColumnDefinition Width="10"/>
                             <ColumnDefinition Width="160"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="100"/>
                         </Grid.ColumnDefinitions>
                         <Button
@@ -455,21 +452,27 @@
                             Command="{Binding CreateFlat}"
                             Style="{StaticResource AddButton}"
                             Width="160"
-                            Grid.Column="4"
+                            Grid.Column="2"
                             Content="Квартирный объект">
                         </Button>
                         <Button
                             Command="{Binding CreateHouse}"
                             Width="160"
                             Style="{StaticResource AddButton}"
-                            Grid.Column="6"
+                            Grid.Column="4"
                             Content="Земельный объект"/>
                         <Button
                             Command="{Binding RequestRealtorObjects}"
                             Template="{StaticResource RequestButtonTemplate}"
                             Style="{StaticResource AddButton}"
-                            Grid.Column="10"
-                            Content="Запросить"/>
+                            Grid.Column="6"
+                            Content="Запросить объекты"/>
+                        <Button
+                            Command="{Binding RequestCallableObjects}"
+                            Template="{StaticResource RequestButtonTemplate}"
+                            Style="{StaticResource AddButton}"
+                            Grid.Column="8"
+                            Content="Запросить прозвоны"/>
                     </Grid>
                     <Grid
                         Width="1100"

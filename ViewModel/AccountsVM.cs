@@ -42,7 +42,7 @@ namespace RealtorObjects.ViewModel
                     break;
                 }
             }
-            if (isEveryFieldFilled) {
+            if (isEveryFieldFilled && Client.CanConnect()) {
                 Debug.WriteLine(Agents == null);
                 Debug.WriteLine(Agents.Count);
                 Client.UpdateAgents(Agents.ToList());
