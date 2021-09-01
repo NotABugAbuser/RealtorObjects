@@ -17,8 +17,11 @@ namespace RealtorObjects.View.Converters
             BaseRealtorObject realtorObject = value as BaseRealtorObject;
             if (realtorObject.GeneralInfo.ObjectType == "Комната") {
                 builder.Append($"Комната {realtorObject.GeneralInfo.General} м², {realtorObject.GeneralInfo.CurrentLevel}/{realtorObject.GeneralInfo.LevelCount} этаж");
-            } else if (realtorObject.GeneralInfo.ObjectType == "Квартира") {
-                builder.Append($"{realtorObject.GeneralInfo.RoomCount}-комн квартира {realtorObject.GeneralInfo.General} м², {realtorObject.GeneralInfo.CurrentLevel}/{realtorObject.GeneralInfo.LevelCount} этаж");
+            } else if (realtorObject.GeneralInfo.ObjectType == "Квартира"
+                || realtorObject.GeneralInfo.ObjectType == "Гостинка"
+                || realtorObject.GeneralInfo.ObjectType == "Общежитие"
+                || realtorObject.GeneralInfo.ObjectType == "Коммуналка") {
+                builder.Append($"{realtorObject.GeneralInfo.RoomCount}-комн {realtorObject.GeneralInfo.ObjectType.ToLower()} {realtorObject.GeneralInfo.General} м², {realtorObject.GeneralInfo.CurrentLevel}/{realtorObject.GeneralInfo.LevelCount} этаж");
             } else if (realtorObject.GeneralInfo.ObjectType == "Дом") {
                 builder.Append($"Дом {realtorObject.GeneralInfo.General} м², {realtorObject.GeneralInfo.LevelCount} ");
                 int remainder = realtorObject.GeneralInfo.LevelCount % 10;
