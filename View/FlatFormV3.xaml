@@ -270,7 +270,7 @@
                     Text="Тип:"
                     Grid.Row="2"/>
                 <ComboBox
-                    SelectedItem="{Binding CopiedFlat.Info.Type}"
+                    SelectedItem="{Binding CopiedFlat.GeneralInfo.ObjectType}"
                     IsEnabled="{Binding CanEdit}"
                     ItemsSource="{Binding ComboBoxOptions.Types}"
                     Grid.Column="1"
@@ -628,14 +628,6 @@
                     MaxLength="6"
                     TextAlignment="Center"
                     Grid.Column="2"/>
-                <TextBlock
-                    Grid.Column="4"
-                    Text="Тип объекта:"/>
-                <ComboBox
-                    SelectedItem="{Binding CopiedFlat.GeneralInfo.ObjectType}"
-                    IsEnabled="{Binding CanEdit}"
-                    ItemsSource="{Binding ComboBoxOptions.FlatTypes}"
-                    Grid.Column="5"/>
                 <StackPanel
                     Grid.ColumnSpan="7"
                     Grid.Row="2"

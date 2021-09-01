@@ -31,7 +31,6 @@ namespace RealtorObjects.ViewModel
             }
             CopiedFlat.AgentId = agentId;
             CopiedFlat.Agent = agentName;
-            CopiedFlat.GeneralInfo.ObjectType = "Комната";
         }
         public FlatFormVM(Flat flat, string agentName, int currentAgentId) {
             CopiedFlat = flat.GetCopy();
