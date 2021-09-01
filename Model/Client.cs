@@ -20,7 +20,7 @@ namespace RealtorObjects.Model
     public class Client
     {
         private static string name = "Unknown user";
-        private static IPAddress serverIp = IPAddress.Parse("192.168.8.100");
+        private static IPAddress serverIp = IPAddress.Parse("192.168.1.117");
 
         public static string Name {
             get => name;
@@ -34,7 +34,7 @@ namespace RealtorObjects.Model
             Ping pinger = null;
             try {
                 pinger = new Ping();
-                PingReply reply = pinger.Send(ServerIp, 200);
+                PingReply reply = pinger.Send(ServerIp);
                 canConnect = reply.Status == IPStatus.Success;
             } catch (PingException) {
                 canConnect = false;
@@ -67,7 +67,7 @@ namespace RealtorObjects.Model
                 bros.AddRange(objects.Item1);
                 bros.AddRange(objects.Item2);
                 OperationNotification.Notify(response.Code);
-                return bros;
+                return bros; 
             } catch (SerializationException) {
                 OperationNotification.Notify(ErrorCode.Serialization);
                 return new List<BaseRealtorObject>();

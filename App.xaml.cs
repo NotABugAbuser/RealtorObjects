@@ -13,9 +13,9 @@ namespace RealtorObjects
     {
         protected override void OnStartup(StartupEventArgs e) {
             if (Debugger.IsAttached) {
-                Client.ServerIp = IPAddress.Parse("192.168.8.100");
+                Client.ServerIp = IPAddress.Parse("192.168.1.117");
             } else {
-                Client.ServerIp = IPAddress.Parse("192.168.1.250");
+                Client.ServerIp = IPAddress.Parse("192.168.1.117");
             }
             new LoginFormV2(new LoginFormVM()).Show();
         }

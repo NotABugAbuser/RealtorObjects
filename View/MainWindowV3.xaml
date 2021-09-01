@@ -446,7 +446,7 @@
                             Command="{Binding OpenAccounts}"
                             Template="{StaticResource UserButtonTemplate}"
                             Style="{StaticResource AddButton}"
-                            Grid.Column="2"
+                            Grid.Column="10"
                             Content="Профили"/>
                         <Button
                             Command="{Binding CreateFlat}"

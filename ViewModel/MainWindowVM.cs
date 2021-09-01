@@ -120,6 +120,7 @@ namespace RealtorObjects.ViewModel
                 flat.Album = Client.RequestAlbum(flat.AlbumId);
                 flatFormVM = new FlatFormVM(flat, CurrentAgentName, currentAgentId);
                 flatFormVM.Streets = this.streets;
+                Debug.WriteLine($"{currentAgentId}  {CurrentAgentName}");
                 new FlatFormV3(flatFormVM).Show();
             });
             return Task.Run(() => {

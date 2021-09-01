@@ -117,7 +117,7 @@
                                     TabIndex="2"
                                     BorderThickness="0"
                                     Text="{Binding Path=Text, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}, UpdateSourceTrigger=PropertyChanged}"
-                                    Foreground="black"
+                                    Foreground="Transparent"
                                     Padding="10"
                                     FontSize="17"
                                     FontFamily="Courier New"/>
@@ -221,6 +221,7 @@
                 <Grid>
                     <TextBox
                         TabIndex="2"
+                        Foreground="Transparent"
                         PreviewTextInput="PasswordValidation"
                         Text="{Binding Credential.Password, UpdateSourceTrigger=PropertyChanged}"
                         Style="{StaticResource passwordTextBox}"/>

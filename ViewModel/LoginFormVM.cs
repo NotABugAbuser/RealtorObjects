@@ -22,6 +22,7 @@ namespace RealtorObjects.ViewModel
                 if (pair.Item1) {
                     Client.Name = credential.Name;
                     MainWindowVM mainVM = new MainWindowVM(credential.Name, pair.Item2);
+                    Debug.WriteLine($"{pair.Item2} {credential.Name}");
                     new MainWindowV3(mainVM).Show();
                     Credential = new Credential();
                     (obj as Window).Close();

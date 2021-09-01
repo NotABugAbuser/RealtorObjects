@@ -37,6 +37,7 @@ namespace RealtorObjects.ViewModel
             OriginalFlat = flat;
             Title = $"[#{CopiedFlat.Id}] [Тип: {CopiedFlat.GeneralInfo.ObjectType}] [Создатель заявки: {CopiedFlat.Agent}]  —  Просмотр";
             currentAgent = agentName;
+            this.currentAgentId = currentAgentId;
         }
         public CustomCommand AllowToEdit => allowToEdit ?? (allowToEdit = new CustomCommand(obj => {
             if (CheckAccess(CopiedFlat.Agent, currentAgent, CopiedFlat.AgentId, currentAgentId)) {
