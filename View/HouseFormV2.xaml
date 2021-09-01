@@ -497,7 +497,7 @@
                     TextWrapping="Wrap"
                     Grid.Row="10"/>
                 <TextBox
-                    PreviewTextInput="AnyLetter"
+                    PreviewTextInput="AnyLetterWithDot"
                     Text="{Binding CopiedHouse.GeneralInfo.Description, UpdateSourceTrigger=PropertyChanged}"
                     IsEnabled="{Binding CanEdit}"
                     TextWrapping="Wrap"

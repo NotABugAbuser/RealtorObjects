@@ -52,6 +52,9 @@ namespace RealtorObjects.View
         private void AnyLetter(object sender, TextCompositionEventArgs e) {
             e.Handled = new Regex("[^а-яА-Яa-zA-z0-9,]").IsMatch(e.Text);
         }
+        private void AnyLetterWithDot(object sender, TextCompositionEventArgs e) {
+            e.Handled = new Regex("[^а-яА-Яa-zA-z0-9,.]").IsMatch(e.Text);
+        }
         private void PhoneNumbers(object sender, TextCompositionEventArgs e) {
             e.Handled = new Regex("[^0-9;,]").IsMatch(e.Text);
         }

@@ -17,18 +17,17 @@ namespace RealtorObjects.ViewModel
         public LoginFormVM() {
         }
         public CustomCommand Login => login ?? (login = new CustomCommand(obj => {
-            //if (Client.CanConnect()) {
-            //    Tuple<bool, int> pair = Client.Login(credential);
-            //    if (pair.Item1) {
-            //        Client.Name = credential.Name;
-            //        MainWindowVM mainVM = new MainWindowVM(credential.Name, pair.Item2);
-            //        Debug.WriteLine($"{pair.Item2} {credential.Name}");
-            //        new MainWindowV3(mainVM).Show();
-            //        Credential = new Credential();
-            //        (obj as Window).Close();
-            //    }
-            //}
-                    new MainWindowV3(new MainWindowVM()).Show();
+            if (Client.CanConnect()) {
+                Tuple<bool, int> pair = Client.Login(credential);
+                if (pair.Item1) {
+                    Client.Name = credential.Name;
+                    MainWindowVM mainVM = new MainWindowVM(credential.Name, pair.Item2);
+                    Debug.WriteLine($"{pair.Item2} {credential.Name}");
+                    new MainWindowV3(mainVM).Show();
+                    Credential = new Credential();
+                    (obj as Window).Close();
+                }
+            }
         }));
         public CustomCommand CloseApp => closeApp ?? (closeApp = new CustomCommand(obj => {
             Application.Current.Shutdown();

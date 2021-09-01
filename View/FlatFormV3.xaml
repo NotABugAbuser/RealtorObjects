@@ -521,7 +521,7 @@
                     Grid.Row="6"
                     Text="Окна:"/>
                 <TextBox
-                    PreviewTextInput="RussianWithNumbersOnly"
+                    PreviewTextInput="RussianWithNumbersOnlyAndSlash"
                     Text="{Binding CopiedFlat.Info.Windows ,UpdateSourceTrigger=PropertyChanged}"
                     IsEnabled="{Binding CanEdit}"
                     Grid.Column="5"
@@ -587,7 +587,7 @@
                     TextWrapping="Wrap"
                     Grid.Row="10"/>
                 <TextBox
-                    PreviewTextInput="AnyLetter"
+                    PreviewTextInput="AnyLetterWithDot"
                     Text="{Binding CopiedFlat.GeneralInfo.Description, UpdateSourceTrigger=PropertyChanged}"
                     IsEnabled="{Binding CanEdit}"
                     TextWrapping="Wrap"
