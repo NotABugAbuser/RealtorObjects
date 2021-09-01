@@ -198,6 +198,10 @@ namespace RealtorObjects.Model
             "Дом",
             "Земельный участок",
         };
+        readonly List<string> flatTypes = new List<string>() { 
+            "Квартира",
+            "Комната"
+        };
         readonly List<string> districts = new List<string>(){
             "Авиагородок",
             "Авиаторов сквер",
@@ -356,5 +360,7 @@ namespace RealtorObjects.Model
         public List<string> HouseWaters => houseWaters;
         public List<string> Yards => yards;
         public List<string> Sewers => sewers;
+
+        public List<string> FlatTypes => flatTypes;
     }
 }

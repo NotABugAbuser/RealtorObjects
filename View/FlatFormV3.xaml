@@ -606,6 +606,8 @@
                     <ColumnDefinition Width="110"/>
                     <ColumnDefinition Width="60"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="120"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="23"/>
@@ -626,8 +628,16 @@
                     MaxLength="6"
                     TextAlignment="Center"
                     Grid.Column="2"/>
+                <TextBlock
+                    Grid.Column="4"
+                    Text="Тип объекта:"/>
+                <ComboBox
+                    SelectedItem="{Binding CopiedFlat.GeneralInfo.ObjectType}"
+                    IsEnabled="{Binding CanEdit}"
+                    ItemsSource="{Binding ComboBoxOptions.FlatTypes}"
+                    Grid.Column="5"/>
                 <StackPanel
-                    Grid.ColumnSpan="5"
+                    Grid.ColumnSpan="7"
                     Grid.Row="2"
                     Orientation="Horizontal">
                     <Border

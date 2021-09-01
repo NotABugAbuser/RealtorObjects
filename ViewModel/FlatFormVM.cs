@@ -31,6 +31,7 @@ namespace RealtorObjects.ViewModel
             }
             CopiedFlat.AgentId = agentId;
             CopiedFlat.Agent = agentName;
+            CopiedFlat.GeneralInfo.ObjectType = "Комната";
         }
         public FlatFormVM(Flat flat, string agentName, int currentAgentId) {
             CopiedFlat = flat.GetCopy();
@@ -52,11 +53,6 @@ namespace RealtorObjects.ViewModel
             }
             if (CopiedFlat.Album.PhotoCollection.Length < 1100) {
                 CopiedFlat.Album.PhotoCollection = Array.Empty<byte>();
-            }
-            if (CopiedFlat.GeneralInfo.RoomCount == 1) {
-                CopiedFlat.GeneralInfo.ObjectType = "Комната";
-            } else {
-                CopiedFlat.GeneralInfo.ObjectType = "Квартира";
             }
             if (FieldFillness.IsFilled(CopiedFlat) && Client.CanConnect()) {
                 if (isNew) {
