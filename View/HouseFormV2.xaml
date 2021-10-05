@@ -473,23 +473,11 @@
                 <TextBox
                     PreviewTextInput="NumericOnly"
                     Padding="0,2,3,0"
-                    Text="{Binding CopiedHouse.GeneralInfo.Living, UpdateSourceTrigger=PropertyChanged, StringFormat=0}"
+                    Text="{Binding CopiedHouse.Info.Hundreds, UpdateSourceTrigger=PropertyChanged, StringFormat=0}"
                     IsEnabled="{Binding CanEdit}"
                     TextAlignment="Right"
                     Grid.Column="7"
                     Grid.Row="2"/>
-                <TextBlock
-                    Grid.Column="6"
-                    Grid.Row="4"
-                    Text="Гектар:"/>
-                <TextBox
-                    PreviewTextInput="NumericOnly"
-                    Padding="0,2,3,0"
-                    Text="{Binding CopiedHouse.GeneralInfo.Living, UpdateSourceTrigger=PropertyChanged, StringFormat=9}"
-                    IsEnabled="{Binding CanEdit}"
-                    TextAlignment="Right"
-                    Grid.Column="7"
-                    Grid.Row="4"/>
                 <TextBlock
                     Width="51"
                     Text="Прим.:"

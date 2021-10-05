@@ -79,7 +79,6 @@ namespace RealtorObjects.Model
 
             " — Потолок",
             " — Сотки",
-            " — Гектары",
             " — Цена",
             " — Фотографии",
         };
@@ -157,7 +156,6 @@ namespace RealtorObjects.Model
 
                 house.GeneralInfo.Ceiling,
                 house.Info.Hundreds,
-                house.Info.Hectar,
                 house.Price,
                 house.Album.PhotoCollection.Length
             };
