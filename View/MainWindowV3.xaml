@@ -237,7 +237,7 @@
                                 <Border
                                     Background="Gray"
                                     CornerRadius="4"
-                                    Width="87"
+                                    Width="90"
                                     HorizontalAlignment="Right"
                                     Height="14"
                                     Grid.Column="3"

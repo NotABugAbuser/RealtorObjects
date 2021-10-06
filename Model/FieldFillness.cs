@@ -175,7 +175,7 @@ namespace RealtorObjects.Model
                 flat.Info.Fund,
                 flat.GeneralInfo.RoomCount,
 
-                flat.Info.Type,
+                flat.GeneralInfo.ObjectType,
                 flat.GeneralInfo.General,
                 flat.GeneralInfo.Living,
                 flat.GeneralInfo.Kitchen,
