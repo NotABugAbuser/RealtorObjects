@@ -383,7 +383,7 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="656"/>
-                    <RowDefinition Height="690"/>
+                    <RowDefinition Height="890"/>
                 </Grid.RowDefinitions>
                 <Grid
                     Margin="10,0">
@@ -394,7 +394,6 @@
                     <ListBox
                         ItemsSource="{Binding CurrentPage}"
                         Style="{StaticResource RealtorObjectsListBox}"/>
-                    
                     <Border
                         BorderThickness="0,0,0,2"
                         BorderBrush="{StaticResource BorderGray}"
@@ -406,9 +405,9 @@
                 </Grid>
                 <Grid 
                     Margin="10,0"
-                    Grid.Row="1">
+                    Grid.Row="2">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="250"/>
                         <RowDefinition Height="450"/>
                         <RowDefinition Height="146"/>
                         <RowDefinition Height="40"/>
@@ -421,10 +420,15 @@
                         Grid.Row="1"
                         BorderBrush="{StaticResource BorderGray}"/>
                     <Grid
-                        VerticalAlignment="Center">
+                        Margin="0,15,0,0"
+                        VerticalAlignment="top">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="10"/>
                             <ColumnDefinition Width="160"/>
                             <ColumnDefinition Width="10"/>
                             <ColumnDefinition Width="160"/>
@@ -446,32 +450,43 @@
                             Command="{Binding OpenAccounts}"
                             Template="{StaticResource UserButtonTemplate}"
                             Style="{StaticResource AddButton}"
-                            Grid.Column="10"
+                            Grid.Column="14"
                             Content="Профили"/>
                         <Button
                             Command="{Binding CreateFlat}"
                             Style="{StaticResource AddButton}"
                             Width="160"
                             Grid.Column="2"
-                            Content="Квартирный объект">
+                            Content="Квартира">
                         </Button>
                         <Button
                             Command="{Binding CreateHouse}"
                             Width="160"
                             Style="{StaticResource AddButton}"
                             Grid.Column="4"
-                            Content="Земельный объект"/>
+                            Content="Дом"/>
+                        <Button
+                            Command="{Binding CreatePlot}"
+                            Width="160"
+                            Style="{StaticResource AddButton}"
+                            Grid.Column="6"
+                            Content="Участок"/>
+                        <Button
+                            Command="{Binding CreateOffice}"
+                            Style="{StaticResource AddButton}"
+                            Grid.Column="8"
+                            Content="Офис"/>
                         <Button
                             Command="{Binding RequestRealtorObjects}"
                             Template="{StaticResource RequestButtonTemplate}"
                             Style="{StaticResource AddButton}"
-                            Grid.Column="6"
+                            Grid.Column="10"
                             Content="Запросить объекты"/>
                         <Button
                             Command="{Binding RequestCallableObjects}"
                             Template="{StaticResource RequestButtonTemplate}"
                             Style="{StaticResource AddButton}"
-                            Grid.Column="8"
+                            Grid.Column="12"
                             Content="Запросить прозвоны"/>
                     </Grid>
                     <Grid

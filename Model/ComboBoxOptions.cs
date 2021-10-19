@@ -197,6 +197,7 @@ namespace RealtorObjects.Model
         readonly List<string> houseTypes = new List<string>() {
             "Дом",
             "Земельный участок",
+            "Офис"
         };
         readonly List<string> districts = new List<string>(){
             "Авиагородок",

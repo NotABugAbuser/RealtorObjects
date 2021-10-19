@@ -30,6 +30,8 @@ namespace RealtorObjects.ViewModel
         private CustomCommand openAccounts;
         private AsyncCommand goToPageAsync;
         private AsyncCommand modify;
+        private CustomCommand createOffice;
+        private CustomCommand createPlot;
         private CustomCommand requestCallableObjects;
         private List<ObservableCollection<BaseRealtorObject>> pages = new List<ObservableCollection<BaseRealtorObject>>() { };
         private string[] pageButtons = { "1" };
@@ -97,9 +99,22 @@ namespace RealtorObjects.ViewModel
             flatFormVM.Streets = this.streets;
             new FlatFormV3(flatFormVM).Show();
         }));
+        public CustomCommand CreateOffice => createOffice ?? (createOffice = new CustomCommand(obj => {
+            HouseFormVM houseFormVM = new HouseFormVM(CurrentAgentName, currentAgentId);
+            houseFormVM.Streets = this.streets;
+            houseFormVM.CopiedHouse.GeneralInfo.ObjectType = "Офис";
+            new HouseFormV2(houseFormVM).Show();
+        }));
+        public CustomCommand CreatePlot => createPlot ?? (createPlot = new CustomCommand(obj => {
+            HouseFormVM houseFormVM = new HouseFormVM(CurrentAgentName, currentAgentId);
+            houseFormVM.Streets = this.streets;
+            houseFormVM.CopiedHouse.GeneralInfo.ObjectType = "Земельный участок";
+            new HouseFormV2(houseFormVM).Show();
+        }));
         public CustomCommand CreateHouse => createHouse ?? (createHouse = new CustomCommand(obj => {
             HouseFormVM houseFormVM = new HouseFormVM(CurrentAgentName, currentAgentId);
             houseFormVM.Streets = this.streets;
+            houseFormVM.CopiedHouse.GeneralInfo.ObjectType = "Дом";
             new HouseFormV2(houseFormVM).Show();
         }));
         public AsyncCommand Modify => modify ?? (modify = new AsyncCommand(() => {

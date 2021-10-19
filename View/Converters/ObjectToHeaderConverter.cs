@@ -32,8 +32,10 @@ namespace RealtorObjects.View.Converters
                 } else {
                     builder.Append("этажей");
                 }
-            } else {
+            } else if (realtorObject.GeneralInfo.ObjectType == "Земельный участок") {
                 builder.Append($"Земельный участок, {(realtorObject as House).Info.Hundreds} сот.");
+            } else {
+                builder.Append($"Офис, {(realtorObject as House).GeneralInfo.General} м², {realtorObject.GeneralInfo.CurrentLevel}/{realtorObject.GeneralInfo.LevelCount} этаж");
             }
             return builder.ToString();
         }
