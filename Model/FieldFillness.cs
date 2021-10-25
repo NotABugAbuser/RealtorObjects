@@ -25,28 +25,28 @@ namespace RealtorObjects.Model
             " — Материал",
             " — Фонд",
             " — Количество комнат",
-            
+
             " — Тип",
             " — Общая",
             " — Жилая",
             " — Кухня",
             " — Состояние",
-            
+
             " — Полы",
             " — Потолок",
             " — Лоджия",
             " — Балкон",
             " — Сан. узел",
-            
+
             " — Удобства",
             " — Отопление",
             " — Горячая вода",
             " — Ванна",
             " — Цена",
-            
+
             " — Фотографии",
             };
-        private static readonly string[] houseMessages = new string[] { 
+        private static readonly string[] houseMessages = new string[] {
             " — Заказчик",
             " — Телефоны",
             " — Город",
@@ -82,84 +82,25 @@ namespace RealtorObjects.Model
             " — Цена",
             " — Фотографии",
         };
+        private static readonly string[] otherHousesMessages = new string[] {
+            " — Заказчик",
+            " — Телефоны",
+            " — Город",
+            " — Район",
+            " — Улица",
+
+            " — Дом №",
+            " — Комнаты",
+            " — Этажей",
+            " — Общая",
+            " — Тип объекта",
+
+            " — Сотки",
+            " — Цена",
+            " — Фотографии",
+        };
         public static bool IsFilled(Flat flat) {
             return BuildNotification(GetFields(flat), flatMessages);
-        }
-        public static bool IsFilled(House house) {
-            return BuildNotification(GetFields(house), houseMessages);
-        }
-        private static bool BuildNotification(List<object> fields, string[] messages) {
-            bool isEveryFieldFilled = true;
-            StringBuilder message = new StringBuilder("Для продолжения требуется заполнить следующие поля:");
-            for (int i = 0; i < fields.Count; i++) {
-                if (fields[i] is string str) {
-                    if (String.IsNullOrEmpty(str) || str == "") {
-                        isEveryFieldFilled = false;
-                        message.Append($"\n{messages[i]}");
-                    }
-                } else if (fields[i] is int number) {
-                    if (number < 1) {
-                        isEveryFieldFilled = false;
-                        message.Append($"\n{messages[i]}");
-                    }
-                } else if (fields[i] is float fl) {
-                    if (fl < 0.001) {
-                        isEveryFieldFilled = false;
-                        message.Append($"\n{messages[i]}");
-                    }
-                } else if (fields[i] is null) {
-                    isEveryFieldFilled = false;
-                    message.Append($"\n{messages[i]}");
-                } else if (fields[i] is short sh) {
-                    if (sh < 1) {
-                        isEveryFieldFilled = false;
-                        message.Append($"\n{messages[i]}");
-                    }
-                }
-            }
-            if (!isEveryFieldFilled) {
-                OperationNotification.WarningNotify(message.ToString());
-            }
-            return isEveryFieldFilled;
-        }
-        private static List<object> GetFields(House house) {
-            List<object> fields = new List<object> {
-                house.CustomerName,
-                house.CustomerPhoneNumbers,
-                house.Location.City,
-                house.Location.District,
-                house.Location.Street,
-
-                house.Location.HouseNumber,
-                house.Info.Roof,
-                house.Info.Walls,
-                house.Info.Demarcation,
-                house.GeneralInfo.RoomCount,
-
-                house.GeneralInfo.Year,
-                house.Info.FacadeLength,
-                house.GeneralInfo.LevelCount,
-                house.GeneralInfo.General,
-                house.GeneralInfo.Living,
-
-                house.GeneralInfo.Kitchen,
-                house.GeneralInfo.Water,
-                house.Info.Yard,
-                house.Info.Gas,
-                house.GeneralInfo.Condition,
-
-                house.GeneralInfo.Convenience,
-                house.GeneralInfo.Heating,
-                house.Info.Sewerage,
-                house.Info.EarthCategory,
-                house.GeneralInfo.ObjectType,
-
-                house.GeneralInfo.Ceiling,
-                house.Info.Hundreds,
-                house.Price,
-                house.Album.PhotoCollection.Length
-            };
-            return fields;
         }
         private static List<object> GetFields(Flat flat) {
             List<object> fields = new List<object> {
@@ -197,5 +138,107 @@ namespace RealtorObjects.Model
             };
             return fields;
         }
+        public static bool IsFilled(House house) {
+            if (house.GeneralInfo.ObjectType == "Дом") {
+                return BuildNotification(GetFields(house), houseMessages);
+            } else {
+                return BuildNotification(GetFields(house), otherHousesMessages);
+            }
+        }
+        private static bool BuildNotification(List<object> fields, string[] messages) {
+            bool isEveryFieldFilled = true;
+            StringBuilder message = new StringBuilder("Для продолжения требуется заполнить следующие поля:");
+            for (int i = 0; i < fields.Count; i++) {
+                if (fields[i] is string str) {
+                    if (String.IsNullOrEmpty(str) || str == "") {
+                        isEveryFieldFilled = false;
+                        message.Append($"\n{messages[i]}");
+                    }
+                } else if (fields[i] is int number) {
+                    if (number < 1) {
+                        isEveryFieldFilled = false;
+                        message.Append($"\n{messages[i]}");
+                    }
+                } else if (fields[i] is float fl) {
+                    if (fl < 0.001) {
+                        isEveryFieldFilled = false;
+                        message.Append($"\n{messages[i]}");
+                    }
+                } else if (fields[i] is null) {
+                    isEveryFieldFilled = false;
+                    message.Append($"\n{messages[i]}");
+                } else if (fields[i] is short sh) {
+                    if (sh < 1) {
+                        isEveryFieldFilled = false;
+                        message.Append($"\n{messages[i]}");
+                    }
+                }
+            }
+            if (!isEveryFieldFilled) {
+                OperationNotification.WarningNotify(message.ToString());
+            }
+            return isEveryFieldFilled;
+        }
+        private static List<object> GetFields(House house) {
+            List<object> fields;
+            if (house.GeneralInfo.ObjectType == "Дом") {
+                fields = new List<object> {
+                    house.CustomerName,
+                    house.CustomerPhoneNumbers,
+                    house.Location.City,
+                    house.Location.District,
+                    house.Location.Street,
+
+                    house.Location.HouseNumber,
+                    house.Info.Roof,
+                    house.Info.Walls,
+                    house.Info.Demarcation,
+                    house.GeneralInfo.RoomCount,
+
+                    house.GeneralInfo.Year,
+                    house.Info.FacadeLength,
+                    house.GeneralInfo.LevelCount,
+                    house.GeneralInfo.General,
+                    house.GeneralInfo.Living,
+
+                    house.GeneralInfo.Kitchen,
+                    house.GeneralInfo.Water,
+                    house.Info.Yard,
+                    house.Info.Gas,
+                    house.GeneralInfo.Condition,
+
+                    house.GeneralInfo.Convenience,
+                    house.GeneralInfo.Heating,
+                    house.Info.Sewerage,
+                    house.Info.EarthCategory,
+                    house.GeneralInfo.ObjectType,
+
+                    house.GeneralInfo.Ceiling,
+                    house.Info.Hundreds,
+                    house.Price,
+                    house.Album.PhotoCollection.Length
+                };
+            } else {
+                fields = new List<object> {
+                    house.CustomerName,
+                    house.CustomerPhoneNumbers,
+                    house.Location.City,
+                    house.Location.District,
+                    house.Location.Street,
+
+                    house.Location.HouseNumber,
+                    house.GeneralInfo.RoomCount,
+                    house.GeneralInfo.LevelCount,
+                    house.GeneralInfo.General,
+                    house.GeneralInfo.ObjectType,
+
+                    house.Info.Hundreds,
+                    house.Price,
+                    house.Album.PhotoCollection.Length
+                };
+            }
+            return fields;
+        }
+
     }
 }

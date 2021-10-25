@@ -13,7 +13,7 @@ namespace RealtorObjects
     {
         protected override void OnStartup(StartupEventArgs e) {
             if (Debugger.IsAttached) {
-                Client.ServerIp = IPAddress.Parse("26.43.67.30");
+                Client.ServerIp = IPAddress.Parse("192.168.56.1");
             } else {
                 Client.ServerIp = IPAddress.Parse("192.168.1.250");
             }
